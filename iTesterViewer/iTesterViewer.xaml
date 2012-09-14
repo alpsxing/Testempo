@@ -1,0 +1,344 @@
+﻿<Window x:Class="iTesterViewer.iTesterViewerMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:it="clr-namespace:iTester;assembly=iTester"
+        Title="Result Viewer" Height="800" Width="1000" WindowStartupLocation="CenterScreen" Icon="/iTester;component/Resources/resultviewer.ico"
+        FontFamily="Calibri" FontSize="13">
+    <Window.Resources>
+        <Style x:Key="MessageRowBackground" TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="0">
+                    <Setter Property="Background" Value="Transparent" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="1">
+                    <Setter Property="Background" Value="PaleGreen" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="2">
+                    <Setter Property="Background" Value="Pink" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="3">
+                    <Setter Property="Background" Value="Yellow" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="4">
+                    <Setter Property="Background" Value="lightCyan" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ValidInvalidDBIPAddressStyle" TargetType="Label">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DBIPAddressOK}" Value="True">
+                    <Setter Property="Label.Foreground" Value="Black"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBIPAddressOK}" Value="False">
+                    <Setter Property="Label.Foreground" Value="Red"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ValidInvalidDBPasswordStyle" TargetType="Label">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DBPasswordOK}" Value="True">
+                    <Setter Property="Label.Foreground" Value="Black"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBPasswordOK}" Value="False">
+                    <Setter Property="Label.Foreground" Value="Red"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <!--MenuItem Header="Open Result"></MenuItem>
+                <Separator/-->
+                <MenuItem Click="Window_Exit" Header="Exit"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <ToolBar DockPanel.Dock="Top" Height="30">
+            <Button BorderBrush="DarkGray" Margin="1" Click="InitializeFromDatabase_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <!--Binding Path="NotInDatabaseTalking" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <Binding Path="DBIPAddressOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="DBPasswordOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/database_search.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="SaveConfig_Button_Click" BorderBrush="DarkGray" Margin="1">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/filesave.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="BrowseBack_Button_Click" BorderBrush="DarkGray" Margin="1">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="InitOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <!--Binding Path="NotInDatabaseTalking" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <Binding Path="IsBrowseBackOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/qry.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="BrowseInto_Button_Click" BorderBrush="DarkGray" Margin="1">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="InitOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <!--Binding Path="NotInDatabaseTalking" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <Binding Path="IsBrowseIntoOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/snd.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="BrowseUpdate_Button_Click" BorderBrush="DarkGray" Margin="1">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="InitOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <!--Binding Path="NotInDatabaseTalking" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/sndqry.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="Statistics_Button_Click" BorderBrush="DarkGray" Margin="1">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <!--Binding Path="NotInDatabaseTalking" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/3d.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="Window_Exit" BorderBrush="DarkGray" Margin="1">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <!--Binding Path="NotInDatabaseTalking" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/exit.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom" Height="30">
+            <ProgressBar Margin="3,0,0,0" Height="15" Width="200" Minimum="0" Maximum="100" Value="0" Name="spbTimer"></ProgressBar>
+            <Label Margin="0,-1,0,0" Content="{Binding Path=ReadyString,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <!--StackPanel Orientation="Horizontal">
+                <Image Source="resources/status_info.png" Height="20" Width="20"></Image>
+                <Label Content="{Binding Path=InformationCount, Mode=OneWay, Converter={StaticResource StringIntConverter}}"/>
+                <Image Source="resources/status_ok.png" Height="20" Width="20"></Image>
+                <Label Content="{Binding Path=OkCount, Mode=OneWay, Converter={StaticResource StringIntConverter}}"/>
+                <Image Source="resources/status_ques.ico" Height="18" Width="18"></Image>
+                <Label Content="{Binding Path=UnknownCount, Mode=OneWay, Converter={StaticResource StringIntConverter}}"/>
+                <Image Source="resources/status_error.png" Height="20" Width="20"></Image>
+                <Label Content="{Binding Path=ErrorCount, Mode=OneWay, Converter={StaticResource StringIntConverter}}"/>
+                <Image Source="resources/status_count.png" Height="20" Width="20"></Image>
+                <Label Content="{Binding Path=TotalCount, Mode=OneWay, Converter={StaticResource StringIntConverter}}"/>
+                <Button Content="Message Filter" />
+            </StackPanel-->
+        </StatusBar>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" MinWidth="50"></ColumnDefinition>
+                <ColumnDefinition MinWidth="50"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="10"></RowDefinition>
+                    <RowDefinition Height="90"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Content="Database IP" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                        Style="{StaticResource ValidInvalidDBIPAddressStyle}"/>
+                <TextBox Text="{Binding Path=DBIPAddress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="2" VerticalAlignment="Center"></TextBox>
+                <Label Content="Password" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
+                        Style="{StaticResource ValidInvalidDBPasswordStyle}"/>
+                <PasswordBox Grid.Row="1" Grid.Column="1" Margin="2" VerticalAlignment="Center"
+                             PasswordChanged="DBPassword_PasswordBox_PasswordChanged" Name="pbDBPW"/>
+                <GroupBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3">
+                    <GroupBox.Header>
+                        <CheckBox Content="Project/Sub Project Filter"
+                                  IsChecked="{Binding Path=UseProjectSubProjectFilter,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="75"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="25"></RowDefinition>
+                            <RowDefinition Height="25"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.IsEnabled>
+                            <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                <Binding Path="InitOK" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                <!--Binding Path="NotInDatabaseTalking" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                                <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                <Binding Path="UseProjectSubProjectFilterBool" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            </MultiBinding>
+                        </Grid.IsEnabled>
+                        <Label Content="Project" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                        <ComboBox Name="cboxProject" Grid.Row="1" Grid.Column="1" Margin="2"
+                              SelectionChanged="Project_ComboBox_SelectionChanged">
+                        </ComboBox>
+                        <Label Content="Sub Project" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                        <ComboBox Name="cboxSubProject" Grid.Row="2" Grid.Column="1" Margin="2"
+                              SelectionChanged="SubProject_ComboBox_SelectionChanged">
+                        </ComboBox>
+                        <!--Label Content="Function" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                        <ComboBox Name="cboxFunction" ItemsSource="{Binding}" Grid.Row="2" Grid.Column="1" Margin="2"
+                              SelectionChanged="Function_ComboBox_SelectionChanged">
+                        </ComboBox-->
+                    </Grid>
+                </GroupBox>
+            </Grid>
+            <GridSplitter Grid.Column="0" Width="3"/>
+            <DataGrid Background="Transparent" Grid.Column="1" Name="dgTestView" Visibility="Visible"
+                      AutoGenerateColumns="False" ItemsSource="{Binding}" 
+                      CanUserAddRows="False" CanUserDeleteRows="True" 
+                      HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                      SelectionMode="Single" HeadersVisibility="Column"
+                      SelectionChanged="TestView_DataGrid_SelectionChanged"
+                      MouseDoubleClick="TestView_DataGrid_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Project" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=ProjectName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Sub Project" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=SubProjectName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Pass Rate" Width="75" MinWidth="50"
+                                        Binding="{Binding Path=PassRate,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Total" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=TotalCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="F &amp; E" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=FailErrorCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Start Time" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=StartTimeString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="End Time" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=EndTimeString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Duration" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=Duration,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Test PC" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=TestPC,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Tester" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=Tester,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Grid.Column="1" Name="dgTestCol" Visibility="Collapsed"
+                      AutoGenerateColumns="False" ItemsSource="{Binding}" 
+                      CanUserAddRows="False" CanUserDeleteRows="True" 
+                      HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                      SelectionMode="Single" HeadersVisibility="Column"
+                      ItemContainerStyle="{StaticResource MessageRowBackground}"
+                      SelectionChanged="TestCol_DataGrid_SelectionChanged"
+                      MouseDoubleClick="TestCol_DataGrid_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Test Name" Width="300" MinWidth="100"
+                                        Binding="{Binding Path=TestName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Start Time" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=StartTimeString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Duration" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=Duration,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Information" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=InfoCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Pass" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=PassCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Fail" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=FailCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Error" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=ErrorCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Background="Transparent" Grid.Column="1" Name="dgTestResult" Visibility="Collapsed"
+                      AutoGenerateColumns="False" ItemsSource="{Binding}" 
+                      CanUserAddRows="False" CanUserDeleteRows="True" 
+                      HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                      SelectionMode="Single" HeadersVisibility="Column"
+                      ItemContainerStyle="{StaticResource MessageRowBackground}"
+                      SelectionChanged="TestResult_DataGrid_SelectionChanged"
+                      MouseDoubleClick="TestResult_DataGrid_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="" Width="30" MinWidth="30"
+                                        Binding="{Binding Path=MessageIndex,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Time" Width="100" MinWidth="50"
+                                        Binding="{Binding Path=StartTimeString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Category" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=Category,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Message" Width="300" MinWidth="50"
+                                        Binding="{Binding Path=Message,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Data Value" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=DataValue,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Constraint" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=Constraint,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True" CanUserSort="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!--ListView Grid.Column="1">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Test" DisplayMemberBinding="{Binding Path=TestName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="125"/>
+                        <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Path=TestTimeString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Path=TestCategory, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        <GridViewColumn Header="Data Key" DisplayMemberBinding="{Binding Path=DataKey, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        <GridViewColumn Header="Data Value" DisplayMemberBinding="{Binding Path=DataValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        <GridViewColumn Header="Constraint" DisplayMemberBinding="{Binding Path=ConstraintString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        <GridViewColumn Header="Comment" DisplayMemberBinding="{Binding Path=Comment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="300"/>
+                    </GridView>
+                </ListView.View>
+            </ListView-->
+        </Grid>
+    </DockPanel>
+</Window>

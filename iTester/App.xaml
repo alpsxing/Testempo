@@ -1,0 +1,77 @@
+﻿<Application x:Class="iTester.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:it="clr-namespace:iTester"
+             StartupUri="TesterMain.xaml">
+    <Application.Resources>
+        <it:StringIntConverter x:Key="StringIntConverter"/>
+        <it:BoolsBoolConverter x:Key="BoolsBoolConverter"/>
+        <it:BoolsBoolOrConverter x:Key="BoolsBoolOrConverter"/>
+        <it:BoolVisibilityConverter x:Key="BoolVisibilityConverter"/>
+        <it:ListViewTestResultConverter x:Key="ListViewTestResultConverter"/>
+        <Style x:Key="ImageEnableDisableStyle" TargetType="{x:Type Image}">
+            <Style.Triggers>
+                <Trigger Property="Button.IsEnabled" Value="True">
+                    <Setter Property="Image.Opacity" Value="1.0"/>
+                </Trigger>
+                <Trigger Property="Button.IsEnabled" Value="False">
+                    <Setter Property="Image.Opacity" Value="0.25"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ListViewTestResultItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Margin" Value="2,0,0,0"/>
+            <Setter Property="Padding" Value="0,2"/>
+            <Setter Property="BorderBrush" Value="LightGray"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <Binding RelativeSource="{RelativeSource Self}" Converter="{StaticResource ListViewTestResultConverter}"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="HBarBGBlue" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="PowderBlue" Offset="0"/>
+            <GradientStop Color="CornflowerBlue" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="HBarBGGray" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="Silver" Offset="0"/>
+            <GradientStop Color="Gray" Offset="0.5"/>
+            <GradientStop Color="GhostWhite" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="HBarBGControl" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="FloralWhite" Offset="0"/>
+            <GradientStop Color="AntiqueWhite" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="HBarBGGreen" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="Honeydew" Offset="0"/>
+            <GradientStop Color="LightGreen" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="HBarBGLightBlue" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="Azure" Offset="0"/>
+            <GradientStop Color="SkyBlue" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <!--Style x:Key="ButtonEnableDisableStyle" TargetType="{x:Type Button}">
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=NotInRun}" Value="true"></Condition>
+                        <Condition Binding="{Binding Path=TestGroupOrCaseFocused}" Value="true"></Condition>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Button.IsEnabled" Value="true"></Setter>
+                </MultiDataTrigger>
+                <DataTrigger Binding="{Binding Path=NotInRun}" Value="false">
+                    <Setter Property="Button.IsEnabled" Value="false"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=TestGroupOrCaseFocused}" Value="false">
+                    <Setter Property="Button.IsEnabled" Value="false"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style-->
+    </Application.Resources>
+</Application>

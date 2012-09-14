@@ -1,0 +1,1047 @@
+﻿<Window x:Class="iTester.TesterMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wpg="clr-namespace:System.Windows.Controls"
+        xmlns:it="clr-namespace:iTester"
+        Title="Testempo - (None)" Height="800" Width="1000" WindowStartupLocation="CenterScreen"
+        Icon="/iTester;component/Resources/iTester.ico" Loaded="iTester_Loaded" FontFamily="Calibri" FontSize="13">
+    <Window.Resources>
+        <LinearGradientBrush x:Key="FloatBackgroudControl" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="GhostWhite" Offset="0"/>
+            <GradientStop Color="Linen" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="FloatBackgroudGray" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="Gainsboro" Offset="0"/>
+            <GradientStop Color="Gray" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="FloatBackgroudLightGray" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="Gainsboro" Offset="0"/>
+            <GradientStop Color="Gray" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="FloatBackgroudGreen" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="LawnGreen" Offset="0"/>
+            <GradientStop Color="Green" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="FloatBackgroudRed" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="LightPink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="FloatBackgroudOrange" StartPoint="0, 0" EndPoint="0, 1">
+            <GradientStop Color="Yellow" Offset="0"/>
+            <GradientStop Color="Orange" Offset="0.5"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+        <Style x:Key="MessageRowBackground" TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="0">
+                    <Setter Property="Background" Value="Transparent" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="1">
+                    <Setter Property="Background" Value="PaleGreen" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="2">
+                    <Setter Property="Background" Value="Pink" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="3">
+                    <Setter Property="Background" Value="Yellow" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DBStateBackgroundIndex}" Value="4">
+                    <Setter Property="Background" Value="lightCyan" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!--DataTemplate x:Key="ShowHideLietViewItemDataTemplete">
+            <DataTemplate.Resources>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TestGroupCaseIsVisible}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TestGroupCaseIsVisible}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataTemplate.Resources>
+        </DataTemplate-->
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Height="20">
+            <MenuItem Header="File">
+                <MenuItem Header="Open Test Collection">
+                    <MenuItem.Icon>
+                        <Image Source="resources/fileopen.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="New Test Collection">
+                    <MenuItem.Icon>
+                        <Image Source="resources/filenew.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save Test Collection">
+                    <MenuItem.Icon>
+                        <Image Source="resources/filesave.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save Test Collection As...">
+                    <MenuItem.Icon>
+                        <Image Source="resources/filesaveas.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Exit" Click="Window_Exit">
+                    <MenuItem.Icon>
+                        <Image Source="resources/exit.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Control">
+                <MenuItem Header="Start" ToolTip="Start the current test collection.">
+                    <MenuItem.Icon>
+                        <Image Source="resources/player_play.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Pause" ToolTip="Pause the current test collection.">
+                    <MenuItem.Icon>
+                        <Image Source="resources/player_pause.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Stop" ToolTip="Stop the current test collection.">
+                    <MenuItem.Icon>
+                        <Image Source="resources/player_stop.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Jump Out" ToolTip="Jump out the current test case.">
+                    <MenuItem.Icon>
+                        <Image Source="resources/jumpout.png" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Name="cmiAddGroup" Header="Add" Click="Add_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/edit_add.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="AddGroupEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        </MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <MenuItem Name="cmiAddSubGroup" Header="Add Sub Group" Click="AddSubGroup_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/edit_addsubfolder.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="AddSubGroupEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        </MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <MenuItem Name="cmiAddSubCase" Header="Add Sub Case" Click="AddSubCase_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/edit_addsubcase.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="AddSubCaseEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        </MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <MenuItem Name="cmiEditName" Header="Edit Name" Click="EditName_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/edit_edit.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="EditNameEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        </MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <!--MenuItem Name="cmiCopy" Header="Copy" Click="Copy_MenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/editcopy.png" Height="20"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                            <!--Binding Path="TestGroupOrCaseFocused" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <!--/MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <MenuItem Name="cmiCut" Header="Cut" Click="Cut_MenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/editcut.png" Height="20"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                            <!--Binding Path="TestGroupOrCaseFocused" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <!--/MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <MenuItem Name="cmiPaste" Header="Paste" Click="Paste_MenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/editpaste.png" Height="20"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                            <!--Binding Path="TestGroupOrCaseFocused" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <!--/MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem-->
+                <MenuItem Name="cmiDelete" Header="Delete" Click="Delete_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/edit_remove.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="DeleteEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        </MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Name="cmiMoveUp" Header="Move Up" Click="MoveUp_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/moveup.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="MoveUpEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        </MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+                <MenuItem Name="cmiMoveDown" Header="Move Down" Click="MoveDown_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/movedown.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                            <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="MoveDownEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        </MultiBinding>
+                    </MenuItem.IsEnabled>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <!--MenuItem Header="Result Viewer" Click="ResultViewer_Click"></MenuItem-->
+                <MenuItem Header="Load Global Config" Click="LoadGlobalConfig_MenuItem_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="Tutorial" IsEnabled="False"/>
+                <MenuItem Header="About"/>
+            </MenuItem>
+        </Menu>
+        <ToolBar DockPanel.Dock="Top" Height="30">
+            <Button ToolTip="Open a test collection." BorderBrush="DarkGray" Margin="1" Click="OpenTestCollection_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/fileopen.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="New a test collection." BorderBrush="DarkGray" Margin="1" Click="NewTestCollection_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/filenew.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Save a test collection." BorderBrush="DarkGray" Margin="1" Click="SaveTestCollection_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/filesave.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Save a test collection as..." BorderBrush="DarkGray" Margin="1" Click="SaveAsTestCollection_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/filesaveas.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button ToolTip="Start the current test collection." BorderBrush="DarkGray" Margin="1" Click="Start_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolOrConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="InPause" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/player_play.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Pause the current test collection." BorderBrush="DarkGray" Margin="1" Click="Pause_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="InRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="NotInPause" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/player_pause.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button  ToolTip="Stop the current test collection." BorderBrush="DarkGray" Margin="1" Click="Stop_Button_Click"
+                     IsEnabled="{Binding Path=InRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/player_stop.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Jumpout the current test case." BorderBrush="DarkGray" Margin="1" Click="Jumpout_Button_Click">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="InRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="NotInPause" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/jumpout.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Name="tbtnAddGroup" BorderBrush="DarkGray" Margin="1" Click="Add_Click" ToolTip="Add a root test group.">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/edit_add.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="AddGroupEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Name="tbtnAddSubGroup" BorderBrush="DarkGray" Margin="1" Click="AddSubGroup_Click" ToolTip="Add s sub test group">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/edit_addsubfolder.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="AddSubGroupEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Name="tbtnAddSubCase" BorderBrush="DarkGray" Margin="1" Click="AddSubCase_Click" ToolTip="Add a sub test case">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/edit_addsubcase.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="AddSubCaseEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Name="tbtnEditName" BorderBrush="DarkGray" Margin="1" Click="EditName_Click" ToolTip="Edit the test group/case name">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/edit_edit.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="EditNameEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <!--Button Name="tbtnCopy" BorderBrush="DarkGray" Margin="1" Click="Copy_ToobarButton_Click">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/editcopy.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <!--Binding Path="TestGroupOrCaseFocused" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                    <!--/MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Name="tbtnCut" BorderBrush="DarkGray" Margin="1" Click="Cut_ToobarButton_Click">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/editcut.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <!--Binding Path="TestGroupOrCaseFocused" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                    <!--/MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Name="tbtnPaste" BorderBrush="DarkGray" Margin="1" Click="Paste_ToobarButton_Click">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/editpaste.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                        <!--Binding Path="TestGroupOrCaseFocused" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/-->
+                    <!--/MultiBinding>
+                </Button.IsEnabled>
+            </Button-->
+            <Button Name="tbtnDelete" BorderBrush="DarkGray" Margin="1" Click="Delete_Click" ToolTip="Delete a test group/case">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/edit_remove.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="DeleteEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Name="tbtnMoveUp" BorderBrush="DarkGray" Margin="1" Click="MoveUp_Click" ToolTip="Move up a test group/case">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/moveup.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="MoveUpEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Name="tbtnMoveDown" BorderBrush="DarkGray" Margin="1" Click="MoveDown_Click" ToolTip="Move down a test group/case">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/movedown.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="MoveDownEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Separator/>
+            <Button Click="Window_Exit" BorderBrush="DarkGray" Margin="1">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/exit.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom" Height="30" FontFamily="Arial">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <ProgressBar Margin="3,0,0,0" Height="15" Width="200" Minimum="0" Maximum="100" Value="0" Name="spbTimer"></ProgressBar>
+                <Label Content="{Binding Path=TimerString,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Label Margin="0,-1,0,0" Content="{Binding Path=ReadyString,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </StackPanel>
+            <StatusBarItem Grid.Column="1">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" >
+                    <!--Label BorderThickness="1" Content="{Binding Path=AllCaseCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/>
+                    <Label BorderThickness="1" Background="Green" Content="{Binding Path=PassCaseCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/>
+                    <Label BorderThickness="1" Background="Red" Content="{Binding Path=FailCaseCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/>
+                    <Label BorderThickness="1" Background="Yellow" Content="{Binding Path=ErrorCaseCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/>
+                    <Label BorderThickness="1" Content="{Binding Path=PassRateString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/-->
+                    <!--Label Content="{Binding Path=CaseExecutedPercentageString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Image Source="resources/status_info.png" Height="20" Width="20"></Image>
+                    <Label Content="{Binding Path=InformationCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Image Source="resources/status_ok.png" Height="20" Width="20"></Image>
+                    <Label Content="{Binding Path=PassCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Image Source="resources/status_error.png" Height="20" Width="20"></Image>
+                    <Label Content="{Binding Path=FailCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Image Source="resources/status_ques.ico" Height="18" Width="18"></Image>
+                    <Label Content="{Binding Path=ErrorCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Image Source="resources/status_count.png" Height="20" Width="20"></Image>
+                    <Label Content="{Binding Path=TotalCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/-->
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="50"></RowDefinition>
+                <RowDefinition Height="200" MinHeight="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <!--ColumnDefinition Width="250"></ColumnDefinition-->
+                <ColumnDefinition MinWidth="50"></ColumnDefinition>
+                <ColumnDefinition Width="250" MinWidth="50"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <!--TreeView Name="tvTestGroup" Grid.Column="0" Grid.Row="0" 
+                      BorderThickness="1" SelectedItemChanged="TestGroup_TreeView_SelectionItemChanged">
+                <TreeView.ContextMenu>
+                    <ContextMenu Opened="EditGroup_ContextMenu_Opened">
+                        <MenuItem Name="tvcmiAddGroup" Header="Add Group" Click="Add_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_add.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiAddSubGroup" Header="Add Sub Group" Click="AddSubGroup_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_addsubfolder.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiAddSubCase" Header="Add Sub Case" Click="AddSubCase_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_addsubcase.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiEditName" Header="Edit Name" Click="EditName_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_edit.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem-->
+                        <!--MenuItem Name="tvcmiCopy" Header="Copy" Click="Copy_ContextMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/editcopy.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiCut" Header="Cut" Click="Cut_ContextMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/editcut.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiPaste" Header="Paste" Click="Paste_ContextMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/editpaste.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem-->
+                        <!--MenuItem Name="tvcmiDelete" Header="Delete" Click="Delete_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_remove.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Name="tvcmiMoveUp" Header="Move Up" Click="MoveUp_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/moveup.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiMoveDown" Header="Move Down" Click="MoveDown_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/movedown.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </TreeView.ContextMenu>
+            </TreeView>
+            <GridSplitter Grid.Column="0" Width="3"></GridSplitter-->
+            <!--it:GridLineDecorator-->
+            <ListView Name="lvGroupCase" Grid.Column="0" Grid.Row="0"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        SelectionMode="Single" ItemsSource="{Binding}"
+                      SelectionChanged="GroupCase_ListView_SelectionChanged"
+                      IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding TestGroupCaseIsVisible}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding TestGroupCaseIsVisible}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsCase}" Value="False">
+                                <Setter Property="Background" Value="Honeydew"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsCase}" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </DataTrigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                        <EventSetter Event="PreviewMouseDown" Handler="GroupCase_ListViewItem_PreviewMosueDown"/>
+                        <Setter Property="Margin" Value="2,0,0,0"/>
+                        <Setter Property="Padding" Value="0,2"/>
+                        <Setter Property="BorderBrush" Value="LightGray"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <!--Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                        BorderThickness="{TemplateBinding BorderThickness}" 
+                                        Background="{TemplateBinding Background}">
+                                        <it:GridViewRowPresenterWithGridLines 
+                                        Columns="{TemplateBinding GridView.ColumnCollection}"
+                                        Margin="{TemplateBinding Padding}" /-->
+                                        <!-- Try setting the SeparatorStyle property of presenter
+                                        SeparatorStyle="{StaticResource SeparatorStyle}" 
+                                    -->
+                                    <!--/Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter-->
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView x:Name="gvGroupCase">
+                        <!--GridViewColumn Header="Global Index" Width="0"
+                            DisplayMemberBinding="{Binding Path=GlobalIndexString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/-->
+                        <GridViewColumn Width="400" Header="Test Title">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal">
+                                        <Label Width="{Binding Path=DisplayLevelLength, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <CheckBox Name="cbGroupCase" Margin="0,2,0,0" IsChecked="{Binding Path=SelectedState, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    Checked="GroupCase_TreeViewItem_CheckBox_CheckedUnchecked"
+                                                    Unchecked="GroupCase_TreeViewItem_CheckBox_CheckedUnchecked"
+                                                    IsThreeState="False"
+                                                    Background="{Binding Path=SelectedStateBackColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <CheckBox.IsEnabled>
+                                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                </MultiBinding>
+                                            </CheckBox.IsEnabled>
+                                        </CheckBox>
+                                        <Grid PreviewMouseLeftButtonDown="GroupCase_Image_ListViewItem_PreviewLeftMosueDown">
+                                            <Image Width="15" Height="15" Source="{Binding Path=GroupCaseImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Grid>
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=GroupCaseName, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!--GridViewColumn Header="Pass" Width="45">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate-->
+                                    <!--Border BorderThickness="1" BorderBrush="LightGreen" Height="15"-->
+                                            <!--Label HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,-10,0,-10" Height="15" BorderThickness="1" BorderBrush="LightGray" Content="{Binding Path=PassCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/-->
+                                    <!--/Border-->
+                                <!--/DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn-->
+                        <GridViewColumn Header="Pass" Width="45">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal" Margin="-6"
+                                                Background="{Binding Path=PassBackground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=PassCountString, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Grid>
+                                            <Image Width="15" Height="15" Source="{Binding Path=PassImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Fail" Width="45">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal" Margin="-6"
+                                                Background="{Binding Path=FailBackground, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=FailCountString, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Grid>
+                                            <Image Width="15" Height="15" Source="{Binding Path=FailImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Error" Width="45">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal" Margin="-6"
+                                                Background="{Binding Path=ErrorBackground, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=ErrorCountString, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Grid>
+                                            <Image Width="15" Height="15" Source="{Binding Path=ErrorImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Total Tests" Width="75">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal">
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=TotalTestsString, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Pass Rate" Width="75">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal">
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=PassRateString, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Duration" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal">
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=DurationString, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Run Count" Width="75">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="15" Orientation="Horizontal">
+                                        <Label Margin="0,-5,0,-3" Content="{Binding Path=RunCountString, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!--GridViewColumn Header="Class Name" DisplayMemberBinding="{Binding Path=TestCalssName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/-->
+                        <!--GridViewColumn Header="Test Priority" DisplayMemberBinding="{Binding Path=TestPriorityString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/-->
+                    </GridView>
+                </ListView.View>
+                <ListView.ContextMenu>
+                    <ContextMenu Name="lvcmGroupCase" DataContext="{Binding}">
+                        <MenuItem Name="lvcmiAddGroup" Header="Add Group" Click="Add_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_add.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                            </MenuItem.Icon>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="AddGroupEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                        <MenuItem Name="lvcmiAddSubGroup" Header="Add Sub Group" Click="AddSubGroup_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_addsubfolder.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                            </MenuItem.Icon>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="AddSubGroupEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                        <MenuItem Name="lvcmiAddSubCase" Header="Add Sub Case" Click="AddSubCase_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_addsubcase.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                            </MenuItem.Icon>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="AddSubCaseEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                        <MenuItem Name="lvcmiEditName" Header="Edit Name" Click="EditName_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_edit.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                            </MenuItem.Icon>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="EditNameEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                        <!--MenuItem Name="tvcmiCopy" Header="Copy" Click="Copy_ContextMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/editcopy.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiCut" Header="Cut" Click="Cut_ContextMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/editcut.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Name="tvcmiPaste" Header="Paste" Click="Paste_ContextMenuItem_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/editpaste.png" Height="20"/>
+                            </MenuItem.Icon>
+                        </MenuItem-->
+                        <MenuItem Name="lvcmiDelete" Header="Delete" Click="Delete_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/edit_remove.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                            </MenuItem.Icon>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="DeleteEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Name="lvcmiMoveUp" Header="Move Up" Click="MoveUp_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/moveup.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                            </MenuItem.Icon>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="MoveUpEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                        <MenuItem Name="lvcmiMoveDown" Header="Move Down" Click="MoveDown_Click">
+                            <MenuItem.Icon>
+                                <Image Source="resources/movedown.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                            </MenuItem.Icon>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                    <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="MoveDownEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
+            <!--/it:GridLineDecorator-->
+            <GridSplitter Grid.Column="0" Width="3"></GridSplitter>
+            <TabControl Name="tcConfigProperty" Grid.Column="2" Grid.Row="0">
+                <TabItem Header="Configuration">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Bottom" Height="30"
+                                   IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                            <Button Content="Del All" Margin="1,3,1,3" Width="50" DockPanel.Dock="Right"
+                                    Click="GlobalConfig_DelAll_Button_Click"
+                                   IsEnabled="{Binding Path=GlobalCfgDeleteAllEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Button>
+                            <Button Content="Modify" Margin="1,3,1,3" Width="50" DockPanel.Dock="Right"
+                                    Click="GlobalConfig_Modify_Button_Click"
+                                   IsEnabled="{Binding Path=GlobalCfgClearEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Button>
+                            <Button Content="Delete" Margin="1,3,1,3" Width="50" DockPanel.Dock="Right"
+                                    Click="GlobalConfig_Delete_Button_Click"
+                                   IsEnabled="{Binding Path=GlobalCfgDeleteEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Button>
+                            <Button Content="New" Margin="1,3,1,3" Width="50" DockPanel.Dock="Right"
+                                    Click="GlobalConfig_Add_Button_Click"
+                                   IsEnabled="{Binding Path=GlobalCfgAddEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Button>
+                            <DockPanel/>
+                        </DockPanel>
+                        <DataGrid AutoGenerateColumns="False" Name="dgGlobalCfg" ItemsSource="{Binding}" 
+                                    CanUserAddRows="False" CanUserDeleteRows="True" 
+                                    HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                                    VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                                    SelectionMode="Single" HeadersVisibility="Column"
+                                    SelectedCellsChanged="GlobalCfg_ListView_SelectionChanged" CanUserSortColumns="False"
+                                  MouseDoubleClick="GlobalConfiguration_DataGrid_MouseDoubleClick">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Key" Width="125" MinWidth="100"
+                                        Binding="{Binding Path=ConfigKey,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Value" Width="125" MinWidth="100" 
+                                        Binding="{Binding Path=ConfigValueDisplay,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Property">
+                    <wpg:WpfPropertyGrid x:Name="wpgInstance" 
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                        HelpVisible="True" ToolbarVisible="True"
+                        IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                </TabItem>
+            </TabControl>
+            <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
+                <ToolBar DockPanel.Dock="Top" Height="30">
+                    <!--TextBox Width="250" Text="{Binding Path=FindString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Foreground="{Binding Path=FindForeground, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button>
+                        <Button.Content>
+                            <Image Source="resources/find.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                        </Button.Content>
+                    </Button-->
+                    <!--Button Content="Message Filter" BorderBrush="DarkGray" BorderThickness="1" Click="MsgFilter_Button_Click">
+                        <Button.ContextMenu>
+                            <ContextMenu Name="cmMsgFilter">
+                                <MenuItem Header="Information">
+                                    <MenuItem.Icon>
+                                        <Image Source="resources/status_info.png" Height="20"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem IsChecked="True" Header="Pass">
+                                    <MenuItem.Icon>
+                                        <Image Source="resources/status_ok.png" Height="20"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem IsChecked="True" Header="Unknown">
+                                    <MenuItem.Icon>
+                                        <Image Source="resources/status_ques.ico" Height="20"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem IsChecked="True" Header="Error">
+                                    <MenuItem.Icon>
+                                        <Image Source="resources/status_error.png" Height="20"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem IsChecked="True" Header="Total">
+                                    <MenuItem.Icon>
+                                        <Image Source="resources/status_count.png" Height="20"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button-->
+                    <Button Click="EnabledDisableDatebase_Button_Click" BorderBrush="DarkGray" Margin="1"
+                     ToolTip="Enable/Disable save the log in the database">
+                        <Button.Resources>
+                            <Style x:Key="EnableDisableDBStyle" TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DatabaseConnected}" Value="True">
+                                        <Setter Property="Image.Source" Value="resources/db_enabled.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DatabaseConnected}" Value="False">
+                                        <Setter Property="Image.Source" Value="resources/db_disabled.png"/>
+                                    </DataTrigger>
+                                    <Trigger Property="Button.IsEnabled" Value="True">
+                                        <Setter Property="Image.Opacity" Value="1.0"/>
+                                    </Trigger>
+                                    <Trigger Property="Button.IsEnabled" Value="False">
+                                        <Setter Property="Image.Opacity" Value="0.1"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Resources>
+                        <Button.Content>
+                            <Image Margin="-3" Style="{StaticResource EnableDisableDBStyle}"/>
+                        </Button.Content>
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource BoolsBoolConverter}">
+                                <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            </MultiBinding>
+                        </Button.IsEnabled>
+                    </Button>
+                    <Separator/>
+                    <!--StackPanel Orientation="Horizontal">
+                        <Image Source="resources/status_info.png" Height="20" Width="20"></Image>
+                        <Label Content="{Binding Path=InformationCountSingleString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Image Source="resources/status_ok.png" Height="20" Width="20"></Image>
+                        <Label Content="{Binding Path=PassCountSingleString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Image Source="resources/status_error.png" Height="20" Width="20"></Image>
+                        <Label Content="{Binding Path=FailCountSingleString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Image Source="resources/status_ques.ico" Height="18" Width="18"></Image>
+                        <Label Content="{Binding Path=ErrorCountSingleString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Image Source="resources/status_count.png" Height="20" Width="20"></Image>
+                        <Label Content="{Binding Path=TotalCountSingleString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel-->
+                    <Border BorderThickness="0,0,0,0" BorderBrush="Gray">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="resources/status_info.png" Height="20" Width="20"></Image>
+                            <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+                                   Content="{Binding Path=InformationCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Image Source="resources/status_ok.png" Height="20" Width="20"></Image>
+                            <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                   Content="{Binding Path=PassCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Image Source="resources/status_error.png" Height="20" Width="20"></Image>
+                            <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                   Content="{Binding Path=FailCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Image Source="resources/status_ques.ico" Height="18" Width="18"></Image>
+                            <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                   Content="{Binding Path=ErrorCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Image Source="resources/status_count.png" Height="20" Width="20"></Image>
+                            <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                   Content="{Binding Path=TotalCountString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </Border>
+                    <Separator/>
+                    <!--Label Content="{Binding Path=CaseExecutedPercentageString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/-->
+                    <Label Width="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                           BorderThickness="1" Background="{StaticResource FloatBackgroudGreen}" Content="{Binding Path=PassCaseCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/>
+                    <Label Width="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                           BorderThickness="1" Background="{StaticResource FloatBackgroudRed}" Content="{Binding Path=FailCaseCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/>
+                    <Label Width="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                           BorderThickness="1" Background="{StaticResource FloatBackgroudOrange}" Content="{Binding Path=ErrorCaseCountString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"/>
+                    <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                           BorderThickness="1" Content="{Binding Path=AllCaseCountWholeString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"
+                           Background="{StaticResource FloatBackgroudControl}"/>
+                    <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                           BorderThickness="1" FontWeight="Bold" Content="{Binding Path=PassRateWholeString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" BorderBrush="Gray"
+                           Background="{StaticResource FloatBackgroudControl}"/>
+                </ToolBar>
+                <DataGrid AutoGenerateColumns="False" Name="dgTestResults" ItemsSource="{Binding}" 
+                      CanUserAddRows="False" CanUserDeleteRows="True" 
+                      HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                      SelectionMode="Single" HeadersVisibility="Column"
+                      ItemContainerStyle="{StaticResource MessageRowBackground}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn MinWidth="30" MaxWidth="30">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Height="13" Source="{Binding Path=TestStateImage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Test" Width="150" MinWidth="50"
+                                        Binding="{Binding Path=TestName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Time" Width="100" MinWidth="50"
+                                        Binding="{Binding Path=TestTimeString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Category" Width="150" MinWidth="50"
+                                        Binding="{Binding Path=Category,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Message" Width="300" MinWidth="50"
+                                        Binding="{Binding Path=Message,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Data Value" Width="150" MinWidth="50"
+                                        Binding="{Binding Path=DataValue,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Constraint" Width="150" MinWidth="50"
+                                        Binding="{Binding Path=Constraint,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <!--ListView Name="lvTestResults" ItemsSource="{Binding}" 
+                          ItemContainerStyle="{StaticResource ListViewTestResultItemStyle}"
+                          it:ListBoxExtenders.AutoScrollToEnd="True">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="35" Header="">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Width="15" Height="15" Source="{Binding Path=TestStateImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Test" DisplayMemberBinding="{Binding Path=TestName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="125"/>
+                            <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Path=TestTimeString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/-->
+                            <!--GridViewColumn Header="Category" DisplayMemberBinding="{Binding Path=TestCategory, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/-->
+                            <!--GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="300"/>
+                            <GridViewColumn Header="Data Value" DisplayMemberBinding="{Binding Path=DataValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="125"/>
+                            <GridViewColumn Header="Constraint" DisplayMemberBinding="{Binding Path=Constraint, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="150"/-->
+                            <!--GridViewColumn Header="Comment" DisplayMemberBinding="{Binding Path=Comment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="300"/-->
+                        <!--/GridView>
+                    </ListView.View>
+                </ListView-->
+            </DockPanel>
+            <GridSplitter Height="3" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></GridSplitter>
+        </Grid>
+    </DockPanel>
+</Window>

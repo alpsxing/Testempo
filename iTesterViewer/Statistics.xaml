@@ -1,0 +1,20 @@
+﻿<Window x:Class="iTesterViewer.Statistics"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Statistics" Height="800" Width="1000">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Exit"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <ToolBar DockPanel.Dock="Top" Height="35"></ToolBar>
+        <StatusBar DockPanel.Dock="Bottom" Height="30"></StatusBar>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="50"></ColumnDefinition>
+                <ColumnDefinition MinWidth="50"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+        </Grid>
+    </DockPanel>
+</Window>
