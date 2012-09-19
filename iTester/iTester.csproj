@@ -100,6 +100,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="LogDisplayer.xaml.cs">
+      <DependentUpon>LogDisplayer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OneLineEditor.xaml.cs">
       <DependentUpon>OneLineEditor.xaml</DependentUpon>
     </Compile>
@@ -109,10 +112,11 @@
     <Compile Include="OneLineSelector.xaml.cs">
       <DependentUpon>OneLineSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ResultViewer.xaml.cs">
-      <DependentUpon>ResultViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WpfPropertyGrid.cs" />
+    <Page Include="LogDisplayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="OneLineEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,10 +138,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="OneLineSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ResultViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -242,6 +242,9 @@
       <Project>{79123E0C-D37A-423E-942A-25BD66DC69B1}</Project>
       <Name>iTestBase</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\LogDisplayer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

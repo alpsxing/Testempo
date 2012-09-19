@@ -1518,7 +1518,7 @@ namespace iTesterViewer
             Pass,
             Fail,
             Error,
-            Infromation
+            Information
         }
 
         public int DBStateBackgroundIndex
@@ -1631,7 +1631,7 @@ namespace iTesterViewer
             Pass,
             Fail,
             Error,
-            Infromation
+            Information
         }
 
         private int _dbStateIndex = 0;
@@ -1681,17 +1681,17 @@ namespace iTesterViewer
                         default:
                         case DBState.None:
                             break;
-                        case DBState.Infromation:
-                            _dbStateImage.UriSource = new Uri("pack://application:,,,/itesterviewer;component/resources/status_info.png");
+                        case DBState.Information:
+							_dbStateImage.UriSource = new Uri("pack://application:,,,/TestempoResultViewer;component/resources/status_info.png");
                             break;
                         case DBState.Pass:
-                            _dbStateImage.UriSource = new Uri("pack://application:,,,/itesterviewer;component/resources/status_ok.png");
+							_dbStateImage.UriSource = new Uri("pack://application:,,,/TestempoResultViewer;component/resources/status_ok.png");
                             break;
                         case DBState.Fail:
-                            _dbStateImage.UriSource = new Uri("pack://application:,,,/itesterviewer;component/resources/status_error.png");
+							_dbStateImage.UriSource = new Uri("pack://application:,,,/TestempoResultViewer;component/resources/status_error.png");
                             break;
                         case DBState.Error:
-                            _dbStateImage.UriSource = new Uri("pack://application:,,,/itesterviewer;component/resources/status_ques.ico");
+							_dbStateImage.UriSource = new Uri("pack://application:,,,/TestempoResultViewer;component/resources/status_ques.ico");
                             break;
                     }
                     _dbStateImage.EndInit();
@@ -1702,7 +1702,7 @@ namespace iTesterViewer
                     case DBState.None:
                         _dbStateBackgound = new SolidColorBrush(Colors.Transparent);
                         break;
-                    case DBState.Infromation:
+                    case DBState.Information:
                         _dbStateBackgound = new SolidColorBrush(Colors.LightBlue);
                         break;
                     case DBState.Pass:
@@ -1757,7 +1757,7 @@ namespace iTesterViewer
                     default:
                     case DBState.None:
                         return "";
-                    case DBState.Infromation:
+                    case DBState.Information:
                         return "resources/status_info.png";
                     case DBState.Pass:
                         return "resources/status_ok.png";

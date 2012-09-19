@@ -810,7 +810,7 @@ namespace iTesterDBSetup
 
 			AddDatabaseMessage(DatabaseMessage.DBState.Infomation, "Database is disposed.");
 
-			ReadyString = "Infromation : Database for iTester is ready.";
+			ReadyString = "Information : Database for iTester is ready.";
 		}
 
 		private bool CreateTable(MySqlConnection conn, string tablename, string sql, bool setReady = true)
@@ -2184,16 +2184,16 @@ namespace iTesterDBSetup
 				case DatabaseMessage.DBState.None:
 					break;
 				case DatabaseMessage.DBState.Infomation:
-					dbi.UriSource = new Uri("pack://application:,,,/itesterdbsetup;component/resources/status_info.png");
+					dbi.UriSource = new Uri("pack://application:,,,/TestempoDBSetup;component/resources/status_info.png");
 					break;
 				case DatabaseMessage.DBState.OK:
-					dbi.UriSource = new Uri("pack://application:,,,/itesterdbsetup;component/resources/status_ok.png");
+					dbi.UriSource = new Uri("pack://application:,,,/TestempoDBSetup;component/resources/status_ok.png");
 					break;
 				case DatabaseMessage.DBState.Fail:
-					dbi.UriSource = new Uri("pack://application:,,,/itesterdbsetup;component/resources/status_error.png");
+					dbi.UriSource = new Uri("pack://application:,,,/TestempoDBSetup;component/resources/status_error.png");
 					break;
 				case DatabaseMessage.DBState.Error:
-					dbi.UriSource = new Uri("pack://application:,,,/itesterdbsetup;component/resources/status_ques.ico");
+					dbi.UriSource = new Uri("pack://application:,,,/TestempoDBSetup;component/resources/status_ques.ico");
 					break;
 			}
 			dbi.EndInit();

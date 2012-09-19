@@ -4,7 +4,7 @@
         xmlns:wpg="clr-namespace:System.Windows.Controls"
         xmlns:it="clr-namespace:iTester"
         Title="Testempo - (None)" Height="800" Width="1000" WindowStartupLocation="CenterScreen"
-        Icon="/iTester;component/Resources/iTester.ico" Loaded="iTester_Loaded" FontFamily="Calibri" FontSize="13">
+        Icon="/Testempo;component/Resources/iTester.ico" Loaded="iTester_Loaded" FontFamily="Calibri" FontSize="13">
     <Window.Resources>
         <LinearGradientBrush x:Key="FloatBackgroudControl" StartPoint="0, 0" EndPoint="0, 1">
             <GradientStop Color="GhostWhite" Offset="0"/>
@@ -238,7 +238,7 @@
             </MenuItem>
             <MenuItem Header="Tools">
                 <!--MenuItem Header="Result Viewer" Click="ResultViewer_Click"></MenuItem-->
-                <MenuItem Header="Load Global Config" Click="LoadGlobalConfig_MenuItem_Click"></MenuItem>
+                <MenuItem Header="Load Configuration" Click="LoadConfig_MenuItem_Click"></MenuItem>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Tutorial" IsEnabled="False"/>
@@ -848,8 +848,8 @@
                                     HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                                     VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
                                     SelectionMode="Single" HeadersVisibility="Column"
-                                    SelectedCellsChanged="GlobalCfg_ListView_SelectionChanged" CanUserSortColumns="False"
-                                  MouseDoubleClick="GlobalConfiguration_DataGrid_MouseDoubleClick">
+                                  MouseDoubleClick="GlobalConfiguration_DataGrid_MouseDoubleClick"
+                                    SelectedCellsChanged="GlobalCfg_ListView_SelectionChanged" CanUserSortColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Key" Width="125" MinWidth="100"
                                         Binding="{Binding Path=ConfigKey,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 

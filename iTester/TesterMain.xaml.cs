@@ -1347,12 +1347,6 @@ namespace iTester
 
         #endregion
 
-        private void ResultViewer_Click(object sender, RoutedEventArgs e)
-        {
-            ResultViewer rv = new ResultViewer();
-            rv.Show();
-        }
-
         #region Window Exit
 
         private void Window_Exit(object sender, RoutedEventArgs e)
@@ -2103,6 +2097,14 @@ namespace iTester
             if (dlg.ShowDialog() != true)
                 return;
 
+			LogDisplayer ld = new LogDisplayer(dlg.FileName);
+			ld.ShowDialog();
+			if (ld.ITCHasError)
+			{
+				MessageBox.Show(dlg.FileName + " cannot be loaded.\nPlease check it in a text editor first.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				return;
+			}
+
             TestColInstance.TestGroupCaseOc.Clear();
             TestColInstance.TestGroupCaseOcDisp.Clear();
 
@@ -2480,7 +2482,7 @@ namespace iTester
 			catch (Exception ex)
 			{
 				MessageBox.Show("Cannot open the global configuration file.\nError message :\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				MessageBox.Show("Use the default global configuration.", "Infromation", MessageBoxButton.OK, MessageBoxImage.Information);
+				MessageBox.Show("Use the default global configuration.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 
 				TestConfiguraionGlobalOc.Clear();
 				foreach (string s in _globalCfgEntries)
@@ -2937,7 +2939,7 @@ namespace iTester
 					{
 						tgc.PassImage = new BitmapImage();
 						tgc.PassImage.BeginInit();
-						tgc.PassImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_ok.png");
+						tgc.PassImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_ok.png");
 						tgc.PassImage.EndInit();
 
 						TestGroupCase tgct = tgc.TestGroupCaseParent;
@@ -2954,7 +2956,7 @@ namespace iTester
 					{
 						tgc.FailImage = new BitmapImage();
 						tgc.FailImage.BeginInit();
-						tgc.FailImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_error.png");
+						tgc.FailImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_error.png");
 						tgc.FailImage.EndInit();
 
 						TestGroupCase tgct = tgc.TestGroupCaseParent;
@@ -2971,7 +2973,7 @@ namespace iTester
 					{
 						tgc.ErrorImage = new BitmapImage();
 						tgc.ErrorImage.BeginInit();
-						tgc.ErrorImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_ques.ico");
+						tgc.ErrorImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_ques.ico");
 						tgc.ErrorImage.EndInit();
 
 						TestGroupCase tgct = tgc.TestGroupCaseParent;
@@ -3055,6 +3057,12 @@ namespace iTester
 
 		#region Method
 
+		/// <summary>
+		/// If modified, two places are needed because there are two copies of thie medthod in this solution
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <param name="fromFile"></param>
+		/// <returns></returns>
 		private iTestBase.iTestBase LoadTestBaseDllFromFile(string fileName, bool fromFile = true)
 		{
 			iTestBase.iTestBase tb = null;
@@ -3232,7 +3240,7 @@ namespace iTester
                     default:
                     case iTestBase.iTestBase.TestStateEnum.None:
                         break;
-                    case iTestBase.iTestBase.TestStateEnum.Infromation:
+                    case iTestBase.iTestBase.TestStateEnum.Information:
                         InformationCountSingle++;
                         InformationCount++;
                         break;
@@ -3249,7 +3257,7 @@ namespace iTester
                             {
                                 _curTgcUnderTest.FailImage = new BitmapImage();
                                 _curTgcUnderTest.FailImage.BeginInit();
-                                _curTgcUnderTest.FailImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_error.png");
+								_curTgcUnderTest.FailImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_error.png");
                                 _curTgcUnderTest.FailImage.EndInit();
                             }
                         }, null);
@@ -3263,7 +3271,7 @@ namespace iTester
                             {
                                 _curTgcUnderTest.ErrorImage = new BitmapImage();
                                 _curTgcUnderTest.ErrorImage.BeginInit();
-                                _curTgcUnderTest.ErrorImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_ques.ico");
+								_curTgcUnderTest.ErrorImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_ques.ico");
                                 _curTgcUnderTest.ErrorImage.EndInit();
                             }
                         }, null);
@@ -3538,7 +3546,7 @@ namespace iTester
 				ls.Add(tc.ConfigKey);
 			}
 
-			OneLineEditor ole = new OneLineEditor("New Global Entry", "Key", userCompareList: ls);
+			OneLineEditor ole = new OneLineEditor("New Configuration Entry", "Key", userCompareList: ls);
 			bool? bv = ole.ShowDialog();
 			if (bv != true)
 				return;
@@ -3698,7 +3706,7 @@ namespace iTester
                     ls.Add(tci.ConfigKey);
                 }
 
-                OneLineEditor ole = new OneLineEditor("Modify Global Entry", "New Value", tc.ConfigValue);
+                OneLineEditor ole = new OneLineEditor("Modify " + tc.ConfigKey, tc.ConfigKey, tc.ConfigValue);
                 bool? bv = ole.ShowDialog();
                 if (bv != true)
                     return;
@@ -3722,7 +3730,7 @@ namespace iTester
             SaveConfig();
         }
 
-		private void LoadGlobalConfig_MenuItem_Click(object sender, RoutedEventArgs e)
+		private void LoadConfig_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Multiselect = false;
@@ -4927,9 +4935,9 @@ namespace iTester
     //            GroupCaseImage = new BitmapImage();
     //            GroupCaseImage.BeginInit();
     //            if (IsExpanded == true)
-    //                GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_expand.png");
+	//                GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_expand.png");
     //            else
-    //                GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_collaps.png");
+	//                GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_collaps.png");
     //            GroupCaseImage.EndInit();
     //            NotifyPropertyChanged("GroupCaseImage");
     //            UpdateAllChildrenVisible(IsExpanded);
@@ -5024,17 +5032,17 @@ namespace iTester
     //        GroupCaseImage = new BitmapImage();
     //        GroupCaseImage.BeginInit();
     //        if (IsCase == true)
-    //            GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_case.png");
+	//            GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_case.png");
     //        else
     //        {
     //            if (TestGroupCaseOc.Count > 1)
     //            {
-    //                GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_expand.png");
+	//                GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_expand.png");
     //                _isExpanded = true;
     //            }
     //            else
     //            {
-    //                GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_collaps.png");
+	//                GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_collaps.png");
     //                _isExpanded = false;
     //            }
     //        }
@@ -5044,12 +5052,12 @@ namespace iTester
     //        //{
     //        //    PassImage = new BitmapImage();
     //        //    PassImage.BeginInit();
-    //        //    PassImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_ok.png");
+	//        //    PassImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_ok.png");
     //        //    PassImage.EndInit();
 
     //        //    FailImage = new BitmapImage();
     //        //    FailImage.BeginInit();
-    //        //    FailImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_error.png");
+	//        //    FailImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_error.png");
     //        //    FailImage.EndInit();
     //        //}
 
@@ -5125,28 +5133,28 @@ namespace iTester
                     case iTestBase.iTestBase.TestStateEnum.None:
                         _testStateImage = null;
                         break;
-                    case iTestBase.iTestBase.TestStateEnum.Infromation:
+                    case iTestBase.iTestBase.TestStateEnum.Information:
                         _testStateImage = new BitmapImage();
                         _testStateImage.BeginInit();
-                        _testStateImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_info.png");
+						_testStateImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_info.png");
                         _testStateImage.EndInit();
                         break;
                     case iTestBase.iTestBase.TestStateEnum.Pass:
                         _testStateImage = new BitmapImage();
                         _testStateImage.BeginInit();
-                        _testStateImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_ok.png");
+						_testStateImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_ok.png");
                         _testStateImage.EndInit();
                         break;
                     case iTestBase.iTestBase.TestStateEnum.Fail:
                         _testStateImage = new BitmapImage();
                         _testStateImage.BeginInit();
-                        _testStateImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_error.png");
+						_testStateImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_error.png");
                         _testStateImage.EndInit();
                         break;
                     case iTestBase.iTestBase.TestStateEnum.Error:
                         _testStateImage = new BitmapImage();
                         _testStateImage.BeginInit();
-                        _testStateImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_ques.ico");
+						_testStateImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_ques.ico");
                         _testStateImage.EndInit();
                         break;
                 }
@@ -5500,7 +5508,7 @@ namespace iTester
     //            default:
     //            case TestResult.TestStateEnum.None:
     //                break;
-    //            case TestResult.TestStateEnum.Infromation:
+    //            case TestResult.TestStateEnum.Information:
     //                break;
     //            case TestResult.TestStateEnum.Pass:
     //                TestGroupCaseLocal.PassCount++;

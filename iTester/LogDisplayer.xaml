@@ -1,0 +1,44 @@
+﻿<Window x:Class="iTester.LogDisplayer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Log Displayer" Height="600" Width="400" Icon="/Testempo;component/Resources/logdisplayer.ico"
+        Loaded="LogDisplayer_Loaded" FontFamily="Calibri" FontSize="13" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="27"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="75"></ColumnDefinition>
+            <ColumnDefinition Width="75"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="1" Grid.Column="0" Margin="3,0,3,3"
+                Content="{Binding Path=StateMessage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+               Foreground="{Binding Path=StateForeground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Grid.Row="1" Grid.Column="1" Margin="3" Content="Save" Click="Save_Button_Click" Visibility="Collapsed"
+                IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Grid.Row="1" Grid.Column="2" Margin="3" Content="OK" IsDefault="True" Click="OK_Button_Click"
+                IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                  AutoGenerateColumns="False" Name="dgLogDisplayer" ItemsSource="{Binding}" 
+                  CanUserAddRows="False" CanUserDeleteRows="True" 
+                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                  SelectionMode="Single" HeadersVisibility="Column"
+                  CanUserSortColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn MinWidth="30" MaxWidth="30">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="13" Source="{Binding Path=StateImage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Message" Width="500" MinWidth="100" 
+                                        Binding="{Binding Path=Message,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

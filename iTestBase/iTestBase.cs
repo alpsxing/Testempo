@@ -1039,9 +1039,9 @@ namespace iTestBase
                 GroupCaseImage = new BitmapImage();
                 GroupCaseImage.BeginInit();
                 if (IsExpanded == true)
-                    GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_expand.png");
+					GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_expand.png");
                 else
-                    GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_collaps.png");
+					GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_collaps.png");
                 GroupCaseImage.EndInit();
                 NotifyPropertyChanged("GroupCaseImage");
                 UpdateAllChildrenVisible(IsExpanded);
@@ -1136,17 +1136,17 @@ namespace iTestBase
             GroupCaseImage = new BitmapImage();
             GroupCaseImage.BeginInit();
             if (IsCase == true)
-                GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_case.png");
+				GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_case.png");
             else
             {
                 if (TestGroupCaseOc.Count > 1)
                 {
-                    GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_expand.png");
+					GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_expand.png");
                     _isExpanded = true;
                 }
                 else
                 {
-                    GroupCaseImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/group_collaps.png");
+					GroupCaseImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/group_collaps.png");
                     _isExpanded = false;
                 }
             }
@@ -1156,12 +1156,12 @@ namespace iTestBase
             //{
             //    PassImage = new BitmapImage();
             //    PassImage.BeginInit();
-            //    PassImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_ok.png");
+			//    PassImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_ok.png");
             //    PassImage.EndInit();
 
             //    FailImage = new BitmapImage();
             //    FailImage.BeginInit();
-            //    FailImage.UriSource = new Uri("pack://application:,,,/itester;component/resources/status_error.png");
+			//    FailImage.UriSource = new Uri("pack://application:,,,/Testempo;component/resources/status_error.png");
             //    FailImage.EndInit();
             //}
 
@@ -1246,7 +1246,7 @@ namespace iTestBase
             Pass,
             Fail,
             Error,
-            Infromation
+            Information
         }
 
         public event EventHandler<RunCountChangedEventArgs> RunCountChangedEvent;
@@ -1373,7 +1373,7 @@ namespace iTestBase
                 default:
                 case TestStateEnum.None:
                     break;
-                case TestStateEnum.Infromation:
+                case TestStateEnum.Information:
                     break;
                 case TestStateEnum.Pass:
                     TestGroupCaseLocal.PassCount++;
@@ -1397,7 +1397,7 @@ namespace iTestBase
 
         protected void DoSendInformation(string category = "", string message = "", string dataValue = "", string constraint = "")
         {
-            DoSendMessage(TestStateEnum.Infromation, category, message, dataValue, constraint);
+            DoSendMessage(TestStateEnum.Information, category, message, dataValue, constraint);
         }
 
         protected void DoSendError(string category = "", string message = "", string dataValue = "", string constraint = "")
