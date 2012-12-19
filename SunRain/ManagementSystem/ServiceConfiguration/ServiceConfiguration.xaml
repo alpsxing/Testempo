@@ -1,0 +1,318 @@
+﻿<Window x:Class="ServiceConfiguration.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Service Management" Height="600" Width="800" WindowStartupLocation="CenterScreen"
+        Loaded="Window_Load">
+    <Window.Resources>
+        <!--Style x:Key="MessageRowBackground" TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding StateBackgroundIndex}" Value="0">
+                    <Setter Property="Background" Value="Transparent" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StateBackgroundIndex}" Value="1">
+                    <Setter Property="Background" Value="lightCyan" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StateBackgroundIndex}" Value="2">
+                    <Setter Property="Background" Value="PaleGreen" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StateBackgroundIndex}" Value="3">
+                    <Setter Property="Background" Value="Pink" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StateBackgroundIndex}" Value="4">
+                    <Setter Property="Background" Value="Yellow" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style-->
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Height="23">
+            <MenuItem Header="File">
+                <MenuItem Header="Exit" Click="Window_Exit" ToolTip="Exit">
+                    <MenuItem.Icon>
+                        <Image Source="resources/exit.png" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Config">
+                <MenuItem Header="Reconnect" Click="Reconnect_MenuItem_Click" ToolTip="Remove User"
+                          IsEnabled="{Binding Path=NotConnected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/reconnect.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Add User" Click="UserAdd_MenuItem_Click" ToolTip="Add User"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/user_add.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Disconnect User" Click="UserDisconnect_MenuItem_Click" ToolTip="Add User"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/userdisc.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Remove User" Click="UserRemove_MenuItem_Click" ToolTip="Remove User"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/user_remove.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Add DTU" Click="DtuAdd_MenuItem_Click" ToolTip="Add DTU"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/dtuadd.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Modify DTU" Click="DtuModify_MenuItem_Click" ToolTip="Modify DTU"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/dtumodify.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="View DTU" Click="DtuView_MenuItem_Click" ToolTip="View DTU"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/dtuview.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Release DTU" Click="DtuUncontrol_MenuItem_Click" ToolTip="Release DTU"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/dtuunctrl.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Disconnect DTU" Click="DtuDisconnect_MenuItem_Click" ToolTip="Disconnect DTU"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/dtudisc.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Remove DTU" Click="DtuRemove_MenuItem_Click" ToolTip="Remove DTU"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/dturemove.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About..." Click="About_MenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Source="resources/about.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <ToolBar DockPanel.Dock="Top" Height="39">
+            <Button Click="Reconnect_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=NotConnected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Reconnect">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/reconnect.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="UserAdd_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Add User">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/useradd.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="UserDisconnect_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Add User">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/userdisc.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="UserRemove_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Remove User">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/userremove.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="DtuAdd_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Add DTU">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/dtuadd.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="DtuModify_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Modify DTU">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/dtumodify.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="DtuView_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="View DTU">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/dtuview.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="DtuUncontrol_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Release DTU">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/dtuunctrl.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="DtuDisconnect_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Disconnect DTU">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/dtudisc.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="DtuRemove_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Remove DTU">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/dturemove.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="About_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="About...">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/about.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="Window_Exit" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="Exit">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/exit.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom" Height="30">
+            <ProgressBar Width="200" Height="15" Maximum="100" Minimum="0"
+                         Value="{Binding Path=StatusPbarValue,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <Image Height="13" Source="{Binding Path=ReadyStateImage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="{Binding Path=ReadyString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                   Margin="0,0,0,0"/>
+        </StatusBar>
+        <TabControl TabStripPlacement="Bottom" Name="tcServiceConfig" SelectionChanged="Configuration_TabControl_SelectionChanged">
+            <!--TabItem Header="Service">
+            </TabItem-->
+            <TabItem Header="User">
+                <DataGrid AutoGenerateColumns="False" Name="dgUser" ItemsSource="{Binding}" 
+                                  CanUserAddRows="False" CanUserDeleteRows="True" 
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                                  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                                  SelectionMode="Single" HeadersVisibility="Column"
+                          SelectionChanged="User_DataGrid_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Permission" Width="75" MinWidth="50"
+                                        Binding="{Binding Path=PermissionString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="User Name" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=UserName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTemplateColumn MinWidth="25" MaxWidth="25" Width="25">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Height="13" Source="{Binding Path=OnlineImage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Latest Login Time" Width="150" MinWidth="50"
+                                        Binding="{Binding Path=DtLogString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Latest Login IP Address" Width="350" MinWidth="50"
+                                        Binding="{Binding Path=Information,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="DTU">
+                <DataGrid AutoGenerateColumns="False" Name="dgDtu" ItemsSource="{Binding}" 
+                                  CanUserAddRows="False" CanUserDeleteRows="True" 
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                                  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                                  SelectionMode="Single" HeadersVisibility="Column"
+                          SelectionChanged="DTU_DataGrid_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn MinWidth="25" MaxWidth="25" Width="25">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Height="13" Source="{Binding Path=OnlineImage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="DTU ID" Width="100" MinWidth="50"
+                                        Binding="{Binding Path=DtuId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Controller" Width="100" MinWidth="50"
+                                        Binding="{Binding Path=ControllerName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="SIM ID" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=SimId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Latest Online Time" Width="150" MinWidth="50"
+                                        Binding="{Binding Path=DtLogString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="User Name" Width="200" MinWidth="50"
+                                        Binding="{Binding Path=UserName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        <DataGridTextColumn Header="User Telephone" Width="150" MinWidth="50"
+                                        Binding="{Binding Path=UserTel,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Log">
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Bottom" Height="25">
+                        <CheckBox DockPanel.Dock="Left" Content="Auto Scrolling" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                      IsThreeState="False" IsChecked="{Binding Path=LogAutoScrolling,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        <Grid/>
+                    </DockPanel>
+                    <DataGrid AutoGenerateColumns="False" Name="dgLog" ItemsSource="{Binding}" 
+                                  CanUserAddRows="False" CanUserDeleteRows="True" 
+                                  HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                                  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                                  SelectionMode="Single" HeadersVisibility="Column">
+                                  <!--ItemContainerStyle="{StaticResource MessageRowBackground}"-->
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Index" Width="50" MinWidth="50"
+                                        Binding="{Binding Path=IndexString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Time" Width="125" MinWidth="50"
+                                        Binding="{Binding Path=MsgDateTime,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                            <DataGridTemplateColumn MinWidth="25" MaxWidth="25" Width="25">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Height="13" Source="{Binding Path=StateImage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn MinWidth="25" MaxWidth="25" Width="25">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Height="13" Source="{Binding Path=FlowImage,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <!--DataGridTextColumn Header="IP Address" Width="100" MinWidth="50"
+                                        Binding="{Binding Path=IPAddr,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/-->
+                            <DataGridTextColumn Header="Message" Width="750" MinWidth="50" 
+                                        Binding="{Binding Path=Message,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

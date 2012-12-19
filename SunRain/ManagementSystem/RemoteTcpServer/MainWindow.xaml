@@ -1,0 +1,69 @@
+﻿<Window x:Class="RemoteTcpServer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TCP Server" Height="600" Width="800">
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top" Height="35">
+            <Label Content="Port" Foreground="{Binding Path=ServerPortFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Width="50" IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Path=ServerPortString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                     Foreground="{Binding Path=ServerPortFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Content="{Binding Path=DoSendOrNotString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsThreeState="False" 
+                      IsChecked="{Binding Path=DoSendOrNot,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Start" Click="Start_ButtonClick" IsEnabled="{Binding Path=StartOK,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Clear Queue" Click="ClearQueue_ButtonClick" IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Clear Log" Click="ClearLog_ButtonClick" IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        </ToolBar>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False"
+                      Name="dgSentReceived" ItemsSource="{Binding}" 
+                      CanUserAddRows="False" CanUserDeleteRows="True" 
+                      HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
+                      SelectionMode="Single" HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Index" Width="50" MinWidth="50"
+                                            Binding="{Binding Path=Index,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                            IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Time" Width="100" MinWidth="50"
+                                            Binding="{Binding Path=TimeStamp,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                            IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Received" Width="150" MinWidth="50"
+                                            Binding="{Binding Path=Received,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                            IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Received Bytes Raw" Width="150" MinWidth="50"
+                                            Binding="{Binding Path=ReceivedBytesRawString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                            IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Received Bytes" Width="150" MinWidth="50"
+                                            Binding="{Binding Path=ReceivedBytesString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                            IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Sent" Width="150" MinWidth="50"
+                                            Binding="{Binding Path=Sent,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                            IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="3"
+                          VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+            <RichTextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Name="rtxtLog" IsReadOnly="True" 
+                         VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto">
+                <RichTextBox.Resources>
+                    <Style TargetType="{x:Type Paragraph}">
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </RichTextBox.Resources>
+                <RichTextBox.Document>
+                    <FlowDocument Focusable="True" LineHeight="1" Name="fldocLog">
+                    </FlowDocument>
+                </RichTextBox.Document>
+            </RichTextBox>
+        </Grid>
+    </DockPanel>
+</Window>

@@ -1,0 +1,30 @@
+﻿<Window x:Class="ManagementSystem.OneLineEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Title" Height="100" Width="400" MaxHeight="100" MinHeight="100" MinWidth="400" MaxWidth="400"
+        WindowStartupLocation="CenterScreen" Icon="/ManagementSystem;component/Resources/OneLineEditor.ico"
+        FontFamily="Calibri" FontSize="13" Loaded="Window_Load">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="75"></ColumnDefinition>
+            <ColumnDefinition Width="75"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Margin="5,0,2,0"
+               Content="{Binding Path=UserLabel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+               HorizontalAlignment="Stretch" VerticalAlignment="Center"
+               Foreground="{Binding Path=UserContentFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Name="txtUserContent" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="2,0,5,0"
+                 Text="{Binding Path=UserContent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                 Foreground="{Binding Path=UserContentFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <Button Name="btnOK" Grid.Row="1" Grid.Column="2" Height="25" Margin="0,3,5,2" Content="OK" Click="OK_Button_Click"
+                IsEnabled="{Binding Path=UserContentOK,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Name="btnCancel" Grid.Row="1" Grid.Column="3" Height="25" Margin="0,3,5,2" Content="Cancel" Click="Cancel_Button_Click" IsDefault="True" />
+    </Grid>
+</Window>

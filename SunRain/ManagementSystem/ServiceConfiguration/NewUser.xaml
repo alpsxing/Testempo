@@ -1,0 +1,49 @@
+﻿<Window x:Class="ServiceConfiguration.NewUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="New User" Height="200" ResizeMode="NoResize" Width="350" 
+        WindowStartupLocation="CenterScreen" Loaded="Window_Load">
+    <Grid Margin="3">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="110"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Content="User Name" HorizontalAlignment="Right" VerticalAlignment="Center"
+               Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,3,3,3" Name="txtUserName"
+                 HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                 Text="{Binding Path=UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                 Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Password" HorizontalAlignment="Right" VerticalAlignment="Center"
+               Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <PasswordBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,3,3,3"
+                 HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                 PasswordChanged="Password_Changed" Name="pbPassword" PasswordChar="*"
+                 Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Password Again" HorizontalAlignment="Right" VerticalAlignment="Center"
+               Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <PasswordBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,3,3,3"
+                 HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                 PasswordChanged="PasswordAgain_Changed" Name="pbPasswordAgain" PasswordChar="*"
+                 Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Label Grid.Row="3" Grid.Column="0" Content="Permission" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,3,3" Name="cbPermission"
+                  IsEnabled="{Binding Path=PermissionEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                  SelectedIndex="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+            <ComboBoxItem Content="2 - Common User"/>
+            <ComboBoxItem Content="1 - Manage User"/>
+        </ComboBox>
+        <Button Grid.Row="4" Grid.Column="2" Margin="0,3,3,3" Name="btnOK" Content="OK" Click="OK_Button_Click"
+                IsEnabled="{Binding Path=InputOK,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Grid.Row="4" Grid.Column="3" Margin="0,3,3,3" Name="btnCancel" Content="Cancel" Click="Cancel_Button_Click"/>
+    </Grid>
+</Window>
