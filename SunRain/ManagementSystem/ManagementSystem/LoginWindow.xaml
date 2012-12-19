@@ -1,8 +1,8 @@
 ﻿<Window x:Class="ManagementSystem.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Remote Management Login" Height="200" ResizeMode="NoResize" Width="350" 
-        WindowStartupLocation="CenterScreen" Loaded="Window_Load">
+        Title="Remote Management Login" Height="200" ResizeMode="NoResize" Width="400" 
+        WindowStartupLocation="CenterScreen" Loaded="Window_Load" Icon="/ManagementSystem;component/Resources/login.ico">
     <Grid Margin="3">
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
@@ -12,32 +12,33 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="160"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Content="Server IP" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Image Grid.Row="1" Grid.RowSpan="3" Grid.Column="0" Source="/ManagementSystem;component/Resources/logo.gif"></Image>
+        <Label Grid.Row="0" Grid.Column="1" Content="Server IP" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=ServerIPFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,3,3,3" Name="txtServerIP"
+        <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,3,3,3" Name="txtServerIP"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=ServerIP,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=ServerIPFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="Server Port" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="1" Grid.Column="1" Content="Server Port" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=ServerPortFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="0,3,3,3"
+        <TextBox Name="txtServerPort" Grid.Row="1" Grid.Column="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=ServerPortString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=ServerPortFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="2" Grid.Column="0" Content="User Name" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="2" Grid.Column="1" Content="User Name" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,3,3"
+        <TextBox Name="txtUserName" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="3" Grid.Column="0" Content="Password" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="3" Grid.Column="1" Content="Password" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <PasswordBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,3,3"
+        <PasswordBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  PasswordChanged="Password_Changed" Name="pbPassword" PasswordChar="*"
                  Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>

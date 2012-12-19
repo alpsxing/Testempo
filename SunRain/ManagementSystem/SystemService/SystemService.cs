@@ -1298,6 +1298,8 @@ namespace SystemService
                             _dtuTaskList[dtui.DTUSocket].Controller = null;
                     }
                     ui.UserDTUs.Clear();
+
+                    ui.Online = false;
                 }
 
                 Debug.Assert(tdti.TaskSocket == soc);
@@ -1820,9 +1822,9 @@ namespace SystemService
 
         private void PutTermDTUResponse(Socket s, byte[] ba, int len, bool isTerm = true)
         {
-            Queue<byte[]> q = null;
             lock (_taskLock)
             {
+                Queue<byte[]> q = null;
                 if (isTerm == true)
                 {
                     if (_termTaskList.ContainsKey(s))
@@ -1833,37 +1835,32 @@ namespace SystemService
                     if (_dtuTaskList.ContainsKey(s))
                         q = _dtuTaskList[s].RequestQueue;
                 }
-            }
 
-            if (ba == null || ba.Length < 1)
-            {
-                q.Enqueue(new byte[] { });
-            }
-            else
-            {
-                if (len < 0)
-                {
-                    q.Enqueue(ba);
-                }
-                else if (len == 0)
-                {
+                if (ba == null || ba.Length < 1)
                     q.Enqueue(new byte[] { });
-                }
                 else
                 {
-                    int balen = ba.Length;
-                    if (len >= balen)
-                    {
+                    if (len < 0)
                         q.Enqueue(ba);
-                    }
                     else
                     {
-                        byte[] ban = new byte[len];
-                        for (int i = 0; i < len; i++)
+                        if (len == 0)
+                            q.Enqueue(new byte[] { });
+                        else
                         {
-                            ban[i] = ba[i];
+                            int balen = ba.Length;
+                            if (len >= balen)
+                                q.Enqueue(ba);
+                            else
+                            {
+                                byte[] ban = new byte[len];
+                                for (int i = 0; i < len; i++)
+                                {
+                                    ban[i] = ba[i];
+                                }
+                                q.Enqueue(ban);
+                            }
                         }
-                        q.Enqueue(ban);
                     }
                 }
             }

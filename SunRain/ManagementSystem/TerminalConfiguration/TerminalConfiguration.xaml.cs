@@ -1127,6 +1127,10 @@ namespace TerminalConfiguration
 
         private void Stop_DTU_Button_Click(object sender, RoutedEventArgs e)
         {
+            if (MessageBox.Show("It is not safe to stop operation.\n\nAre you sure to go on?", "Question", 
+                MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+
             if (_ctsIO != null)
                 _ctsIO.Cancel();
             ReadyString = "Ready";

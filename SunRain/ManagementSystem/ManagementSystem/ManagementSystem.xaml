@@ -103,6 +103,13 @@
                     <Image Margin="-3" Source="resources/disconnectserver.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button-->
+            <Button Click="Reconnect_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=NotConnected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Reconnect" Visibility="Collapsed">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/refreshterminal.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
             <Button Click="ServerConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     ToolTip="Server Configuration">
                 <Button.Content>
