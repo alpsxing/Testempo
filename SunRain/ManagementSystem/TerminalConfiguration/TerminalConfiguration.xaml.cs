@@ -1047,12 +1047,12 @@ namespace TerminalConfiguration
             }
             AddNewCommand("AT^DEBUG=0\n", "AT^DEBUG=0\n\r\nOK\r\n", wait4Resp: false);
             AddNewCommand("+++", "+++", ret2: "OK", match: true, trim: true);
-            AddNewCommand("&F\n", "&F\n");
+            //AddNewCommand("&F\n", "&F\n");
             AddNewCommand("AT^SERVER=" + ServerIP + ":" + ServerPortString + "\n", "AT^SERVER=" + ServerIP + ":" + ServerPortString + "\n\r\nOK\r\n");
             AddNewCommand("AT^BAUD=" + _localBundOc[cboxDtuBund.SelectedIndex] + "\n", "AT^BAUD=" + _localBundOc[cboxDtuBund.SelectedIndex] + "\n\r\nOK\r\n");
             AddNewCommand("AT^UTCF=" + _dtuDataOc[cboxDtuData.SelectedIndex] + (cboxDtuStop.SelectedIndex + 1).ToString() + cboxDtuParity.SelectedIndex.ToString() + "\n",
                 "AT^UTCF=" + _dtuDataOc[cboxDtuData.SelectedIndex] + (cboxDtuStop.SelectedIndex + 1).ToString() + cboxDtuParity.SelectedIndex.ToString() + "\n\r\nOK\r\n");
-            AddNewCommand("AT^PKMD=0\n", "AT^PKMD=0\n\r\nOK\r\n");
+            AddNewCommand("AT^PKMD=2\n", "AT^PKMD=2\n\r\nOK\r\n");
             AddNewCommand("AT^CRGDA=" + RegisterPackageHEX + "\n", "AT^CRGDA=" + RegisterPackageHEX + "\n\r\nOK\r\n");
             AddNewCommand("AT^SAVE\n", "AT^SAVE\n\r\nOK\r\n");
             //AddNewCommand("AT^GPRS\n", "AT^GPRS\n\r\nOK\r\n");
