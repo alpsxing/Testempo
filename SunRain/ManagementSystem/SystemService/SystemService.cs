@@ -1452,10 +1452,11 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("DTU start listening...");
+            eventLogInformationTransfer.WriteEntry("DTU start listening...." + _dtuPort);
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
+                eventLogInformationTransfer.WriteEntry("DTU server.Accept() returned.");
                 soc.ReceiveTimeout = _dtuTimeout;
                 soc.SendTimeout = _dtuTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
@@ -1488,6 +1489,7 @@ namespace SystemService
                 tr.Start();
                 eventLogInformationTransfer.WriteEntry("Start DTU send task " + ts.Id.ToString() + " and receive task " + tr.Id.ToString());
             }
+            eventLogInformationTransfer.WriteEntry("DTU loop exit.");
         }
 
         public void DTUSendService(Socket soc)
