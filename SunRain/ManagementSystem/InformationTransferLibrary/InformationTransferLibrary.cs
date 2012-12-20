@@ -179,7 +179,7 @@ namespace InformationTransferLibrary
         public const int PROTOCOL_HEADER_LENGTH = 7;
 
         public const int TASK_THREAD_SLEEP_INTERVAL = 100;
-        public const int TASK_DTU_THREAD_SLEEP_INTERVAL = 2000;
+        public const int TASK_DTU_THREAD_SLEEP_INTERVAL = 500;
 
         public const string LOGIN_ADMIN_USERNAME = "admin";
         public const string LOGIN_ADMIN_PASSWORD = "service";

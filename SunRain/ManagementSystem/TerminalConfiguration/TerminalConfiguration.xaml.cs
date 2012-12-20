@@ -1079,15 +1079,16 @@ namespace TerminalConfiguration
                             MessageBox.Show(this, "Please press OK and then power on the DTU again.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                         }, null);
                     }));
+                AddNewCommand("AT^DEBUG=0\n", "AT^DEBUG=0\n\r\nOK\r\n", wait4Resp: false);
+                AddNewCommand("+++", "+++", ret2: "OK", match: true, trim: true);
             }
-            AddNewCommand("AT^DEBUG=0\n", "AT^DEBUG=0\n\r\nOK\r\n", wait4Resp: false);
-            AddNewCommand("+++", "+++", ret2: "OK", match: true, trim: true);
+
             if (compare == true)
             {
                 AddNewQuery("AT^SERVER=?\n", "AT^SERVER=?\n\r\n" + ServerIP + ":" + ServerPortString + "\r\n\r\nOK\r\n");
                 AddNewQuery("AT^BAUD=?\n", "AT^BAUD=?\n\r\n" + _localBundOc[cboxDtuBund.SelectedIndex] + "\r\n\r\nOK\r\n");
                 AddNewQuery("AT^UTCF=?\n", "AT^UTCF=?\n\r\n" + _dtuDataOc[cboxDtuData.SelectedIndex] + (cboxDtuStop.SelectedIndex + 1).ToString() + cboxDtuParity.SelectedIndex.ToString() + "\r\n\r\nOK\r\n");
-                AddNewQuery("AT^PKMD=?\n", "AT^PKMD=?\n\r\n0\r\n\r\nOK\r\n");
+                AddNewQuery("AT^PKMD=?\n", "AT^PKMD=?\n\r\n2\r\n\r\nOK\r\n");
                 AddNewQuery("AT^CRGDA=?\n", "AT^CRGDA=?\n\r\n" + RegisterPackageHEX + "\r\n\r\nOK\r\n");
             }
             else
@@ -1479,7 +1480,7 @@ namespace TerminalConfiguration
                                         }
                                         break;
                                     case "AT^PKMD=?\n":
-                                        if (sa[1].Trim() != "0")
+                                        if (sa[1].Trim() != "2")
                                         {
                                             LogMessage("Query response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                             dtuci.State = DTUCommand.DTUCommandState.Fail;
