@@ -1014,5 +1014,39 @@ namespace ManagementSystem
         }
 
         #endregion
+
+        private void Reconnect_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            IPAddress server = null;
+            IPEndPoint iep = null;
+            try
+            {
+                _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                server = IPAddress.Parse(ServerIP);
+                iep = new IPEndPoint(server, ServerPort);
+                _mainSocket.SendTimeout = Consts.TERM_TIMEOUT;
+                _mainSocket.ReceiveTimeout = Consts.TERM_TIMEOUT;
+                _mainSocket.Connect(iep);
+                if (_mainSocket.Connected)
+                {
+                    Task.Factory.StartNew(
+                        () =>
+                        {
+                            //ManTask(true);
+                        }, _cts.Token);
+                }
+                else
+                {
+                    Helper.SafeCloseSocket(_mainSocket);
+                    _mainSocket = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Cannot reconnect server : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Helper.SafeCloseSocket(_mainSocket);
+                _mainSocket = null;
+            }
+        }
     }
 }

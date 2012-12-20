@@ -464,7 +464,25 @@ namespace ManagementSystem
         private void Window_Load(object sender, RoutedEventArgs e)
         {
             LoadConfig();
-            txtServerIP.Focus();
+            if (string.IsNullOrWhiteSpace(ServerIP) == true)
+                txtServerIP.Focus();
+            else
+            {
+                if (string.IsNullOrWhiteSpace(ServerPortString) == true)
+                    txtServerPort.Focus();
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(UserName) == true)
+                        txtUserName.Focus();
+                    else
+                    {
+                        if (string.IsNullOrWhiteSpace(Password) == true)
+                            pbPassword.Focus();
+                        else
+                            txtServerIP.Focus();
+                    }
+                }
+            }
         }
 
         private void Password_Changed(object sender, RoutedEventArgs e)

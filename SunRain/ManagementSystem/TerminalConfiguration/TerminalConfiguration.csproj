@@ -134,6 +134,21 @@
   <ItemGroup>
     <Resource Include="Resources\clearlog.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\config.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\refresh.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\write.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\stop.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\read.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
