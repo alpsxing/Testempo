@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F66EE095-88BF-4870-BBE6-D3D61211944F}</ProjectGuid>
+    <ProjectGuid>{AC153D73-86E7-405C-94CD-A887970A1897}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MSIProject</RootNamespace>
-    <AssemblyName>MSIProject</AssemblyName>
+    <RootNamespace>EncryptDecrypt</RootNamespace>
+    <AssemblyName>EncryptDecrypt</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -40,55 +40,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpCompress">
-      <HintPath>.\SharpCompress.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpCompress.3.5">
-      <HintPath>.\SharpCompress.3.5.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpCompress.Silverlight">
-      <HintPath>.\SharpCompress.Silverlight.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpCompress.WP7">
-      <HintPath>.\SharpCompress.WP7.dll</HintPath>
-    </Reference>
-    <Reference Include="System">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CSharp">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="WindowsBase">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PresentationCore">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -133,51 +97,12 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InformationTransferLibrary\InformationTransferLibrary.csproj">
-      <Project>{52412B9B-E524-40C0-B380-C46120B6CF46}</Project>
-      <Name>InformationTransferLibrary</Name>
+    <ProjectReference Include="..\EncryptDecryptLibrary\EncryptDecryptLibrary.csproj">
+      <Project>{2B17FC10-98DE-4B71-B630-AC9C3AAC891E}</Project>
+      <Name>EncryptDecryptLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ManagementSystem\ManagementSystem.csproj">
-      <Project>{7988F3C8-09EE-4696-8DD6-8CE688AEBF22}</Project>
-      <Name>ManagementSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServiceConfiguration\ServiceConfiguration.csproj">
-      <Project>{D71184C6-A860-4603-AA41-B57CB3CE9E15}</Project>
-      <Name>ServiceConfiguration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SystemService\SystemService.csproj">
-      <Project>{3EAA2602-2412-441A-9F50-567299F834E5}</Project>
-      <Name>SystemService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TerminalConfiguration\TerminalConfiguration.csproj">
-      <Project>{B3F86652-9ADC-47C0-A46D-A380AB7CE696}</Project>
-      <Name>TerminalConfiguration</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\bottom_logo.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\logo.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="IWshRuntimeLibrary">
-      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy /y /d $(OutDir)\..\..\..\..\*.exe $(OutDir)\..\..\
-xcopy /y /d $(OutDir)\..\..\..\..\*.bat $(OutDir)\..\..\
-xcopy /y /d $(OutDir)\..\..\..\..\*.dat $(OutDir)\..\..\
-rd /q /s $(OutDir)\..\..\data</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

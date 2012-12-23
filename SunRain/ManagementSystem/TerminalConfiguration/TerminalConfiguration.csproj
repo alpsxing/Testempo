@@ -43,6 +43,9 @@
     <ApplicationIcon>Resources\dtu.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EncryptDecryptLibrary">
+      <HintPath>.\EncryptDecryptLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>True</Private>
     </Reference>

@@ -445,6 +445,12 @@ namespace ServiceConfiguration
 
         private void Window_Load(object sender, RoutedEventArgs e)
         {
+            if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
+            {
+                MessageBox.Show("No valid license.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Environment.Exit(0);
+            }
+
             _cts = new CancellationTokenSource();
             Task.Factory.StartNew(
                 () =>

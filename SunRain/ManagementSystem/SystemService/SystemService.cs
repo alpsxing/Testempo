@@ -93,6 +93,12 @@ namespace SystemService
 
         protected override void OnStart(string[] args)
         {
+            if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
+            {
+                eventLogInformationTransfer.WriteEntry("IT service cannot be started because of no valid license.", EventLogEntryType.Error);
+                System.Environment.Exit(0);
+            }
+
             LoadConfig();
             LoadUser();
             LoadDTU();
@@ -105,7 +111,7 @@ namespace SystemService
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("IT service cannot be started : " + ex.Message + "\n\n" + ex.StackTrace);
+                eventLogInformationTransfer.WriteEntry("IT service cannot be started : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
         }
 
@@ -119,7 +125,7 @@ namespace SystemService
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("IT service cannot be stopped : " + ex.Message + "\n\n" + ex.StackTrace);
+                eventLogInformationTransfer.WriteEntry("IT service cannot be stopped : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
 
             SaveConfig();
