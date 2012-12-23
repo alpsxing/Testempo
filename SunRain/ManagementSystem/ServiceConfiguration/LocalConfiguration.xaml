@@ -1,9 +1,9 @@
-﻿<Window x:Class="ManagementSystem.LocalConfiguration"
+﻿<Window x:Class="ServiceConfiguration.LocalConfiguration"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:itl="clr-namespace:InformationTransferLibrary;assembly=InformationTransferLibrary"
         Title="Local Configuration" Height="130" Width="400" ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen" Icon="/ManagementSystem;component/Resources/localconfig.ico"
+        WindowStartupLocation="CenterScreen" Icon="/ServiceConfiguration;component/Resources/localconfig.ico"
         FontFamily="Calibri" FontSize="13" Loaded="Window_Load">
     <Window.Resources>
         <itl:StringIntConverter x:Key="StringIntConverter"/>

@@ -324,6 +324,15 @@ namespace ManagementSystem
 
         public LoginWindow()
         {
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log");
+
             InitializeComponent();
 
             DataContext = this;
@@ -408,7 +417,7 @@ namespace ManagementSystem
         {
             try
             {
-                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\termserv.cfg");
+                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\termserv.cfg");
                 string strLine = null;
                 int i = 0;
                 while (true)
@@ -449,7 +458,7 @@ namespace ManagementSystem
         {
             try
             {
-                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\termserv.cfg");
+                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\termserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPortString));
                 sw.WriteLine(EncryptDecrypt.Encrypt(UserName));

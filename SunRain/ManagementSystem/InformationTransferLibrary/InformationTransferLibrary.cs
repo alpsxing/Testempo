@@ -190,6 +190,7 @@ namespace InformationTransferLibrary
         public const int USER_NAME_PASSWORD_MAX_LENGTH = 12;
 
         public const int DTU_CONFIG_MIN_LENGTH = 1;
+        public const int DTU_CONFIG_LENGTH = 7;
         public const int DTU_CONFIG_MAX_LENGTH = 50;
 
         public const int USER_ACCOUNT_ITEM_COUNT = 3;

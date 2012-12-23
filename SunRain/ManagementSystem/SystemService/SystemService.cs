@@ -65,6 +65,12 @@ namespace SystemService
         {
             if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
                 Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log");
 
             InitializeComponent();
 
@@ -130,7 +136,7 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ssportto.cfg");
+                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ssportto.cfg");
                 while (true)
                 {
                     line = sr.ReadLine();
@@ -225,7 +231,7 @@ namespace SystemService
 
                 Helper.SafeCloseIOStream(sr);
 
-                eventLogInformationTransfer.WriteEntry("Exception when loading config : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("Exception when loading config : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -234,7 +240,7 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ssportto.cfg");
+                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ssportto.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(_termPort.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(_termTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(_dtuPort.ToString()));
@@ -248,7 +254,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sw);
 
-                eventLogInformationTransfer.WriteEntry("Exception when saving config : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("Exception when saving config : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -258,7 +264,7 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ituser.dat");
+                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ituser.dat");
                 string line = null;
                 while (true)
                 {
@@ -328,7 +334,7 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ituser.dat");
+                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ituser.dat");
                 foreach (UserInfo uii in _userInfoOc)
                 {
                     string user = uii.UserName;
@@ -360,7 +366,7 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\itdtu.dat");
+                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\itdtu.dat");
                 string line = null;
                 while (true)
                 {
@@ -415,7 +421,7 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\itdtu.dat");
+                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\itdtu.dat");
                 foreach (DTUInfo dii in _dtuInfoOc)
                 {
                     string dtuId = dii.DtuId;
@@ -514,7 +520,7 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("Management start listening...");
+            eventLogInformationTransfer.WriteEntry("Management starts listening...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
@@ -536,6 +542,7 @@ namespace SystemService
                 t.Start();
                 eventLogInformationTransfer.WriteEntry("Start management task " + t.Id.ToString());
             }
+            eventLogInformationTransfer.WriteEntry("Management stops listening.");
         }
 
         /// <summary>
@@ -1113,7 +1120,7 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("Terminal start listening...");
+            eventLogInformationTransfer.WriteEntry("Terminal starts listening...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
@@ -1149,6 +1156,7 @@ namespace SystemService
                 tr.Start();
                 eventLogInformationTransfer.WriteEntry("Start terminal sending task " + ts.Id.ToString() + " and receive task " + tr.Id.ToString());
             }
+            eventLogInformationTransfer.WriteEntry("Terminal stops listening.");
         }
 
         public void TermSendService(Socket soc)
@@ -1454,11 +1462,10 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("DTU start listening...." + _dtuPort);
+            eventLogInformationTransfer.WriteEntry("DTU starts listening...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
-                eventLogInformationTransfer.WriteEntry("DTU server.Accept() returned.");
                 soc.ReceiveTimeout = _dtuTimeout;
                 soc.SendTimeout = _dtuTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
@@ -1491,7 +1498,7 @@ namespace SystemService
                 tr.Start();
                 eventLogInformationTransfer.WriteEntry("Start DTU send task " + ts.Id.ToString() + " and receive task " + tr.Id.ToString());
             }
-            eventLogInformationTransfer.WriteEntry("DTU loop exit.");
+            eventLogInformationTransfer.WriteEntry("DTU stops listening.");
         }
 
         public void DTUSendService(Socket soc)

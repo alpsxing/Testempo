@@ -316,16 +316,20 @@ namespace ManagementSystem
             dgLog.DataContext = LogMsgDispOc;
             LogMsgDispOc.CollectionChanged += new NotifyCollectionChangedEventHandler(LogMsgDispOc_CollectionChanged);
 
-            if (Directory.Exists(Environment.CurrentDirectory + @"\config") == false)
-                Directory.CreateDirectory(Environment.CurrentDirectory + @"\config");
-            if (Directory.Exists(Environment.CurrentDirectory + @"\log") == false)
-                Directory.CreateDirectory(Environment.CurrentDirectory + @"\log");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log");
 
             _cts = new CancellationTokenSource();
             _logTask = Task.Factory.StartNew(
                 () =>
                 {
-                    DisplayLog(_cts);
+                    DisplayLog();
                 }, _cts.Token
             );
         }
@@ -353,8 +357,21 @@ namespace ManagementSystem
             if (e.Cancel == false)
             {
                 Helper.DoSendReceive(_mainSocket, Consts.TERM_LOGOUT + UserName, false);
-                TerminateAllTerminals();
-                SaveConfig();
+                try
+                {
+                    TerminateAllTerminals();
+                }
+                catch (Exception) { }
+                try
+                {
+                    SaveConfig();
+                }
+                catch (Exception) { }
+                try
+                {
+                    SaveLog();
+                }
+                catch (Exception) { }
             }
 
             base.OnClosing(e);
@@ -562,7 +579,8 @@ namespace ManagementSystem
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            About ab = new About("Management System", "Copyright @ 2012");
+            ab.ShowDialog();
         }
 
         private void Window_Load(object sender, RoutedEventArgs e)
@@ -654,12 +672,14 @@ namespace ManagementSystem
             {
                 foreach (TerminalInformation tii in TermInfoOc)
                 {
+                    tii.CTS.Cancel();
                     tii.State = TerminalInformation.TiState.Disconnected;
                     tii.CurrentDTU = null;
                     Helper.SafeCloseSocket(tii.TerminalSocket);
                     tii.TerminalSocket = null;
                 }
             }
+            _cts.Cancel();
             Helper.SafeCloseSocket(_mainSocket);
         }
 
@@ -844,9 +864,9 @@ namespace ManagementSystem
 
         private void AddLog(string msg = "", string ip = "", LogMessage.State state = LogMessage.State.None, LogMessage.Flow flow = LogMessage.Flow.None)
         {
-            //lock (_logLock)
+            Dispatcher.Invoke((ThreadStart)delegate
             {
-                Dispatcher.Invoke((ThreadStart)delegate
+                if (_cts.Token.IsCancellationRequested == false)//lock (_logLock)
                 {
                     _logQueue.Enqueue(new LogMessage()
                     {
@@ -857,13 +877,13 @@ namespace ManagementSystem
                         IPAddr = ip,
                         Message = msg
                     });
-                }, null);
-            }
+                }
+            }, null);
         }
 
-        private void DisplayLog(CancellationTokenSource cts)
+        private void DisplayLog()
         {
-            while (cts.Token.IsCancellationRequested == false)
+            while (_cts.Token.IsCancellationRequested == false)
             {
                 lock (_logLock)
                 {
@@ -895,14 +915,48 @@ namespace ManagementSystem
         /// </summary>
         private void SaveLog(bool doSave = true)
         {
-            if (doSave == true)
-            {
-            }
-
             lock (_logLock)
             {
-                LogMsgOc.Clear();
-                LogMsgDispOc.Clear();
+                if (doSave == true)
+                {
+                    try
+                    {
+                        DateTime dt = DateTime.Now;
+                        string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
+                            + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
+                             + "." + dt.Millisecond.ToString();
+                        StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\log\" + sdt + ".cfg");
+                        StringBuilder sb = new StringBuilder();
+                        foreach(LogMessage lm in LogMsgOc)
+                        {
+                            sb.Append(lm.IndexString
+                                + "\t" + lm.MsgDateTime
+                                + "\t" + lm.FlowType.ToString()
+                                + "\t" + lm.StateType.ToString()
+                                + "\t" + (string.IsNullOrWhiteSpace(lm.IPAddr)? "(NA)" : lm.IPAddr)
+                                + "\t" + lm.Message + "\n");
+                        }
+                        sw.Write(sb.ToString());
+                        sw.Flush();
+                        sw.Close();
+                        sw.Dispose();
+
+                        LogMsgOc.Clear();
+                        //LogMsgDispOc.Clear();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMsgOc.Clear();
+                        //LogMsgDispOc.Clear();
+
+                        AddLog("Exception when saving log : " + ex.Message, "", state: LogMessage.State.Error);
+                    }
+                }
+                else
+                {
+                    LogMsgOc.Clear();
+                    LogMsgDispOc.Clear();
+                }
             }
         }
 
@@ -910,13 +964,13 @@ namespace ManagementSystem
         {
             try
             {
-                if (File.Exists(Consts.DEFAULT_DIRECTORY + @"\mansys.cfg") == false)
+                if (File.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config\mansys.cfg") == false)
                 {
                     //AddLog("No predefined configuration.");
                     return;
                 }
 
-                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\mansys.cfg");
+                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config\mansys.cfg");
                 string strLine = null;
                 int i = 0;
                 while (true)
@@ -974,7 +1028,7 @@ namespace ManagementSystem
         {
             try
             {
-                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\mansys.cfg");
+                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config\mansys.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(RemoteTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogCount.ToString()));

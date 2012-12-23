@@ -39,6 +39,38 @@ namespace ServiceConfiguration
         }
 
         #region Properties
+
+        private int _maxLogDispCount = Consts.MAX_LOG_DISPLAY_COUNT;
+        public int MaxLogDisplayCount
+        {
+            get
+            {
+                return _maxLogDispCount;
+            }
+            set
+            {
+                _maxLogDispCount = value;
+                if (_maxLogDispCount < Consts.MIN_MAX_LOG_DISPLAY_COUNT)
+                    _maxLogDispCount = value;
+                NotifyPropertyChanged("MaxLogDisplayCount");
+            }
+        }
+
+        private int _maxLogCount = Consts.MAX_LOG_COUNT;
+        public int MaxLogCount
+        {
+            get
+            {
+                return _maxLogCount;
+            }
+            set
+            {
+                _maxLogCount = value;
+                if (_maxLogCount < Consts.MIN_MAX_LOG_COUNT)
+                    _maxLogCount = value;
+                NotifyPropertyChanged("MaxLogCount");
+            }
+        }
         
         private string _serverIP = "";
         public string ServerIP
@@ -324,6 +356,15 @@ namespace ServiceConfiguration
 
         public LoginWindow()
         {
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log");
+
             InitializeComponent();
 
             DataContext = this;
@@ -407,7 +448,7 @@ namespace ServiceConfiguration
         {
             try
             {
-                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\manserv.cfg");
+                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\manserv.cfg");
                 string strLine = null;
                 int i = 0;
                 while (true)
@@ -426,6 +467,24 @@ namespace ServiceConfiguration
                     else if (i == 2)
                     {
                         UserName = EncryptDecrypt.Decrypt(strLine.Trim());
+                    }
+                    else if (i == 3)
+                    {
+                        int iv = Consts.MAX_LOG_COUNT;
+                        if (int.TryParse(EncryptDecrypt.Decrypt(strLine.Trim()), out iv) == false)
+                            iv = Consts.MAX_LOG_COUNT;
+                        else if (iv < Consts.MIN_MAX_LOG_COUNT)
+                            iv = Consts.MIN_MAX_LOG_COUNT;
+                        MaxLogCount = iv;
+                    }
+                    else if (i == 4)
+                    {
+                        int iv = Consts.MAX_LOG_DISPLAY_COUNT;
+                        if (int.TryParse(EncryptDecrypt.Decrypt(strLine.Trim()), out iv) == false)
+                            iv = Consts.MAX_LOG_DISPLAY_COUNT;
+                        else if (iv < Consts.MIN_MAX_LOG_DISPLAY_COUNT)
+                            iv = Consts.MIN_MAX_LOG_DISPLAY_COUNT;
+                        MaxLogDisplayCount = iv;
                     }
                     else
                         break;
@@ -448,10 +507,12 @@ namespace ServiceConfiguration
         {
             try
             {
-                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\manserv.cfg");
+                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\manserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPortString));
                 sw.WriteLine(EncryptDecrypt.Encrypt(UserName));
+                sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogCount.ToString()));
+                sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogDisplayCount.ToString()));
                 sw.Close();
                 sw.Dispose();
             }

@@ -42,7 +42,7 @@
             this.infoTransServiceInstaller.Description = "DTU Management Service";
             this.infoTransServiceInstaller.DisplayName = "DTU Management";
             this.infoTransServiceInstaller.ServiceName = "DTU Management";
-            this.infoTransServiceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Manual;
+            this.infoTransServiceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 

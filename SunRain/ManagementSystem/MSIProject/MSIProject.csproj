@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D71184C6-A860-4603-AA41-B57CB3CE9E15}</ProjectGuid>
+    <ProjectGuid>{F66EE095-88BF-4870-BBE6-D3D61211944F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServiceConfiguration</RootNamespace>
-    <AssemblyName>ServiceConfiguration</AssemblyName>
+    <RootNamespace>MSIProject</RootNamespace>
+    <AssemblyName>MSIProject</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -39,14 +39,26 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>configuration.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpCompress">
+      <HintPath>.\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress.3.5">
+      <HintPath>.\SharpCompress.3.5.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress.Silverlight">
+      <HintPath>.\SharpCompress.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress.WP7">
+      <HintPath>.\SharpCompress.WP7.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml">
@@ -83,23 +95,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="DTUConfiguration.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LocalConfiguration.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="NewUser.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="LoginWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ServiceConfiguration.xaml">
+    <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -107,20 +103,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DTUConfiguration.xaml.cs">
-      <DependentUpon>DTUConfiguration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LocalConfiguration.xaml.cs">
-      <DependentUpon>LocalConfiguration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NewUser.xaml.cs">
-      <DependentUpon>NewUser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LoginWindow.xaml.cs">
-      <DependentUpon>LoginWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ServiceConfiguration.xaml.cs">
-      <DependentUpon>ServiceConfiguration.xaml</DependentUpon>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -153,81 +137,46 @@
       <Project>{52412B9B-E524-40C0-B380-C46120B6CF46}</Project>
       <Name>InformationTransferLibrary</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\exit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\about.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\user_add.ico" />
-    <Resource Include="Resources\user_remove.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\dtuadd.ico" />
-    <Resource Include="Resources\dtumodify.ico" />
-    <Resource Include="Resources\dturemove.ico" />
-    <Resource Include="Resources\dtuview.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\status_ques.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\status_error.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\status_info.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\status_none.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\status_ok.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\reconnect.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\dtudisc.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\useradd.ico" />
-    <Resource Include="Resources\useroffline.ico" />
-    <Resource Include="Resources\useronline.ico" />
-    <Resource Include="Resources\userremove.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\dtuunctrl.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\userdisc.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\logo.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\login.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\configuration.ico" />
+    <ProjectReference Include="..\ManagementSystem\ManagementSystem.csproj">
+      <Project>{7988F3C8-09EE-4696-8DD6-8CE688AEBF22}</Project>
+      <Name>ManagementSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceConfiguration\ServiceConfiguration.csproj">
+      <Project>{D71184C6-A860-4603-AA41-B57CB3CE9E15}</Project>
+      <Name>ServiceConfiguration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SystemService\SystemService.csproj">
+      <Project>{3EAA2602-2412-441A-9F50-567299F834E5}</Project>
+      <Name>SystemService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TerminalConfiguration\TerminalConfiguration.csproj">
+      <Project>{B3F86652-9ADC-47C0-A46D-A380AB7CE696}</Project>
+      <Name>TerminalConfiguration</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\bottom_logo.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\clearlog.ico" />
+    <Resource Include="Resources\logo.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\savelog.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\localconfig.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="configuration.ico" />
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y /d $(OutDir)\..\..\..\..\*.exe $(OutDir)\..\..\
+xcopy /y /d $(OutDir)\..\..\..\..\*.bat $(OutDir)\..\..\
+rd /q /s $(OutDir)\..\..\data</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

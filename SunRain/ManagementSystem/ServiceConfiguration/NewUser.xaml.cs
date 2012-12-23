@@ -134,7 +134,7 @@ namespace ServiceConfiguration
                     {
                         if (string.Compare(_password, _passwordAgain, false) == 0)
                         {
-                            if (_password.Length < Consts.USER_PASSWORD_MIN_LENGTH ||
+                            if (_password.Length < 1 ||//Consts.USER_PASSWORD_MIN_LENGTH ||
                                 _password.Length > Consts.USER_NAME_PASSWORD_MAX_LENGTH)
                             {
                                 PasswordOK = false;
@@ -183,7 +183,7 @@ namespace ServiceConfiguration
                     {
                         if (string.Compare(_password, _passwordAgain, false) == 0)
                         {
-                            if (_passwordAgain.Length < Consts.USER_PASSWORD_MIN_LENGTH ||
+                            if (_passwordAgain.Length < 1 ||//Consts.USER_PASSWORD_MIN_LENGTH ||
                                 _passwordAgain.Length > Consts.USER_NAME_PASSWORD_MAX_LENGTH)
                             {
                                 PasswordOK = false;

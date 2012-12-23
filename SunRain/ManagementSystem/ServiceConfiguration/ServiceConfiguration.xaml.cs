@@ -59,6 +59,7 @@ namespace ServiceConfiguration
         private int _logIndex = 1;
         private Queue<LogMessage> _logQueue = new Queue<LogMessage>();
         private ObservableCollection<LogMessage> _logOc = new ObservableCollection<LogMessage>();
+        private ObservableCollection<LogMessage> _logDispOc = new ObservableCollection<LogMessage>();
         private object _logLock = new object();
         //private Timer _pulseTimer = null;
         //private Timer _serviceTimer = null;
@@ -77,7 +78,7 @@ namespace ServiceConfiguration
 
         #region Properties
 
-        private Queue<Tuple<string, string>> _requestQueue = new Queue<Tuple<string,string>>();
+        private Queue<Tuple<string, string>> _requestQueue = new Queue<Tuple<string, string>>();
         public Queue<Tuple<string, string>> ReqQueue
         {
             get
@@ -336,9 +337,22 @@ namespace ServiceConfiguration
 
         #endregion
 
-        public MainWindow(Socket soc, string username, string password, string userPerm, string serverip, int serverport)
-		{
-			InitializeComponent();
+        public MainWindow(Socket soc, 
+            string username, string password, string userPerm, 
+            string serverip, int serverport,
+            int maxLogCount = Consts.MAX_LOG_COUNT,
+            int maxLogDispLog = Consts.MAX_LOG_DISPLAY_COUNT)
+        {
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config");
+            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log") == false)
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log");
+
+            InitializeComponent();
 
             DataContext = this;
 
@@ -350,10 +364,13 @@ namespace ServiceConfiguration
             ServerIP = serverip;
             ServerPort = serverport;
 
+            MaxLogCount = maxLogCount;
+            MaxLogDisplayCount = maxLogDispLog;
+
             dgUser.DataContext = _userInfoOc;
-            dgLog.DataContext = _logOc;
+            dgLog.DataContext = _logDispOc;
             dgDtu.DataContext = _dtuInfoOc;
-            _logOc.CollectionChanged += new NotifyCollectionChangedEventHandler(LogOc_CollectionChanged);
+            _logDispOc.CollectionChanged += new NotifyCollectionChangedEventHandler(LogDispOc_CollectionChanged);
 
             Connected = true;
         }
@@ -379,14 +396,26 @@ namespace ServiceConfiguration
             }
 
             if (e.Cancel == false)
+            {
                 PutRequest(new Tuple<string, string>(Consts.MAN_LOGOUT, ""));
+                try
+                {
+                    SaveConfig();
+                }
+                catch (Exception) { }
+                try
+                {
+                    SaveLog();
+                }
+                catch (Exception) { }
+            }
 
             base.OnClosing(e);
         }
 
         #endregion
 
-        private void LogOc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void LogDispOc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (LogAutoScrolling == false)
                 return;
@@ -410,7 +439,8 @@ namespace ServiceConfiguration
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            About ab = new About("Service Configuration System", "Copyright @ 2012");
+            ab.ShowDialog();
         }
 
         private void Window_Load(object sender, RoutedEventArgs e)
@@ -441,8 +471,8 @@ namespace ServiceConfiguration
                 ReqQueue.Clear();
             }
 
-            if(reLogin == true)
-                PutRequest(new Tuple<string,string>(Consts.MAN_LOGIN, UserName + "\t" + Password));
+            if (reLogin == true)
+                PutRequest(new Tuple<string, string>(Consts.MAN_LOGIN, UserName + "\t" + Password));
 
             _userTimer = new Timer(new TimerCallback(UserTimerCallBack), null,
                                 0,
@@ -800,8 +830,13 @@ namespace ServiceConfiguration
                         {
                             LogMessage lm = _logQueue.Dequeue();
 
-                            while (_logOc.Count > MaxLogDisplayCount)
-                                _logOc.RemoveAt(0);
+                            while (_logDispOc.Count > MaxLogDisplayCount)
+                                _logDispOc.RemoveAt(0);
+
+                            _logDispOc.Add(lm);
+
+                            if (MaxLogCount > 0 && _logOc.Count > MaxLogCount)
+                                SaveLog();
 
                             _logOc.Add(lm);
                         }, null);
@@ -961,7 +996,7 @@ namespace ServiceConfiguration
                 return;
 
             PutRequest(new Tuple<string, string>(
-                Consts.MAN_ADD_DTU, 
+                Consts.MAN_ADD_DTU,
                 dc.DtuId + "\t" + dc.SimId + "\t" + dc.UserName + "\t" + dc.UserTel));
         }
 
@@ -983,7 +1018,7 @@ namespace ServiceConfiguration
             }
 
             DTUConfiguration dc = new DTUConfiguration(
-                DTUConfiguration.OpenState.Modify, 
+                DTUConfiguration.OpenState.Modify,
                 _dtuInfoOc[index].DtuId,
                 _dtuInfoOc[index].SimId,
                 _dtuInfoOc[index].UserName,
@@ -1112,7 +1147,7 @@ namespace ServiceConfiguration
                 return;
             }
 
-            if (MessageBox.Show("Are you sure to delete DTU ?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId, 
+            if (MessageBox.Show("Are you sure to delete DTU ?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId,
                 "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
@@ -1153,6 +1188,97 @@ namespace ServiceConfiguration
                 Helper.SafeCloseSocket(_manSocket);
                 _manSocket = null;
             }
+        }
+
+        private void SaveLog_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveLog();
+        }
+
+        private void ClearLog_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_logOc.Count > 0 && MessageBox.Show("Do you want to save the log first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                SaveLog();
+            else
+                SaveLog(false);
+        }
+
+        /// <summary>
+        /// Auto Clear
+        /// </summary>
+        private void SaveLog(bool doSave = true)
+        {
+            lock (_logLock)
+            {
+                if (doSave == true)
+                {
+                    try
+                    {
+                        DateTime dt = DateTime.Now;
+                        string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
+                            + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
+                             + "." + dt.Millisecond.ToString();
+                        StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log\" + sdt + ".cfg");
+                        StringBuilder sb = new StringBuilder();
+                        foreach (LogMessage lm in _logOc)
+                        {
+                            sb.Append(lm.IndexString
+                                + "\t" + lm.MsgDateTime
+                                + "\t" + lm.FlowType.ToString()
+                                + "\t" + lm.StateType.ToString()
+                                + "\t" + (string.IsNullOrWhiteSpace(lm.IPAddr) ? "(NA)" : lm.IPAddr)
+                                + "\t" + lm.Message + "\n");
+                        }
+                        sw.Write(sb.ToString());
+                        sw.Flush();
+                        sw.Close();
+                        sw.Dispose();
+
+                        _logOc.Clear();
+                        //_logDispOc.Clear();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logOc.Clear();
+                        //_logDispOc.Clear();
+
+                        AddLog("Exception when saving log : " + ex.Message, "", state: LogMessage.State.Error);
+                    }
+                }
+                else
+                {
+                    _logOc.Clear();
+                    _logDispOc.Clear();
+                }
+            }
+        }
+
+        private void SaveConfig()
+        {
+            try
+            {
+                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\manserv.cfg");
+                sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
+                sw.WriteLine(EncryptDecrypt.Encrypt(ServerPort.ToString()));
+                sw.WriteLine(EncryptDecrypt.Encrypt(UserName));
+                sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogCount.ToString()));
+                sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogDisplayCount.ToString()));
+                sw.Close();
+                sw.Dispose();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void LocalConfig_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            LocalConfiguration lc = new LocalConfiguration(MaxLogCount, MaxLogDisplayCount);
+            if (lc.ShowDialog() != true)
+                return;
+
+            MaxLogCount = lc.MaxLogCount;
+            MaxLogDisplayCount = lc.MaxLogDisplayCount;
         }
     }
 }

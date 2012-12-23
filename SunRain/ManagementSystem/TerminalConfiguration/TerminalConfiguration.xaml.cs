@@ -613,8 +613,8 @@ namespace TerminalConfiguration
 
             if (!Directory.Exists(Consts.DEFAULT_DIRECTORY))
                 Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
-            if (!Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\Term"))
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\Term");
+            if (!Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration"))
+                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration");
 
             DataContext = this;
 
@@ -785,7 +785,8 @@ namespace TerminalConfiguration
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            About ab = new About("DTU Configuration", "Copyright @ 2012");
+            ab.ShowDialog();
         }
 
         private void InitiateDTU_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -919,7 +920,7 @@ namespace TerminalConfiguration
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = false;
             ofd.Filter = "Config (.cfg)|*.cfg";
-            ofd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\Term";
+            ofd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration";
             ofd.Title = "Select a config";
             bool? bv = ofd.ShowDialog();
             if (bv != true)
@@ -948,7 +949,7 @@ namespace TerminalConfiguration
                 sfd.OverwritePrompt = true;
                 sfd.CheckPathExists = true;
                 sfd.Title = "Save Configuration As...";
-                sfd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\Term";
+                sfd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration";
                 bool? b = sfd.ShowDialog();
                 if (b != true)
                     return;
@@ -972,7 +973,7 @@ namespace TerminalConfiguration
             sfd.OverwritePrompt = true;
             sfd.CheckPathExists = true;
             sfd.Title = "Save Configuration As...";
-            sfd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\Term";
+            sfd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration";
             bool? b = sfd.ShowDialog();
             if (b != true)
                 return;
@@ -1082,7 +1083,6 @@ namespace TerminalConfiguration
                 AddNewCommand("AT^DEBUG=0\n", "AT^DEBUG=0\n\r\nOK\r\n", wait4Resp: false);
                 AddNewCommand("+++", "+++", ret2: "OK", match: true, trim: true);
             }
-
             if (compare == true)
             {
                 AddNewQuery("AT^SERVER=?\n", "AT^SERVER=?\n\r\n" + ServerIP + ":" + ServerPortString + "\r\n\r\nOK\r\n");

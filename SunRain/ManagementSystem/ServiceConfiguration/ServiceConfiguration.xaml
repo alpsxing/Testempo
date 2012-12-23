@@ -27,6 +27,26 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top" Height="23">
             <MenuItem Header="File">
+                <MenuItem Header="Local Configuration" Click="LocalConfig_MenuItem_Click" ToolTip="Local Configuration"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/localconfig.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <Button Click="ClearLog_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="Clear Log">
+                    <Button.Content>
+                        <Image Margin="-3" Source="resources/clearlog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </Button.Content>
+                </Button>
+                <Button Click="SaveLog_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="Save Log">
+                    <Button.Content>
+                        <Image Margin="-3" Source="resources/savelog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </Button.Content>
+                </Button>
+                <Separator/>
                 <MenuItem Header="Exit" Click="Window_Exit" ToolTip="Exit">
                     <MenuItem.Icon>
                         <Image Source="resources/exit.png" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -114,6 +134,13 @@
                 </Button.Content>
             </Button>
             <Separator/>
+            <Button Click="LocalConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="Local Configuration">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/localconfig.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
             <Button Click="UserAdd_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                     ToolTip="Add User">
@@ -123,7 +150,7 @@
             </Button>
             <Button Click="UserDisconnect_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
-                    ToolTip="Add User">
+                    ToolTip="Disconnect User">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/useroffline.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
@@ -176,6 +203,19 @@
                     ToolTip="Remove DTU">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/dturemove.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="ClearLog_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="Clear Log">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/clearlog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="SaveLog_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="Save Log">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/savelog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Separator/>

@@ -39,6 +39,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>terminalmanagementsystem.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
       <Private>True</Private>
@@ -195,10 +198,6 @@
       <Project>{52412B9B-E524-40C0-B380-C46120B6CF46}</Project>
       <Name>InformationTransferLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TerminalControl\TerminalControl.csproj">
-      <Project>{3545E021-A75E-4558-8EA3-234DF99FB49A}</Project>
-      <Name>TerminalControl</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\status_error.png" />
@@ -234,6 +233,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\bottom_logo.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="terminalmanagementsystem.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

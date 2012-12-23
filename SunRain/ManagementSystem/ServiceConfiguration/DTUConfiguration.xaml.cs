@@ -61,8 +61,7 @@ namespace ServiceConfiguration
                 else
                 {
                     _dtuId = _dtuId.Trim();
-                    if (_dtuId.Length < Consts.DTU_CONFIG_MIN_LENGTH ||
-                        _dtuId.Length > Consts.DTU_CONFIG_MAX_LENGTH)
+                    if (_dtuId.Length != Consts.DTU_CONFIG_LENGTH)
                     {
                         DtuIdFG = Brushes.Red;
                         DtuIdOK = false;
@@ -251,7 +250,7 @@ namespace ServiceConfiguration
                 if (string.IsNullOrWhiteSpace(_userTel))
                     _userTel = "";
                 else
-                    _userTel = _simId.Trim();
+                    _userTel = _userTel.Trim();
                 NotifyPropertyChanged("UserTel");
             }
         }
