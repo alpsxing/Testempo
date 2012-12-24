@@ -92,16 +92,6 @@ namespace MSIProject
             DataContext = this;
         }
 
-        private void InstallService_Button_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("InstallUtil.exe", "SystemService.exe");
-        }
-
-        private void UninstallService_Button_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("InstallUtil.exe", "-u SystemService.exe");
-        }
-
         private void Install_Button_Click(object sender, RoutedEventArgs e)
         {
             Task.Factory.StartNew(() =>
@@ -164,6 +154,14 @@ namespace MSIProject
 
             if (Directory.Exists(InstallPath) == false)
                 Directory.CreateDirectory(InstallPath);
+            else
+            {
+                Directory.Delete(InstallPath, true);
+                Directory.CreateDirectory(InstallPath);
+            }
+
+            Thread.Sleep(1000);
+
             if (System.IO.File.Exists(InstallPath + @"\installed.dat") == false)
                 System.IO.File.Create(InstallPath + @"\installed.dat");
 
@@ -272,10 +270,13 @@ namespace MSIProject
                 try
                 {
                     InRun = true;
-                    UninstallTask();
+                    bool ret = UninstallTask();
                     Dispatcher.Invoke((ThreadStart)delegate()
                     {
-                        System.Windows.MessageBox.Show(this, "Uninstallation OK.", "Installation", MessageBoxButton.OK, MessageBoxImage.Information);
+                        if (ret == true)
+                            System.Windows.MessageBox.Show(this, "Uninstallation OK.", "Installation", MessageBoxButton.OK, MessageBoxImage.Information);
+                        else
+                            System.Windows.MessageBox.Show(this, "Uninstallation fails.", "Installation", MessageBoxButton.OK, MessageBoxImage.Error);
                     }, null);
                 }
                 catch (Exception ex)
@@ -289,15 +290,26 @@ namespace MSIProject
             });
         }
 
-        private void UninstallTask()
+        private bool UninstallTask()
         {
+            if (System.IO.File.Exists(InstallPath + @"\installed.dat") == false &&
+                string.Compare(System.Environment.CurrentDirectory, InstallPath, true) == 0)
+            {
+                Dispatcher.Invoke((ThreadStart)delegate()
+                {
+                    System.Windows.MessageBox.Show(this, "Cannot install Management System in the installation source folder.", "Installation", MessageBoxButton.OK, MessageBoxImage.Error);
+                }, null);
+
+                return false;
+            }
+            
             MessageBoxResult mbr = MessageBoxResult.No;
             Dispatcher.Invoke((ThreadStart)delegate()
             {
                 mbr = System.Windows.MessageBox.Show("Are you sure to uninstall Management System?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
             }, null);
             if (mbr != MessageBoxResult.Yes)
-                return;
+                return false;
 
             bool isService = false;
             Dispatcher.Invoke((ThreadStart)delegate()
@@ -329,6 +341,8 @@ namespace MSIProject
                 if (Directory.Exists(folder + @"\Management System") == true)
                     Directory.Delete(folder + @"\Management System", true);
             }
+
+            return true;
         }
 
         private void Window_Load(object sender, RoutedEventArgs e)
