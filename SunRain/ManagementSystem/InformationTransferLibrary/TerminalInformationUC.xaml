@@ -7,7 +7,12 @@
              d:DesignHeight="300" d:DesignWidth="300" Loaded="TermInfoUCControl_Load">
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" Height="30">
-            <Button DockPanel.Dock="Right" Width="75" Margin="3" Content="Send" Click="Send_Button_Click"/>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <RadioButton IsThreeState="False" IsChecked="{Binding Path=CRLFChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="CR+LF"/>
+                <RadioButton IsThreeState="False" IsChecked="{Binding Path=CRChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="CR"/>
+                <RadioButton IsThreeState="False" IsChecked="{Binding Path=LFChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="LF"/>
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Width="75" Margin="3,3,0,3" Content="Send" Click="Send_Button_Click"/>
             <TextBox Name="txtDTUCmd" Text="{Binding Path=DTUCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                      Margin="3,3,0,3" TextAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                      KeyDown="DTUCommand_TextBox_KeyDown" PreviewKeyDown="DTUCommand_TextBox_PreviewKeyDown"/>

@@ -76,6 +76,63 @@ namespace InformationTransferLibrary
             }
         }
 
+        private bool? _crLFChecked = true;
+        public bool? CRLFChecked
+        {
+            get
+            {
+                return _crLFChecked;
+            }
+            set
+            {
+                _crLFChecked = value;
+                if (_crLFChecked == true)
+                {
+                    CRChecked = false;
+                    LFChecked = false;
+                }
+                NotifyPropertyChanged("CRLFChecked");
+            }
+        }
+
+        private bool? _crChecked = true;
+        public bool? CRChecked
+        {
+            get
+            {
+                return _crChecked;
+            }
+            set
+            {
+                _crChecked = value;
+                if (_crChecked == true)
+                {
+                    CRLFChecked = false;
+                    LFChecked = false;
+                }
+                NotifyPropertyChanged("CRChecked");
+            }
+        }
+
+        private bool? _lfChecked = true;
+        public bool? LFChecked
+        {
+            get
+            {
+                return _lfChecked;
+            }
+            set
+            {
+                _lfChecked = value;
+                if (_lfChecked == true)
+                {
+                    CRLFChecked = false;
+                    CRChecked = false;
+                }
+                NotifyPropertyChanged("LFChecked");
+            }
+        }
+
         public TerminalInformationUC(TerminalInformation ti)
         {
             InitializeComponent();
@@ -153,7 +210,17 @@ namespace InformationTransferLibrary
 
                 rtxtTerminal.ScrollToEnd();
 
-                TI.PutReq(s + "\r\n");
+                string sf = s;
+                if (CRLFChecked == true)
+                    sf = s + "\r\n";
+                else if (CRChecked == true)
+                    sf = s + "\r";
+                else if (LFChecked == true)
+                    sf = s + "\n";
+                else
+                    sf = s;
+
+                TI.PutReq(sf);
             }, null);
         }
 

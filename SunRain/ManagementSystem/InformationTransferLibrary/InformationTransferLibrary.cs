@@ -1664,7 +1664,7 @@ namespace InformationTransferLibrary
 
         public void PutReq(string s)
         {
-            if (s.Length <= 0)
+            if (s == null || s.Length <= 0)
                 return;
             ReqQueue.Enqueue(System.Text.Encoding.ASCII.GetBytes(s));
         }
