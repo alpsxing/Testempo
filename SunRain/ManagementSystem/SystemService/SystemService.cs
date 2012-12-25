@@ -93,11 +93,11 @@ namespace SystemService
 
         protected override void OnStart(string[] args)
         {
-            if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
-            {
-                eventLogInformationTransfer.WriteEntry("IT service cannot be started because of no valid license.", EventLogEntryType.Error);
-                System.Environment.Exit(0);
-            }
+            //if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
+            //{
+            //    eventLogInformationTransfer.WriteEntry("IT service cannot be started because of no valid license.", EventLogEntryType.Error);
+            //    System.Environment.Exit(0);
+            //}
 
             LoadConfig();
             LoadUser();
