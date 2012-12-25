@@ -63,6 +63,19 @@ namespace InformationTransferLibrary
             }
         }
 
+        private TabItem _curTabItem = null;
+        public TabItem CurrentTabItem
+        {
+            get
+            {
+                return _curTabItem;
+            }
+            set
+            {
+                _curTabItem = value;
+            }
+        }
+
         public TerminalInformationUC(TerminalInformation ti)
         {
             InitializeComponent();
@@ -167,6 +180,7 @@ namespace InformationTransferLibrary
                     Paragraph parDTUCmd = new Paragraph(runDTUCmd);
                     parDTUCmd.Foreground = Brushes.Red;
                     fdTerminal.Blocks.Add(parDTUCmd);
+                    TI.State = TerminalInformation.TiState.Disconnected;
                 }
                 else
                     rtxtTerminal.AppendText(resp);

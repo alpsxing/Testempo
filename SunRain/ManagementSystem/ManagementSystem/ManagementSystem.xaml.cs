@@ -375,6 +375,8 @@ namespace ManagementSystem
             }
 
             base.OnClosing(e);
+
+            System.Environment.Exit(0);
         }
 
         #endregion
@@ -766,46 +768,47 @@ namespace ManagementSystem
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
                         ti.State = TerminalInformation.TiState.Connected;
+                        UpdateTerminalInforView(ti);
                     }, null);
-                    Dispatcher.Invoke((ThreadStart)delegate
-                    {
-                        TerminalInformationUC tiuc = new TerminalInformationUC(ti);
-                        TabItem tabi = new TabItem();
-                        StackPanel sp = new StackPanel();
-                        sp.Orientation = Orientation.Horizontal;
-                        sp.Margin = new Thickness(0, 0, 0, 0);//-4, -4, -4, -4);
-                        Label lbl = new Label();
-                        lbl.Content = ti.CurrentDTU.DtuId;
-                        sp.Children.Add(lbl);
-                        Image img = new Image();
-                        switch (ti.State)
-                        {
-                            default:
-                            case TerminalInformation.TiState.Unknown:
-                                img.Source = new BitmapImage(new Uri("pack://application:,,,/managementsystem;component/resources/dtuunknown.ico"));
-                                lbl.Foreground = Brushes.Red;
-                                sp.ToolTip = ti.CurrentDTU.DtuId + " : Unknown";
-                                break;
-                            case TerminalInformation.TiState.Connected:
-                                img.Source = new BitmapImage(new Uri("pack://application:,,,/managementsystem;component/resources/dtuok.ico"));
-                                lbl.Foreground = Brushes.Black;
-                                sp.ToolTip = ti.CurrentDTU.DtuId + " : Connected";
-                                break;
-                            case TerminalInformation.TiState.Disconnected:
-                                img.Source = new BitmapImage(new Uri("pack://application:,,,/managementsystem;component/resources/dtuerror.ico"));
-                                lbl.Foreground = Brushes.Red;
-                                sp.ToolTip = ti.CurrentDTU.DtuId + " : Disconnected";
-                                break;
-                        }
-                        img.Width = 16;
-                        img.Height = 16;
-                        //img.Opacity = 0.75;
-                        sp.Children.Insert(0, img);
-                        tabi.Header = sp;
-                        tabi.Content = tiuc;
-                        tcTerminal.Items.Add(tabi);
-                        tcTerminal.SelectedIndex = tcTerminal.Items.Count - 1;
-                    }, null);
+                    //Dispatcher.Invoke((ThreadStart)delegate
+                    //{
+                    //    //TerminalInformationUC tiuc = new TerminalInformationUC(ti);
+                    //    //TabItem tabi = new TabItem();
+                    //    //StackPanel sp = new StackPanel();
+                    //    //sp.Orientation = Orientation.Horizontal;
+                    //    //sp.Margin = new Thickness(0, 0, 0, 0);//-4, -4, -4, -4);
+                    //    //Label lbl = new Label();
+                    //    //lbl.Content = ti.CurrentDTU.DtuId;
+                    //    //sp.Children.Add(lbl);
+                    //    //Image img = new Image();
+                    //    //switch (ti.State)
+                    //    //{
+                    //    //    default:
+                    //    //    case TerminalInformation.TiState.Unknown:
+                    //    //        img.Source = new BitmapImage(new Uri("pack://application:,,,/managementsystem;component/resources/dtuunknown.ico"));
+                    //    //        lbl.Foreground = Brushes.Red;
+                    //    //        sp.ToolTip = ti.CurrentDTU.DtuId + " : Unknown";
+                    //    //        break;
+                    //    //    case TerminalInformation.TiState.Connected:
+                    //    //        img.Source = new BitmapImage(new Uri("pack://application:,,,/managementsystem;component/resources/dtuok.ico"));
+                    //    //        lbl.Foreground = Brushes.Black;
+                    //    //        sp.ToolTip = ti.CurrentDTU.DtuId + " : Connected";
+                    //    //        break;
+                    //    //    case TerminalInformation.TiState.Disconnected:
+                    //    //        img.Source = new BitmapImage(new Uri("pack://application:,,,/managementsystem;component/resources/dtuerror.ico"));
+                    //    //        lbl.Foreground = Brushes.Red;
+                    //    //        sp.ToolTip = ti.CurrentDTU.DtuId + " : Disconnected";
+                    //    //        break;
+                    //    //}
+                    //    //img.Width = 16;
+                    //    //img.Height = 16;
+                    //    ////img.Opacity = 0.75;
+                    //    //sp.Children.Insert(0, img);
+                    //    //tabi.Header = sp;
+                    //    //tabi.Content = tiuc;
+                    //    //tcTerminal.Items.Add(tabi);
+                    //    //tcTerminal.SelectedIndex = tcTerminal.Items.Count - 1;
+                    //}, null);
                     break;
                 case Consts.TERM_ADD_DTU_ERR:
                     AddLog("Add dtu error : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
@@ -821,6 +824,10 @@ namespace ManagementSystem
                     AddLog("Pulse ok : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     break;
             }
+        }
+
+        private void OnSocketStateChanged(object sender, TerminalInformationEventArgs args)
+        {
         }
 
         private TerminalInformation FindTIbyDTUID(string dtuID)

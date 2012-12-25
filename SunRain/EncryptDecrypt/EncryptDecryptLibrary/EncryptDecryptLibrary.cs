@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Win32;
 
 namespace EncryptDecryptLibrary
 {
@@ -25,7 +26,12 @@ namespace EncryptDecryptLibrary
         {
             try
             {
-                StreamReader sr = new StreamReader("install.dat");
+                RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"Software\DTUManagement");
+                object obj = rk.GetValue("Path");
+                if (!(obj is string))
+                    return false;
+
+                StreamReader sr = new StreamReader((string)obj + @"\install.dat");
                 string s = sr.ReadToEnd();
                 string s2 = Decrypt(s);
                 int i1 = s2.IndexOf("A");

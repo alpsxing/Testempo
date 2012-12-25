@@ -411,6 +411,8 @@ namespace ServiceConfiguration
             }
 
             base.OnClosing(e);
+
+            System.Environment.Exit(0);
         }
 
         #endregion

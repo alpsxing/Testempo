@@ -121,6 +121,9 @@ namespace MSIProject
 
         private bool InstallTask()
         {
+            RegistryKey rk = Registry.LocalMachine.CreateSubKey(@"Software\DTUManagement");
+            rk.SetValue("Path", InstallPath);
+
             if (string.Compare(System.Environment.CurrentDirectory, InstallPath, true) == 0)
             {
                 Dispatcher.Invoke((ThreadStart)delegate()
@@ -152,18 +155,29 @@ namespace MSIProject
                     System.IO.File.Copy(s, newfolder + fileName);
             }
 
-            if (Directory.Exists(InstallPath) == false)
-                Directory.CreateDirectory(InstallPath);
-            else
-            {
+            if (Directory.Exists(InstallPath) == true)
                 Directory.Delete(InstallPath, true);
-                Directory.CreateDirectory(InstallPath);
+
+            while (Directory.Exists(InstallPath) == true)
+            {
+                Thread.Sleep(1000);
             }
 
-            Thread.Sleep(1000);
+            Directory.CreateDirectory(InstallPath);
+
+            while (Directory.Exists(InstallPath) == false)
+            {
+                Thread.Sleep(1000);
+            }
 
             if (System.IO.File.Exists(InstallPath + @"\installed.dat") == false)
-                System.IO.File.Create(InstallPath + @"\installed.dat");
+            {
+                StreamWriter sw = new StreamWriter(InstallPath + @"\installed.dat");
+                sw.Write("");
+                sw.Flush();
+                sw.Close();
+                sw.Dispose();
+            }
 
             sa = Directory.GetFiles(System.Environment.CurrentDirectory + @"\data");
             foreach (string s in sa)
@@ -292,6 +306,9 @@ namespace MSIProject
 
         private bool UninstallTask()
         {
+            RegistryKey rk = Registry.LocalMachine.CreateSubKey(@"Software\DTUManagement");
+            Registry.LocalMachine.DeleteSubKey(@"Software\DTUManagement");
+
             if (System.IO.File.Exists(InstallPath + @"\installed.dat") == false &&
                 string.Compare(System.Environment.CurrentDirectory, InstallPath, true) == 0)
             {

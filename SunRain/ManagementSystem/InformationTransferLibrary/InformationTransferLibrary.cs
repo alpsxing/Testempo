@@ -1360,8 +1360,8 @@ namespace InformationTransferLibrary
         {
             if (_curTvItem == null)
                 _curTvItem = new TreeViewItem();
-            else
-                return;
+            //else
+            //    return;
 
             StackPanel sp = new StackPanel();
             sp.Orientation = Orientation.Horizontal;
@@ -1409,8 +1409,8 @@ namespace InformationTransferLibrary
                 _tiUc = new TerminalInformationUC(this);
                 _curTabItem.Content = _tiUc;
             }
-            else
-                return;
+            //else
+            //    return;
 
             StackPanel sp = new StackPanel();
             sp.Orientation = Orientation.Horizontal;
