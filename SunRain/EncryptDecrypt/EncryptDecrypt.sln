@@ -6,18 +6,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncryptDecryptLibrary", "EncryptDecryptLibrary\EncryptDecryptLibrary.csproj", "{2B17FC10-98DE-4B71-B630-AC9C3AAC891E}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs.it.agilent.com:8080/tfs/emg
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = EncryptDecrypt\\EncryptDecrypt.csproj
-		SccProjectName1 = EncryptDecrypt
-		SccLocalPath1 = EncryptDecrypt
-		SccProjectUniqueName2 = EncryptDecryptLibrary\\EncryptDecryptLibrary.csproj
-		SccProjectName2 = EncryptDecryptLibrary
-		SccLocalPath2 = EncryptDecryptLibrary
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms

@@ -20,39 +20,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSIProject", "MSIProject\MSIProject.csproj", "{F66EE095-88BF-4870-BBE6-D3D61211944F}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs.it.agilent.com:8080/tfs/emg
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = ManagementSystem\\ManagementSystem.csproj
-		SccProjectName1 = ManagementSystem
-		SccLocalPath1 = ManagementSystem
-		SccProjectUniqueName2 = TerminalConfiguration\\TerminalConfiguration.csproj
-		SccProjectName2 = TerminalConfiguration
-		SccLocalPath2 = TerminalConfiguration
-		SccProjectUniqueName3 = SystemService\\SystemService.csproj
-		SccProjectName3 = SystemService
-		SccLocalPath3 = SystemService
-		SccProjectUniqueName4 = ServiceConfiguration\\ServiceConfiguration.csproj
-		SccProjectName4 = ServiceConfiguration
-		SccLocalPath4 = ServiceConfiguration
-		SccProjectUniqueName5 = ServiceConfigurationApp\\ServiceConfigurationApp.csproj
-		SccProjectName5 = ServiceConfigurationApp
-		SccLocalPath5 = ServiceConfigurationApp
-		SccProjectUniqueName6 = InformationTransferLibrary\\InformationTransferLibrary.csproj
-		SccProjectName6 = InformationTransferLibrary
-		SccLocalPath6 = InformationTransferLibrary
-		SccProjectUniqueName7 = RemoteTcpTerminal\\RemoteTcpTerminal.csproj
-		SccProjectName7 = RemoteTcpTerminal
-		SccLocalPath7 = RemoteTcpTerminal
-		SccProjectUniqueName8 = RemoteTcpServer\\RemoteTcpServer.csproj
-		SccProjectName8 = RemoteTcpServer
-		SccLocalPath8 = RemoteTcpServer
-		SccProjectUniqueName9 = MSIProject\\MSIProject.csproj
-		SccProjectName9 = MSIProject
-		SccLocalPath9 = MSIProject
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms

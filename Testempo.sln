@@ -19,24 +19,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTestBase", "iTestBase\iTestBase.csproj", "{79123E0C-D37A-423E-942A-25BD66DC69B1}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs.it.agilent.com:8080/tfs/emg
-		SccProjectUniqueName0 = iTester\\iTester.csproj
-		SccProjectName0 = iTester
-		SccLocalPath0 = iTester
-		SccProjectUniqueName1 = iTesterDBSetup\\iTesterDBSetup.csproj
-		SccProjectName1 = iTesterDBSetup
-		SccLocalPath1 = iTesterDBSetup
-		SccProjectUniqueName2 = iTesterViewer\\iTesterViewer.csproj
-		SccProjectName2 = iTesterViewer
-		SccLocalPath2 = iTesterViewer
-		SccProjectUniqueName3 = iTestBase\\iTestBase.csproj
-		SccProjectName3 = iTestBase
-		SccLocalPath3 = iTestBase
-		SccLocalPath4 = .
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
