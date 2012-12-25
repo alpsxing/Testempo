@@ -63,14 +63,14 @@ namespace SystemService
 
         public SystemService()
         {
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log");
+            if (Directory.Exists(System.Environment.CurrentDirectory) == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory);
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration\log") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration\log");
 
             InitializeComponent();
 
@@ -142,7 +142,7 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ssportto.cfg");
+                sr = new StreamReader(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ssportto.cfg");
                 while (true)
                 {
                     line = sr.ReadLine();
@@ -246,7 +246,7 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ssportto.cfg");
+                sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ssportto.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(_termPort.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(_termTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(_dtuPort.ToString()));
@@ -270,7 +270,7 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ituser.dat");
+                sr = new StreamReader(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ituser.dat");
                 string line = null;
                 while (true)
                 {
@@ -340,7 +340,7 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\ituser.dat");
+                sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ituser.dat");
                 foreach (UserInfo uii in _userInfoOc)
                 {
                     string user = uii.UserName;
@@ -372,7 +372,7 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\itdtu.dat");
+                sr = new StreamReader(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\itdtu.dat");
                 string line = null;
                 while (true)
                 {
@@ -427,7 +427,7 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\itdtu.dat");
+                sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\itdtu.dat");
                 foreach (DTUInfo dii in _dtuInfoOc)
                 {
                     string dtuId = dii.DtuId;

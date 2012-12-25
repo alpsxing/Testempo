@@ -198,7 +198,7 @@ namespace InformationTransferLibrary
         public const int DTU_ACCOUNT_ITEM_COUNT = 4;
         public const int DTU_INFO_ITEM_COUNT = 7;
 
-        public const string DEFAULT_DIRECTORY = @"C:\COMWAY";
+        //public const string DEFAULT_DIRECTORY = @"C:\COMWAY";
     }
 
     [ValueConversion(typeof(string), typeof(int))]

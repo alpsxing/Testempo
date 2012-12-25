@@ -343,14 +343,14 @@ namespace ServiceConfiguration
             int maxLogCount = Consts.MAX_LOG_COUNT,
             int maxLogDispLog = Consts.MAX_LOG_DISPLAY_COUNT)
         {
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log");
+            if (Directory.Exists(System.Environment.CurrentDirectory) == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory);
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration\log") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration\log");
 
             InitializeComponent();
 
@@ -1226,7 +1226,7 @@ namespace ServiceConfiguration
                         string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
                             + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
                              + "." + dt.Millisecond.ToString();
-                        StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\log\" + sdt + ".cfg");
+                        StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\log\" + sdt + ".cfg");
                         StringBuilder sb = new StringBuilder();
                         foreach (LogMessage lm in _logOc)
                         {
@@ -1265,7 +1265,7 @@ namespace ServiceConfiguration
         {
             try
             {
-                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\ServiceConfiguration\config\manserv.cfg");
+                StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\manserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPort.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(UserName));

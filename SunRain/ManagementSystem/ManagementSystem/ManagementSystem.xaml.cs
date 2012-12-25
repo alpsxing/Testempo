@@ -316,14 +316,14 @@ namespace ManagementSystem
             dgLog.DataContext = LogMsgDispOc;
             LogMsgDispOc.CollectionChanged += new NotifyCollectionChangedEventHandler(LogMsgDispOc_CollectionChanged);
 
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log");
+            if (Directory.Exists(System.Environment.CurrentDirectory) == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory);
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\config") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\config");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\log") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\log");
 
             _cts = new CancellationTokenSource();
             _logTask = Task.Factory.StartNew(
@@ -938,7 +938,7 @@ namespace ManagementSystem
                         string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
                             + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
                              + "." + dt.Millisecond.ToString();
-                        StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\log\" + sdt + ".cfg");
+                        StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\log\" + sdt + ".cfg");
                         StringBuilder sb = new StringBuilder();
                         foreach(LogMessage lm in LogMsgOc)
                         {
@@ -977,13 +977,13 @@ namespace ManagementSystem
         {
             try
             {
-                if (File.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config\mansys.cfg") == false)
+                if (File.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\config\mansys.cfg") == false)
                 {
                     //AddLog("No predefined configuration.");
                     return;
                 }
 
-                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config\mansys.cfg");
+                StreamReader sr = new StreamReader(System.Environment.CurrentDirectory + @"\DTUManagement\config\mansys.cfg");
                 string strLine = null;
                 int i = 0;
                 while (true)
@@ -1041,7 +1041,7 @@ namespace ManagementSystem
         {
             try
             {
-                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config\mansys.cfg");
+                StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\DTUManagement\config\mansys.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(RemoteTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogCount.ToString()));

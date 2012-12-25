@@ -611,10 +611,10 @@ namespace TerminalConfiguration
 
             InitializeComponent();
 
-            if (!Directory.Exists(Consts.DEFAULT_DIRECTORY))
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
-            if (!Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration"))
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration");
+            if (!Directory.Exists(System.Environment.CurrentDirectory))
+                Directory.CreateDirectory(System.Environment.CurrentDirectory);
+            if (!Directory.Exists(System.Environment.CurrentDirectory + @"\DTUConfiguration"))
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUConfiguration");
 
             DataContext = this;
 
@@ -926,7 +926,7 @@ namespace TerminalConfiguration
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = false;
             ofd.Filter = "Config (.cfg)|*.cfg";
-            ofd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration";
+            ofd.InitialDirectory = System.Environment.CurrentDirectory + @"\DTUConfiguration";
             ofd.Title = "Select a config";
             bool? bv = ofd.ShowDialog();
             if (bv != true)
@@ -955,7 +955,7 @@ namespace TerminalConfiguration
                 sfd.OverwritePrompt = true;
                 sfd.CheckPathExists = true;
                 sfd.Title = "Save Configuration As...";
-                sfd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration";
+                sfd.InitialDirectory = System.Environment.CurrentDirectory + @"\DTUConfiguration";
                 bool? b = sfd.ShowDialog();
                 if (b != true)
                     return;
@@ -979,7 +979,7 @@ namespace TerminalConfiguration
             sfd.OverwritePrompt = true;
             sfd.CheckPathExists = true;
             sfd.Title = "Save Configuration As...";
-            sfd.InitialDirectory = Consts.DEFAULT_DIRECTORY + @"\DTUConfiguration";
+            sfd.InitialDirectory = System.Environment.CurrentDirectory + @"\DTUConfiguration";
             bool? b = sfd.ShowDialog();
             if (b != true)
                 return;

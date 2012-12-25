@@ -324,14 +324,14 @@ namespace ManagementSystem
 
         public LoginWindow()
         {
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY) == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY);
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\config");
-            if (Directory.Exists(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log") == false)
-                Directory.CreateDirectory(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\log");
+            if (Directory.Exists(System.Environment.CurrentDirectory) == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory);
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\config") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\config");
+            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\log") == false)
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\log");
 
             InitializeComponent();
 
@@ -417,7 +417,7 @@ namespace ManagementSystem
         {
             try
             {
-                StreamReader sr = new StreamReader(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\termserv.cfg");
+                StreamReader sr = new StreamReader(System.Environment.CurrentDirectory + @"\DTUManagement\termserv.cfg");
                 string strLine = null;
                 int i = 0;
                 while (true)
@@ -458,7 +458,7 @@ namespace ManagementSystem
         {
             try
             {
-                StreamWriter sw = new StreamWriter(Consts.DEFAULT_DIRECTORY + @"\DTUManagement\termserv.cfg");
+                StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\DTUManagement\termserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPortString));
                 sw.WriteLine(EncryptDecrypt.Encrypt(UserName));
