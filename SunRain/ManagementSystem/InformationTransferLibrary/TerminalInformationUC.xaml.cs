@@ -153,7 +153,7 @@ namespace InformationTransferLibrary
 
                 rtxtTerminal.ScrollToEnd();
 
-                TI.PutReq(s);
+                TI.PutReq(s + "\r\n");
             }, null);
         }
 

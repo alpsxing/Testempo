@@ -1664,9 +1664,9 @@ namespace InformationTransferLibrary
 
         public void PutReq(string s)
         {
-            if (string.IsNullOrWhiteSpace(s) == true)
+            if (s.Length <= 0)
                 return;
-            ReqQueue.Enqueue(System.Text.Encoding.ASCII.GetBytes(s.Trim()));
+            ReqQueue.Enqueue(System.Text.Encoding.ASCII.GetBytes(s));
         }
 
         private void DTUSendService()
