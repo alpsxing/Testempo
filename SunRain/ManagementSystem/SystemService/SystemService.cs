@@ -26,6 +26,8 @@ namespace SystemService
         private ObservableCollection<UserInfo> _userInfoOc = new ObservableCollection<UserInfo>();
         private ObservableCollection<DTUInfo> _dtuInfoOc = new ObservableCollection<DTUInfo>();
 
+        private Dictionary<string, CommunicationMessage> _commMsgDict = new Dictionary<string, CommunicationMessage>();
+
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         // Local management

@@ -1881,6 +1881,14 @@ namespace InformationTransferLibrary
                 NotifyPropertyChanged("ReceivedBytesString");
             }
         }
+    }
 
+    public class CommunicationMessage
+    {
+        public string UserName { get; set; }
+        public string DTUID { get; set; }
+        public bool IsToDTU { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public string Message { get; set; }
     }
 }
