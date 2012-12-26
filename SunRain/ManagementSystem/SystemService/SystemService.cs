@@ -698,11 +698,11 @@ namespace SystemService
             string userName = sa[0].Trim();
             string password = sa[1].Trim();
             if (Helper.CheckValidChar(password, Helper.CheckMethod.CharNum) == false)
-                return Consts.MAN_ADD_USER_ERR + "Invalid password :" + password;
+                return Consts.MAN_MODIFY_USER_ERR + "Invalid password :" + password;
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
-                if (ui != null)
+                if (ui == null)
                     return Consts.MAN_MODIFY_USER_ERR + "No such user : " + userName;
                 ui.Password = password;
                 SaveUser();
@@ -1342,7 +1342,7 @@ namespace SystemService
                     ui.Online = false;
                 }
 
-                Debug.Assert(tdti.TaskSocket == soc);
+                //Debug.Assert(tdti.TaskSocket == soc);
 
                 Helper.SafeCloseSocket(soc);
             }

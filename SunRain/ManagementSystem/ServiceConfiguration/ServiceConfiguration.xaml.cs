@@ -520,6 +520,9 @@ namespace ServiceConfiguration
                             case Consts.MAN_ADD_USER:
                                 AddLog("Request : add user", flow: LogMessage.Flow.Request);
                                 break;
+                            case Consts.MAN_MODIFY_USER:
+                                AddLog("Request : modify user", flow: LogMessage.Flow.Request);
+                                break;
                             case Consts.MAN_DELETE_USER:
                                 AddLog("Request : delete user", flow: LogMessage.Flow.Request);
                                 break;

@@ -366,6 +366,7 @@ namespace ServiceConfiguration
                     cbPermission.SelectedIndex = 1;
                 else
                     cbPermission.SelectedIndex = 0;
+                Title = "Modify User";
             }
         }
 
@@ -381,11 +382,14 @@ namespace ServiceConfiguration
 
         private void NewPermission_ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Permission == "1" && cbPermission.SelectedIndex == 1)
+            if (_isNewUser == true)
             {
-                MessageBox.Show("Management user cannot operate management user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                cbPermission.SelectedIndex = 0;
-                return;
+                if (Permission == "1" && cbPermission.SelectedIndex == 1)
+                {
+                    MessageBox.Show("Management user cannot operate management user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    cbPermission.SelectedIndex = 0;
+                    return;
+                }
             }
         }
     }

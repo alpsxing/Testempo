@@ -87,7 +87,7 @@ namespace InformationTransferLibrary
         public const string MAN_GET_ALL_USER_OK = "#050007";
         public const string MAN_ADD_USER_OK = "#050008";
         public const string MAN_DELETE_USER_OK = "#050009";
-        public const string MAN_MODIFY_USER_OK = "#0500010";
+        public const string MAN_MODIFY_USER_OK = "#050010";
         //public const string MAN_LOOP_STATE_OK = "#050011";
         public const string MAN_LOGIN_OK = "#050012";
         public const string MAN_LOGOUT_OK = "#050013";
