@@ -27,20 +27,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_624ECEAB37A94C41B0816F9C19EA32D3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_75E94191A3B50D283A7DDECFEBADB1DE"
         "OwnerKey" = "8:_CF19FC0C1B2D406BABD4032E5B11ACA8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_75E94191A3B50D283A7DDECFEBADB1DE"
-        "OwnerKey" = "8:_624ECEAB37A94C41B0816F9C19EA32D3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,12 +46,6 @@
         "Entry"
         {
         "MsmKey" = "8:_F3D05E516C01CFD743637C4D5C36A21E"
-        "OwnerKey" = "8:_624ECEAB37A94C41B0816F9C19EA32D3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F3D05E516C01CFD743637C4D5C36A21E"
         "OwnerKey" = "8:_CF19FC0C1B2D406BABD4032E5B11ACA8"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -76,19 +58,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_624ECEAB37A94C41B0816F9C19EA32D3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CF19FC0C1B2D406BABD4032E5B11ACA8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_75E94191A3B50D283A7DDECFEBADB1DE"
+        "OwnerKey" = "8:_4083D58CD4A0D38F57B88E4C0095DDAB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -100,7 +70,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4083D58CD4A0D38F57B88E4C0095DDAB"
+        "OwnerKey" = "8:_75E94191A3B50D283A7DDECFEBADB1DE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CF19FC0C1B2D406BABD4032E5B11ACA8"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -121,6 +97,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -137,6 +121,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -215,11 +207,6 @@
             "AssemblyAsmDisplayName" = "8:EncryptDecryptLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4083D58CD4A0D38F57B88E4C0095DDAB"
-                    {
-                    "Name" = "8:EncryptDecryptLibrary.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EncryptDecryptLibrary.dll"
             "TargetName" = "8:"
@@ -246,11 +233,6 @@
             "AssemblyAsmDisplayName" = "8:EncryptDecryptLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_75E94191A3B50D283A7DDECFEBADB1DE"
-                    {
-                    "Name" = "8:EncryptDecryptLibrary.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EncryptDecryptLibrary.dll"
             "TargetName" = "8:"
@@ -277,11 +259,6 @@
             "AssemblyAsmDisplayName" = "8:InformationTransferLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F3D05E516C01CFD743637C4D5C36A21E"
-                    {
-                    "Name" = "8:InformationTransferLibrary.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:InformationTransferLibrary.dll"
             "TargetName" = "8:"
@@ -339,28 +316,6 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_00F9AC1FD2B748AF8933B2E4BAFF779E"
-                    {
-                    "Name" = "8:阳光雨露"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_44D2C8F65257449BB057C44EC329174E"
-                        "Folders"
-                        {
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_85B880E7F0A142A2AFEBF66DC375F27A"
-                            {
-                            "Name" = "8:远程调试服务器"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_168DBA7AAC7F48A590E37B33A98108B9"
-                                "Folders"
-                                {
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -922,34 +877,6 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{3EAA2602-2412-441A-9F50-567299F834E5}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_624ECEAB37A94C41B0816F9C19EA32D3"
-            {
-            "SourcePath" = "8:..\\ServiceConfiguration\\obj\\x86\\Debug\\ServiceConfiguration.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_85B880E7F0A142A2AFEBF66DC375F27A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{D71184C6-A860-4603-AA41-B57CB3CE9E15}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

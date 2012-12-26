@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32;
+using System.Reflection;
 
 namespace EncryptDecryptLibrary
 {
@@ -26,12 +27,15 @@ namespace EncryptDecryptLibrary
         {
             try
             {
-                RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"Software\DTUManagement");
-                object obj = rk.GetValue("Path");
-                if (!(obj is string))
-                    return false;
+                //RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"Software\DTUManagement");
+                //object obj = rk.GetValue("Path");
+                //if (!(obj is string))
+                //    return false;
+                //StreamReader sr = new StreamReader((string)obj + @"\install.dat");
 
-                StreamReader sr = new StreamReader((string)obj + @"\install.dat");
+                string installfile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "install.dat");
+                StreamReader sr = new StreamReader(installfile);
+
                 string s = sr.ReadToEnd();
                 string s2 = Decrypt(s);
                 int i1 = s2.IndexOf("A");
