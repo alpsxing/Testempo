@@ -317,7 +317,7 @@ namespace ServiceConfiguration
 
         /// <summary>
         /// When isNewUser is true, permission is target permission
-        /// WHen isNewUser is false, permission is operator permission
+        /// When isNewUser is false, permission is operator permission
         /// </summary>
         /// <param name="permission"></param>
         /// <param name="isNewUser"></param>
@@ -363,7 +363,7 @@ namespace ServiceConfiguration
                 txtUserName.IsReadOnly = true;
                 cbPermission.IsEnabled = false;
                 if (Permission == "1")
-                    cbPermission.SelectedIndex = 0;
+                    cbPermission.SelectedIndex = 1;
                 else
                     cbPermission.SelectedIndex = 0;
             }

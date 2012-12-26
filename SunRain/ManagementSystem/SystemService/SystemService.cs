@@ -630,6 +630,8 @@ namespace SystemService
                     return GetAllUser();
                 case Consts.MAN_ADD_USER:
                     return AddUser(data.Item3);
+                case Consts.MAN_MODIFY_USER:
+                    return ModifyUser(data.Item3);
                 case Consts.MAN_DELETE_USER:
                     return DeleteUser(data.Item3);
                 case Consts.MAN_LOGIN:
@@ -682,6 +684,30 @@ namespace SystemService
                 SaveUser();
             }
             return Consts.MAN_ADD_USER_OK;
+        }
+
+        private string ModifyUser(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+                return Consts.MAN_MODIFY_USER_ERR + "No user information.";
+            content = content.Trim();
+
+            string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+            if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT - 1)
+                return Consts.MAN_MODIFY_USER_ERR + "Invalid user information :" + content;
+            string userName = sa[0].Trim();
+            string password = sa[1].Trim();
+            if (Helper.CheckValidChar(password, Helper.CheckMethod.CharNum) == false)
+                return Consts.MAN_ADD_USER_ERR + "Invalid password :" + password;
+            lock (_taskLock)
+            {
+                UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
+                if (ui != null)
+                    return Consts.MAN_MODIFY_USER_ERR + "No such user : " + userName;
+                ui.Password = password;
+                SaveUser();
+            }
+            return Consts.MAN_MODIFY_USER_OK;
         }
 
         private string DeleteUser(string userName)

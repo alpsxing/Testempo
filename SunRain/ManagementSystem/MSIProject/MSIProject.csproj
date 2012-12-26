@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -177,10 +177,18 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /y /d $(OutDir)\..\..\..\..\*.exe $(OutDir)\..\..\
+    <PostBuildEvent>del /q $(OutDir)\..\..\*.bat
+del /q $(OutDir)\..\..\installutil.*
+xcopy /y /d $(OutDir)\..\..\..\..\*.exe $(OutDir)\..\..\
 xcopy /y /d $(OutDir)\..\..\..\..\*.bat $(OutDir)\..\..\
 xcopy /y /d $(OutDir)\..\..\..\..\*.dat $(OutDir)\..\..\
-rd /q /s $(OutDir)\..\..\data</PostBuildEvent>
+rd /q /s $(OutDir)\..\..\data
+mkdir $(OutDir)\..\..\data
+copy /y $(OutDir)\..\..\*.* $(OutDir)\..\..\data\
+del /q $(OutDir)\..\..\ManagementSystem.*
+del /q $(OutDir)\..\..\ServiceConfiguration.*
+del /q $(OutDir)\..\..\SystemService.*
+del /q $(OutDir)\..\..\TerminalConfiguration.*</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

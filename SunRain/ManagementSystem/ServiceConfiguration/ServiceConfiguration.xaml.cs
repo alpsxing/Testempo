@@ -967,27 +967,23 @@ namespace ServiceConfiguration
 
             UserInfo ui = _userInfoOc[index];
 
-            if (string.Compare("admin", ui.UserName.Trim(), true) == 0)
-            {
-                MessageBox.Show("\"admin\" cannot be editted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (ui.Permission.Trim() == "0")
+            // if target is "admin"
+
+            if (string.Compare("admin", ui.UserName.Trim(), true) == 0 || ui.Permission.Trim() == "0")
             {
                 MessageBox.Show("Super user cannot be editted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (UserPermission == "2" && ui.Permission != "2")
+            // if operator is common user
+
+            if (UserPermission == "2" && (ui.Permission != "2" || string.Compare(UserName.Trim(), ui.UserName.Trim(), true) != 0))
             {
                 MessageBox.Show("Common user has no permission to edit \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (UserPermission == "2" && string.Compare(UserName.Trim(), ui.UserName.Trim(), true) != 0)
-            {
-                MessageBox.Show("Common user has no permission to edit \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+
+            // if operator is management user
 
             if (UserPermission == "1" && ui.Permission == "1" && string.Compare(UserName.Trim(), ui.UserName.Trim(), true) != 0)
             {
