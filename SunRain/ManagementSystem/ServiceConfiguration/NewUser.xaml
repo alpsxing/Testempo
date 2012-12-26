@@ -38,7 +38,8 @@
         <Label Grid.Row="3" Grid.Column="0" Content="Permission" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,3,3" Name="cbPermission"
                   IsEnabled="{Binding Path=PermissionEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
-                  SelectedIndex="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                  SelectedIndex="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                  SelectionChanged="NewPermission_ComboBox_SelectionChanged">
             <ComboBoxItem Content="2 - Common User"/>
             <ComboBoxItem Content="1 - Manage User"/>
         </ComboBox>

@@ -68,7 +68,7 @@ namespace InformationTransferLibrary
         public const string MAN_GET_ALL_USER = "#040007";
         public const string MAN_ADD_USER = "#040008";
         public const string MAN_DELETE_USER = "#040009";
-        //public const string MAN_MODIFY_USER = "#040010";
+        public const string MAN_MODIFY_USER = "#040010";
         //public const string MAN_LOOP_STATE = "#040011";
         public const string MAN_LOGIN = "#040012";
         public const string MAN_LOGOUT = "#040013";
@@ -87,7 +87,7 @@ namespace InformationTransferLibrary
         public const string MAN_GET_ALL_USER_OK = "#050007";
         public const string MAN_ADD_USER_OK = "#050008";
         public const string MAN_DELETE_USER_OK = "#050009";
-        //public const string MAN_MODIFY_USER_OK = "#0500010";
+        public const string MAN_MODIFY_USER_OK = "#0500010";
         //public const string MAN_LOOP_STATE_OK = "#050011";
         public const string MAN_LOGIN_OK = "#050012";
         public const string MAN_LOGOUT_OK = "#050013";
@@ -105,7 +105,7 @@ namespace InformationTransferLibrary
         public const string MAN_GET_ALL_USER_ERR = "#060007";
         public const string MAN_ADD_USER_ERR = "#060008";
         public const string MAN_DELETE_USER_ERR = "#060009";
-        //public const string MAN_MODIFY_USER_ERR = "#060010";
+        public const string MAN_MODIFY_USER_ERR = "#060010";
         //public const string MAN_LOOP_STATE_ERR = "#060011";
         public const string MAN_LOGIN_ERR = "#060012";
         public const string MAN_LOGOUT_ERR = "#060013";

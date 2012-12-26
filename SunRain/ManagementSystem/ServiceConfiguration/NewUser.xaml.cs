@@ -38,6 +38,12 @@ namespace ServiceConfiguration
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        #region Variables
+
+        private bool _isNewUser = true;
+
+        #endregion
+
         #region Properties
 
         private string _userName = "";
@@ -309,13 +315,23 @@ namespace ServiceConfiguration
 
         #endregion
 
-        public NewUser(string permission)
+        /// <summary>
+        /// When isNewUser is true, permission is target permission
+        /// WHen isNewUser is false, permission is operator permission
+        /// </summary>
+        /// <param name="permission"></param>
+        /// <param name="isNewUser"></param>
+        /// <param name="userName"></param>
+        public NewUser(string permission, bool isNewUser = true, string userName = "")
         {
             InitializeComponent();
 
             DataContext = this;
 
+            _isNewUser = isNewUser;
+
             Permission = permission;
+            UserName = userName;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
@@ -334,7 +350,23 @@ namespace ServiceConfiguration
 
         private void Window_Load(object sender, RoutedEventArgs e)
         {
-            txtUserName.Focus();
+            if (_isNewUser == true)
+            {
+                txtUserName.Focus();
+                cbPermission.SelectedIndex = 0;
+                if (Permission == "1")
+                    cbPermission.IsEnabled = false;
+            }
+            else
+            {
+                pbPassword.Focus();
+                txtUserName.IsReadOnly = true;
+                cbPermission.IsEnabled = false;
+                if (Permission == "1")
+                    cbPermission.SelectedIndex = 0;
+                else
+                    cbPermission.SelectedIndex = 0;
+            }
         }
 
         private void Password_Changed(object sender, RoutedEventArgs e)
@@ -345,6 +377,16 @@ namespace ServiceConfiguration
         private void PasswordAgain_Changed(object sender, RoutedEventArgs e)
         {
             PasswordAgain = pbPasswordAgain.Password;
+        }
+
+        private void NewPermission_ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Permission == "1" && cbPermission.SelectedIndex == 1)
+            {
+                MessageBox.Show("Management user cannot operate management user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                cbPermission.SelectedIndex = 0;
+                return;
+            }
         }
     }
 }

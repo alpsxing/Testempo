@@ -73,6 +73,12 @@
                         <Image Source="resources/useroffline.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Edit User" Click="UserEdit_MenuItem_Click" ToolTip="Edit User"
+                          IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/useredit.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Remove User" Click="UserRemove_MenuItem_Click" ToolTip="Remove User"
                           IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
@@ -153,6 +159,13 @@
                     ToolTip="Disconnect User">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/useroffline.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Click="UserEdit_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Edit User">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/useredit.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Button Click="UserRemove_MenuItem_Click" BorderBrush="DarkGray" Margin="1"

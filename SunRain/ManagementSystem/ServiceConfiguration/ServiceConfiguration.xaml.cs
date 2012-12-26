@@ -670,6 +670,13 @@ namespace ServiceConfiguration
                 case Consts.MAN_ADD_USER_ERR:
                     AddLog("Add user error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
+                case Consts.MAN_MODIFY_USER_OK:
+                    AddLog("Modify user ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
+                    break;
+                case Consts.MAN_MODIFY_USER_ERR:
+                    AddLog("Modify user error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    break;
                 case Consts.MAN_DELETE_USER_OK:
                     AddLog("Delete user ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
@@ -941,6 +948,61 @@ namespace ServiceConfiguration
             PutRequest(new Tuple<string, string>(Consts.MAN_KICK_USER, ui.UserName));
         }
 
+        private void UserEdit_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            tcServiceConfig.SelectedIndex = MainWindow.TAB_USER_INDEX;
+
+            if (_userInfoOc.Count < 1)
+            {
+                MessageBox.Show("No user can be edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            int index = dgUser.SelectedIndex;
+            if (index < 0)
+            {
+                MessageBox.Show("No selected user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            UserInfo ui = _userInfoOc[index];
+
+            if (string.Compare("admin", ui.UserName.Trim(), true) == 0)
+            {
+                MessageBox.Show("\"admin\" cannot be editted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (ui.Permission.Trim() == "0")
+            {
+                MessageBox.Show("Super user cannot be editted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (UserPermission == "2" && ui.Permission != "2")
+            {
+                MessageBox.Show("Common user has no permission to edit \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (UserPermission == "2" && string.Compare(UserName.Trim(), ui.UserName.Trim(), true) != 0)
+            {
+                MessageBox.Show("Common user has no permission to edit \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (UserPermission == "1" && ui.Permission == "1" && string.Compare(UserName.Trim(), ui.UserName.Trim(), true) != 0)
+            {
+                MessageBox.Show("Management user has no permission to edit \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            NewUser nu = new NewUser(ui.Permission, false, ui.UserName);
+            bool? b = nu.ShowDialog();
+            if (b != true)
+                return;
+
+            PutRequest(new Tuple<string, string>(Consts.MAN_MODIFY_USER, nu.UserName + "\t" + nu.Password));
+        }
+
         private void UserRemove_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (UserPermission != "0" && UserPermission != "1")
@@ -972,7 +1034,7 @@ namespace ServiceConfiguration
                 return;
             }
 
-            if (string.Compare(ui.UserName, "admin", true) == 0)
+            if (string.Compare(ui.UserName.Trim(), "admin", true) == 0)
             {
                 MessageBox.Show("\"admin\" cannot be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
