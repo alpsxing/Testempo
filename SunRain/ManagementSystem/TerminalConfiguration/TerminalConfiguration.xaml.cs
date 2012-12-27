@@ -611,10 +611,12 @@ namespace TerminalConfiguration
 
             InitializeComponent();
 
-            if (!Directory.Exists(System.Environment.CurrentDirectory))
-                Directory.CreateDirectory(System.Environment.CurrentDirectory);
-            if (!Directory.Exists(System.Environment.CurrentDirectory + @"\DTUConfiguration"))
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUConfiguration");
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (!Directory.Exists(folder + @"\COMWAY"))
+                Directory.CreateDirectory(folder + @"\COMWAY");
+            folder = folder + @"\COMWAY";
+            if (!Directory.Exists(folder + @"\DTUConfiguration"))
+                Directory.CreateDirectory(folder + @"\DTUConfiguration");
 
             DataContext = this;
 
@@ -926,7 +928,8 @@ namespace TerminalConfiguration
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = false;
             ofd.Filter = "Config (.cfg)|*.cfg";
-            ofd.InitialDirectory = System.Environment.CurrentDirectory + @"\DTUConfiguration";
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            ofd.InitialDirectory = folder + @"\COMWAY\DTUConfiguration";
             ofd.Title = "Select a config";
             bool? bv = ofd.ShowDialog();
             if (bv != true)
@@ -955,7 +958,8 @@ namespace TerminalConfiguration
                 sfd.OverwritePrompt = true;
                 sfd.CheckPathExists = true;
                 sfd.Title = "Save Configuration As...";
-                sfd.InitialDirectory = System.Environment.CurrentDirectory + @"\DTUConfiguration";
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                sfd.InitialDirectory = folder + @"\COMWAY\DTUConfiguration";
                 bool? b = sfd.ShowDialog();
                 if (b != true)
                     return;
@@ -979,7 +983,8 @@ namespace TerminalConfiguration
             sfd.OverwritePrompt = true;
             sfd.CheckPathExists = true;
             sfd.Title = "Save Configuration As...";
-            sfd.InitialDirectory = System.Environment.CurrentDirectory + @"\DTUConfiguration";
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            sfd.InitialDirectory = folder + @"\COMWAY\DTUConfiguration";
             bool? b = sfd.ShowDialog();
             if (b != true)
                 return;

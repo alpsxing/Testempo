@@ -65,14 +65,18 @@ namespace SystemService
 
         public SystemService()
         {
-            if (Directory.Exists(System.Environment.CurrentDirectory) == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory);
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration");
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config");
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\ServiceConfiguration\log") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\ServiceConfiguration\log");
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (Directory.Exists(folder + @"\COMWAY") == false)
+                Directory.CreateDirectory(folder + @"\COMWAY");
+            folder = folder + @"\COMWAY";
+            if (Directory.Exists(folder + @"\Service") == false)
+                Directory.CreateDirectory(folder + @"\Service");
+            if (Directory.Exists(folder + @"\Service\config") == false)
+                Directory.CreateDirectory(folder + @"\Service\config");
+            if (Directory.Exists(folder + @"\Service\log") == false)
+                Directory.CreateDirectory(folder + @"\Service\log");
+            if (Directory.Exists(folder + @"\Service\message") == false)
+                Directory.CreateDirectory(folder + @"\Service\message");
 
             InitializeComponent();
 
@@ -144,7 +148,8 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ssportto.cfg");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                sr = new StreamReader(folder + @"\COMWAY\Service\config\ssportto.cfg");
                 while (true)
                 {
                     line = sr.ReadLine();
@@ -248,7 +253,8 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ssportto.cfg");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                sw = new StreamWriter(folder + @"\COMWAY\Service\config\ssportto.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(_termPort.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(_termTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(_dtuPort.ToString()));
@@ -272,7 +278,8 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ituser.dat");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                sr = new StreamReader(folder + @"\COMWAY\Service\config\ituser.dat");
                 string line = null;
                 while (true)
                 {
@@ -345,7 +352,8 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\ituser.dat");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                sw = new StreamWriter(folder + @"\COMWAY\Service\config\ituser.dat");
                 foreach (UserInfo uii in _userInfoOc)
                 {
                     string user = uii.UserName;
@@ -377,7 +385,8 @@ namespace SystemService
             StreamReader sr = null;
             try
             {
-                sr = new StreamReader(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\itdtu.dat");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                sr = new StreamReader(folder + @"\COMWAY\Service\config\itdtu.dat");
                 string line = null;
                 while (true)
                 {
@@ -432,7 +441,8 @@ namespace SystemService
             StreamWriter sw = null;
             try
             {
-                sw = new StreamWriter(System.Environment.CurrentDirectory + @"\ServiceConfiguration\config\itdtu.dat");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                sw = new StreamWriter(folder + @"\COMWAY\Service\config\itdtu.dat");
                 foreach (DTUInfo dii in _dtuInfoOc)
                 {
                     string dtuId = dii.DtuId;
@@ -730,9 +740,10 @@ namespace SystemService
                 if (ui == null)
                     return Consts.MAN_DELETE_USER_ERR + "User (" + userName + ") doesn't exist.";
                 if (ui.Online == true)
-                    return Consts.MAN_DELETE_USER_ERR + "User (" + userName + ")is online.";
+                    return Consts.MAN_DELETE_USER_ERR + "User (" + userName + ") is online.";
                 if (ui.Permission == "2")
                     ui.OnlineOfflineEvent -= new UserInfo.OnlineOfflineEventHandler(UserInfo_OnlineOfflineEvent);
+                UserInfo_OnlineOfflineEvent(ui, new CommonEventArgs() { CommonObject = ui });
                 _userInfoOc.Remove(ui);
                 SaveUser();
 
@@ -1986,8 +1997,30 @@ namespace SystemService
                 if (_commMsgDict.ContainsKey(ui) == true)
                 {
                     List<CommunicationMessage> cmList = _commMsgDict[ui];
-                    using (StreamWriter sw = new StreamWriter(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)))
+                    StringBuilder sb = new StringBuilder();
+                    foreach (CommunicationMessage cm in cmList)
                     {
+                        sb.Append(cm.UserName + "\t" + cm.DTUID + "\t" + cm.IsToDTU.ToString() + "\t" +
+                            cm.TimeStamp.ToLongDateString() + " " + cm.TimeStamp.ToLongTimeString() + "\t" +
+                            cm.Message + "\n");
+                    }
+                    cmList.Clear();
+                    string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    DateTime dt = DateTime.Now;
+                    string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
+                        + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
+                         + "." + dt.Millisecond.ToString();
+                    try
+                    {
+                        StreamWriter sw = new StreamWriter(folder + @"\Service\message\" + ui.UserName + "_" + sdt + ".log");
+                        sw.WriteLine(sb.ToString());
+                        sw.Flush();
+                        sw.Close();
+                        sw.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        eventLogInformationTransfer.WriteEntry("Exception when saving message log : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
                     }
                 }
             }

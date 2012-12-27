@@ -324,14 +324,16 @@ namespace ManagementSystem
 
         public LoginWindow()
         {
-            if (Directory.Exists(System.Environment.CurrentDirectory) == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory);
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement");
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\config") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\config");
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\log") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\log");
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (Directory.Exists(folder + @"\COMWAY") == false)
+                Directory.CreateDirectory(folder + @"\COMWAY");
+            folder = folder + @"\COMWAY";
+            if (Directory.Exists(folder + @"\DTUManagement") == false)
+                Directory.CreateDirectory(folder + @"\DTUManagement");
+            if (Directory.Exists(folder + @"\DTUManagement\config") == false)
+                Directory.CreateDirectory(folder + @"\DTUManagement\config");
+            if (Directory.Exists(folder + @"\DTUManagement\log") == false)
+                Directory.CreateDirectory(folder + @"\DTUManagement\log");
 
             InitializeComponent();
 
@@ -417,7 +419,8 @@ namespace ManagementSystem
         {
             try
             {
-                StreamReader sr = new StreamReader(System.Environment.CurrentDirectory + @"\DTUManagement\termserv.cfg");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                StreamReader sr = new StreamReader(folder + @"\COMWAY\DTUManagement\termserv.cfg");
                 string strLine = null;
                 int i = 0;
                 while (true)
@@ -458,7 +461,8 @@ namespace ManagementSystem
         {
             try
             {
-                StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\DTUManagement\termserv.cfg");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\termserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPortString));
                 sw.WriteLine(EncryptDecrypt.Encrypt(UserName));

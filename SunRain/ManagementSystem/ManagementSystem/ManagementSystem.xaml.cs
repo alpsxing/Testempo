@@ -316,14 +316,16 @@ namespace ManagementSystem
             dgLog.DataContext = LogMsgDispOc;
             LogMsgDispOc.CollectionChanged += new NotifyCollectionChangedEventHandler(LogMsgDispOc_CollectionChanged);
 
-            if (Directory.Exists(System.Environment.CurrentDirectory) == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory);
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement");
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\config") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\config");
-            if (Directory.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\log") == false)
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + @"\DTUManagement\log");
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (Directory.Exists(folder + @"\COMWAY") == false)
+                Directory.CreateDirectory(folder + @"\COMWAY");
+            folder = folder + @"\COMWAY";
+            if (Directory.Exists(folder + @"\DTUManagement") == false)
+                Directory.CreateDirectory(folder + @"\DTUManagement");
+            if (Directory.Exists(folder + @"\DTUManagement\config") == false)
+                Directory.CreateDirectory(folder + @"\DTUManagement\config");
+            if (Directory.Exists(folder + @"\DTUManagement\log") == false)
+                Directory.CreateDirectory(folder + @"\DTUManagement\log");
 
             _cts = new CancellationTokenSource();
             _logTask = Task.Factory.StartNew(
@@ -938,7 +940,8 @@ namespace ManagementSystem
                         string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
                             + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
                              + "." + dt.Millisecond.ToString();
-                        StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\log\" + sdt + ".cfg");
+                        string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\log\" + sdt + ".cfg");
                         StringBuilder sb = new StringBuilder();
                         foreach(LogMessage lm in LogMsgOc)
                         {
@@ -977,13 +980,14 @@ namespace ManagementSystem
         {
             try
             {
-                if (File.Exists(System.Environment.CurrentDirectory + @"\DTUManagement\config\mansys.cfg") == false)
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (File.Exists(folder + @"\COMWAY\DTUManagement\config\mansys.cfg") == false)
                 {
                     //AddLog("No predefined configuration.");
                     return;
                 }
 
-                StreamReader sr = new StreamReader(System.Environment.CurrentDirectory + @"\DTUManagement\config\mansys.cfg");
+                StreamReader sr = new StreamReader(folder + @"\COMWAY\DTUManagement\config\mansys.cfg");
                 string strLine = null;
                 int i = 0;
                 while (true)
@@ -1041,7 +1045,8 @@ namespace ManagementSystem
         {
             try
             {
-                StreamWriter sw = new StreamWriter(System.Environment.CurrentDirectory + @"\DTUManagement\config\mansys.cfg");
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\config\mansys.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(RemoteTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogCount.ToString()));

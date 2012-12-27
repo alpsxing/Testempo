@@ -765,7 +765,8 @@ namespace InformationTransferLibrary
                 NotifyPropertyChanged("DtLogString");
                 NotifyPropertyChanged("Information");
 
-                OnlineOfflineEvent(this, new CommonEventArgs() { CommonObject = this });
+                if(_online == false)
+                    OnlineOfflineEvent(this, new CommonEventArgs() { CommonObject = this });
             }
         }
 
