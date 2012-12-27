@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -2012,7 +2012,7 @@ namespace SystemService
                          + "." + dt.Millisecond.ToString();
                     try
                     {
-                        StreamWriter sw = new StreamWriter(folder + @"\Service\message\" + ui.UserName + "_" + sdt + ".log");
+                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\Service\message\" + ui.UserName + "_" + sdt + ".log");
                         sw.WriteLine(sb.ToString());
                         sw.Flush();
                         sw.Close();
