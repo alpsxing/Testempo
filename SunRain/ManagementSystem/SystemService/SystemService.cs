@@ -26,7 +26,7 @@ namespace SystemService
         private ObservableCollection<UserInfo> _userInfoOc = new ObservableCollection<UserInfo>();
         private ObservableCollection<DTUInfo> _dtuInfoOc = new ObservableCollection<DTUInfo>();
 
-        private Dictionary<string, CommunicationMessage> _commMsgDict = new Dictionary<string, CommunicationMessage>();
+        private Dictionary<UserInfo, List<CommunicationMessage>> _commMsgDict = new Dictionary<UserInfo, List<CommunicationMessage>>();
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -301,13 +301,16 @@ namespace SystemService
                         eventLogInformationTransfer.WriteEntry("Duplicated user : " + ruser, EventLogEntryType.Warning);
                     else
                     {
-                        _userInfoOc.Add(new UserInfo()
+                        UserInfo uiNew = new UserInfo()
                         {
                             DisplayIcon = false,
                             UserName = ruser,
                             Password = rpw,
                             Permission = rpm
-                        });
+                        };
+                        if (rpm == "2")
+                            uiNew.OnlineOfflineEvent +=new UserInfo.OnlineOfflineEventHandler(UserInfo_OnlineOfflineEvent);
+                        _userInfoOc.Add(uiNew);
                     }
                 }
                 sr.Close();
@@ -676,13 +679,16 @@ namespace SystemService
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui != null)
                     return Consts.MAN_ADD_USER_ERR + "Duplicated user : " + userName;
-                _userInfoOc.Add(new UserInfo()
+                UserInfo uiNew = new UserInfo()
                 {
                     DisplayIcon = false,
                     UserName = userName,
                     Password = password,
                     Permission = permission
-                });
+                };
+                if(permission == "2")
+                    uiNew.OnlineOfflineEvent += new UserInfo.OnlineOfflineEventHandler(UserInfo_OnlineOfflineEvent);
+                _userInfoOc.Add(uiNew);
                 SaveUser();
             }
             return Consts.MAN_ADD_USER_OK;
@@ -723,6 +729,10 @@ namespace SystemService
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
                     return Consts.MAN_DELETE_USER_ERR + "User (" + userName + ") doesn't exist.";
+                if (ui.Online == true)
+                    return Consts.MAN_DELETE_USER_ERR + "User (" + userName + ")is online.";
+                if (ui.Permission == "2")
+                    ui.OnlineOfflineEvent -= new UserInfo.OnlineOfflineEventHandler(UserInfo_OnlineOfflineEvent);
                 _userInfoOc.Remove(ui);
                 SaveUser();
 
@@ -1245,24 +1255,55 @@ namespace SystemService
                     else
                     {
                         bool dtuMsg = false;
-                        foreach (KeyValuePair<Socket, Socket> kvp in _terminalDTUMap)
+                        lock(_taskLock)
                         {
-                            if (kvp.Key == soc)
+                            foreach (KeyValuePair<Socket, Socket> kvp in _terminalDTUMap)
                             {
-                                if (kvp.Value == null)
+                                if (kvp.Key == soc)
                                 {
-                                    eventLogInformationTransfer.WriteEntry("No DTU is assigned to terminal (" + ip + ")", EventLogEntryType.Error, Consts.EVENT_ID_FROM_TERM);
+                                    if (kvp.Value == null)
+                                    {
+                                        eventLogInformationTransfer.WriteEntry("No DTU is assigned to terminal (" + ip + ")", EventLogEntryType.Error, Consts.EVENT_ID_FROM_TERM);
+                                        break;
+                                    }
+                                    byte[] badtu = new byte[len];
+                                    for (int i = 0; i < len; i++)
+                                    {
+                                        badtu[i] = ba[i];
+                                    }
+                                    TerminalDTUTaskInformation tdti = _dtuTaskList[kvp.Value];
+                                    tdti.RequestQueue.Enqueue(badtu);
+                                    dtuMsg = true;
+
+                                    #region Log Term Message
+
+                                    UserInfo ui = tdti.Controller;
+                                    DTUInfo di = tdti.CurrentDTU;
+                                    if (ui != null && di != null)
+                                    {
+                                        if (_commMsgDict.ContainsKey(ui))
+                                        {
+                                            List<CommunicationMessage> cmList = _commMsgDict[ui];
+                                            string sar = System.Text.ASCIIEncoding.ASCII.GetString(badtu);
+                                            sar = sar.Replace("\r", @"\r");
+                                            sar = sar.Replace("\n", @"\n");
+                                            sar = sar.Replace("\t", @"\t");
+                                            sar = sar.Replace("\0", @"\0");
+                                            cmList.Add(new CommunicationMessage()
+                                            {
+                                                UserName = ui.UserName,
+                                                DTUID = di.DtuId,
+                                                IsToDTU = true,
+                                                TimeStamp = DateTime.Now,
+                                                Message = sar
+                                            });
+                                        }
+                                    }
+
+                                    #endregion
+                                    
                                     break;
                                 }
-                                byte[] badtu = new byte[len];
-                                for (int i = 0; i < len; i++)
-                                {
-                                    badtu[i] = ba[i];
-                                }
-                                TerminalDTUTaskInformation tdti = _dtuTaskList[kvp.Value];
-                                tdti.RequestQueue.Enqueue(badtu);
-                                dtuMsg = true;
-                                break;
                             }
                         }
                         if(dtuMsg == false)
@@ -1672,6 +1713,32 @@ namespace SystemService
                                             bar[i] = ba[i];
                                         }
                                         qb.Enqueue(bar);
+
+                                        #region Log DTU Message
+
+                                        UserInfo ui = tdti.Controller;
+                                        if (ui != null && dtu != null)
+                                        {
+                                            if (_commMsgDict.ContainsKey(ui))
+                                            {
+                                                List<CommunicationMessage> cmList = _commMsgDict[ui];
+                                                string sar = System.Text.ASCIIEncoding.ASCII.GetString(bar);
+                                                sar = sar.Replace("\r", @"\r");
+                                                sar = sar.Replace("\n", @"\n");
+                                                sar = sar.Replace("\t", @"\t");
+                                                sar = sar.Replace("\0", @"\0");
+                                                cmList.Add(new CommunicationMessage()
+                                                {
+                                                    UserName = ui.UserName,
+                                                    DTUID = dtu.DtuId,
+                                                    IsToDTU = false,
+                                                    TimeStamp = DateTime.Now,
+                                                    Message = sar
+                                                });
+                                            }
+                                        }
+
+                                        #endregion
                                     }
                                 }
                             }
@@ -1904,6 +1971,23 @@ namespace SystemService
                                 q.Enqueue(ban);
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        private void UserInfo_OnlineOfflineEvent(object sender, CommonEventArgs args)
+        {
+            lock (_taskLock)
+            {
+                UserInfo ui = sender as UserInfo;
+                if (ui == null)
+                    return;
+                if (_commMsgDict.ContainsKey(ui) == true)
+                {
+                    List<CommunicationMessage> cmList = _commMsgDict[ui];
+                    using (StreamWriter sw = new StreamWriter(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)))
+                    {
                     }
                 }
             }

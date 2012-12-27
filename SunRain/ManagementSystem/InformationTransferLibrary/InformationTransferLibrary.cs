@@ -640,6 +640,9 @@ namespace InformationTransferLibrary
 
     public class UserInfo : NotifyPropertyChangedClass
     {
+        public delegate void OnlineOfflineEventHandler(object sender, CommonEventArgs args);
+        public event OnlineOfflineEventHandler OnlineOfflineEvent;
+
         private Socket _userSocket = null;
         /// <summary>
         /// Only coupled with Online
@@ -761,6 +764,8 @@ namespace InformationTransferLibrary
                 NotifyPropertyChanged("DtLog");
                 NotifyPropertyChanged("DtLogString");
                 NotifyPropertyChanged("Information");
+
+                OnlineOfflineEvent(this, new CommonEventArgs() { CommonObject = this });
             }
         }
 
