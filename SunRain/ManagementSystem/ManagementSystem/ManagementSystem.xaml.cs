@@ -300,6 +300,48 @@ namespace ManagementSystem
             }
         }
 
+        private bool _view1DTUEnabled = false;
+        public bool View1DTUEnabled
+        {
+            get
+            {
+                return _view1DTUEnabled;
+            }
+            set
+            {
+                _view1DTUEnabled = value;
+                NotifyPropertyChanged("View1DTUEnabled");
+            }
+        }
+
+        private bool _view2DTUsEnabled = false;
+        public bool View2DTUsEnabled
+        {
+            get
+            {
+                return _view2DTUsEnabled;
+            }
+            set
+            {
+                _view2DTUsEnabled = value;
+                NotifyPropertyChanged("View2DTUsEnabled");
+            }
+        }
+
+        private bool _view4DTUsEnabled = false;
+        public bool View4DTUsEnabled
+        {
+            get
+            {
+                return _view4DTUsEnabled;
+            }
+            set
+            {
+                _view4DTUsEnabled = value;
+                NotifyPropertyChanged("View4DTUsEnabled");
+            }
+        }
+
         #endregion
 
         public MainWindow(Socket soc, string servIp, int servPort, string userName)
@@ -340,7 +382,7 @@ namespace ManagementSystem
 
         private void Window_Exit(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure to quit \"Management System\"?", "Comfirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认退出\"DTU管理系统\"?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             _bInNormalClose = true;
@@ -352,7 +394,7 @@ namespace ManagementSystem
         {
             if (_bInNormalClose == false)
             {
-                if (MessageBox.Show("Are you sure to quit \"Management System\"?", "Comfirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                if (MessageBox.Show("确认退出\"DTU管理系统\"?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                     e.Cancel = true;
             }
 
@@ -447,7 +489,7 @@ namespace ManagementSystem
                     byte[] bytes = Helper.DoSendReceive(soc, Consts.TERM_GET_ALL_DTU);
                     if (bytes.Length < 1)
                     {
-                        MessageBox.Show("Connection to server is broken.", "Add DTU Fails.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("失去与服务器的连接.", "添加DTU失败.", MessageBoxButton.OK, MessageBoxImage.Error);
                         Helper.SafeCloseSocket(soc);
                     }
                     else
@@ -455,7 +497,7 @@ namespace ManagementSystem
                         Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
                         if (resp.Item1 != Consts.TERM_GET_ALL_DTU_OK)
                         {
-                            MessageBox.Show("Cannot get all DTU : " + resp.Item3, "Add DTU Fails.", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("无法获得所有DTU信息 : " + resp.Item3, "添加DTU失败.", MessageBoxButton.OK, MessageBoxImage.Error);
                             Helper.SafeCloseSocket(soc);
                         }
                         else
@@ -472,7 +514,7 @@ namespace ManagementSystem
                                 {
                                     if (string.Compare(tii.CurrentDTU.DtuId, _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId, true) == 0)
                                     {
-                                        MessageBox.Show("DTU (" + _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId + ") has already been in control.", "Add DTU Fails.", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        MessageBox.Show("DTU(" + _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId + ")已经被你控制.", "添加DTU失败.", MessageBoxButton.OK, MessageBoxImage.Error);
                                         Helper.SafeCloseSocket(soc);
                                         dupDtu = true;
                                         break;
@@ -487,7 +529,7 @@ namespace ManagementSystem
                                     resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
                                     if (resp.Item1 != Consts.TERM_ADD_DTU_OK)
                                     {
-                                        MessageBox.Show("Cannot add DTU (" + _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId + "): " + resp.Item3, "Add DTU Fails.", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        MessageBox.Show("无法添加DTU(" + _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId + ") : " + resp.Item3, "添加DTU失败.", MessageBoxButton.OK, MessageBoxImage.Error);
                                         Helper.SafeCloseSocket(soc);
                                     }
                                     else
@@ -533,7 +575,7 @@ namespace ManagementSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Socket error : " + ex.Message, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Socket错误 : " + ex.Message, "测试失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(soc);
             }
         }
@@ -547,12 +589,12 @@ namespace ManagementSystem
         {
             if (tvTerminal.Items.Count < 1)
             {
-                MessageBox.Show("No DTU can be removed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (tvTerminal.SelectedItem == null)
             {
-                MessageBox.Show("No selected DTU will be removed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -564,7 +606,7 @@ namespace ManagementSystem
             {
                 ti = Helper.FindTermInfo(tvi, TermInfoOc);
             }
-            if (MessageBox.Show("Are you sure to remove DTU (" + ti.CurrentDTU.DtuId + ")?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认删除DTU(" + ti.CurrentDTU.DtuId + ")?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             _timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
@@ -572,7 +614,7 @@ namespace ManagementSystem
             _timerPulse.Change(Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
             Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
             if (resp.Item1 != Consts.MAN_UNCTRL_DTU_OK)
-                MessageBox.Show("Error when deleting DTU (" + ti.CurrentDTU.DtuId + ") : " + resp.Item3, "Delete DTU error.", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("删除DTU(" + ti.CurrentDTU.DtuId + ")错误 : " + resp.Item3, "删除DTU错误", MessageBoxButton.OK, MessageBoxImage.Error);
 
             TermInfoOc.Remove(ti);
             tvTerminal.Items.Remove(ti.CurrentTvItem);
@@ -583,7 +625,7 @@ namespace ManagementSystem
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            About ab = new About("Management System", "Copyright @ 2012");
+            About ab = new About("DTU管理系统", "版权@2012");
             ab.ShowDialog();
         }
 
@@ -591,7 +633,7 @@ namespace ManagementSystem
         {
             if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
             {
-                MessageBox.Show("No valid license.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无有效许可.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 System.Environment.Exit(0);
             }
 
@@ -611,7 +653,7 @@ namespace ManagementSystem
                 byte[] bytes = Helper.DoSendReceive(_mainSocket, Consts.TERM_INIT_USER + UserName);
                 if (bytes.Length < 1)
                 {
-                    MessageBox.Show("Connection to server is broken.", "Init User Name Fails.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("失去与服务器的连接.", "初始化使用者失败", MessageBoxButton.OK, MessageBoxImage.Error);
                     TerminateAllTerminals();
                     initOK = false;
                 }
@@ -620,7 +662,7 @@ namespace ManagementSystem
                     Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
                     if (resp.Item1 != Consts.TERM_INIT_USER_OK)
                     {
-                        MessageBox.Show("Error response : " + resp.Item1 + resp.Item3, "Init User Name Fails.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("错误的服务器响应 : " + resp.Item1 + resp.Item3, "初始化使用者失败", MessageBoxButton.OK, MessageBoxImage.Error);
                         TerminateAllTerminals();
                         initOK = false;
                     }
@@ -628,14 +670,14 @@ namespace ManagementSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Cannot get initializing user name response : " + ex.Message, "Init User Name Fails.", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无法获得初始化使用者响应 : " + ex.Message, "初始化使用者失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 TerminateAllTerminals();
                 initOK = false;
             }
 
             if (initOK == false)
             {
-                MessageBox.Show("DTU management system exits.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("退出DTU管理系统.", "信息", MessageBoxButton.OK, MessageBoxImage.Information);
                 System.Environment.Exit(1);
             }
         }
@@ -653,7 +695,7 @@ namespace ManagementSystem
                 byte[] bytes = Helper.DoSendReceive(_mainSocket, Consts.TERM_PULSE_REQ);
                 if (bytes.Length < 1)
                 {
-                    AddLog("Connection to server is broken.", "", LogMessage.State.Error, LogMessage.Flow.None);
+                    AddLog("失去与服务器的连接.", "", LogMessage.State.Error, LogMessage.Flow.None);
                     TerminateAllTerminals();
                 }
                 else
@@ -661,16 +703,16 @@ namespace ManagementSystem
                     Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
                     if (resp.Item1 != Consts.TERM_PULSE_REQ_OK)
                     {
-                        AddLog("Pulse fails : " + resp.Item3, "", LogMessage.State.Error, LogMessage.Flow.Response);
+                        AddLog("脉博错误 : " + resp.Item3, "", LogMessage.State.Error, LogMessage.Flow.Response);
                         TerminateAllTerminals();
                     }
                     else
-                        AddLog("Pulse OK.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                        AddLog("脉博成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
                 }
             }
             catch (Exception ex)
             {
-                AddLog("Pulse exception : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
+                AddLog("脉博失败 : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
                 TerminateAllTerminals();
             }
         }
@@ -700,7 +742,7 @@ namespace ManagementSystem
 
         private void ClearLog_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (LogMsgOc.Count > 0 && MessageBox.Show("Do you want to save the log first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (LogMsgOc.Count > 0 && MessageBox.Show("是否需要保存日志?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 SaveLog();
             else
                 SaveLog(false);                
@@ -743,7 +785,7 @@ namespace ManagementSystem
                         {
                             img.Source = new BitmapImage(new Uri("pack://application:,,,/managementsystem;component/resources/dtuunknown.ico"));
                             lbl.Foreground = Brushes.Red;
-                            sp.ToolTip = ti.TerminalIPString + " : Unknown";
+                            sp.ToolTip = ti.TerminalIPString + " : 未知";
                         }
                     }
 
@@ -758,15 +800,15 @@ namespace ManagementSystem
             switch (resp.Item1)
             {
                 default:
-                    AddLog("Unknown response : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("未知的响应 : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 //case Consts.TEST_CONNECTION_RESP:
                 //    break;
                 case Consts.TERM_INVALID_REQUEST:
-                    AddLog("Invalid request : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("非法请求 : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.TERM_ADD_DTU_OK:
-                    AddLog("Add dtu ok : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功添加DTU : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
                         ti.State = TerminalInformation.TiState.Connected;
@@ -813,7 +855,7 @@ namespace ManagementSystem
                     //}, null);
                     break;
                 case Consts.TERM_ADD_DTU_ERR:
-                    AddLog("Add dtu error : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("添加DTU错误 : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     Dispatcher.Invoke((ThreadStart)delegate()
                     {
                         TermInfoOc.Remove(ti);
@@ -823,7 +865,7 @@ namespace ManagementSystem
                     }, null);
                     break;
                 case Consts.TERM_PULSE_REQ_OK:
-                    AddLog("Pulse ok : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("脉博成功 : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     break;
             }
         }
@@ -965,7 +1007,7 @@ namespace ManagementSystem
                         LogMsgOc.Clear();
                         //LogMsgDispOc.Clear();
 
-                        AddLog("Exception when saving log : " + ex.Message, "", state: LogMessage.State.Error);
+                        AddLog("保存日志失败 : " + ex.Message, "", state: LogMessage.State.Error);
                     }
                 }
                 else
@@ -1115,10 +1157,25 @@ namespace ManagementSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Cannot reconnect server : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无法重新连接服务器 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(_mainSocket);
                 _mainSocket = null;
             }
+        }
+
+        private void View1DTU_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void View2DTUs_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void View4DTUs_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

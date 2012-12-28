@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -243,6 +243,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="terminalmanagementsystem.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\view2DTUs.ico" />
+    <Resource Include="Resources\view4DTUs.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\view1DTU.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

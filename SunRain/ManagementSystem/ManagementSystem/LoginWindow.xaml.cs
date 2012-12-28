@@ -344,7 +344,7 @@ namespace ManagementSystem
         {
             if (string.Compare(UserName, "admin", true) == 0)
             {
-                MessageBox.Show("Cannot login : \"admin\" is only for management usage.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("登录失败 : \"admin\"只可用于管理用途.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             Socket soc = null;
@@ -370,7 +370,7 @@ namespace ManagementSystem
                     Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(ba, len);
                     if (resp == null)
                     {
-                        MessageBox.Show("Cannot login : unknown response from server", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("登录失败 : 空的服务器响应.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         Helper.SafeCloseSocket(soc);
                     }
                     else
@@ -378,7 +378,7 @@ namespace ManagementSystem
                         switch (resp.Item1)
                         {
                             default:
-                                MessageBox.Show("Cannot login : unknown response from server", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : 未知的服务器响应 - " + resp.Item1 + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 Helper.SafeCloseSocket(soc);
                                 break;
                             case Consts.TERM_LOGIN_OK:
@@ -392,21 +392,21 @@ namespace ManagementSystem
                             case Consts.TERM_LOGIN_ERR:
                                 Helper.SafeCloseSocket(soc);
                                 logged = true;
-                                MessageBox.Show("Cannot login : " + resp.Item3, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : " + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Cannot login : cannot connect server", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败 : 服务器连接错误", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     Helper.SafeCloseSocket(soc);
                 }
             }
             catch (Exception ex)
             {
                 if (logged == false)
-                    MessageBox.Show("Cannot login : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -478,7 +478,7 @@ namespace ManagementSystem
         {
             if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
             {
-                MessageBox.Show("No valid license.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无有效许可.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 System.Environment.Exit(0);
             }
 

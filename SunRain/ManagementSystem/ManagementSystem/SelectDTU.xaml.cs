@@ -114,7 +114,7 @@ namespace ManagementSystem
 
             dgDtu.DataContext = _dtuInfoOc;
 
-            CurrentStatus = "Retrieving DTU...";
+            CurrentStatus = "获取DTU...";
         }
 
         private void DTU_DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -157,7 +157,7 @@ namespace ManagementSystem
         private void Window_Load(object sender, RoutedEventArgs e)
         {
             if (DTUInfoOc.Count < 1)
-                MessageBox.Show("No DTU is available.", "DTU Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无DTU.", "信息", MessageBoxButton.OK, MessageBoxImage.Information);
             CurrentStatus = "";
         }
 

@@ -448,7 +448,7 @@ namespace ManagementSystem
             {
                 Dispatcher.Invoke((ThreadStart)delegate
                 {
-                    MessageBox.Show("Invalid server IP address.", "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("无效服务器IP地址.", "测试失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 }, null);
             }
             else
@@ -471,7 +471,7 @@ namespace ManagementSystem
                         {
                             Dispatcher.Invoke((ThreadStart)delegate
                             {
-                                MessageBox.Show("Connection to server is broken.", "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("失去和服务器的连接.", "测试失败", MessageBoxButton.OK, MessageBoxImage.Error);
                             }, null);
                         }
                         else
@@ -482,14 +482,14 @@ namespace ManagementSystem
                             {
                                 Dispatcher.Invoke((ThreadStart)delegate
                                 {
-                                    MessageBox.Show("The server can be successfully tested.", "Test Passed", MessageBoxButton.OK, MessageBoxImage.Information);
+                                    MessageBox.Show("测试成功.", "测试成功", MessageBoxButton.OK, MessageBoxImage.Information);
                                 }, null);
                             }
                             else
                             {
                                 Dispatcher.Invoke((ThreadStart)delegate
                                 {
-                                    MessageBox.Show("The server cannot be successfully tested.", "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show("测试错误.", "测试错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 }, null);
                             }
                         }
@@ -503,7 +503,7 @@ namespace ManagementSystem
                 {
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
-                        MessageBox.Show(this, "Socket error : " + ex.Message, "Test Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(this, "Socket错误 : " + ex.Message, "测试错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     }, null);
                     Helper.SafeCloseSocket(client);
                 }

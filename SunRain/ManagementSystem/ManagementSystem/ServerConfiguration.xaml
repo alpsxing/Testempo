@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:itl="clr-namespace:InformationTransferLibrary;assembly=InformationTransferLibrary"
-        Title="Server Configuration" Height="180" Width="300" ResizeMode="NoResize"
+        Title="服务器配置" Height="180" Width="300" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Icon="/ManagementSystem;component/Resources/remoteconfig.ico"
         FontFamily="Calibri" FontSize="13" Loaded="Window_Load">
     <Window.Resources>
@@ -23,28 +23,28 @@
             <ColumnDefinition Width="75"></ColumnDefinition>
             <ColumnDefinition Width="75"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Content="IP Address" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,0,2,0" 
+        <Label Content="IP地址" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Margin="5,0,2,0" 
                HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=IPAddressFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Name="txtIPAddress" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Margin="2,0,5,0"
+        <TextBox Name="txtIPAddress" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" Margin="2,0,5,0"
                  Foreground="{Binding Path=IPAddressFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                  Text="{Binding Path=ServerIPAddress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  HorizontalAlignment="Stretch" VerticalAlignment="Center" IsReadOnly="True"/>
-        <Label Content="Port" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,0,2,0" 
+        <Label Content="端口" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" Margin="5,0,2,0" 
                HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=PortFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Margin="2,0,5,0"
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="2,0,5,0"
                  Foreground="{Binding Path=PortFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                  Text="{Binding Path=ServerPortString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  HorizontalAlignment="Stretch" VerticalAlignment="Center" IsReadOnly="True"/>
-        <Label Content="Timeout" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,0,2,0"
+        <Label Content="超时" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" Margin="5,0,2,0"
                HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=TimeoutFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Margin="2,0,5,0"
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="2,0,5,0"
                  Foreground="{Binding Path=TimeoutFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                  Text="{Binding Path=ServerTimeoutString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-        <Label Content="ms" Grid.Row="2" Grid.Column="3" Margin="5,0,2,0"
+        <Label Content="毫秒" Grid.Row="2" Grid.Column="3" Margin="5,0,2,0"
                HorizontalAlignment="Left" VerticalAlignment="Center"
                Foreground="{Binding Path=TimeoutFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
         <!--Label Content="DTU Timeout" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,0,2,0"
@@ -57,10 +57,10 @@
         <Label Content="ms" Grid.Row="3" Grid.Column="3" Margin="5,0,2,0"
                HorizontalAlignment="Left" VerticalAlignment="Center"
                Foreground="{Binding Path=RemoteFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/-->
-        <Button Name="btnTest" Grid.Row="3" Grid.Column="0" Height="25" Margin="0,3,5,2" Content="Test" Click="Test_Button_Click"
+        <Button Name="btnTest" Grid.Row="3" Grid.Column="0" Height="25" Margin="0,3,5,2" Content="测试" Click="Test_Button_Click"
                 IsEnabled="{Binding Path=InputOK,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Name="btnOK" Grid.Row="3" Grid.Column="3" Height="25" Margin="0,3,5,2" Content="OK" Click="OK_Button_Click"
+        <Button Name="btnOK" Grid.Row="3" Grid.Column="3" Height="25" Margin="0,3,5,2" Content="确认" Click="OK_Button_Click"
                 IsEnabled="{Binding Path=InputOK,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Name="btnCancel" Grid.Row="3" Grid.Column="4" Height="25" Margin="0,3,5,2" Content="Cancel" Click="Cancel_Button_Click" IsDefault="True" />
+        <Button Name="btnCancel" Grid.Row="3" Grid.Column="4" Height="25" Margin="0,3,5,2" Content="放弃" Click="Cancel_Button_Click" IsDefault="True" />
     </Grid>
 </Window>
