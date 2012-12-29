@@ -765,7 +765,7 @@ namespace InformationTransferLibrary
                 NotifyPropertyChanged("DtLogString");
                 NotifyPropertyChanged("Information");
 
-                if(_online == false)
+                if (_online == false && OnlineOfflineEvent != null)
                     OnlineOfflineEvent(this, new CommonEventArgs() { CommonObject = this });
             }
         }
@@ -1366,20 +1366,16 @@ namespace InformationTransferLibrary
         {
             if (_curTvItem == null)
                 _curTvItem = new TreeViewItem();
-            //else
-            //    return;
+
+            _curTvItem.Items.Clear();
 
             StackPanel sp = new StackPanel();
             sp.Orientation = Orientation.Horizontal;
             sp.Margin = new Thickness(0, 0, 0, 0);//-4, -4, -4, -4);
-
             Label lbl = new Label();
             lbl.Content = CurrentDTU.DtuId;
-            //lbl.FontWeight = FontWeights.Bold;
             sp.Children.Add(lbl);
-
             _curTvItem.Header = sp;
-
             Image img = new Image();
             switch (_state)
             {
@@ -1402,8 +1398,54 @@ namespace InformationTransferLibrary
             }
             img.Width = 16;
             img.Height = 16;
-            //img.Opacity = 0.75;
             sp.Children.Insert(0, img);
+
+            TreeViewItem tviSimId = new TreeViewItem();
+            StackPanel spSimId = new StackPanel();
+            spSimId.Orientation = Orientation.Horizontal;
+            spSimId.Margin = new Thickness(0, 0, 0, 0);
+            Label lblSimId = new Label();
+            lblSimId.Content = "SIM ID :" + CurrentDTU.SimId;
+            spSimId.Children.Add(lblSimId);
+            tviSimId.Header = spSimId;
+            Image imgSimId = new Image();
+            imgSimId.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/simid.ico"));
+            imgSimId.Width = 16;
+            imgSimId.Height = 16;
+            spSimId.Children.Insert(0, imgSimId);
+            _curTvItem.Items.Add(tviSimId);
+
+            TreeViewItem tviUser = new TreeViewItem();
+            StackPanel spUser = new StackPanel();
+            spUser.Orientation = Orientation.Horizontal;
+            spUser.Margin = new Thickness(0, 0, 0, 0);
+            Label lblUser = new Label();
+            lblUser.Content = "用户 : " + CurrentDTU.UserName;
+            spUser.Children.Add(lblUser);
+            tviUser.Header = spUser;
+            Image imgUser = new Image();
+            imgUser.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/user.ico"));
+            imgUser.Width = 16;
+            imgUser.Height = 16;
+            spUser.Children.Insert(0, imgUser);
+            _curTvItem.Items.Add(tviUser);
+
+            TreeViewItem tviUserTel = new TreeViewItem();
+            StackPanel spUserTel = new StackPanel();
+            spUserTel.Orientation = Orientation.Horizontal;
+            spUserTel.Margin = new Thickness(0, 0, 0, 0);
+            Label lblUserTel = new Label();
+            lblUserTel.Content = "联系方式 : " + CurrentDTU.UserTel;
+            spUserTel.Children.Add(lblUserTel);
+            tviUserTel.Header = spUserTel;
+            Image imgUserTel = new Image();
+            imgUserTel.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/usertel.ico"));
+            imgUserTel.Width = 16;
+            imgUserTel.Height = 16;
+            spUserTel.Children.Insert(0, imgUserTel);
+            _curTvItem.Items.Add(tviUserTel);
+
+            _curTvItem.IsExpanded = true;
         }
 
         private void InitTabItem()

@@ -7,15 +7,23 @@
              d:DesignHeight="300" d:DesignWidth="300" Loaded="TermInfoUCControl_Load">
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" Height="30">
-            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <RadioButton IsThreeState="False" IsChecked="{Binding Path=CRLFChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="CR+LF"/>
-                <RadioButton IsThreeState="False" IsChecked="{Binding Path=CRChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="CR"/>
-                <RadioButton IsThreeState="False" IsChecked="{Binding Path=LFChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="LF"/>
-            </StackPanel>
-            <Button DockPanel.Dock="Right" Width="75" Margin="3,3,0,3" Content="Send" Click="Send_Button_Click"/>
+            <Button DockPanel.Dock="Right" Width="75" Margin="3,3,0,3" Content="发送" Click="Send_Button_Click"/>
             <TextBox Name="txtDTUCmd" Text="{Binding Path=DTUCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                      Margin="3,3,0,3" TextAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                      KeyDown="DTUCommand_TextBox_KeyDown" PreviewKeyDown="DTUCommand_TextBox_PreviewKeyDown"/>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Height="25">
+            <RadioButton DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                         IsThreeState="False" IsChecked="{Binding Path=LFChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                         Content="LF" Margin="0,0,3,0"/>
+            <RadioButton DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                         IsThreeState="False" IsChecked="{Binding Path=CRChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                         Content="CR" Margin="0,0,3,0"/>
+            <RadioButton DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                         IsThreeState="False" IsChecked="{Binding Path=CRLFChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                         Content="CR+LF" Margin="0,0,3,0"/>
+            <Label DockPanel.Dock="Right" Content="结束标记 : "/>
+            <Grid/>
         </DockPanel>
         <RichTextBox Name="rtxtTerminal" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                      IsReadOnly="True">

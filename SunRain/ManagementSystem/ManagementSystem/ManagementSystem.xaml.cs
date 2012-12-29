@@ -40,7 +40,7 @@ namespace ManagementSystem
 
         #region Const
 
-        private const string THE_TITLE = "Terminal Mananagement System";
+        private const string THE_TITLE = "DTU管理系统";
 
         #endregion
 
@@ -185,7 +185,7 @@ namespace ManagementSystem
             set
             {
                 _serverIp = value;
-                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString() + " ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
+                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString();// +" ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
                 NotifyPropertyChanged("ServerIP");
             }
         }
@@ -200,7 +200,7 @@ namespace ManagementSystem
             set
             {
                 _serverPort = value;
-                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString() + " ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
+                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString();// +" ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
                 NotifyPropertyChanged("ServerPort");
             }
         }
@@ -215,7 +215,7 @@ namespace ManagementSystem
             set
             {
                 _serverTimeout = value;
-                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString() + " ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
+                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString();// +" ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
                 NotifyPropertyChanged("ServerTimeout");
             }
         }
@@ -230,7 +230,7 @@ namespace ManagementSystem
             set
             {
                 _remoteTimeout = value;
-                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString() + " ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
+                Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString();// +" ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
                 NotifyPropertyChanged("RemoteTimeout");
             }
         }
@@ -458,7 +458,7 @@ namespace ManagementSystem
             ServerPort = sc.ServerPort;
             ServerTimeout = sc.ServerTimeout;
             RemoteTimeout = sc.RemoteTimeout;
-            Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString() + " ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
+            Title = THE_TITLE + " - " + ServerIP + ":" + ServerPort.ToString();// +" ( " + ServerTimeout.ToString() + "ms / " + RemoteTimeout.ToString() + "ms )";
 
             SaveConfig();
         }
@@ -475,6 +475,12 @@ namespace ManagementSystem
 
         private void AddDTU_MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            if (TermInfoOc.Count >= 4)
+            {
+                MessageBox.Show("已经同时控制4个DTU.", "添加DTU失败.", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             Socket soc = null;
             try
             {
@@ -703,16 +709,16 @@ namespace ManagementSystem
                     Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
                     if (resp.Item1 != Consts.TERM_PULSE_REQ_OK)
                     {
-                        AddLog("脉博错误 : " + resp.Item3, "", LogMessage.State.Error, LogMessage.Flow.Response);
+                        AddLog("脉搏错误 : " + resp.Item3, "", LogMessage.State.Error, LogMessage.Flow.Response);
                         TerminateAllTerminals();
                     }
                     else
-                        AddLog("脉博成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                        AddLog("脉搏成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
                 }
             }
             catch (Exception ex)
             {
-                AddLog("脉博失败 : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
+                AddLog("脉搏失败 : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
                 TerminateAllTerminals();
             }
         }
@@ -722,14 +728,17 @@ namespace ManagementSystem
             _timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
             lock (_tiLock)
             {
-                foreach (TerminalInformation tii in TermInfoOc)
+                Dispatcher.Invoke((ThreadStart)delegate()
                 {
-                    tii.CTS.Cancel();
-                    tii.State = TerminalInformation.TiState.Disconnected;
-                    tii.CurrentDTU = null;
-                    Helper.SafeCloseSocket(tii.TerminalSocket);
-                    tii.TerminalSocket = null;
-                }
+                    foreach (TerminalInformation tii in TermInfoOc)
+                    {
+                        tii.CTS.Cancel();
+                        tii.State = TerminalInformation.TiState.Disconnected;
+                        tii.CurrentDTU = null;
+                        Helper.SafeCloseSocket(tii.TerminalSocket);
+                        tii.TerminalSocket = null;
+                    }
+                }, null);
             }
             _cts.Cancel();
             Helper.SafeCloseSocket(_mainSocket);
@@ -865,7 +874,7 @@ namespace ManagementSystem
                     }, null);
                     break;
                 case Consts.TERM_PULSE_REQ_OK:
-                    AddLog("脉博成功 : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("脉搏成功 : " + resp, ti.CurrentDTU.DtuId, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     break;
             }
         }
@@ -983,7 +992,7 @@ namespace ManagementSystem
                             + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
                              + "." + dt.Millisecond.ToString();
                         string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\log\" + sdt + ".cfg");
+                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\log\" + sdt + ".log");
                         StringBuilder sb = new StringBuilder();
                         foreach(LogMessage lm in LogMsgOc)
                         {

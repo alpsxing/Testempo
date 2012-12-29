@@ -1670,7 +1670,10 @@ namespace SystemService
                                 {
                                     dtu = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                                     if (dtu == null)
+                                    {
                                         eventLogInformationTransfer.WriteEntry("Unregistered DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                        break;
+                                    }
                                     else
                                     {
                                         dtu.Online = true;

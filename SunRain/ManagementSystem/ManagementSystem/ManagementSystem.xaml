@@ -228,7 +228,7 @@
         </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="50" Width="250" MaxWidth="500"/>
+                <ColumnDefinition MinWidth="50" Width="200" MaxWidth="500"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TreeView Name="tvTerminal" Grid.Column="0"/>

@@ -1290,7 +1290,7 @@ namespace ServiceConfiguration
                             + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
                              + "." + dt.Millisecond.ToString();
                         string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\ServiceConfiguration\log\" + sdt + ".cfg");
+                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\ServiceConfiguration\log\" + sdt + ".log");
                         StringBuilder sb = new StringBuilder();
                         foreach (LogMessage lm in _logOc)
                         {
