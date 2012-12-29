@@ -1345,7 +1345,7 @@ namespace InformationTransferLibrary
         public int MessageByteLength { get; set; }
     }
 
-    public class TerminalInformation
+    public class TerminalInformation : Window
     {
         public delegate void SocketStateChangeEventHandler(object sender, TerminalInformationEventArgs args);
         public SocketStateChangeEventHandler SocketStateChangeEvent;
@@ -1661,8 +1661,11 @@ namespace InformationTransferLibrary
             set
             {
                 _state = value;
-                InitTVItem();
-                InitTabItem();
+                Dispatcher.Invoke((ThreadStart)delegate()
+                {
+                    InitTVItem();
+                    InitTabItem();
+                }, null);
             }
         }
 

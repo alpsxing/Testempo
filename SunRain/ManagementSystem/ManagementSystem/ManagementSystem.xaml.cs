@@ -382,29 +382,38 @@ namespace ManagementSystem
 
         private void TermInfoOc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (TermInfoOc.Count < 1)
+            if (TermInfoOc.Count < 2)
             {
                 View1DTUEnabled = false;
                 View2DTUsEnabled = false;
                 View4DTUsEnabled = false;
             }
-            else if (TermInfoOc.Count < 2)
-            {
-                View1DTUEnabled = true;
-                View2DTUsEnabled = false;
-                View4DTUsEnabled = false;
-            }
             else if (TermInfoOc.Count < 4)
             {
-                View1DTUEnabled = true;
-                View2DTUsEnabled = true;
+                if (tcTerminal.Items.Count == TermInfoOc.Count + 1)
+                    View1DTUEnabled = false;
+                else
+                    View1DTUEnabled = true;
+                if (tcTerminal.Items.Count == TermInfoOc.Count + 1)
+                    View2DTUsEnabled = true;
+                else
+                    View2DTUsEnabled = false;
                 View4DTUsEnabled = false;
             }
             else
             {
-                View1DTUEnabled = true;
-                View2DTUsEnabled = true;
-                View4DTUsEnabled = true;
+                if (tcTerminal.Items.Count == TermInfoOc.Count + 1)
+                    View1DTUEnabled = false;
+                else
+                    View1DTUEnabled = true;
+                if (tcTerminal.Items.Count == 3)
+                    View2DTUsEnabled = false;
+                else
+                    View2DTUsEnabled = true;
+                if (tcTerminal.Items.Count == 2)
+                    View4DTUsEnabled = false;
+                else
+                    View4DTUsEnabled = true;
             }
         }
 
@@ -651,6 +660,8 @@ namespace ManagementSystem
             Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
             if (resp.Item1 != Consts.MAN_UNCTRL_DTU_OK)
                 MessageBox.Show("删除DTU(" + ti.CurrentDTU.DtuId + ")错误 : " + resp.Item3, "删除DTU错误", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            View1DTU_MenuItem_Click(null, null);
 
             TermInfoOc.Remove(ti);
             tvTerminal.Items.Remove(ti.CurrentTvItem);
@@ -926,15 +937,18 @@ namespace ManagementSystem
             return null;
         }
 
-        private void UpdateTerminalInforView(TerminalInformation ti, bool isAdd = true)
+        private void UpdateTerminalInforView(TerminalInformation ti, bool isAdd = true, bool noTv = false)
         {
             if (ti == null)
                 return;
 
             if (isAdd == true)
             {
-                if(ti.CurrentTvItem != null && tvTerminal.Items.Contains(ti.CurrentTvItem) == false)
-                    tvTerminal.Items.Add(ti.CurrentTvItem);
+                if (noTv == false)
+                {
+                    if (ti.CurrentTvItem != null && tvTerminal.Items.Contains(ti.CurrentTvItem) == false)
+                        tvTerminal.Items.Add(ti.CurrentTvItem);
+                }
                 if (ti.CurrentTabItem != null && tcTerminal.Items.Contains(ti.CurrentTabItem) == false)
                 {
                     tcTerminal.Items.Add(ti.CurrentTabItem);
@@ -943,8 +957,11 @@ namespace ManagementSystem
             }
             else
             {
-                if (ti.CurrentTvItem != null && tvTerminal.Items.Contains(ti.CurrentTvItem) == true)
-                    tvTerminal.Items.Remove(ti.CurrentTvItem);
+                if (noTv == false)
+                {
+                    if (ti.CurrentTvItem != null && tvTerminal.Items.Contains(ti.CurrentTvItem) == true)
+                        tvTerminal.Items.Remove(ti.CurrentTvItem);
+                }
                 if (ti.CurrentTabItem != null && tcTerminal.Items.Contains(ti.CurrentTabItem) == true)
                     tcTerminal.Items.Add(ti.CurrentTabItem);
             }
@@ -1206,16 +1223,173 @@ namespace ManagementSystem
         {
             if (tcTerminal.Items.Count == (TermInfoOc.Count + 1))
                 return;
+            for (int i = tcTerminal.Items.Count - 1; i > 0; i--)
+            {
+                object content = ((TabItem)(tcTerminal.Items[i])).Content;
+                if (content is View2DTUsUC)
+                {
+                    ((View2DTUsUC)content).TabControl0.Items.Clear();
+                    ((View2DTUsUC)content).TabControl1.Items.Clear();
+                }
+                if (content is View4DTUsUC)
+                {
+                    ((View4DTUsUC)content).TabControl00.Items.Clear();
+                    ((View4DTUsUC)content).TabControl01.Items.Clear();
+                    ((View4DTUsUC)content).TabControl10.Items.Clear();
+                    ((View4DTUsUC)content).TabControl11.Items.Clear();
+                }
+                tcTerminal.Items.RemoveAt(i);
+            }
+
+            foreach (TerminalInformation ti in TermInfoOc)
+            {
+                UpdateTerminalInforView(ti, noTv: true);
+            }
+
+            tcTerminal.SelectedIndex = 1;
+
+            View1DTUEnabled = false;
+            if (tcTerminal.Items.Count > 1)
+                View2DTUsEnabled = true;
+            if (tcTerminal.Items.Count == 4)
+                View4DTUsEnabled = true;
         }
 
         private void View2DTUs_MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            if (TermInfoOc.Count == 0 || TermInfoOc.Count == 1)
+                return;
+            if (TermInfoOc.Count == 2 && tcTerminal.Items.Count != 3)
+                return;
+            if (TermInfoOc.Count == 3 && tcTerminal.Items.Count != 4)
+                return;
+            if (TermInfoOc.Count == 4 && (tcTerminal.Items.Count != 5 || tcTerminal.Items.Count != 2))
+                return;
 
+            for (int i = tcTerminal.Items.Count - 1; i > 0; i--)
+            {
+                object content = ((TabItem)(tcTerminal.Items[i])).Content;
+                if (content is View2DTUsUC)
+                {
+                    ((View2DTUsUC)content).TabControl0.Items.Clear();
+                    ((View2DTUsUC)content).TabControl1.Items.Clear();
+                }
+                if (content is View4DTUsUC)
+                {
+                    ((View4DTUsUC)content).TabControl00.Items.Clear();
+                    ((View4DTUsUC)content).TabControl01.Items.Clear();
+                    ((View4DTUsUC)content).TabControl10.Items.Clear();
+                    ((View4DTUsUC)content).TabControl11.Items.Clear();
+                }
+                tcTerminal.Items.RemoveAt(i);
+            }
+
+            if (TermInfoOc.Count == 2)
+            {
+                View2DTUsUC v2uc = new View2DTUsUC();
+                v2uc.TabControl0.Items.Add(TermInfoOc[0].CurrentTabItem);
+                v2uc.TabControl1.Items.Add(TermInfoOc[1].CurrentTabItem);
+
+                TabItem ti = new TabItem();
+                ti.Header = TermInfoOc[0].CurrentDTU.DtuId + ", " +
+                    TermInfoOc[1].CurrentDTU.DtuId;
+                ti.Content = v2uc;
+
+                tcTerminal.Items.Add(ti);
+            }
+            else if (TermInfoOc.Count == 3)
+            {
+                View2DTUsUC v2uc = new View2DTUsUC();
+                v2uc.TabControl0.Items.Add(TermInfoOc[0].CurrentTabItem);
+                v2uc.TabControl1.Items.Add(TermInfoOc[1].CurrentTabItem);
+
+                TabItem ti = new TabItem();
+                ti.Header = TermInfoOc[0].CurrentDTU.DtuId + ", " +
+                    TermInfoOc[1].CurrentDTU.DtuId;
+                ti.Content = v2uc;
+
+                tcTerminal.Items.Add(ti);
+
+                UpdateTerminalInforView(TermInfoOc[2], noTv: true);
+            }
+            else
+            {
+                View2DTUsUC v2uc = new View2DTUsUC();
+                v2uc.TabControl0.Items.Add(TermInfoOc[0].CurrentTabItem);
+                v2uc.TabControl1.Items.Add(TermInfoOc[1].CurrentTabItem);
+
+                TabItem ti = new TabItem();
+                ti.Header = TermInfoOc[0].CurrentDTU.DtuId + ", " +
+                    TermInfoOc[1].CurrentDTU.DtuId;
+                ti.Content = v2uc;
+
+                tcTerminal.Items.Add(ti);
+
+                View2DTUsUC v2uc0 = new View2DTUsUC();
+                v2uc0.TabControl0.Items.Add(TermInfoOc[2].CurrentTabItem);
+                v2uc0.TabControl1.Items.Add(TermInfoOc[3].CurrentTabItem);
+
+                TabItem ti0 = new TabItem();
+                ti0.Header = TermInfoOc[2].CurrentDTU.DtuId + ", " +
+                    TermInfoOc[3].CurrentDTU.DtuId;
+                ti0.Content = v2uc0;
+
+                tcTerminal.Items.Add(ti0);
+            }
+
+            tcTerminal.SelectedIndex = 1;
+
+            View1DTUEnabled = true;
+            View2DTUsEnabled = false;
+            if (tcTerminal.Items.Count == 4)
+                View4DTUsEnabled = true;
         }
 
         private void View4DTUs_MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            if (TermInfoOc.Count == 0 || TermInfoOc.Count == 1 || TermInfoOc.Count == 2 || TermInfoOc.Count == 3)
+                return;
+            if (TermInfoOc.Count == 4 && (tcTerminal.Items.Count != 5 || tcTerminal.Items.Count != 3))
+                return;
 
+            for (int i = tcTerminal.Items.Count - 1; i > 0; i--)
+            {
+                object content = ((TabItem)(tcTerminal.Items[i])).Content;
+                if (content is View2DTUsUC)
+                {
+                    ((View2DTUsUC)content).TabControl0.Items.Clear();
+                    ((View2DTUsUC)content).TabControl1.Items.Clear();
+                }
+                if (content is View4DTUsUC)
+                {
+                    ((View4DTUsUC)content).TabControl00.Items.Clear();
+                    ((View4DTUsUC)content).TabControl01.Items.Clear();
+                    ((View4DTUsUC)content).TabControl10.Items.Clear();
+                    ((View4DTUsUC)content).TabControl11.Items.Clear();
+                }
+                tcTerminal.Items.RemoveAt(i);
+            }
+
+            View4DTUsUC v4uc = new View4DTUsUC();
+            v4uc.TabControl00.Items.Add(TermInfoOc[0].CurrentTabItem);
+            v4uc.TabControl01.Items.Add(TermInfoOc[1].CurrentTabItem);
+            v4uc.TabControl10.Items.Add(TermInfoOc[2].CurrentTabItem);
+            v4uc.TabControl11.Items.Add(TermInfoOc[3].CurrentTabItem);
+
+            TabItem ti = new TabItem();
+            ti.Header = TermInfoOc[0].CurrentDTU.DtuId + ", " +
+                TermInfoOc[1].CurrentDTU.DtuId + ", " +
+                TermInfoOc[2].CurrentDTU.DtuId + ", " +
+                TermInfoOc[3].CurrentDTU.DtuId;
+            ti.Content = v4uc;
+
+            tcTerminal.Items.Add(ti);
+
+            tcTerminal.SelectedIndex = 1;
+
+            View1DTUEnabled = true;
+            View2DTUsEnabled = true;
+            View4DTUsEnabled = false;
         }
     }
 }
