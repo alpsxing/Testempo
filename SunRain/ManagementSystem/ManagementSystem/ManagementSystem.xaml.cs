@@ -358,6 +358,8 @@ namespace ManagementSystem
             dgLog.DataContext = LogMsgDispOc;
             LogMsgDispOc.CollectionChanged += new NotifyCollectionChangedEventHandler(LogMsgDispOc_CollectionChanged);
 
+            TermInfoOc.CollectionChanged += new NotifyCollectionChangedEventHandler(TermInfoOc_CollectionChanged);
+
             string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (Directory.Exists(folder + @"\COMWAY") == false)
                 Directory.CreateDirectory(folder + @"\COMWAY");
@@ -376,6 +378,34 @@ namespace ManagementSystem
                     DisplayLog();
                 }, _cts.Token
             );
+        }
+
+        private void TermInfoOc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (TermInfoOc.Count < 1)
+            {
+                View1DTUEnabled = false;
+                View2DTUsEnabled = false;
+                View4DTUsEnabled = false;
+            }
+            else if (TermInfoOc.Count < 2)
+            {
+                View1DTUEnabled = true;
+                View2DTUsEnabled = false;
+                View4DTUsEnabled = false;
+            }
+            else if (TermInfoOc.Count < 4)
+            {
+                View1DTUEnabled = true;
+                View2DTUsEnabled = true;
+                View4DTUsEnabled = false;
+            }
+            else
+            {
+                View1DTUEnabled = true;
+                View2DTUsEnabled = true;
+                View4DTUsEnabled = true;
+            }
         }
 
         #region Window Exit
@@ -1174,7 +1204,8 @@ namespace ManagementSystem
 
         private void View1DTU_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            if (tcTerminal.Items.Count == (TermInfoOc.Count + 1))
+                return;
         }
 
         private void View2DTUs_MenuItem_Click(object sender, RoutedEventArgs e)
