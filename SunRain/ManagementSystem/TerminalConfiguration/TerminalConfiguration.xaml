@@ -1,7 +1,7 @@
 ﻿<Window x:Class="TerminalConfiguration.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="DTU Configuration" Height="600" Width="800" Loaded="Window_Load" Icon="/TerminalConfiguration;component/Resources/bottom_logo.gif">
+        Title="DTU配置" Height="600" Width="800" Loaded="Window_Load" Icon="/TerminalConfiguration;component/Resources/bottom_logo.gif">
     <Window.Resources>
         <Style x:Key="MessageRowBackground" TargetType="{x:Type DataGridRow}">
             <Style.Triggers>
@@ -25,33 +25,33 @@
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top" Height="23">
-            <MenuItem Header="File">
-                <MenuItem Header="Open Config" Click="OpenConfig_MenuItem_Click" ToolTip="Open Configuration"
+            <MenuItem Header="文件">
+                <MenuItem Header="开打配置" Click="OpenConfig_MenuItem_Click"
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
                         <Image Source="resources/open.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save Config" Click="SaveConfig_MenuItem_Click" ToolTip="Save Configuration"
+                <MenuItem Header="保存配置" Click="SaveConfig_MenuItem_Click"
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
                         <Image Source="resources/save.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save Config As..." Click="SaveConfigAs_MenuItem_Click" ToolTip="Save Configuration As..."
+                <MenuItem Header="保存配置为..." Click="SaveConfigAs_MenuItem_Click"
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
                         <Image Source="resources/save_as.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Clear Log" Click="ClearLog_MenuItem_Click" ToolTip="Clear Log">
+                <MenuItem Header="清楚日志" Click="ClearLog_MenuItem_Click">
                     <MenuItem.Icon>
                         <Image Source="resources/clearlog.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Exit" Click="Window_Exit" ToolTip="Exit"
+                <MenuItem Header="退出" Click="Window_Exit"
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
                         <Image Source="resources/exit.png" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -60,8 +60,8 @@
             </MenuItem>
             <!--MenuItem Header="Config">
             </MenuItem-->
-            <MenuItem Header="Help">
-                <MenuItem Header="About..." Click="About_MenuItem_Click">
+            <MenuItem Header="帮助">
+                <MenuItem Header="关于..." Click="About_MenuItem_Click">
                     <MenuItem.Icon>
                         <Image Source="resources/about.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
@@ -71,40 +71,40 @@
         <ToolBar DockPanel.Dock="Top" Height="39"
                  IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
             <Button Click="OpenConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
-                    ToolTip="Open Configuration">
+                    ToolTip="打开配置">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/open.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Button Click="SaveConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
-                    ToolTip="Save Configuration">
+                    ToolTip="保存配置">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/save.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Button Click="SaveConfigAs_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
-                    ToolTip="Save Configuration As...">
+                    ToolTip="保存配置为...">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/save_as.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Separator/>
             <Button Click="ClearLog_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
-                    ToolTip="Clear Log">
+                    ToolTip="清除日志">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/clearlog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Separator/>
             <Button Click="About_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
-                    ToolTip="About...">
+                    ToolTip="关于...">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/about.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Separator/>
             <Button Click="Window_Exit" BorderBrush="DarkGray" Margin="1"
-                    ToolTip="Exit">
+                    ToolTip="退出">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/exit.png" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
@@ -129,13 +129,13 @@
                 <GroupBox Margin="3" Grid.Row="0" DockPanel.Dock="Top" BorderThickness="2" BorderBrush="Blue">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Local Config" Foreground="Blue" FontWeight="Bold"/>
+                            <Label Content="本机配置" Foreground="Blue" FontWeight="Bold"/>
                             <Button Height="30" Width="80" Click="Refresh_Button_Click"
                                     IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="/TerminalConfiguration;component/Resources/refresh.ico"/>
-                                        <Label Content="Refresh" FontWeight="Bold" />
+                                        <Label Content="刷新" FontWeight="Bold" />
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -154,15 +154,15 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Port" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+                        <Label Content="端口" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
                         <ComboBox Name="cboxLocalPort" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="1,1,0,1"
                                   SelectionChanged="LocalConfig_ComboBox_SelectionChanged"
                                   IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                        <Label Content="Baud Rate" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
+                        <Label Content="波特率" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
                         <ComboBox Name="cboxLocalBund" Grid.Row="1" Grid.Column="3" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="1,1,0,1"
                                   SelectionChanged="LocalConfig_ComboBox_SelectionChanged"
                                   IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                        <Label Content="Parity" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="4"/>
+                        <Label Content="校验位" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="4"/>
                         <ComboBox Name="cboxLocalParity" Grid.Row="1" Grid.Column="5" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="1,1,0,1"
                                   SelectionChanged="LocalConfig_ComboBox_SelectionChanged"
                                   IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
@@ -171,14 +171,14 @@
                 <GroupBox Margin="3" Grid.Row="1" DockPanel.Dock="Top" BorderBrush="Blue" BorderThickness="2">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="DTU Config" Foreground="Blue" FontWeight="Bold"/>
+                            <Label Content="DTU配置" Foreground="Blue" FontWeight="Bold"/>
                             <!--Button Content="Initiate" Width="50" Click="Initiate_DTU_Button_Click"/-->
                             <Button Height="30" Width="80" Margin="3,0,0,0" Click="Read_DTU_Button_Click"
                                     IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="/TerminalConfiguration;component/Resources/read.ico"/>
-                                        <Label Content="Read" FontWeight="Bold"/>
+                                        <Label Content="读配置" FontWeight="Bold"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -188,7 +188,7 @@
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="/TerminalConfiguration;component/Resources/write.ico"/>
-                                        <Label Content="Write" FontWeight="Bold"/>
+                                        <Label Content="写配置" FontWeight="Bold"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -197,11 +197,11 @@
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="/TerminalConfiguration;component/Resources/stop.ico"/>
-                                        <Label Content="Stop" FontWeight="Bold"/>
+                                        <Label Content="停止" FontWeight="Bold"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <CheckBox Content="Power-Cycle" HorizontalAlignment="Left" VerticalAlignment="Center"
+                            <CheckBox Content="电源关开循环" HorizontalAlignment="Left" VerticalAlignment="Center"
                                       IsThreeState="False" Margin="3,0,0,0"
                                       IsChecked="{Binding Path=PowerCycleNeeded,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
@@ -210,7 +210,7 @@
                         <GroupBox BorderBrush="#FF00AF00">
                             <GroupBox.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <Label Content="Connection" Foreground="Green" FontWeight="Bold"/>
+                                    <Label Content="连接" Foreground="Green" FontWeight="Bold"/>
                                 </StackPanel>
                             </GroupBox.Header>
                             <Grid>
@@ -226,7 +226,7 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" Content="Server"
+                                <Label Grid.Row="0" Grid.Column="0" Content="服务器"
                                        HorizontalContentAlignment="Right" VerticalContentAlignment="Center"
                                     Foreground="{Binding Path=ServerIPFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="1,1,0,1"
@@ -235,7 +235,7 @@
                                     Foreground="{Binding Path=ServerIPFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                          LostFocus="ServerIP_TextBox_LostFocus"
                                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <Label Content="Port" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                <Label Content="端口" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
                                     Foreground="{Binding Path=ServerPortFG,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBox Grid.Row="0" Grid.Column="4" Margin="1,1,0,1"
                                     HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
@@ -282,19 +282,19 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Label Content="Baud Rate" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+                                <Label Content="波特率" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
                                 <ComboBox Name="cboxDtuBund" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="1,1,0,1"
                                           SelectionChanged="DTUParameters_Combox_SelectionChanged"
                                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <Label Content="Data Bit" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+                                <Label Content="数据位" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
                                 <ComboBox Name="cboxDtuData" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="1,1,0,1"
                                           SelectionChanged="DTUParameters_Combox_SelectionChanged"
                                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <Label Content="Parity" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
+                                <Label Content="校验位" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
                                 <ComboBox Name="cboxDtuParity" Grid.Row="1" Grid.Column="3" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="1,1,0,1"
                                           SelectionChanged="DTUParameters_Combox_SelectionChanged"
                                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <Label Content="Stop Bit" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="4"/>
+                                <Label Content="停止位" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="4"/>
                                 <ComboBox Name="cboxDtuStop" Grid.Row="1" Grid.Column="5" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="1,1,0,1"
                                           SelectionChanged="DTUParameters_Combox_SelectionChanged"
                                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
@@ -333,10 +333,10 @@
                                     Foreground="{Binding Path=ServerResponseIntervalFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                                 <Label Content="SR : Server Response" HorizontalAlignment="Left" VerticalAlignment="Center"
                                     Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Foreground="DarkGreen"/-->
-                                <Label Content="Register Package" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                    Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                <Label Content="注册包" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                    Grid.Row="3" Grid.Column="0"
                                     Foreground="{Binding Path=RegisterPackageFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="1,1,0,1"
+                                <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="1,1,0,1"
                                     HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                                     Text="{Binding Path=RegisterPackage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Foreground="{Binding Path=RegisterPackageFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
@@ -344,8 +344,8 @@
                                 <!--CheckBox Grid.Row="5" Grid.Column="4" Content="HEX" HorizontalAlignment="Left" VerticalAlignment="Center"
                                     IsThreeState="False" IsChecked="{Binding Path=RegisterPackageUseHex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                           Visibility="Collapsed"/-->
-                                <Label Content="(7 chars)" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                    Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2" Foreground="DarkGreen"/>
+                                <Label Content="(最多7个字符)" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Foreground="DarkGreen"/>
                                 <!--Label Content="SIM ID" HorizontalAlignment="Right" VerticalAlignment="Center"
                                     Grid.Row="7" Grid.Column="0"
                                     Foreground="{Binding Path=SIMIDFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
@@ -371,25 +371,25 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Command" Width="SizeToCells" MinWidth="80"
+                        <DataGridTextColumn Header="命令" Width="SizeToCells" MinWidth="80"
                                         Binding="{Binding Path=CommandDisplay,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
                                         IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Return" Width="SizeToCells" MinWidth="80"
+                        <DataGridTextColumn Header="返回" Width="SizeToCells" MinWidth="80"
                                         Binding="{Binding Path=ReturnDisplay,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                         IsReadOnly="True"/>
-                        <DataGridTextColumn Header="R-Compare" Width="SizeToCells" MinWidth="80"
+                        <DataGridTextColumn Header="返回比较" Width="SizeToCells" MinWidth="80"
                                         Binding="{Binding Path=RCompareDisplay,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                         IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Reponse" Width="SizeToCells" MinWidth="80"
+                        <DataGridTextColumn Header="响应" Width="SizeToCells" MinWidth="80"
                                         Binding="{Binding Path=ResponseDisplay,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
                                         IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Compare" Width="SizeToCells" MinWidth="80"
+                        <DataGridTextColumn Header="响应比较" Width="SizeToCells" MinWidth="80"
                                         Binding="{Binding Path=CompareDisplay,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                         IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Return" Width="SizeToCells" MinWidth="80"
+                        <DataGridTextColumn Header="返回调整" Width="SizeToCells" MinWidth="80"
                                         Binding="{Binding Path=ReturnOfficial,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
                                         IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Response" Width="SizeToCells" MinWidth="80"
+                        <DataGridTextColumn Header="响应调整" Width="SizeToCells" MinWidth="80"
                                         Binding="{Binding Path=ResponseOfficial,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
                                         IsReadOnly="True"/>
                     </DataGrid.Columns>
@@ -398,7 +398,7 @@
             <GridSplitter Width="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
             <DockPanel Grid.Column="1" Margin="3,0,0,0">
                 <DockPanel DockPanel.Dock="Bottom" Height="23">
-                    <CheckBox DockPanel.Dock="Left" Content="Auto Scrolling" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    <CheckBox DockPanel.Dock="Left" Content="自动滚动" HorizontalAlignment="Left" VerticalAlignment="Center"
                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                                   IsThreeState="False" IsChecked="{Binding Path=LogAutoScrolling,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                     <Grid/>
@@ -423,7 +423,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Message" Width="SizeToCells" MinWidth="150"
+                        <DataGridTextColumn Header="消息" Width="SizeToCells" MinWidth="150"
                                         Binding="{Binding Path=MessageDisplay,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
                                         IsReadOnly="True"/>
                     </DataGrid.Columns>

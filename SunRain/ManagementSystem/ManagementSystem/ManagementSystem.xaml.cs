@@ -402,7 +402,11 @@ namespace ManagementSystem
 
             if (e.Cancel == false)
             {
-                Helper.DoSendReceive(_mainSocket, Consts.TERM_LOGOUT + UserName, false);
+                try
+                {
+                    Helper.DoSendReceive(_mainSocket, Consts.TERM_LOGOUT + UserName, false);
+                }
+                catch (Exception) { }
                 try
                 {
                     TerminateAllTerminals();

@@ -1236,7 +1236,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("终端(" + ip + ")发送任务(" + Task.CurrentId.ToString() + ")出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
+                    eventLogInformationTransfer.WriteEntry("终端" + ip + "发送任务(" + Task.CurrentId.ToString() + ")出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
                     break;
                 }
             }
@@ -1260,7 +1260,7 @@ namespace SystemService
                     len = soc.Receive(ba);
                     if (len < 1)
                     {
-                        eventLogInformationTransfer.WriteEntry("失去到终端(" + ip + ")的连接.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                        eventLogInformationTransfer.WriteEntry("失去到终端" + ip + "的连接.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                         break;
                     }
                     else
@@ -1274,7 +1274,7 @@ namespace SystemService
                                 {
                                     if (kvp.Value == null)
                                     {
-                                        eventLogInformationTransfer.WriteEntry("No DTU is assigned to terminal (" + ip + ")", EventLogEntryType.Error, Consts.EVENT_ID_FROM_TERM);
+                                        eventLogInformationTransfer.WriteEntry("终端" + ip + "没有分配任何DTU", EventLogEntryType.Error, Consts.EVENT_ID_FROM_TERM);
                                         break;
                                     }
                                     byte[] badtu = new byte[len];
@@ -1323,7 +1323,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Exception in receiving task (" + Task.CurrentId.ToString() + ") for terminal (" + ip + ") : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                    eventLogInformationTransfer.WriteEntry("终端(" + ip + ")的接收任务(" + Task.CurrentId.ToString() + ")出错 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                     break;
                 }
             }
@@ -1473,26 +1473,28 @@ namespace SystemService
         private string TermAddDtu(Socket soc, string userAndDtuId)
         {
             if (string.IsNullOrWhiteSpace(userAndDtuId))
-                return Consts.TERM_ADD_DTU_ERR + "Wrong user name and DTU id.";
+                return Consts.TERM_ADD_DTU_ERR + "空的用户名和DTU ID.";
             string[] sa = userAndDtuId.Split(new string[] { "\t" }, StringSplitOptions.None);
             if (sa == null || sa.Length != 2)
-                return Consts.TERM_ADD_DTU_ERR + "Wrong user name or DTU id.";
+                return Consts.TERM_ADD_DTU_ERR + "错误的用户名和DTU ID.";
             string un = sa[0].Trim();
             string dtuId = sa[1].Trim();
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(un, _userInfoOc);
                 if (ui == null)
-                    return Consts.TERM_ADD_DTU_ERR + "User (" + un + ") not exists.";
+                    return Consts.TERM_ADD_DTU_ERR + "用户(" + un + ")不存在.";
+                if (ui.Online == false)
+                    return Consts.TERM_ADD_DTU_ERR + "用户(" + dtuId + ")不在线.";
                 DTUInfo di = Helper.FindDTUInfo(sa[1].Trim(), _dtuInfoOc);
                 if (di == null)
-                    return Consts.TERM_ADD_DTU_ERR + "DTU (" + dtuId + ") doesn't exists.";
+                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")不存在.";
                 if (di.Online == false)
-                    return Consts.TERM_ADD_DTU_ERR + "DTU (" + dtuId + ") is offline.";
+                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")不在线.";
                 if (ui.UserDTUs.Contains(di) == true)
-                    return Consts.TERM_ADD_DTU_ERR + "DTU (" + dtuId + ") is already under control.";
+                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")已经被用户(" + un + ")控制.";
                 if (di.Controller != null)
-                    return Consts.TERM_ADD_DTU_ERR + "DTU (" + dtuId + ") is under control by " + di.Controller.UserName;
+                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")已经被用户(" + un + ")控制.";
 
                 di.Online = true;
                 di.Controller = ui;
@@ -1507,7 +1509,7 @@ namespace SystemService
                 soc.SendTimeout = -1;
                 soc.ReceiveTimeout = -1;
 
-                eventLogInformationTransfer.WriteEntry("DTU (" + dtuId + ") is now under control by " + ui.UserName);
+                eventLogInformationTransfer.WriteEntry("DTU(" + dtuId + ")现在被用户(" + un + ")控制.");
             }
 
             return Consts.TERM_ADD_DTU_OK;
@@ -1516,14 +1518,14 @@ namespace SystemService
         private string TermInitUser(Socket soc, string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return Consts.TERM_INIT_USER_ERR + "Wrong user name.";
+                return Consts.TERM_INIT_USER_ERR + "错误用户名.";
             userName = userName.Trim();
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.TERM_INIT_USER_ERR + "User (" + userName + ") doesn't exsit.";
+                    return Consts.TERM_INIT_USER_ERR + "用户(" + userName + ")不存在.";
 
                 if (_termTaskList.ContainsKey(soc) == true)
                 {
@@ -1532,7 +1534,7 @@ namespace SystemService
                         ui.UserTermSockets.Add(_termTaskList[soc]);
                 }
                 else
-                    return Consts.TERM_INIT_USER_ERR + "Terminal tasks for user (" + userName + ") is not ready.";
+                    return Consts.TERM_INIT_USER_ERR + "用户(" + userName + ")的终端发送和接收任务还没有被创建.";
             }
             return Consts.TERM_INIT_USER_OK;
         }
@@ -1548,14 +1550,14 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("DTU starts listening...");
+            eventLogInformationTransfer.WriteEntry("DTU服务开始侦听...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _dtuTimeout;
                 soc.SendTimeout = _dtuTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
-                eventLogInformationTransfer.WriteEntry("Accepted one DTU from " + ip);
+                eventLogInformationTransfer.WriteEntry("接受来自" + ip+ "的DTU.");
 
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Task ts = new Task(
@@ -1582,9 +1584,9 @@ namespace SystemService
                 }
                 ts.Start();
                 tr.Start();
-                eventLogInformationTransfer.WriteEntry("Start DTU send task " + ts.Id.ToString() + " and receive task " + tr.Id.ToString());
+                eventLogInformationTransfer.WriteEntry("开始DTU发送任务" + ts.Id.ToString() + "和接收任务" + tr.Id.ToString());
             }
-            eventLogInformationTransfer.WriteEntry("DTU stops listening.");
+            eventLogInformationTransfer.WriteEntry("DTU服务停止侦听.");
         }
 
         public void DTUSendService(Socket soc)
@@ -1609,7 +1611,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Exception in sending task (" + Task.CurrentId.ToString() + ") for DTU (" + ip + ") : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_DTU);
+                    eventLogInformationTransfer.WriteEntry("DTU(" + ip + ")的发送任务(" + Task.CurrentId.ToString() + ")出错 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_DTU);
                     break;
                 }
             }
@@ -1641,13 +1643,13 @@ namespace SystemService
                         {
                             dtu = Helper.FindDTUInfo(soc, _dtuInfoOc);
                             if (dtu == null)
-                                eventLogInformationTransfer.WriteEntry("Connection to DTU from " + ip + " is broken.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                eventLogInformationTransfer.WriteEntry("失去和DTU(" + ip + ")的连接.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                             else
                             {
                                 dtu.Online = false;
                                 dtu.DTUSocket = null;
                                 dtu.Controller = null;
-                                eventLogInformationTransfer.WriteEntry("Connection to DTU (" + dtu.DtuId + ") from " + ip + " is broken.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                eventLogInformationTransfer.WriteEntry("失去和来自" + ip + "的DTU(" + dtu.DtuId + ")的连接.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                             }
                             break;
                         }
@@ -1663,7 +1665,7 @@ namespace SystemService
                             string dtuId = System.Text.ASCIIEncoding.ASCII.GetString(ba);
                             dtuId = dtuId.Trim(new char[] { '\r', '\n', '\0' }).Trim();
                             if (dtuId.Length != Consts.DTU_INFO_ITEM_COUNT)
-                                eventLogInformationTransfer.WriteEntry("Wait for DTU ID again : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                eventLogInformationTransfer.WriteEntry("再次等待DTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                             else
                             {
                                 lock (_taskLock)
@@ -1671,7 +1673,7 @@ namespace SystemService
                                     dtu = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                                     if (dtu == null)
                                     {
-                                        eventLogInformationTransfer.WriteEntry("Unregistered DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                        eventLogInformationTransfer.WriteEntry("未注册的DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                                         break;
                                     }
                                     else
@@ -1705,7 +1707,7 @@ namespace SystemService
                                 }
 
                                 if (socTerm == null)
-                                    eventLogInformationTransfer.WriteEntry("Ignore message from DTU (" + dtu.DtuId + ") at " + ip + " because it is not under control.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                    eventLogInformationTransfer.WriteEntry("忽略来自" + ip + "的DTU(" + dtu.DtuId + ")的消息因为它不再被控制.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                                 else
                                 {
                                     TerminalDTUTaskInformation tdti = null;
@@ -1714,7 +1716,7 @@ namespace SystemService
 
                                     if (tdti == null)
                                     {
-                                        eventLogInformationTransfer.WriteEntry("Ignore message from DTU (" + dtu.DtuId + ") at " + ip + " because the terminal task serviceis not ready.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                        eventLogInformationTransfer.WriteEntry("忽略来自" + ip + "的DTU(" + dtu.DtuId + ")的消息因为控制它的终端的任务服务没有正常运作.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                                         if (_terminalDTUMap.ContainsKey(socTerm))
                                             _terminalDTUMap.Remove(socTerm);
                                     }
@@ -1763,7 +1765,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Exception in receiving task (" + Task.CurrentId.ToString() + ") for DTU (" + ip + ") : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                    eventLogInformationTransfer.WriteEntry("来自" + ip + "的DTU的接收任务(" + Task.CurrentId.ToString() + ")出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                     break;
                 }
             }
@@ -1835,19 +1837,19 @@ namespace SystemService
                 {
                     t.Wait(Consts.TASK_STOP_WAIT_TIME);//, _manageCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("Management task " + t.Id.ToString() + " stopped.");
+                    eventLogInformationTransfer.WriteEntry("管理任务 " + t.Id.ToString() + "停止.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Management task " + t.Id.ToString() + " cannot stop successfully : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("管理任务" + t.Id.ToString() + "不能够正常停止 : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("Management task inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("管理任务inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Management task " + t.Id.ToString() + " cannot stop successfully : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("管理任务" + t.Id.ToString() + "无法正确停止 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
             }
             foreach (KeyValuePair<Socket, TerminalDTUTaskInformation> kvp in _termTaskList)
@@ -1861,37 +1863,37 @@ namespace SystemService
                 {
                     ts.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("Terminal send task " + ts.Id.ToString() + " stopped.");
+                    eventLogInformationTransfer.WriteEntry("终端发送任务" + ts.Id.ToString() + "停止.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Terminal send task " + ts.Id.ToString() + " cannot stop successfully : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("终端发送任务" + ts.Id.ToString() + "不能正确停止 : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("Terminal send task inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("终端发送任务 inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Terminal send task " + ts.Id.ToString() + " cannot stop successfully : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("终端发送任务" + ts.Id.ToString() + "不能正确停止 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
                 try
                 {
                     tr.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("Terminal receive task " + tr.Id.ToString() + " stopped.");
+                    eventLogInformationTransfer.WriteEntry("终端接收任务" + tr.Id.ToString() + "停止.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Terminal receive task " + tr.Id.ToString() + " cannot stop successfully : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("终端接收任务" + tr.Id.ToString() + "不能正确停止 : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("Terminal receive task inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("终端接收任务inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Terminal receive task " + tr.Id.ToString() + " cannot stop successfully : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("终端接收任务" + tr.Id.ToString() + "不能正确停止 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
             }
             foreach (KeyValuePair<Socket, TerminalDTUTaskInformation> kvp in _dtuTaskList)
@@ -1905,37 +1907,37 @@ namespace SystemService
                 {
                     ts.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("DTU send task " + ts.Id.ToString() + " stopped.");
+                    eventLogInformationTransfer.WriteEntry("DTU发送任务" + ts.Id.ToString() + "停止.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU send task " + ts.Id.ToString() + " cannot stop successfully : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTU发送任务" + ts.Id.ToString() + "不能正确停止 : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("DTU send task inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("DTU发送任务inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU send task " + ts.Id.ToString() + " cannot stop successfully : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTU发送任务" + ts.Id.ToString() + "不能正确停止 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
                 try
                 {
                     tr.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("DTU receive task " + tr.Id.ToString() + " stopped.");
+                    eventLogInformationTransfer.WriteEntry("DTU接收任务" + tr.Id.ToString() + "停止.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU receive task " + tr.Id.ToString() + " cannot stop successfully : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTU接收任务" + tr.Id.ToString() + "不能正确停止 : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("DTU receive task inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("DTU接收任务inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU receive task " + tr.Id.ToString() + " cannot stop successfully : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTU接收任务" + tr.Id.ToString() + "不能正确停止 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
             }
         }
@@ -2023,7 +2025,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("Exception when saving message log : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("保存消息日志的时候出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
                     }
                 }
             }
