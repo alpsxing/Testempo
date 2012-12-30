@@ -1236,7 +1236,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("终端" + ip + "发送任务(" + Task.CurrentId.ToString() + ")出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
+                    eventLogInformationTransfer.WriteEntry("终端" + ip + "发送任务" + Task.CurrentId.ToString() + "出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
                     break;
                 }
             }
