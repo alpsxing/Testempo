@@ -124,7 +124,7 @@ namespace ServiceConfiguration
             set
             {
                 _userName = value;
-                Title = "Service Configuration - " + _userName + " ( " + UserPermissionDislay + " ) - " + ReadyString;
+                Title = "服务管理 - " + _userName + " ( " + UserPermissionDislay + " ) - " + ReadyString;
                 NotifyPropertyChanged("UserName");
             }
         }
@@ -153,7 +153,7 @@ namespace ServiceConfiguration
             set
             {
                 _userPermission = value;
-                Title = "Service Configuration - " + _userName + " ( " + UserPermissionDislay + " ) - " + ReadyString;
+                Title = "服务管理 - " + _userName + " ( " + UserPermissionDislay + " ) - " + ReadyString;
                 NotifyPropertyChanged("UserPermission");
                 NotifyPropertyChanged("UserPermissionDislay");
             }
@@ -164,11 +164,11 @@ namespace ServiceConfiguration
             get
             {
                 if (UserPermission == "0")
-                    return "Super User";
+                    return "超级用户";
                 else if (UserPermission == "1")
-                    return "Manage User";
+                    return "管理用户";
                 else
-                    return "Common User";
+                    return "普通用户";
             }
         }
 
@@ -223,7 +223,7 @@ namespace ServiceConfiguration
             }
         }
 
-        private string _readyString = "Disconnected";
+        private string _readyString = "未连接";
         public string ReadyString
         {
             get
@@ -381,7 +381,7 @@ namespace ServiceConfiguration
 
         private void Window_Exit(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure to quit \"Service Conciguration\"?", "Comfirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认退出\"服务管理\"?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             _bInNormalClose = true;
@@ -393,7 +393,7 @@ namespace ServiceConfiguration
         {
             if (_bInNormalClose == false)
             {
-                if (MessageBox.Show("Are you sure to quit \"Service Conciguration\"?", "Comfirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                if (MessageBox.Show("确认退出\"服务管理\"?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                     e.Cancel = true;
             }
 
@@ -443,7 +443,7 @@ namespace ServiceConfiguration
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            About ab = new About("Service Configuration System", "Copyright @ 2012");
+            About ab = new About("服务管理系统", "版权 @ 2012");
             ab.ShowDialog();
         }
 
@@ -451,7 +451,7 @@ namespace ServiceConfiguration
         {
             if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
             {
-                MessageBox.Show("No valid license.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无有效许可.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 System.Environment.Exit(0);
             }
 
@@ -473,7 +473,7 @@ namespace ServiceConfiguration
         {
             Dispatcher.Invoke((ThreadStart)delegate
             {
-                ReadyString = "Connected";
+                ReadyString = "连接";
             }, null);
 
             lock (_reqLock)
@@ -502,46 +502,46 @@ namespace ServiceConfiguration
                         switch (req.Item1)
                         {
                             default:
-                                AddLog("Unknown request : " + req.Item1 + req.Item2, state: LogMessage.State.Fail, flow: LogMessage.Flow.Request);
+                                AddLog("未知请求 : " + req.Item1 + req.Item2, state: LogMessage.State.Fail, flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_ADD_DTU:
-                                AddLog("Request : add DTU", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 添加DTU", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_GET_ALL_DTU:
-                                AddLog("Request : gat all DTUs", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 获取所有DTU信息", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_DELETE_DTU:
-                                AddLog("Request : delete DTU", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 删除DTU", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_MODIFY_DTU:
-                                AddLog("Request : modify DTU", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 修改DTU信息", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_GET_ALL_USER:
-                                AddLog("Request : get all users", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 获取所有用户信息", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_ADD_USER:
-                                AddLog("Request : add user", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 添加用户", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_MODIFY_USER:
-                                AddLog("Request : modify user", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 修改用户密码", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_DELETE_USER:
-                                AddLog("Request : delete user", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 删除用户", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_LOGIN:
-                                AddLog("Request : login", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 登录", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_LOGOUT:
-                                AddLog("Request : logout", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 登出", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_KICK_DTU:
-                                AddLog("Request : disconnect DTU", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 断开DTU连接", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_KICK_USER:
-                                AddLog("Request : disconnect user", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 断开用户连接", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_UNCTRL_DTU:
-                                AddLog("Request : release DTU", flow: LogMessage.Flow.Request);
+                                AddLog("请求 : 释放DTU控制", flow: LogMessage.Flow.Request);
                                 break;
                         }
                         _manSocket.Send(Encoding.ASCII.GetBytes(req.Item1 + req.Item2));
@@ -549,7 +549,7 @@ namespace ServiceConfiguration
                         int length = _manSocket.Receive(bytes);
                         if (length < 1)
                         {
-                            AddLog("Connection to server is broken.", state: LogMessage.State.Error, flow: LogMessage.Flow.Response);
+                            AddLog("失去和服务器的连接", state: LogMessage.State.Error, flow: LogMessage.Flow.Response);
                             _userTimer.Change(Timeout.Infinite, Consts.MAN_TASK_TIMER_INTERVAL);
                             _dtuTimer.Change(Timeout.Infinite, Consts.MAN_TASK_TIMER_INTERVAL);
                             lock (_reqLock)
@@ -570,11 +570,11 @@ namespace ServiceConfiguration
             }
             catch (Exception ex)
             {
-                AddLog("Exception when communicate with server : " + ex.Message, state: LogMessage.State.Error);
+                AddLog("与服务器通信出现错误 : " + ex.Message, state: LogMessage.State.Error);
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
-                ReadyString = "Disconnected";
+                ReadyString = "未连接";
                 foreach (UserInfo uii in _userInfoOc)
                 {
                     uii.Online = false;
@@ -588,18 +588,12 @@ namespace ServiceConfiguration
             {
                 _dtuTimer.Dispose();
             }
-            catch (Exception ex)
-            {
-                AddLog("Exception when disposing DTU timer : " + ex.Message, state: LogMessage.State.Error);
-            }
+            catch (Exception) { }
             try
             {
                 _userTimer.Dispose();
             }
-            catch (Exception ex)
-            {
-                AddLog("Exception when disposing user timer : " + ex.Message, state: LogMessage.State.Error);
-            }
+            catch (Exception) { }
             lock (_reqLock)
             {
                 ReqQueue.Clear();
@@ -620,7 +614,7 @@ namespace ServiceConfiguration
             Tuple<string, byte[], string, string> data = Helper.ExtractSocketResponse(bytes, len);
             if (data == null)
             {
-                AddLog("Unknown response : " + System.Text.Encoding.ASCII.GetString(bytes, 0, len), state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                AddLog("空的服务器响应 : " + System.Text.Encoding.ASCII.GetString(bytes, 0, len), state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                 return;
             }
 
@@ -628,20 +622,20 @@ namespace ServiceConfiguration
             {
                 if (data.Item1 != Consts.MAN_LOGIN_OK && data.Item1 != Consts.MAN_LOGIN_ERR)
                 {
-                    AddLog("Unknown response : " + data.Item1 + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("位置的服务器响应 : " + data.Item1 + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     Helper.SafeCloseSocket(_manSocket);
                     _manSocket = null;
                     return;
                 }
                 if (data.Item1 == Consts.MAN_LOGIN_OK)
                 {
-                    AddLog("Reconnect ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("重新连接成功.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     Connected = true;
                     return;
                 }
                 else
                 {
-                    AddLog("Reconnect error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("重新连接错误 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     Helper.SafeCloseSocket(_manSocket);
                     _manSocket = null;
                     Connected = false;
@@ -652,92 +646,92 @@ namespace ServiceConfiguration
             switch (data.Item1)
             {
                 default:
-                    AddLog("Unknown response : " + data.Item1 + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("位置的服务器响应 : " + data.Item1 + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_INVALID_REQUEST:
-                    AddLog("Invalid request : " + data.Item1 + data.Item3, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("无效的请求 : " + data.Item1 + data.Item3, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_GET_ALL_USER_OK:
-                    AddLog("Get all user ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功获得所有用户信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     ProcessAllUser(data.Item3);
                     break;
                 case Consts.MAN_GET_ALL_DTU_OK:
-                    AddLog("Get all DTUs ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功获得所有DTU信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     ProcessAllDTU(data.Item3);
                     break;
                 case Consts.MAN_GET_ALL_USER_ERR:
-                    AddLog("Get all users error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法获得所有用户信息 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_ADD_USER_OK:
-                    AddLog("Add user ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功添加用户.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
                     break;
                 case Consts.MAN_ADD_USER_ERR:
-                    AddLog("Add user error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法添加用户 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_MODIFY_USER_OK:
-                    AddLog("Modify user ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功修改用户密码.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
                     break;
                 case Consts.MAN_MODIFY_USER_ERR:
-                    AddLog("Modify user error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法修改用户密码 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_DELETE_USER_OK:
-                    AddLog("Delete user ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功删除用户.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
                     break;
                 case Consts.MAN_DELETE_USER_ERR:
-                    AddLog("Delete user error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法删除用户 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_ADD_DTU_OK:
-                    AddLog("Add DTU ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功添加DTU.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_DTU, ""));
                     break;
                 case Consts.MAN_ADD_DTU_ERR:
-                    AddLog("Add DTU error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法添加DTU : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_DELETE_DTU_OK:
-                    AddLog("Delete DTU ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功删除DTU.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_DTU, ""));
                     break;
                 case Consts.MAN_DELETE_DTU_ERR:
-                    AddLog("Delete DTU error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法删除DTU : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_MODIFY_DTU_OK:
-                    AddLog("Modify DTU ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功修改DTU.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_DTU, ""));
                     break;
                 case Consts.MAN_MODIFY_DTU_ERR:
-                    AddLog("Modify DTU error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法修改DTU : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_KICK_DTU_OK:
-                    AddLog("Disconnect DTU ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功断开DTU连接.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_DTU, ""));
                     break;
                 case Consts.MAN_KICK_DTU_ERR:
-                    AddLog("Disconnect DTU error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法断开DTU连接 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_KICK_USER_OK:
-                    AddLog("Disconnect user ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功断开用户连接.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
                     break;
                 case Consts.MAN_KICK_USER_ERR:
-                    AddLog("Disconnect user error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法断开用户连接 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_UNCTRL_DTU_OK:
-                    AddLog("Release DTU ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("成功释放DTU控制.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_DTU, ""));
                     break;
                 case Consts.MAN_UNCTRL_DTU_ERR:
-                    AddLog("Release DTU error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("无法释放DTU控制 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_LOGIN_OK:
-                    AddLog("Login ok.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    AddLog("登录成功.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
                     PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_DTU, ""));
                     break;
                 case Consts.MAN_LOGIN_ERR:
-                    AddLog("Login error : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    AddLog("登录失败 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
             }
         }
@@ -896,7 +890,7 @@ namespace ServiceConfiguration
         {
             if (UserPermission != "0" && UserPermission != "1")
             {
-                MessageBox.Show("Common user has no permission to add a new user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("普通用户没有添加新用户的权限.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -914,7 +908,7 @@ namespace ServiceConfiguration
         {
             if (UserPermission != "0" && UserPermission != "1")
             {
-                MessageBox.Show("Common user has no permission to disconnect a user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("普通用户没有断开用户连接的权限.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -922,14 +916,14 @@ namespace ServiceConfiguration
 
             if (_userInfoOc.Count < 1)
             {
-                MessageBox.Show("No user can be disconnected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无用户在线.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgUser.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中用户.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -937,17 +931,17 @@ namespace ServiceConfiguration
 
             if (string.Compare(UserName.Trim(), ui.UserName.Trim(), true) == 0)
             {
-                MessageBox.Show("\"" + ui.UserName + "\" is not allowed to disconnect itself.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("\"" + ui.UserName + "\"不允许断开自己的连接.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (ui.Online == false)
             {
-                MessageBox.Show("\"" + ui.UserName + "\" is offline.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("\"" + ui.UserName + "\"已经不在线.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (MessageBox.Show("Are you sure to disconnect \"" + ui.UserName + "\".", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认断开\"" + ui.UserName + "\"的连接?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             PutRequest(new Tuple<string, string>(Consts.MAN_KICK_USER, ui.UserName));
@@ -959,14 +953,14 @@ namespace ServiceConfiguration
 
             if (_userInfoOc.Count < 1)
             {
-                MessageBox.Show("No user can be edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无用户.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgUser.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中用户.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -976,7 +970,7 @@ namespace ServiceConfiguration
 
             if (string.Compare("admin", ui.UserName.Trim(), true) == 0 || ui.Permission.Trim() == "0")
             {
-                MessageBox.Show("Super user cannot be editted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("超级用户不接受修改.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -984,7 +978,7 @@ namespace ServiceConfiguration
 
             if (UserPermission == "2" && (ui.Permission != "2" || string.Compare(UserName.Trim(), ui.UserName.Trim(), true) != 0))
             {
-                MessageBox.Show("Common user has no permission to edit \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("普通用户没有权限修改\"" + ui.UserName + "\".", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -992,7 +986,7 @@ namespace ServiceConfiguration
 
             if (UserPermission == "1" && ui.Permission == "1" && string.Compare(UserName.Trim(), ui.UserName.Trim(), true) != 0)
             {
-                MessageBox.Show("Management user has no permission to edit \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("管理用户没有权限修改\"" + ui.UserName + "\".", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -1008,7 +1002,7 @@ namespace ServiceConfiguration
         {
             if (UserPermission != "0" && UserPermission != "1")
             {
-                MessageBox.Show("Common user has no permission to delete a user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("普通用户没有权限删除用户.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -1016,14 +1010,14 @@ namespace ServiceConfiguration
 
             if (_userInfoOc.Count < 1)
             {
-                MessageBox.Show("No user can be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无用户.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgUser.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected user.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中用户.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -1031,23 +1025,23 @@ namespace ServiceConfiguration
 
             if (string.Compare(UserName.Trim(), ui.UserName.Trim(), true) == 0)
             {
-                MessageBox.Show("\"" + ui.UserName + "\" is not allowed to delete itself.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("\"" + ui.UserName + "\"不允许删除自己.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (string.Compare(ui.UserName.Trim(), "admin", true) == 0)
             {
-                MessageBox.Show("\"admin\" cannot be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("\"admin\"不能够被删除.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (UserPermission == "1" && (ui.Permission == "0" || ui.Permission == "1"))
             {
-                MessageBox.Show("Super user is required to delete \"" + ui.UserName + "\".", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("只有超级用户才可以删除\"" + ui.UserName + "\".", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (MessageBox.Show("Are you sure to delete \"" + ui.UserName + "\".", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认删除\"" + ui.UserName + "\".", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             PutRequest(new Tuple<string, string>(Consts.MAN_DELETE_USER, ui.UserName));
@@ -1077,14 +1071,14 @@ namespace ServiceConfiguration
 
             if (_dtuInfoOc.Count < 1)
             {
-                MessageBox.Show("No DTU can be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgDtu.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected DTU.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -1109,14 +1103,14 @@ namespace ServiceConfiguration
 
             if (_dtuInfoOc.Count < 1)
             {
-                MessageBox.Show("No DTU can be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgDtu.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected DTU.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -1137,31 +1131,31 @@ namespace ServiceConfiguration
 
             if (_dtuInfoOc.Count < 1)
             {
-                MessageBox.Show("No DTU can be released.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgDtu.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected DTU.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (_dtuInfoOc[index].Online == false)
             {
-                MessageBox.Show("DTU (" + _dtuInfoOc[index].DtuId + ") is offline.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("DTU(" + _dtuInfoOc[index].DtuId + ")已经不在线.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (_dtuInfoOc[index].Controller == null)
             {
-                MessageBox.Show("DTU (" + _dtuInfoOc[index].DtuId + ") is already released.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("DTU(" + _dtuInfoOc[index].DtuId + ")的控制已经被释放.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (MessageBox.Show("Are you sure to release DTU ?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId,
-                "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认释放DTU的控制?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId,
+                "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             PutRequest(new Tuple<string, string>(
@@ -1175,25 +1169,25 @@ namespace ServiceConfiguration
 
             if (_dtuInfoOc.Count < 1)
             {
-                MessageBox.Show("No DTU can be disconnected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgDtu.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected DTU.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (_dtuInfoOc[index].Online == false)
             {
-                MessageBox.Show("DTU (" + _dtuInfoOc[index].DtuId + ") is offline.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("DTU(" + _dtuInfoOc[index].DtuId + ")已经不在线.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (MessageBox.Show("Are you sure to disconnected DTU ?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId,
-                "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认断开DTU的连接?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId,
+                "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             PutRequest(new Tuple<string, string>(
@@ -1207,18 +1201,18 @@ namespace ServiceConfiguration
 
             if (_dtuInfoOc.Count < 1)
             {
-                MessageBox.Show("No DTU can be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             int index = dgDtu.SelectedIndex;
             if (index < 0)
             {
-                MessageBox.Show("No selected DTU.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无选中DTU.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (MessageBox.Show("Are you sure to delete DTU ?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId,
+            if (MessageBox.Show("确认删除DTU?\nDTU ID : " + _dtuInfoOc[index].DtuId + "\nSIM ID : " + _dtuInfoOc[index].SimId,
                 "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
@@ -1255,7 +1249,7 @@ namespace ServiceConfiguration
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Cannot reconnect server : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无法重新连接 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(_manSocket);
                 _manSocket = null;
             }
@@ -1268,7 +1262,7 @@ namespace ServiceConfiguration
 
         private void ClearLog_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (_logOc.Count > 0 && MessageBox.Show("Do you want to save the log first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (_logOc.Count > 0 && MessageBox.Show("需要保存日志吗?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 SaveLog();
             else
                 SaveLog(false);
@@ -1314,7 +1308,7 @@ namespace ServiceConfiguration
                         _logOc.Clear();
                         //_logDispOc.Clear();
 
-                        AddLog("Exception when saving log : " + ex.Message, "", state: LogMessage.State.Error);
+                        AddLog("保存日志出现错误 : " + ex.Message, "", state: LogMessage.State.Error);
                     }
                 }
                 else

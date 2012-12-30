@@ -358,7 +358,7 @@ namespace ManagementSystem
             dgLog.DataContext = LogMsgDispOc;
             LogMsgDispOc.CollectionChanged += new NotifyCollectionChangedEventHandler(LogMsgDispOc_CollectionChanged);
 
-            TermInfoOc.CollectionChanged += new NotifyCollectionChangedEventHandler(TermInfoOc_CollectionChanged);
+            //TermInfoOc.CollectionChanged += new NotifyCollectionChangedEventHandler(TermInfoOc_CollectionChanged);
 
             string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (Directory.Exists(folder + @"\COMWAY") == false)
@@ -378,43 +378,6 @@ namespace ManagementSystem
                     DisplayLog();
                 }, _cts.Token
             );
-        }
-
-        private void TermInfoOc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (TermInfoOc.Count < 2)
-            {
-                View1DTUEnabled = false;
-                View2DTUsEnabled = false;
-                View4DTUsEnabled = false;
-            }
-            else if (TermInfoOc.Count < 4)
-            {
-                if (tcTerminal.Items.Count == TermInfoOc.Count + 1)
-                    View1DTUEnabled = false;
-                else
-                    View1DTUEnabled = true;
-                if (tcTerminal.Items.Count == TermInfoOc.Count + 1)
-                    View2DTUsEnabled = true;
-                else
-                    View2DTUsEnabled = false;
-                View4DTUsEnabled = false;
-            }
-            else
-            {
-                if (tcTerminal.Items.Count == TermInfoOc.Count + 1)
-                    View1DTUEnabled = false;
-                else
-                    View1DTUEnabled = true;
-                if (tcTerminal.Items.Count == 3)
-                    View2DTUsEnabled = false;
-                else
-                    View2DTUsEnabled = true;
-                if (tcTerminal.Items.Count == 2)
-                    View4DTUsEnabled = false;
-                else
-                    View4DTUsEnabled = true;
-            }
         }
 
         #region Window Exit
@@ -668,6 +631,7 @@ namespace ManagementSystem
             Helper.SafeCloseSocket(ti.TerminalSocket);
             ti.TerminalSocket = null;
             tcTerminal.Items.Remove(ti.CurrentTabItem);
+            AdjustDTUEnable();
         }
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -953,6 +917,7 @@ namespace ManagementSystem
                 {
                     tcTerminal.Items.Add(ti.CurrentTabItem);
                     tcTerminal.SelectedIndex = tcTerminal.Items.Count - 1;
+                    AdjustDTUEnable();
                 }
             }
             else
@@ -963,7 +928,10 @@ namespace ManagementSystem
                         tvTerminal.Items.Remove(ti.CurrentTvItem);
                 }
                 if (ti.CurrentTabItem != null && tcTerminal.Items.Contains(ti.CurrentTabItem) == true)
-                    tcTerminal.Items.Add(ti.CurrentTabItem);
+                {
+                    tcTerminal.Items.Remove(ti.CurrentTabItem);
+                    AdjustDTUEnable();
+                }
             }
         }
 
@@ -1248,11 +1216,13 @@ namespace ManagementSystem
 
             tcTerminal.SelectedIndex = 1;
 
-            View1DTUEnabled = false;
-            if (tcTerminal.Items.Count > 1)
-                View2DTUsEnabled = true;
-            if (tcTerminal.Items.Count == 4)
-                View4DTUsEnabled = true;
+            //View1DTUEnabled = false;
+            //if (tcTerminal.Items.Count > 1)
+            //    View2DTUsEnabled = true;
+            //if (tcTerminal.Items.Count == 4)
+            //    View4DTUsEnabled = true;
+
+            AdjustDTUEnable();
         }
 
         private void View2DTUs_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -1263,7 +1233,7 @@ namespace ManagementSystem
                 return;
             if (TermInfoOc.Count == 3 && tcTerminal.Items.Count != 4)
                 return;
-            if (TermInfoOc.Count == 4 && (tcTerminal.Items.Count != 5 || tcTerminal.Items.Count != 2))
+            if (TermInfoOc.Count == 4 && (tcTerminal.Items.Count != 5 && tcTerminal.Items.Count != 2 && tcTerminal.Items.Count != 4))
                 return;
 
             for (int i = tcTerminal.Items.Count - 1; i > 0; i--)
@@ -1309,7 +1279,7 @@ namespace ManagementSystem
                 ti.Content = v2uc;
 
                 tcTerminal.Items.Add(ti);
-
+ 
                 UpdateTerminalInforView(TermInfoOc[2], noTv: true);
             }
             else
@@ -1339,17 +1309,14 @@ namespace ManagementSystem
 
             tcTerminal.SelectedIndex = 1;
 
-            View1DTUEnabled = true;
-            View2DTUsEnabled = false;
-            if (tcTerminal.Items.Count == 4)
-                View4DTUsEnabled = true;
+            AdjustDTUEnable();
         }
 
         private void View4DTUs_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (TermInfoOc.Count == 0 || TermInfoOc.Count == 1 || TermInfoOc.Count == 2 || TermInfoOc.Count == 3)
                 return;
-            if (TermInfoOc.Count == 4 && (tcTerminal.Items.Count != 5 || tcTerminal.Items.Count != 3))
+            if (TermInfoOc.Count == 4 && (tcTerminal.Items.Count != 5 && tcTerminal.Items.Count != 3 && tcTerminal.Items.Count != 4))
                 return;
 
             for (int i = tcTerminal.Items.Count - 1; i > 0; i--)
@@ -1384,12 +1351,99 @@ namespace ManagementSystem
             ti.Content = v4uc;
 
             tcTerminal.Items.Add(ti);
-
             tcTerminal.SelectedIndex = 1;
 
-            View1DTUEnabled = true;
-            View2DTUsEnabled = true;
-            View4DTUsEnabled = false;
+            AdjustDTUEnable();
+        }
+
+        private void AdjustDTUEnable()
+        {
+            switch (TermInfoOc.Count)
+            {
+                default:
+                    View1DTUEnabled = true;
+                    View2DTUsEnabled = false;
+                    View4DTUsEnabled = false;
+                    break;
+                case 0:
+                case 1:
+                    View1DTUEnabled = false;
+                    View2DTUsEnabled = false;
+                    View4DTUsEnabled = false;
+                    break;
+                case 2:
+                    if (tcTerminal.Items.Count == 2)
+                    {
+                        View1DTUEnabled = true;
+                        View2DTUsEnabled = false;
+                        View4DTUsEnabled = false;
+                    }
+                    else if (tcTerminal.Items.Count == 3)
+                    {
+                        View1DTUEnabled = false;
+                        View2DTUsEnabled = true;
+                        View4DTUsEnabled = false;
+                    }
+                    else
+                    {
+                        View1DTUEnabled = false;
+                        View2DTUsEnabled = false;
+                        View4DTUsEnabled = false;
+                    }
+                    break;
+                case 3:
+                    if (tcTerminal.Items.Count == 3)
+                    {
+                        View1DTUEnabled = true;
+                        View2DTUsEnabled = false;
+                        View4DTUsEnabled = false;
+                    }
+                    else if (tcTerminal.Items.Count == 4)
+                    {
+                        View1DTUEnabled = false;
+                        View2DTUsEnabled = true;
+                        View4DTUsEnabled = false;
+                    }
+                    else
+                    {
+                        View1DTUEnabled = false;
+                        View2DTUsEnabled = false;
+                        View4DTUsEnabled = false;
+                    }
+                    break;
+                case 4:
+                    if (tcTerminal.Items.Count == 2)
+                    {
+                        View1DTUEnabled = true;
+                        View2DTUsEnabled = true;
+                        View4DTUsEnabled = false;
+                    }
+                    else if (tcTerminal.Items.Count == 3)
+                    {
+                        View1DTUEnabled = true;
+                        View2DTUsEnabled = false;
+                        View4DTUsEnabled = true;
+                    }
+                    else if (tcTerminal.Items.Count == 4)
+                    {
+                        View1DTUEnabled = true;
+                        View2DTUsEnabled = true;
+                        View4DTUsEnabled = true;
+                    }
+                    else if (tcTerminal.Items.Count == 5)
+                    {
+                        View1DTUEnabled = false;
+                        View2DTUsEnabled = true;
+                        View4DTUsEnabled = true;
+                    }
+                    else
+                    {
+                        View1DTUEnabled = false;
+                        View2DTUsEnabled = false;
+                        View4DTUsEnabled = false;
+                    }
+                    break;
+            }
         }
     }
 }

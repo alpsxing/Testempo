@@ -397,7 +397,7 @@ namespace ServiceConfiguration
                     Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(ba, len);
                     if (resp == null)
                     {
-                        MessageBox.Show("Cannot login : unknown response from server", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("登录失败 : 空的服务器响应.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         s.Shutdown(SocketShutdown.Both);
                         s.Disconnect(false);
                         s.Close();
@@ -408,7 +408,7 @@ namespace ServiceConfiguration
                         switch (resp.Item1)
                         {
                             default:
-                                MessageBox.Show("Cannot login : unknown response from server", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : 未知的服务器响应 - " + resp.Item1 + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                             case Consts.MAN_LOGIN_OK:
                                 logged = true;
@@ -419,14 +419,14 @@ namespace ServiceConfiguration
                                 break;
                             case Consts.MAN_LOGIN_ERR:
                                 logged = true;
-                                MessageBox.Show("Cannot login : " + resp.Item3, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : " + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Cannot login : cannot connect server", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败 : 服务器连接错误", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 s.Shutdown(SocketShutdown.Both);
                 s.Disconnect(false);
@@ -436,7 +436,7 @@ namespace ServiceConfiguration
             catch (Exception ex)
             {
                 if(logged == false)
-                    MessageBox.Show("Cannot login : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(s);
             }
         }
@@ -529,7 +529,7 @@ namespace ServiceConfiguration
         {
             if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
             {
-                MessageBox.Show("No valid license.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无有效许可.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 System.Environment.Exit(0);
             }
 

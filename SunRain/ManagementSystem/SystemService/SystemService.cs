@@ -113,11 +113,11 @@ namespace SystemService
             {
                 StartSocketTask();
 
-                eventLogInformationTransfer.WriteEntry("IT service is started.");
+                eventLogInformationTransfer.WriteEntry("成功启动服务.");
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("IT service cannot be started : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("无法启动服务 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
         }
 
@@ -127,11 +127,11 @@ namespace SystemService
             {
                 StopSocketTask();
 
-                eventLogInformationTransfer.WriteEntry("IT service is stopped.");
+                eventLogInformationTransfer.WriteEntry("成功停止服务.");
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("IT service cannot be stopped : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("停止服务出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
 
             SaveConfig();
@@ -244,7 +244,7 @@ namespace SystemService
 
                 Helper.SafeCloseIOStream(sr);
 
-                eventLogInformationTransfer.WriteEntry("Exception when loading config : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("装载配置文件出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -268,7 +268,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sw);
 
-                eventLogInformationTransfer.WriteEntry("Exception when saving config : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("保存配置文件出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -289,7 +289,7 @@ namespace SystemService
                     string[] sa = line.Split(new string[] { "\t" }, StringSplitOptions.None);
                     if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT)
                     {
-                        eventLogInformationTransfer.WriteEntry("User information error : " + line, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("用户信息错误 : " + line, EventLogEntryType.Warning);
                         continue;
                     }
                     string user = sa[0].Trim();
@@ -300,12 +300,12 @@ namespace SystemService
                     string rpm = EncryptDecrypt.Decrypt(pm);
                     if (rpm != "1" && rpm != "2")
                     {
-                        eventLogInformationTransfer.WriteEntry("User permission error : " + ruser, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("用户权限错误 : " + ruser, EventLogEntryType.Warning);
                         rpm = "2";
                     }
                     UserInfo ui = Helper.FindUserInfo(ruser, _userInfoOc);
                     if (ui != null)
-                        eventLogInformationTransfer.WriteEntry("Duplicated user : " + ruser, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("重复用户 : " + ruser, EventLogEntryType.Warning);
                     else
                     {
                         UserInfo uiNew = new UserInfo()
@@ -327,7 +327,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sr);
 
-                eventLogInformationTransfer.WriteEntry("Exception when loading user : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("装载用户信息出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
             lock (_taskLock)
             {
@@ -375,7 +375,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sw);
 
-                eventLogInformationTransfer.WriteEntry("Exception when saving user : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("保存用户信息出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -396,7 +396,7 @@ namespace SystemService
                     string[] sa = line.Split(new string[] { "\t" }, StringSplitOptions.None);
                     if (sa == null || sa.Length != Consts.DTU_ACCOUNT_ITEM_COUNT)
                     {
-                        eventLogInformationTransfer.WriteEntry("DTU information error : " + line, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("DTU信息错误 : " + line, EventLogEntryType.Warning);
                         continue;
                     }
                     string dtuId = sa[0].Trim();
@@ -409,7 +409,7 @@ namespace SystemService
                     string ruserTel = EncryptDecrypt.Decrypt(userTel);
                     DTUInfo di = Helper.FindDTUInfo(rdtuId, _dtuInfoOc);
                     if (di != null)
-                        eventLogInformationTransfer.WriteEntry("Dupliacted DTU : " + rdtuId, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("重复DTU : " + rdtuId, EventLogEntryType.Warning);
                     else
                     {
                         _dtuInfoOc.Add(new DTUInfo()
@@ -429,7 +429,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sr);
 
-                eventLogInformationTransfer.WriteEntry("Exception when loading DTU : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("装载DTU出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
         
@@ -462,7 +462,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sw);
 
-                eventLogInformationTransfer.WriteEntry("Exception when saving DTU : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("保存DTU信息出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -483,7 +483,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("Starting management socket exception : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("开始管理服务出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                         _cts.Cancel();
                         System.Environment.Exit(1);
                     }
@@ -503,7 +503,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("Starting terminal socket exception : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("开始终端服务出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                         _cts.Cancel();
                         System.Environment.Exit(1);
                     }
@@ -523,7 +523,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("Start DTU service exception : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("开始DTU服务出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                         _cts.Cancel();
                         System.Environment.Exit(1);
                     }
@@ -541,14 +541,14 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("Management starts listening...");
+            eventLogInformationTransfer.WriteEntry("管理服务开始侦听...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _manTimeout;
                 soc.SendTimeout = _manTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
-                eventLogInformationTransfer.WriteEntry("Accepted one management from " + ip);
+                eventLogInformationTransfer.WriteEntry("获得一个管理终端连接" + ip);
 
                 Task t = new Task(
                     () =>
@@ -561,9 +561,9 @@ namespace SystemService
                     _manageTaskDict.Add(soc, t);
                 }
                 t.Start();
-                eventLogInformationTransfer.WriteEntry("Start management task " + t.Id.ToString());
+                eventLogInformationTransfer.WriteEntry("开始管理任务" + t.Id.ToString());
             }
-            eventLogInformationTransfer.WriteEntry("Management stops listening.");
+            eventLogInformationTransfer.WriteEntry("管理服务停止侦听.");
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace SystemService
                     len = soc.Receive(bytes);
                     if (len < 1)
                     {
-                        eventLogInformationTransfer.WriteEntry("Connection to management (" + ip + ") is broken.", EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("失去与管理终端" + ip + "的连接.", EventLogEntryType.Warning);
                         break;
                     }
                     else
@@ -599,7 +599,7 @@ namespace SystemService
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("Communication with management (" + ip + ") exception : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("与管理终端" + ip + "的连接出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
             lock (_taskLock)
             {
@@ -612,7 +612,7 @@ namespace SystemService
             
                 Helper.SafeCloseSocket(soc);
             }
-            eventLogInformationTransfer.WriteEntry("Management task " + Task.CurrentId.ToString() + " ends.");
+            eventLogInformationTransfer.WriteEntry("管理任务" + Task.CurrentId.ToString() + "停止.");
         }
 
         /// <summary>
@@ -669,26 +669,26 @@ namespace SystemService
         private string AddUser(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
-                return Consts.MAN_ADD_USER_ERR + "No user information.";
+                return Consts.MAN_ADD_USER_ERR + "无用户信息.";
             content = content.Trim();
 
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT)
-                return Consts.MAN_ADD_USER_ERR + "Invalid user information :" + content;
+                return Consts.MAN_ADD_USER_ERR + "非法用户信息 :" + content;
             string userName = sa[0].Trim();
             string password = sa[1].Trim();
             string permission = sa[2].Trim();
             if (Helper.CheckValidChar(userName, Helper.CheckMethod.CharNum) == false)
-                return Consts.MAN_ADD_USER_ERR + "Invalid user name : " + userName;
+                return Consts.MAN_ADD_USER_ERR + "无效用户名 : " + userName;
             if (Helper.CheckValidChar(password, Helper.CheckMethod.CharNum) == false)
-                return Consts.MAN_ADD_USER_ERR + "Invalid password :" + password;
+                return Consts.MAN_ADD_USER_ERR + "无效密码 :" + password;
             if (permission != "1" && permission != "2")
-                return Consts.MAN_ADD_USER_ERR + "Invalid permission : " + permission;
+                return Consts.MAN_ADD_USER_ERR + "无效权限 : " + permission;
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui != null)
-                    return Consts.MAN_ADD_USER_ERR + "Duplicated user : " + userName;
+                    return Consts.MAN_ADD_USER_ERR + "重复用户 : " + userName;
                 UserInfo uiNew = new UserInfo()
                 {
                     DisplayIcon = false,
@@ -707,21 +707,21 @@ namespace SystemService
         private string ModifyUser(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
-                return Consts.MAN_MODIFY_USER_ERR + "No user information.";
+                return Consts.MAN_MODIFY_USER_ERR + "无用户信息.";
             content = content.Trim();
 
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT - 1)
-                return Consts.MAN_MODIFY_USER_ERR + "Invalid user information :" + content;
+                return Consts.MAN_MODIFY_USER_ERR + "无效用户信息 :" + content;
             string userName = sa[0].Trim();
             string password = sa[1].Trim();
             if (Helper.CheckValidChar(password, Helper.CheckMethod.CharNum) == false)
-                return Consts.MAN_MODIFY_USER_ERR + "Invalid password :" + password;
+                return Consts.MAN_MODIFY_USER_ERR + "无效密码 :" + password;
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.MAN_MODIFY_USER_ERR + "No such user : " + userName;
+                    return Consts.MAN_MODIFY_USER_ERR + "无此用户 : " + userName;
                 ui.Password = password;
                 SaveUser();
             }
@@ -731,16 +731,16 @@ namespace SystemService
         private string DeleteUser(string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return Consts.MAN_DELETE_USER_ERR + "No user to be deleted.";
+                return Consts.MAN_DELETE_USER_ERR + "无需要删除的用户名.";
             userName = userName.Trim();
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.MAN_DELETE_USER_ERR + "User (" + userName + ") doesn't exist.";
+                    return Consts.MAN_DELETE_USER_ERR + "用户(" + userName + ")不存在.";
                 if (ui.Online == true)
-                    return Consts.MAN_DELETE_USER_ERR + "User (" + userName + ") is online.";
+                    return Consts.MAN_DELETE_USER_ERR + "用户(" + userName + ")在线中.";
                 if (ui.Permission == "2")
                     ui.OnlineOfflineEvent -= new UserInfo.OnlineOfflineEventHandler(UserInfo_OnlineOfflineEvent);
                 UserInfo_OnlineOfflineEvent(ui, new CommonEventArgs() { CommonObject = ui });
@@ -804,11 +804,11 @@ namespace SystemService
         {
             // Must not do Trim() because there are empty(optional) fields.
             if (string.IsNullOrEmpty(content))
-                return Consts.MAN_ADD_DTU_ERR + "No DTU information.";
+                return Consts.MAN_ADD_DTU_ERR + "无DTU信息.";
             //content = content.Trim();
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.None);
             if (sa == null || sa.Length != Consts.DTU_ACCOUNT_ITEM_COUNT)
-                return Consts.MAN_ADD_DTU_ERR + "Uncompelte DTU information :" + content;
+                return Consts.MAN_ADD_DTU_ERR + "非完整的DTU信息 :" + content;
             string dtuId = sa[0].Trim();
             string simId = sa[1].Trim();
             string un = sa[2].Trim();
@@ -817,7 +817,7 @@ namespace SystemService
             {
                 DTUInfo di = Helper.FindDTUInfo(sa[0].Trim(), _dtuInfoOc);
                 if (di != null)
-                    return Consts.MAN_ADD_DTU_ERR + "Duplicated DTU : " + dtuId;
+                    return Consts.MAN_ADD_DTU_ERR + "重复的DTU : " + dtuId;
                 _dtuInfoOc.Add(new DTUInfo()
                 {
                     DisplayIcon = false,
@@ -834,14 +834,14 @@ namespace SystemService
         private string DeleteDTU(Socket soc, string dtuId)
         {
             if (string.IsNullOrEmpty(dtuId))
-                return Consts.MAN_ADD_DTU_ERR + "No DTU ID.";
+                return Consts.MAN_ADD_DTU_ERR + "无DTU ID.";
             dtuId = dtuId.Trim();
 
             lock (_taskLock)
             {
                 DTUInfo dtu = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                 if (dtu == null)
-                    return Consts.MAN_DELETE_DTU_ERR + "DTU (" + dtuId + ") doesn't exist.";
+                    return Consts.MAN_DELETE_DTU_ERR + "DTU(" + dtuId + ")不存在.";
                 _dtuInfoOc.Remove(dtu);
                 SaveDTU();
 
@@ -881,11 +881,11 @@ namespace SystemService
         {
             // Must not do Trim() because there are empty(optional) fields.
             if (string.IsNullOrEmpty(content))
-                return Consts.MAN_MODIFY_DTU_ERR + "No DTU information.";
+                return Consts.MAN_MODIFY_DTU_ERR + "无DTU信息.";
             //content = content.Trim();
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.DTU_ACCOUNT_ITEM_COUNT)
-                return Consts.MAN_MODIFY_DTU_ERR + "Uncompelte DTU information :" + content;
+                return Consts.MAN_MODIFY_DTU_ERR + "非完整的DTU信息 :" + content;
             string dtuId = sa[0].Trim();
             string simId = sa[1].Trim();
             string un = sa[2].Trim();
@@ -894,7 +894,7 @@ namespace SystemService
             {
                 DTUInfo di = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                 if (di == null)
-                    return Consts.MAN_MODIFY_DTU_ERR + "DTU ID (" + dtuId + ") doesn't exists.";
+                    return Consts.MAN_MODIFY_DTU_ERR + "DTU ID(" + dtuId + ")不存在.";
                 di.SimId = simId;
                 di.UserName = un;
                 di.UserTel = utel;
@@ -939,32 +939,32 @@ namespace SystemService
             string headerErr = (isMan == true) ? Consts.MAN_LOGIN_ERR : Consts.TERM_LOGIN_ERR;
             string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
             if (string.IsNullOrWhiteSpace(s))
-                return headerErr + "No user name and password.";
+                return headerErr + "无用户名和密码.";
             string[] sa = s.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT - 1)
-                return headerErr + "No user name or password.";
+                return headerErr + "无用户名或密码.";
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(sa[0].Trim(), _userInfoOc);
                 if (ui == null)
-                    return headerErr + "Invalid user name.";
+                    return headerErr + "无效用户名.";
                 if (string.Compare(sa[1].Trim(), ui.Password, true) != 0)
-                    return headerErr + "Invalid password.";
+                    return headerErr + "无效密码.";
 
                 if (isMan == true)
                 {
                     if (ui.Permission != "0" && ui.Permission != "1")
-                        return headerErr + "Common user is not allowed for service configuration purpose.";
+                        return headerErr + "普通用户不允许登录服务管理系统.";
                 }
                 else
                 {
                     if (ui.Permission != "2")
-                        return headerErr + "Super/Management user is not allowed for DTU management purpose.";
+                        return headerErr + "只有普通用户才可以登录DTU管理系统.";
                 }
 
                 if (ui.Online == true)
-                    return headerErr + "Already online from " + ui.Information + " when " + ui.DtLogString;
+                    return headerErr + "此用户已经在" + ui.DtLogString + "时刻从" + ui.Information + "在线";
 
                 ui.Online = true;
                 ui.DtLog = DateTime.Now;
@@ -984,7 +984,7 @@ namespace SystemService
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return headerErr + "Invalid user name.";
+                    return headerErr + "无效用户名.";
 
                 ui.Online = false;
 
@@ -1025,14 +1025,14 @@ namespace SystemService
         private string KickOffUser(string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return Consts.MAN_KICK_USER_ERR + "No user to be kicked off.";
+                return Consts.MAN_KICK_USER_ERR + "空的用户名.";
             userName = userName.Trim();
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.MAN_KICK_USER_ERR + "Invalid user name.";
+                    return Consts.MAN_KICK_USER_ERR + "无效用户名.";
 
                 ui.Online = false;
 
@@ -1068,16 +1068,16 @@ namespace SystemService
         private string KickOffDTU(string dtuId)
         {
             if (string.IsNullOrEmpty(dtuId))
-                return Consts.MAN_KICK_DTU_ERR + "No DTU to be kick off.";
+                return Consts.MAN_KICK_DTU_ERR + "无DTU.";
             dtuId = dtuId.Trim();
 
             lock (_taskLock)
             {
                 DTUInfo dtu = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                 if (dtu == null)
-                    return Consts.MAN_KICK_DTU_ERR + "DTU (" + dtuId + ") doesn't exist.";
+                    return Consts.MAN_KICK_DTU_ERR + "DTU(" + dtuId + ")不存在.";
                 if (dtu.Online == false)
-                    return Consts.MAN_KICK_DTU_ERR + "DTU (" + dtuId + ") is already offline.";
+                    return Consts.MAN_KICK_DTU_ERR + "DTU(" + dtuId + ")已经不在线.";
 
                 dtu.Online = false;
 
@@ -1118,22 +1118,22 @@ namespace SystemService
         private string ReleaseDTU(string dtuId)
         {
             if (string.IsNullOrEmpty(dtuId))
-                return Consts.MAN_UNCTRL_DTU_ERR + "No DTU to be released.";
+                return Consts.MAN_UNCTRL_DTU_ERR + "无DTU名.";
             //content = content.Trim();
             string[] sa = dtuId.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != 2)
-                return Consts.MAN_UNCTRL_DTU_ERR + "No user name or DTU ID.";
+                return Consts.MAN_UNCTRL_DTU_ERR + "无用户名或DTU ID.";
 
             lock (_taskLock)
             {
                 DTUInfo di = null;
                 di = Helper.FindDTUInfo(sa[1].Trim(), _dtuInfoOc);
                 if (di == null)
-                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU (" + dtuId + ") doesn't exist.";
+                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")不存在.";
                 if (di.Online == false)
-                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU (" + dtuId + ") is already offline.";
+                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")已经不在线.";
                 if (di.Controller == null)
-                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU (" + dtuId + ") is already released.";
+                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")已经不再被控制.";
 
                 UserInfo ui = di.Controller;
                 if (ui != null)
@@ -1175,14 +1175,14 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("Terminal starts listening...");
+            eventLogInformationTransfer.WriteEntry("终端服务开始侦听...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout =  _termTimeout;
                 soc.SendTimeout = _termTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
-                eventLogInformationTransfer.WriteEntry("Accepted one terminal from " + ip);
+                eventLogInformationTransfer.WriteEntry("获得一个终端请求 " + ip);
 
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Task ts = new Task(
@@ -1209,9 +1209,9 @@ namespace SystemService
                 }
                 ts.Start();
                 tr.Start();
-                eventLogInformationTransfer.WriteEntry("Start terminal sending task " + ts.Id.ToString() + " and receive task " + tr.Id.ToString());
+                eventLogInformationTransfer.WriteEntry("开始终端发送任务" + ts.Id.ToString() + "和接收任务" + tr.Id.ToString());
             }
-            eventLogInformationTransfer.WriteEntry("Terminal stops listening.");
+            eventLogInformationTransfer.WriteEntry("终端服务停止侦听.");
         }
 
         public void TermSendService(Socket soc)
@@ -1236,7 +1236,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("Exception in sending task (" + Task.CurrentId.ToString() + ") for terminal (" + ip + ") : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
+                    eventLogInformationTransfer.WriteEntry("终端(" + ip + ")发送任务(" + Task.CurrentId.ToString() + ")出现错误 : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
                     break;
                 }
             }
@@ -1260,7 +1260,7 @@ namespace SystemService
                     len = soc.Receive(ba);
                     if (len < 1)
                     {
-                        eventLogInformationTransfer.WriteEntry("Connection to terminal (" + ip + ") is broken.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                        eventLogInformationTransfer.WriteEntry("失去到终端(" + ip + ")的连接.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                         break;
                     }
                     else

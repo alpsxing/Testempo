@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ServiceConfiguration.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Server Management Login" Height="200" ResizeMode="NoResize" Width="400" 
+        Title="服务管理登录" Height="200" ResizeMode="NoResize" Width="400" 
         WindowStartupLocation="CenterScreen" Loaded="Window_Load" Icon="/ServiceConfiguration;component/Resources/bottom_logo.gif">
     <Grid Margin="3">
         <Grid.RowDefinitions>
@@ -18,32 +18,32 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Image Grid.Row="1" Grid.RowSpan="3" Grid.Column="0" Source="/ServiceConfiguration;component/Resources/logo.gif"></Image>
-        <Label Grid.Row="0" Grid.Column="1" Content="Server IP" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="0" Grid.Column="1" Content="IP地址" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=ServerIPFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Name="txtServerIP" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=ServerIP,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=ServerIPFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="1" Grid.Column="1" Content="Server Port" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="1" Grid.Column="1" Content="端口号" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=ServerPortFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Name="txtServerPort" Grid.Row="1" Grid.Column="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=ServerPortString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=ServerPortFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="2" Grid.Column="1" Content="User Name" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="2" Grid.Column="1" Content="登录名" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Name="txtUserName" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="3" Grid.Column="1" Content="Password" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="3" Grid.Column="1" Content="密码" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <PasswordBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  PasswordChanged="Password_Changed" Name="pbPassword" PasswordChar="*"
                  Foreground="{Binding Path=PasswordFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="4" Grid.Column="2" Margin="0,3,3,3" Name="btnOK" Content="OK" Click="OK_Button_Click"
+        <Button Grid.Row="4" Grid.Column="2" Margin="0,3,3,3" Name="btnOK" Content="确定" Click="OK_Button_Click"
                 IsEnabled="{Binding Path=InputOK,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="4" Grid.Column="3" Margin="0,3,3,3" Name="btnCancel" Content="Cancel" Click="Cancel_Button_Click"/>
+        <Button Grid.Row="4" Grid.Column="3" Margin="0,3,3,3" Name="btnCancel" Content="放弃" Click="Cancel_Button_Click"/>
     </Grid>
 </Window>

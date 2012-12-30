@@ -243,7 +243,7 @@ namespace InformationTransferLibrary
                 string resp = System.Text.Encoding.ASCII.GetString(ba, 0, len);
                 if (resp.StartsWith(Consts.TERM_INVALID_REQUEST, StringComparison.CurrentCultureIgnoreCase) == true)
                 {
-                    Run runDTUCmd = new Run("Connection to DTU is broken.");
+                    Run runDTUCmd = new Run("失去到DTU的连接");
                     Paragraph parDTUCmd = new Paragraph(runDTUCmd);
                     parDTUCmd.Foreground = Brushes.Red;
                     fdTerminal.Blocks.Add(parDTUCmd);

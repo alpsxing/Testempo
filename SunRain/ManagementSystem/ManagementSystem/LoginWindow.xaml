@@ -30,7 +30,7 @@
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=ServerPortString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=ServerPortFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="2" Grid.Column="1" Content="用户" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="2" Grid.Column="1" Content="登录名" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Name="txtUserName" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
