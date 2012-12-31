@@ -1804,7 +1804,7 @@ namespace InformationTransferLibrary
         }
 
         /// <summary>
-        /// For terminal & dtu
+        /// For terminal &amp; dtu
         /// </summary>
         public UserInfo Controller { get; set; }
 
@@ -1812,6 +1812,22 @@ namespace InformationTransferLibrary
         /// For dtu only
         /// </summary>
         public DTUInfo CurrentDTU { get; set; }
+
+        private bool _isMainSocket = false;
+        /// <summary>
+        /// For terminal only
+        /// </summary>
+        public bool IsMainSocket
+        {
+            get
+            {
+                return _isMainSocket;
+            }
+            set
+            {
+                _isMainSocket = value;
+            }
+        }
     }
 
     public class SentReceivedItem :NotifyPropertyChangedClass

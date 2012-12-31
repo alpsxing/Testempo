@@ -324,7 +324,7 @@ namespace ManagementSystem
 
         public LoginWindow()
         {
-            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
             if (Directory.Exists(folder + @"\COMWAY") == false)
                 Directory.CreateDirectory(folder + @"\COMWAY");
             folder = folder + @"\COMWAY";
@@ -419,7 +419,7 @@ namespace ManagementSystem
         {
             try
             {
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 StreamReader sr = new StreamReader(folder + @"\COMWAY\DTUManagement\termserv.cfg");
                 string strLine = null;
                 int i = 0;
@@ -461,7 +461,7 @@ namespace ManagementSystem
         {
             try
             {
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\termserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPortString));

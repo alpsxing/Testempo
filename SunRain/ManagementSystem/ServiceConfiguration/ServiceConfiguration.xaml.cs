@@ -343,7 +343,7 @@ namespace ServiceConfiguration
             int maxLogCount = Consts.MAX_LOG_COUNT,
             int maxLogDispLog = Consts.MAX_LOG_DISPLAY_COUNT)
         {
-            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
             if (Directory.Exists(folder + @"\COMWAY") == false)
                 Directory.CreateDirectory(folder + @"\COMWAY");
             folder = folder + @"\COMWAY";
@@ -1283,7 +1283,7 @@ namespace ServiceConfiguration
                         string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
                             + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
                              + "." + dt.Millisecond.ToString();
-                        string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                        string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                         StreamWriter sw = new StreamWriter(folder + @"\COMWAY\ServiceConfiguration\log\" + sdt + ".log");
                         StringBuilder sb = new StringBuilder();
                         foreach (LogMessage lm in _logOc)
@@ -1323,7 +1323,7 @@ namespace ServiceConfiguration
         {
             try
             {
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 StreamWriter sw = new StreamWriter(folder + @"\COMWAY\ServiceConfiguration\config\manserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPort.ToString()));

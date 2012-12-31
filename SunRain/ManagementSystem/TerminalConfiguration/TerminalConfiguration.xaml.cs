@@ -611,7 +611,7 @@ namespace TerminalConfiguration
 
             InitializeComponent();
 
-            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
             if (!Directory.Exists(folder + @"\COMWAY"))
                 Directory.CreateDirectory(folder + @"\COMWAY");
             folder = folder + @"\COMWAY";
@@ -928,7 +928,7 @@ namespace TerminalConfiguration
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = false;
             ofd.Filter = "Config (.cfg)|*.cfg";
-            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
             ofd.InitialDirectory = folder + @"\COMWAY\DTUConfiguration";
             ofd.Title = "Select a config";
             bool? bv = ofd.ShowDialog();
@@ -958,7 +958,7 @@ namespace TerminalConfiguration
                 sfd.OverwritePrompt = true;
                 sfd.CheckPathExists = true;
                 sfd.Title = "Save Configuration As...";
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 sfd.InitialDirectory = folder + @"\COMWAY\DTUConfiguration";
                 bool? b = sfd.ShowDialog();
                 if (b != true)
@@ -983,7 +983,7 @@ namespace TerminalConfiguration
             sfd.OverwritePrompt = true;
             sfd.CheckPathExists = true;
             sfd.Title = "Save Configuration As...";
-            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
             sfd.InitialDirectory = folder + @"\COMWAY\DTUConfiguration";
             bool? b = sfd.ShowDialog();
             if (b != true)

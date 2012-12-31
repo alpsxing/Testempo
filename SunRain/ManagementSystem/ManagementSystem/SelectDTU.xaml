@@ -17,7 +17,7 @@
                   CanUserAddRows="False" CanUserDeleteRows="True"
                   HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                   VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
-                  SelectionMode="Single" HeadersVisibility="Column"
+                  SelectionMode="Single" HeadersVisibility="Column" CanUserSortColumns="False"
                   SelectionChanged="DTU_DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTemplateColumn MinWidth="25" MaxWidth="25" Width="25">

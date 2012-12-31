@@ -68,7 +68,7 @@ namespace RemoteTcpTerminal
             }
         }
 
-        private string _serverIP = "";
+        private string _serverIP = "127.0.0.1";
         public string ServerIP
         {
             get

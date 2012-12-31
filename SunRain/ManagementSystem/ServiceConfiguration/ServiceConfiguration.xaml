@@ -256,7 +256,7 @@
                                   CanUserAddRows="False" CanUserDeleteRows="True" 
                                   HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                                   VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
-                                  SelectionMode="Single" HeadersVisibility="Column"
+                                  SelectionMode="Single" HeadersVisibility="Column" CanUserSortColumns="False"
                           SelectionChanged="User_DataGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="权限" Width="75" MinWidth="50"
@@ -286,7 +286,7 @@
                                   CanUserAddRows="False" CanUserDeleteRows="True" 
                                   HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                                   VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
-                                  SelectionMode="Single" HeadersVisibility="Column"
+                                  SelectionMode="Single" HeadersVisibility="Column" CanUserSortColumns="False"
                           SelectionChanged="DTU_DataGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn MinWidth="25" MaxWidth="25" Width="25">
@@ -328,7 +328,7 @@
                                   CanUserAddRows="False" CanUserDeleteRows="True" 
                                   HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                                   VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
-                                  SelectionMode="Single" HeadersVisibility="Column">
+                                  SelectionMode="Single" HeadersVisibility="Column" CanUserSortColumns="False">
                                   <!--ItemContainerStyle="{StaticResource MessageRowBackground}"-->
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="索引" Width="50" MinWidth="50"

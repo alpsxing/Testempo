@@ -360,7 +360,7 @@ namespace ManagementSystem
 
             //TermInfoOc.CollectionChanged += new NotifyCollectionChangedEventHandler(TermInfoOc_CollectionChanged);
 
-            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
             if (Directory.Exists(folder + @"\COMWAY") == false)
                 Directory.CreateDirectory(folder + @"\COMWAY");
             folder = folder + @"\COMWAY";
@@ -1010,7 +1010,7 @@ namespace ManagementSystem
                         string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
                             + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
                              + "." + dt.Millisecond.ToString();
-                        string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                        string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                         StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\log\" + sdt + ".log");
                         StringBuilder sb = new StringBuilder();
                         foreach(LogMessage lm in LogMsgOc)
@@ -1050,7 +1050,7 @@ namespace ManagementSystem
         {
             try
             {
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 if (File.Exists(folder + @"\COMWAY\DTUManagement\config\mansys.cfg") == false)
                 {
                     //AddLog("No predefined configuration.");
@@ -1115,7 +1115,7 @@ namespace ManagementSystem
         {
             try
             {
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\config\mansys.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerTimeout.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(RemoteTimeout.ToString()));

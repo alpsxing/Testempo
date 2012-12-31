@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
             <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False"
                       Name="dgSentReceived" ItemsSource="{Binding}" 
-                      CanUserAddRows="False" CanUserDeleteRows="True" 
+                      CanUserAddRows="False" CanUserDeleteRows="True" CanUserSortColumns="False"
                       HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
                       SelectionMode="Single" HeadersVisibility="Column">

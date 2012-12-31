@@ -356,7 +356,7 @@ namespace ServiceConfiguration
 
         public LoginWindow()
         {
-            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
             if (Directory.Exists(folder + @"\COMWAY") == false)
                 Directory.CreateDirectory(folder + @"\COMWAY");
             folder = folder + @"\COMWAY";
@@ -450,7 +450,7 @@ namespace ServiceConfiguration
         {
             try
             {
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 StreamReader sr = new StreamReader(folder + @"\COMWAY\ServiceConfiguration\config\manserv.cfg");
                 string strLine = null;
                 int i = 0;
@@ -510,7 +510,7 @@ namespace ServiceConfiguration
         {
             try
             {
-                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
                 StreamWriter sw = new StreamWriter(folder + @"\COMWAY\ServiceConfiguration\config\manserv.cfg");
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerIP));
                 sw.WriteLine(EncryptDecrypt.Encrypt(ServerPortString));
