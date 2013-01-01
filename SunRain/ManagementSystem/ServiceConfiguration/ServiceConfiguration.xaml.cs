@@ -51,7 +51,7 @@ namespace ServiceConfiguration
 
         private ObservableCollection<UserInfo> _userInfoOc = new ObservableCollection<UserInfo>();
         private ObservableCollection<DTUInfo> _dtuInfoOc = new ObservableCollection<DTUInfo>();
-        private ObservableCollection<string> _serverLogOc = new ObservableCollection<string>();
+        private ObservableCollection<Tuple<string, string, string>> _serverLogOc = new ObservableCollection<Tuple<string, string, string>>();
 
         private bool _bInNormalClose = false;
 
@@ -768,7 +768,13 @@ namespace ServiceConfiguration
                             string[] sa = data.Item3.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
                             foreach (string si in sa)
                             {
-                                _serverLogOc.Add(si.Trim());
+                                string[] sia = si.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                if (sia != null && sia.Length == 4)
+                                {
+                                    DateTime dt;
+                                    if(DateTime.TryParse(sia[1].Trim() + " " + sia[2].Trim(), out dt) == true)
+                                        _serverLogOc.Add(new Tuple<string, string, string>(sia[0].Trim(), sia[1].Trim() + " " + sia[2].Trim(), sia[3].Trim()));
+                                }
                             }
                         }
                         catch (Exception) { }
@@ -1424,9 +1430,20 @@ namespace ServiceConfiguration
             ObservableCollection<string> sloc = new ObservableCollection<string>();
             lock (_serverLogLock)
             {
-                foreach (string si in _serverLogOc)
+                foreach (Tuple<string, string, string> si in _serverLogOc)
                 {
-                    sloc.Add(si);
+                    bool find = false;
+                    foreach (string sloci in sloc)
+                    {
+                        if (string.Compare(sloci.Trim(), si.Item1.Trim(), true) == 0)
+                        {
+                            find = true;
+                            break;
+                        }
+                    }
+                    if (find == false)
+                        sloc.Add(si.Item1.Trim());
+
                 }
             }
 
