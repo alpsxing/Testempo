@@ -77,6 +77,10 @@ namespace InformationTransferLibrary
         public const string MAN_KICK_USER = "#040016";
         public const string MAN_KICK_DTU = "#040017";
         public const string MAN_UNCTRL_DTU = "#040018";
+        public const string MAN_DEL_LOG_USER = "#040019";
+        public const string MAN_DEL_LOG_DATE = "#040020";
+        public const string MAN_DEL_LOG_USER_DATE = "#040021";
+        public const string MAN_GET_LOG_INFO = "#040022";
 
         public const string MAN_TEST_CONN_OK = "#050001";
         //public const string MAN_PULSE_REQ_OK = "#050002";
@@ -96,6 +100,10 @@ namespace InformationTransferLibrary
         public const string MAN_KICK_DTU_OK = "#050017";
         //public const string MAN_GET_DTU_OK = "#050014";
         public const string MAN_UNCTRL_DTU_OK = "#050018";
+        public const string MAN_DEL_LOG_USER_OK = "#050019";
+        public const string MAN_DEL_LOG_DATE_OK = "#050020";
+        public const string MAN_DEL_LOG_USER_DATE_OK = "#050021";
+        public const string MAN_GET_LOG_INFO_OK = "#050022";
 
         public const string MAN_INVALID_REQUEST = "#060000";
         public const string MAN_GET_ALL_DTU_ERR = "#060003";
@@ -114,6 +122,10 @@ namespace InformationTransferLibrary
         public const string MAN_KICK_DTU_ERR = "#060017";
         //public const string MAN_GET_DTU_ERR = "#060014";
         public const string MAN_UNCTRL_DTU_ERR = "#060018";
+        public const string MAN_DEL_LOG_USER_ERR = "#060019";
+        public const string MAN_DEL_LOG_DATE_ERR = "#060020";
+        public const string MAN_DEL_LOG_USER_DATE_ERR = "#060021";
+        public const string MAN_GET_LOG_INFO_ERR = "#060022";
 
         #endregion
 
@@ -620,6 +632,25 @@ namespace InformationTransferLibrary
                 contentTrim = content.Trim(new char[] { '\0' });
             }
             return new Tuple<string, byte[], string, string>(header, bc, content, contentTrim);
+        }
+
+        public static int FindStringCount(string src, string fstr)
+        {
+            if (string.IsNullOrWhiteSpace(src) || string.IsNullOrWhiteSpace(fstr))
+                return 0;
+
+            int flen = fstr.Length;
+            int count = 0;
+            int index = src.IndexOf(fstr);
+            while (index > -1)
+            {
+                count++;
+                src = src.Substring(index + flen);
+                if (string.IsNullOrWhiteSpace(src) == true)
+                    break;
+                index = src.IndexOf(fstr);
+            }
+            return count;
         }
     }
 

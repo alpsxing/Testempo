@@ -90,6 +90,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="DeleteServerLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DTUConfiguration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -113,6 +117,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeleteServerLog.xaml.cs">
+      <DependentUpon>DeleteServerLog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DTUConfiguration.xaml.cs">
       <DependentUpon>DTUConfiguration.xaml</DependentUpon>
@@ -236,6 +243,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\useredit.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\deletelog.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

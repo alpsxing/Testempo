@@ -51,6 +51,7 @@ namespace ServiceConfiguration
 
         private ObservableCollection<UserInfo> _userInfoOc = new ObservableCollection<UserInfo>();
         private ObservableCollection<DTUInfo> _dtuInfoOc = new ObservableCollection<DTUInfo>();
+        private ObservableCollection<string> _serverLogOc = new ObservableCollection<string>();
 
         private bool _bInNormalClose = false;
 
@@ -64,10 +65,12 @@ namespace ServiceConfiguration
         //private Timer _pulseTimer = null;
         //private Timer _serviceTimer = null;
         private Timer _userTimer = null;
+        private Timer _serverLlogTimer = null;
         private Timer _dtuTimer = null;
 
         private object _reqLock = new object();
         private object _dtuLock = new object();
+        private object _serverLogLock = new object();
 
         private int _selectedUserIndex = -1;
         private int _selectedDtuIndex = -1;
@@ -488,6 +491,10 @@ namespace ServiceConfiguration
                                 0,
                                 Consts.MAN_TASK_TIMER_INTERVAL);
 
+            _serverLlogTimer = new Timer(new TimerCallback(ServerLogTimerCallBack), null,
+                                0,
+                                Consts.MAN_TASK_TIMER_INTERVAL);
+
             _dtuTimer = new Timer(new TimerCallback(DtuTimerCallBack), null,
                                 0,
                                 Consts.MAN_TASK_TIMER_INTERVAL);
@@ -543,6 +550,18 @@ namespace ServiceConfiguration
                             case Consts.MAN_UNCTRL_DTU:
                                 AddLog("请求 : 释放DTU控制", flow: LogMessage.Flow.Request);
                                 break;
+                            case Consts.MAN_GET_LOG_INFO:
+                                AddLog("请求 : 获取所有服务器日志用户", flow: LogMessage.Flow.Request);
+                                break;
+                            case Consts.MAN_DEL_LOG_USER:
+                                AddLog("请求 : 删除用户服务器日志", flow: LogMessage.Flow.Request);
+                                break;
+                            case Consts.MAN_DEL_LOG_DATE:
+                                AddLog("请求 : 删除给定日期前服务器日志", flow: LogMessage.Flow.Request);
+                                break;
+                            case Consts.MAN_DEL_LOG_USER_DATE:
+                                AddLog("请求 : 删除给定日期前用户服务器日志用户", flow: LogMessage.Flow.Request);
+                                break;
                         }
                         _manSocket.Send(Encoding.ASCII.GetBytes(req.Item1 + req.Item2));
                         byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH_MAN];
@@ -551,6 +570,7 @@ namespace ServiceConfiguration
                         {
                             AddLog("失去和服务器的连接", state: LogMessage.State.Error, flow: LogMessage.Flow.Response);
                             _userTimer.Change(Timeout.Infinite, Consts.MAN_TASK_TIMER_INTERVAL);
+                            _serverLlogTimer.Change(Timeout.Infinite, Consts.MAN_TASK_TIMER_INTERVAL);
                             _dtuTimer.Change(Timeout.Infinite, Consts.MAN_TASK_TIMER_INTERVAL);
                             lock (_reqLock)
                             {
@@ -587,6 +607,11 @@ namespace ServiceConfiguration
             try
             {
                 _dtuTimer.Dispose();
+            }
+            catch (Exception) { }
+            try
+            {
+                _serverLlogTimer.Dispose();
             }
             catch (Exception) { }
             try
@@ -733,6 +758,47 @@ namespace ServiceConfiguration
                 case Consts.MAN_LOGIN_ERR:
                     AddLog("登录失败 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
+                case Consts.MAN_GET_LOG_INFO_OK:
+                    AddLog("成功获得所有服务器日志用户信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    lock (_serverLogLock)
+                    {
+                        _serverLogOc.Clear();
+                        try
+                        {
+                            string[] sa = data.Item3.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (string si in sa)
+                            {
+                                _serverLogOc.Add(si.Trim());
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                   break;
+                case Consts.MAN_GET_LOG_INFO_ERR:
+                    AddLog("无法获得所有服务器日志用户信息 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    lock (_serverLogLock)
+                    {
+                        _serverLogOc.Clear();
+                    }
+                    break;
+                case Consts.MAN_DEL_LOG_USER_OK:
+                    AddLog("删除用户日志成功 : " + data.Item3, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    break;
+                case Consts.MAN_DEL_LOG_USER_ERR:
+                    AddLog("删除用户日志失败 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    break;
+                case Consts.MAN_DEL_LOG_DATE_OK:
+                    AddLog("删除给定日期日志成功 : " + data.Item3, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    break;
+                case Consts.MAN_DEL_LOG_DATE_ERR:
+                    AddLog("删除给定日期日志失败 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    break;
+                case Consts.MAN_DEL_LOG_USER_DATE_OK:
+                    AddLog("删除给定日期用户日志成功 : " + data.Item3, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    break;
+                case Consts.MAN_DEL_LOG_USER_DATE_ERR:
+                    AddLog("删除给定日期用户日志失败 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                    break;
             }
         }
 
@@ -801,6 +867,11 @@ namespace ServiceConfiguration
         private void UserTimerCallBack(object obj)
         {
             PutRequest(new Tuple<string, string>(Consts.MAN_GET_ALL_USER, ""));
+        }
+
+        private void ServerLogTimerCallBack(object obj)
+        {
+            PutRequest(new Tuple<string, string>(Consts.MAN_GET_LOG_INFO, ""));
         }
 
         private void DtuTimerCallBack(object obj)
@@ -1346,6 +1417,40 @@ namespace ServiceConfiguration
 
             MaxLogCount = lc.MaxLogCount;
             MaxLogDisplayCount = lc.MaxLogDisplayCount;
+        }
+
+        private void LogDelete_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ObservableCollection<string> sloc = new ObservableCollection<string>();
+            lock (_serverLogLock)
+            {
+                foreach (string si in _serverLogOc)
+                {
+                    sloc.Add(si);
+                }
+            }
+
+            DeleteServerLog dsl = new DeleteServerLog(sloc);
+            bool? b = dsl.ShowDialog();
+            if (b == true)
+            {
+                string s = "";
+                if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == false && string.IsNullOrWhiteSpace(dsl.DeleteDate) == false)
+                {
+                    s = dsl.DeleteUser + "\t" + dsl.DeleteDate;
+                    PutRequest(new Tuple<string,string>(Consts.MAN_DEL_LOG_USER_DATE, s));
+                }
+                else if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == true && string.IsNullOrWhiteSpace(dsl.DeleteDate) == false)
+                {
+                    s = dsl.DeleteDate;
+                    PutRequest(new Tuple<string,string>(Consts.MAN_DEL_LOG_DATE, s));
+                }
+                else if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == false && string.IsNullOrWhiteSpace(dsl.DeleteDate) == true)
+                {
+                    s = dsl.DeleteDate;
+                    PutRequest(new Tuple<string,string>(Consts.MAN_DEL_LOG_USER, s));
+                }
+            }
         }
     }
 }
