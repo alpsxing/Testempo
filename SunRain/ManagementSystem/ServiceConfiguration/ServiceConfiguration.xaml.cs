@@ -1496,18 +1496,54 @@ namespace ServiceConfiguration
             bool? b = dsl.ShowDialog();
             if (b == true)
             {
+                ObservableCollection<Tuple<string, string, string>> slfoc = new ObservableCollection<Tuple<string, string, string>>();
                 if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == false && string.IsNullOrWhiteSpace(dsl.DeleteDate) == false)
                 {
+                    DateTime dt;
+                    if (DateTime.TryParse(dsl.DeleteDate, out dt) == true)
+                    {
+                        foreach (Tuple<string, string, string> si in _serverLogOc)
+                        {
+                            if (string.Compare(dsl.DeleteUser.Trim(), si.Item1.Trim(), true) == 0)
+                            {
+                                DateTime dtf;
+                                if (DateTime.TryParse(si.Item2.Trim(), out dtf) == true)
+                                {
+                                    if (DateTime.Compare(dt, dtf) <= 0)
+                                        slfoc.Add(si);
+                                }
+                            }
+                        }
+                    }
                 }
                 else if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == true && string.IsNullOrWhiteSpace(dsl.DeleteDate) == false)
                 {
+                    DateTime dt;
+                    if (DateTime.TryParse(dsl.DeleteDate, out dt) == true)
+                    {
+                        foreach (Tuple<string, string, string> si in _serverLogOc)
+                        {
+                            DateTime dtf;
+                            if (DateTime.TryParse(si.Item2.Trim(), out dtf) == true)
+                            {
+                                if (DateTime.Compare(dt, dtf) <= 0)
+                                    slfoc.Add(si);
+                            }
+                        }
+                    }
                 }
                 else if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == false && string.IsNullOrWhiteSpace(dsl.DeleteDate) == true)
                 {
+                    foreach (Tuple<string, string, string> si in _serverLogOc)
+                    {
+                        if (string.Compare(dsl.DeleteUser.Trim(), si.Item1.Trim(), true) == 0)
+                            slfoc.Add(si);
+                    }
                 }
+
+                ViewUserMsgLog vuml = new ViewUserMsgLog(slfoc);
+                vuml.ShowDialog();
             }
         }
-
-        //private void Get
     }
 }
