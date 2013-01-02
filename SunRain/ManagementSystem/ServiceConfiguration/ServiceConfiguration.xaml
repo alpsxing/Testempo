@@ -221,6 +221,13 @@
                 </Button.Content>
             </Button>
             <Separator/>
+            <Button Click="LogView_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="查看服务器消息日志">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/viewlog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
             <Button Click="LogDelete_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     IsEnabled="{Binding Path=Connected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                     ToolTip="删除服务器消息日志">

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ServiceConfiguration.DeleteServerLog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="删除服务器日志" Height="140" Width="250" Icon="/ServiceConfiguration;component/Resources/deletelog.ico"
+        Title="删除服务器日志" Height="140" Width="350" Icon="/ServiceConfiguration;component/Resources/deletelog.ico"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Load">
     <Grid>
         <Grid.RowDefinitions>
@@ -20,9 +20,9 @@
                   Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <CheckBox IsThreeState="False" IsChecked="{Binding Path=IsDeleteDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                   Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <Label Content="用户" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Content="操作员标识" HorizontalAlignment="Right" VerticalAlignment="Center"
                Grid.Row="0" Grid.Column="1"/>
-        <Label Content="日期" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Name="lblDate" Content="保留日志开始日期" HorizontalAlignment="Right" VerticalAlignment="Center"
                Grid.Row="1" Grid.Column="1"/>
         <ComboBox Name="cboxUser" Margin="2" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"/>
         <DatePicker Name="dpDate" Margin="2" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"/>

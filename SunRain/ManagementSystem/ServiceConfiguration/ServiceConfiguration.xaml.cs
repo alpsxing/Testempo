@@ -1469,5 +1469,45 @@ namespace ServiceConfiguration
                 }
             }
         }
+
+        private void LogView_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ObservableCollection<string> sloc = new ObservableCollection<string>();
+            lock (_serverLogLock)
+            {
+                foreach (Tuple<string, string, string> si in _serverLogOc)
+                {
+                    bool find = false;
+                    foreach (string sloci in sloc)
+                    {
+                        if (string.Compare(sloci.Trim(), si.Item1.Trim(), true) == 0)
+                        {
+                            find = true;
+                            break;
+                        }
+                    }
+                    if (find == false)
+                        sloc.Add(si.Item1.Trim());
+
+                }
+            }
+
+            DeleteServerLog dsl = new DeleteServerLog(sloc);
+            bool? b = dsl.ShowDialog();
+            if (b == true)
+            {
+                if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == false && string.IsNullOrWhiteSpace(dsl.DeleteDate) == false)
+                {
+                }
+                else if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == true && string.IsNullOrWhiteSpace(dsl.DeleteDate) == false)
+                {
+                }
+                else if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == false && string.IsNullOrWhiteSpace(dsl.DeleteDate) == true)
+                {
+                }
+            }
+        }
+
+        //private void Get
     }
 }

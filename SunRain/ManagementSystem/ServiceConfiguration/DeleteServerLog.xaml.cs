@@ -31,6 +31,12 @@ namespace ServiceConfiguration
     /// </summary>
     public partial class DeleteServerLog : Window, INotifyPropertyChanged
     {
+        public enum ServerLogType
+        {
+            Delete,
+            Select
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(string propertyName)
         {
@@ -42,6 +48,8 @@ namespace ServiceConfiguration
 
         public string DeleteUser { get; set; }
         public string DeleteDate { get; set; }
+
+        private ServerLogType _windowType = ServerLogType.Delete;
 
         private bool _inputIsOK = false;
         public bool InputIsOK
@@ -93,13 +101,15 @@ namespace ServiceConfiguration
             }
         }
 
-        public DeleteServerLog(ObservableCollection<string> sloc)
+        public DeleteServerLog(ObservableCollection<string> sloc, ServerLogType windowType = ServerLogType.Delete)
         {
             InitializeComponent();
 
             _serverLogOc = sloc;
 
             DataContext = this;
+
+            _windowType = windowType;
         }
 
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
@@ -118,6 +128,17 @@ namespace ServiceConfiguration
                 cboxUser.SelectedIndex = 0;
             else
                 InputIsOK = false;
+
+            if (_windowType == ServerLogType.Delete)
+            {
+                Title = "删除服务器消息日志";
+                lblDate.Content = "保留日志开始日期";
+            }
+            else
+            {
+                Title = "查看服务器消息日志";
+                lblDate.Content = "查看日志开始日期";
+            }
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
