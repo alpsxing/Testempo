@@ -39,55 +39,113 @@ namespace ServiceConfiguration
         }
 
         private ObservableCollection<Tuple<string,string,string>> _userDateOc;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private ObservableCollection<Tuple<Tuple<string, string, string>, bool, TreeViewItem>> _userDateTVIOc = new ObservableCollection<Tuple<Tuple<string, string, string>, bool, TreeViewItem>>();
 
-        public ViewUserMsgLog(ObservableCollection<Tuple<string,string,string>> userDateOc)
+        private string _serverIp = "";
+        public string ServerIP
+        {
+            get
+            {
+                return _serverIp;
+            }
+            set
+            {
+                _serverIp = value;
+                NotifyPropertyChanged("ServerIP");
+            }
+        }
+
+        private string _readyString = "";
+        public string ReadyString
+        {
+            get
+            {
+                return _readyString;
+            }
+            set
+            {
+                _readyString = value;
+                NotifyPropertyChanged("ReadyString");
+            }
+        }
+
+        public ViewUserMsgLog(string serverIp, ObservableCollection<Tuple<string,string,string>> userDateOc)
         {
             InitializeComponent();
 
+            ServerIP = serverIp;
             _userDateOc = userDateOc;
 
             DataContext = this;
         }
 
-        public static void DownloadFile(string URL, string filename)
+        public void DownloadFile(Tuple<string,string,string> ti)
         {
+            TreeViewItem tvi = new TreeViewItem();
             try
             {
-                System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(URL);
+                string fileName = ti.Item1 + " " + ti.Item2 + " " + ti.Item3 + ".log";
+                
+                ReadyString = "获取日志文件 : " + fileName;
+
+                //StackPanel spSimId = new StackPanel();
+                //spSimId.Orientation = Orientation.Horizontal;
+                //spSimId.Margin = new Thickness(0, 0, 0, 0);
+                //Label lblSimId = new Label();
+                //lblSimId.Content = "SIM ID :" + CurrentDTU.SimId;
+                //spSimId.Children.Add(lblSimId);
+                //tviSimId.Header = spSimId;
+                //Image imgSimId = new Image();
+                //imgSimId.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/simid.ico"));
+                //imgSimId.Width = 16;
+                //imgSimId.Height = 16;
+                //spSimId.Children.Insert(0, imgSimId);
+                //_curTvItem.Items.Add(tviSimId);
+
+
+                System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://" + ServerIP + "/comway/service/message/" + fileName);
                 System.Net.HttpWebResponse myrp = (System.Net.HttpWebResponse)Myrq.GetResponse();
                 long totalBytes = myrp.ContentLength;
-                //if (prog != null)
-                //{
-                //    prog.Maximum = (int)totalBytes;
-                //}
+                if (pbDownloadFile != null)
+                    pbDownloadFile.Maximum = (int)totalBytes;
                 System.IO.Stream st = myrp.GetResponseStream();
-                System.IO.Stream so = new System.IO.FileStream(filename, System.IO.FileMode.Create);
                 long totalDownloadedByte = 0;
                 byte[] by = new byte[1024];
-                int osize = st.Read(by, 0, (int)by.Length);
-                while (osize > 0)
+                int osize = -1;
+                while ((osize = st.Read(by, 0, (int)by.Length)) > 0 && _cts.Token.IsCancellationRequested == false)
                 {
                     totalDownloadedByte = osize + totalDownloadedByte;
-                    //   System.Windows.Forms.Application.DoEvents();
-                    so.Write(by, 0, osize);
-                    //if (prog != null)
-                    //{
-                    //    prog.Value = (int)totalDownloadedByte;
-                    //}
-                    osize = st.Read(by, 0, (int)by.Length);
+                    if (pbDownloadFile != null)
+                        pbDownloadFile.Value = ((int)totalDownloadedByte > (int)totalBytes) ? (int)totalBytes : (int)totalDownloadedByte;
                 }
-                so.Close();
+                if (pbDownloadFile != null)
+                    pbDownloadFile.Value = 0;
                 st.Close();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Title = "查看用户与DTU交互信息 - " + ServerIP;
 
+            ReadyString = "获取日志文件中...";
+
+            Task.Factory.StartNew(() =>
+                {
+                    foreach (Tuple<string, string, string> ti in _userDateOc)
+                    {
+                        if (_cts.Token.IsCancellationRequested == true)
+                            break;
+                        DownloadFile(ti);
+                    }
+                    if (pbDownloadFile != null)
+                        pbDownloadFile.Value = 0;
+                    ReadyString = "就绪";
+                }, _cts.Token);
         }
     }
 }

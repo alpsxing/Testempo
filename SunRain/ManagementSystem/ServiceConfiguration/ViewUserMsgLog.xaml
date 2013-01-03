@@ -4,7 +4,7 @@
         Title="查看用户与DTU交互信息" Height="400" Width="600" Loaded="Window_Loaded">
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" Height="30">
-            <ProgressBar Name="pbDownloadFile" Width="150" Height="20"/>
+            <ProgressBar Name="pbDownloadFile" Width="150" Height="17"/>
             <Label Content="{Binding Path=ReadyString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
         </StatusBar>
         <Grid>

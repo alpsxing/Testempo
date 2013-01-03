@@ -1541,7 +1541,7 @@ namespace ServiceConfiguration
                     }
                 }
 
-                ViewUserMsgLog vuml = new ViewUserMsgLog(slfoc);
+                ViewUserMsgLog vuml = new ViewUserMsgLog(ServerIP, slfoc);
                 vuml.ShowDialog();
             }
         }
