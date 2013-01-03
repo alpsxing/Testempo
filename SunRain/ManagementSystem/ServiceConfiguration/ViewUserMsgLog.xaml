@@ -3,6 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="查看用户与DTU交互信息" Height="400" Width="600" Loaded="Window_Loaded">
     <DockPanel>
+        <Menu DockPanel.Dock="Top" Height="23">
+            <MenuItem Header="文件">
+                <MenuItem Header="保存日志" Click="SaveLog_MenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Margin="-3" Source="resources/savelog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="退出" Click="Window_Exit">
+                    <MenuItem.Icon>
+                        <Image Source="resources/exit.png" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <ToolBar DockPanel.Dock="Top" Height="39">
+            <Button Click="SaveLog_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="保存日志">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/savelog.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Click="Window_Exit" BorderBrush="DarkGray" Margin="1"
+                    ToolTip="退出">
+                <Button.Content>
+                    <Image Margin="-3" Source="resources/exit.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+        </ToolBar>
         <StatusBar DockPanel.Dock="Bottom" Height="30">
             <ProgressBar Name="pbDownloadFile" Width="150" Height="17"/>
             <Label Content="{Binding Path=ReadyString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
@@ -12,8 +42,9 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TreeView Name="tvDate" Grid.Column="0"/>
-            <DataGrid AutoGenerateColumns="False" Name="dgDtu" ItemsSource="{Binding}"
+            <TreeView Name="tvUserDate" Grid.Column="0"
+                      SelectedItemChanged="TVUserDate_SelectedItemChanged"/>
+            <DataGrid AutoGenerateColumns="False" Name="dgMessage" ItemsSource="{Binding}"
                   CanUserAddRows="False" CanUserDeleteRows="True" Grid.Column="1"
                   HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                   VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
@@ -30,7 +61,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="时间" Width="SizeToCells" MinWidth="50"
-                                        Binding="{Binding Path=DtLogString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                                        Binding="{Binding Path=TimeStamp,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
                                         IsReadOnly="True"/>
                     <DataGridTextColumn Header="消息内容" Width="SizeToCells" MinWidth="100"
                                         Binding="{Binding Path=Message,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
