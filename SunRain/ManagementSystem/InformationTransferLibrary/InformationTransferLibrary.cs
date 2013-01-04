@@ -145,6 +145,7 @@ namespace InformationTransferLibrary
         /// For system service management
         /// </summary>
         public const int MAN_PORT = 5081;
+        public const int MAN_WEB_PORT = 8080;
         /// <summary>
         /// For local terminal
         /// </summary>

@@ -61,6 +61,20 @@ namespace ServiceConfiguration
             }
         }
 
+        private int _serverWebPort = Consts.MAN_WEB_PORT;
+        public int ServerWebPort
+        {
+            get
+            {
+                return _serverWebPort;
+            }
+            set
+            {
+                _serverWebPort = value;
+                NotifyPropertyChanged("ServerWebPort");
+            }
+        }
+
         private string _readyString = "";
         public string ReadyString
         {
@@ -75,11 +89,12 @@ namespace ServiceConfiguration
             }
         }
 
-        public ViewUserMsgLog(string serverIp, ObservableCollection<Tuple<string,string,string>> userDateOc)
+        public ViewUserMsgLog(string serverIp, int serverWebPort, ObservableCollection<Tuple<string, string, string>> userDateOc)
         {
             InitializeComponent();
 
             ServerIP = serverIp;
+            ServerWebPort = serverWebPort;
             _userDateOc = userDateOc;
 
             DataContext = this;
@@ -105,7 +120,7 @@ namespace ServiceConfiguration
             
             try
             {
-                System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://" + ServerIP + "/comway/service/message/" + fileName);
+                System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://" + ServerIP + ":" + ServerWebPort.ToString() + "/comway/service/message/" + fileName);
                 System.Net.HttpWebResponse myrp = (System.Net.HttpWebResponse)Myrq.GetResponse();
                 long totalBytes = myrp.ContentLength;
                 if (pbDownloadFile != null)

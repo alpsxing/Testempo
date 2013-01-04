@@ -135,7 +135,7 @@ namespace ServiceConfiguration
             }
         }
 
-        private int _serverPort = Consts.TERM_PORT;
+        private int _serverPort = Consts.MAN_PORT;
         public int ServerPort
         {
             get
@@ -169,7 +169,7 @@ namespace ServiceConfiguration
             }
             set
             {
-                int i = Consts.TERM_PORT;
+                int i = Consts.MAN_PORT;
                 if (int.TryParse(value, out i) == true)
                 {
                     if (i < Consts.MIN_PORT_NUMBER)
@@ -180,8 +180,16 @@ namespace ServiceConfiguration
                     }
                     else
                     {
-                        ServerPortOK = true;
-                        ServerPortFG = Brushes.Black;
+                        if (i == ServerWebPort)
+                        {
+                            ServerPortOK = false;
+                            ServerPortFG = Brushes.Red;
+                        }
+                        else
+                        {
+                            ServerPortOK = true;
+                            ServerPortFG = Brushes.Black;
+                        }
                         _serverPort = i;
                     }
                 }
@@ -221,6 +229,103 @@ namespace ServiceConfiguration
             {
                 _serverPortFG = value;
                 NotifyPropertyChanged("ServerPortFG");
+            }
+        }
+
+        private int _serverWebPort = Consts.MAN_WEB_PORT;
+        public int ServerWebPort
+        {
+            get
+            {
+                return _serverWebPort;
+            }
+            set
+            {
+                if (value < Consts.MIN_PORT_NUMBER)
+                {
+                    ServerWebPortFG = Brushes.Red;
+                    ServerPortOK = false;
+                    _serverWebPort = Consts.MIN_PORT_NUMBER;
+                }
+                else
+                {
+                    ServerWebPortFG = Brushes.Black;
+                    ServerWebPortOK = true;
+                    _serverPort = value;
+                }
+                NotifyPropertyChanged("ServerWebPort");
+                NotifyPropertyChanged("ServerWebPortString");
+            }
+        }
+
+        public string ServerWebPortString
+        {
+            get
+            {
+                return ServerWebPort.ToString();
+            }
+            set
+            {
+                int i = Consts.MAN_WEB_PORT;
+                if (int.TryParse(value, out i) == true)
+                {
+                    if (i < Consts.MIN_PORT_NUMBER)
+                    {
+                        ServerWebPortFG = Brushes.Red;
+                        ServerWebPortOK = false;
+                        _serverWebPort = Consts.MIN_PORT_NUMBER;
+                    }
+                    else
+                    {
+                        if (i == ServerPort)
+                        {
+                            ServerWebPortOK = false;
+                            ServerWebPortFG = Brushes.Red;
+                        }
+                        else
+                        {
+                            ServerWebPortOK = true;
+                            ServerWebPortFG = Brushes.Black;
+                        }
+                        _serverWebPort = i;
+                    }
+                }
+                else
+                {
+                    ServerWebPortFG = Brushes.Red;
+                    ServerWebPortOK = false;
+                }
+                NotifyPropertyChanged("ServerWebPort");
+                NotifyPropertyChanged("ServerWebPortString");
+            }
+        }
+
+        private bool _serverWebPortOK = false;
+        public bool ServerWebPortOK
+        {
+            get
+            {
+                return _serverWebPortOK;
+            }
+            set
+            {
+                _serverWebPortOK = value;
+                NotifyPropertyChanged("ServerWebPortOK");
+                NotifyPropertyChanged("InputOK");
+            }
+        }
+
+        private Brush _serverWebPortFG = Brushes.Red;
+        public Brush ServerWebPortFG
+        {
+            get
+            {
+                return _serverWebPortFG;
+            }
+            set
+            {
+                _serverWebPortFG = value;
+                NotifyPropertyChanged("ServerWebPortFG");
             }
         }
 
@@ -337,7 +442,7 @@ namespace ServiceConfiguration
         {
             get
             {
-                bool b = ServerIPOK && ServerPortOK && UserNameOK && PasswordOK;
+                bool b = ServerIPOK && ServerPortOK && ServerWebPortOK && UserNameOK && PasswordOK;
                 if (b == true)
                 {
                     btnOK.IsDefault = true;
@@ -414,7 +519,7 @@ namespace ServiceConfiguration
                                 logged = true;
                                 permission = resp.Item3;
                                 Visibility = System.Windows.Visibility.Collapsed;
-                                MainWindow mw = new MainWindow(s, UserName, Password, permission, ServerIP, ServerPort);
+                                MainWindow mw = new MainWindow(s, UserName, Password, permission, ServerIP, ServerPort, ServerWebPort);
                                 mw.ShowDialog();
                                 break;
                             case Consts.MAN_LOGIN_ERR:
@@ -489,6 +594,10 @@ namespace ServiceConfiguration
                             iv = Consts.MIN_MAX_LOG_DISPLAY_COUNT;
                         MaxLogDisplayCount = iv;
                     }
+                    else if (i == 5)
+                    {
+                        ServerWebPortString = EncryptDecrypt.Decrypt(strLine.Trim());
+                    }
                     else
                         break;
 
@@ -517,6 +626,7 @@ namespace ServiceConfiguration
                 sw.WriteLine(EncryptDecrypt.Encrypt(UserName));
                 sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogCount.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogDisplayCount.ToString()));
+                sw.WriteLine(EncryptDecrypt.Encrypt(ServerWebPortString));
                 sw.Close();
                 sw.Dispose();
             }

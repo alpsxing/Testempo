@@ -269,6 +269,20 @@ namespace ServiceConfiguration
             }
         }
 
+        private int _serverWebPort = Consts.MAN_WEB_PORT;
+        public int ServerWebPort
+        {
+            get
+            {
+                return _serverWebPort;
+            }
+            set
+            {
+                _serverWebPort = value;
+                NotifyPropertyChanged("ServerWebPort");
+            }
+        }
+
         private bool _inRun = false;
         public bool InRun
         {
@@ -342,7 +356,7 @@ namespace ServiceConfiguration
 
         public MainWindow(Socket soc, 
             string username, string password, string userPerm, 
-            string serverip, int serverport,
+            string serverip, int serverport, int serverwebport,
             int maxLogCount = Consts.MAX_LOG_COUNT,
             int maxLogDispLog = Consts.MAX_LOG_DISPLAY_COUNT)
         {
@@ -1541,7 +1555,7 @@ namespace ServiceConfiguration
                     }
                 }
 
-                ViewUserMsgLog vuml = new ViewUserMsgLog(ServerIP, slfoc);
+                ViewUserMsgLog vuml = new ViewUserMsgLog(ServerIP, ServerWebPort, slfoc);
                 vuml.ShowDialog();
             }
         }
