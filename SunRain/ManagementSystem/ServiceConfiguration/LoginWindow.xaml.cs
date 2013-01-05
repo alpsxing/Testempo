@@ -244,14 +244,14 @@ namespace ServiceConfiguration
                 if (value < Consts.MIN_PORT_NUMBER)
                 {
                     ServerWebPortFG = Brushes.Red;
-                    ServerPortOK = false;
+                    ServerWebPortOK = false;
                     _serverWebPort = Consts.MIN_PORT_NUMBER;
                 }
                 else
                 {
                     ServerWebPortFG = Brushes.Black;
                     ServerWebPortOK = true;
-                    _serverPort = value;
+                    _serverWebPort = value;
                 }
                 NotifyPropertyChanged("ServerWebPort");
                 NotifyPropertyChanged("ServerWebPortString");
