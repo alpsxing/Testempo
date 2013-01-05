@@ -145,7 +145,7 @@ namespace InformationTransferLibrary
         /// For system service management
         /// </summary>
         public const int MAN_PORT = 5081;
-        public const int MAN_WEB_PORT = 8080;
+        public const int MAN_WEB_PORT = 80;
         /// <summary>
         /// For local terminal
         /// </summary>
@@ -155,7 +155,7 @@ namespace InformationTransferLibrary
         /// </summary>
         public const int DTU_PORT = 5083;
 
-        public const int MIN_PORT_NUMBER = 5000;
+        public const int MIN_PORT_NUMBER = 1;
         public const int MAX_PORT_NUMBER = 65534;
 
         public const int SOCKET_RECEIVING_BUFFER_LENGTH = 1024;
