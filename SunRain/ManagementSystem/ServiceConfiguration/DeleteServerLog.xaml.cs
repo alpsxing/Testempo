@@ -65,8 +65,8 @@ namespace ServiceConfiguration
             }
         }
 
-        private bool _isDeleteUser = false;
-        public bool IsDeleteUser
+        private bool? _isDeleteUser = false;
+        public bool? IsDeleteUser
         {
             get
             {
@@ -83,8 +83,8 @@ namespace ServiceConfiguration
             }
         }
 
-        private bool _isDeleteDate = false;
-        public bool IsDeleteDate
+        private bool? _isDeleteDate = false;
+        public bool? IsDeleteDate
         {
             get
             {
@@ -124,10 +124,7 @@ namespace ServiceConfiguration
             {
                 cboxUser.Items.Add(si);
             }
-            if (_serverLogOc.Count > 0)
-                cboxUser.SelectedIndex = 0;
-            else
-                InputIsOK = false;
+            cboxUser.SelectedIndex = 0;
 
             if (_windowType == ServerLogType.Delete)
             {
@@ -139,6 +136,8 @@ namespace ServiceConfiguration
                 Title = "查看服务器消息日志";
                 lblDate.Content = "查看日志开始日期";
             }
+
+            dpDate.DisplayDate = DateTime.Now;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)

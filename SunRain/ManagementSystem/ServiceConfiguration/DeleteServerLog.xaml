@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ServiceConfiguration.DeleteServerLog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="删除服务器日志" Height="140" Width="350" Icon="/ServiceConfiguration;component/Resources/deletelog.ico"
+        Title="删除服务器日志" Height="135" Width="330" Icon="/ServiceConfiguration;component/Resources/deletelog.ico"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Load">
     <Grid>
         <Grid.RowDefinitions>
