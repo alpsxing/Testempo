@@ -610,6 +610,7 @@ namespace ServiceConfiguration
             {
                 ServerIP = "127.0.0.1";
                 ServerPort = Consts.MAN_PORT;
+                ServerWebPort = Consts.MAN_WEB_PORT;
                 UserName = "";
             }
             Password = "";
