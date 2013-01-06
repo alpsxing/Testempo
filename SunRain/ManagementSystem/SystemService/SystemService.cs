@@ -82,17 +82,16 @@ namespace SystemService
 
             InitializeComponent();
 
-            InitLogFileOC();
-
             InitService();
+
+            InitLogFileOC();
         }
 
         private void InitLogFileOC()
         {
             _logFileOc.Clear();
 
-            string msgFolder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments)
-           + @"\COMWAY\Service\message";
+            string msgFolder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments) + @"\COMWAY\Service\message";
             try
             {
                 string[] fs = Directory.GetFiles(msgFolder);
@@ -101,14 +100,18 @@ namespace SystemService
                     int index = f.LastIndexOf(@"\");
                     if (f.EndsWith(".log") == true)
                     {
-                        string ftrim = f.Substring(0, f.Length - 4);
+                        string ftrim = f.Substring(index + 1, f.Length - index - 1 - 4);
                         if (Helper.FindStringCount(ftrim, " ") != 3)
                         {
                             try
                             {
                                 File.Delete(f);
+                                eventLogInformationTransfer.WriteEntry("删除" + f, EventLogEntryType.Warning);
                             }
-                            catch (Exception) { }
+                            catch (Exception ex)
+                            {
+                                eventLogInformationTransfer.WriteEntry("删除" + f + "出现错误 : " + ex.Message, EventLogEntryType.Error);
+                            }
                         }
                         else
                         {
@@ -118,23 +121,46 @@ namespace SystemService
                                 try
                                 {
                                     File.Delete(f);
+                                    eventLogInformationTransfer.WriteEntry("删除" + f, EventLogEntryType.Warning);
                                 }
-                                catch (Exception) { }
+                                catch (Exception ex)
+                                {
+                                    eventLogInformationTransfer.WriteEntry("删除" + f + "出现错误 : " + ex.Message, EventLogEntryType.Error);
+                                }
                             }
                             else
                             {
                                 DateTime dt;
-                                if (DateTime.TryParse(sa[1] + " " + sa[2], out dt) == true)
+                                string dtstr = Helper.ConvertDateTime(sa[1], Helper.DateTimeType.Date) + " " + Helper.ConvertDateTime(sa[2], Helper.DateTimeType.Time);
+                                if (DateTime.TryParse(dtstr, out dt) == true)
                                 {
-                                    _logFileOc.Add(new Tuple<string, string, string>(sa[0], sa[1] + " " + sa[2], sa[3]));
+                                    DateTime dtNow = DateTime.Now;
+                                    if (dtNow.Subtract(dt).Days > Consts.MAX_DTU_MESSAGE_LOG_DATE)
+                                    {
+                                        try
+                                        {
+                                            File.Delete(f);
+                                            eventLogInformationTransfer.WriteEntry("删除" + f, EventLogEntryType.Warning);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            eventLogInformationTransfer.WriteEntry("删除" + f + "出现错误 : " + ex.Message, EventLogEntryType.Error);
+                                        }
+                                    }
+                                    else
+                                        _logFileOc.Add(new Tuple<string, string, string>(sa[0], sa[1] + " " + sa[2], sa[3]));
                                 }
                                 else
                                 {
                                     try
                                     {
                                         File.Delete(f);
+                                        eventLogInformationTransfer.WriteEntry("删除" + f, EventLogEntryType.Warning);
                                     }
-                                    catch (Exception) { }
+                                    catch (Exception ex)
+                                    {
+                                        eventLogInformationTransfer.WriteEntry("删除" + f + "出现错误 : " + ex.Message, EventLogEntryType.Error);
+                                    }
                                 }
                             }
                         }
@@ -755,7 +781,7 @@ namespace SystemService
                         }
                     }
                     if (find == false)
-                        userList.Add(ti.Item1.Trim());
+                        userList.Add(ti.Item1.Trim() + " " + ti.Item2.Trim() + " " + ti.Item3.Trim());
                 }
                 foreach (string si in userList)
                 {
@@ -765,7 +791,7 @@ namespace SystemService
                         s = s + "\t" + si;
                 }
             }
-            return s;
+            return Consts.MAN_GET_LOG_INFO_OK + s;
         }
 
         public enum UserDateType
@@ -805,16 +831,17 @@ namespace SystemService
                             if (sa.Length != 2)
                                 return Consts.MAN_DEL_LOG_USER_DATE_ERR + "空的用户或日期";
                             DateTime dt;
-                            if (DateTime.TryParse(sa[1], out dt) == false)
+                            if (DateTime.TryParse(Helper.ConvertDateTime(sa[1]), out dt) == false)
                                 return Consts.MAN_DEL_LOG_USER_DATE_ERR + "无效的日期";
                             dt = dt.AddDays(1.0);
                             foreach (Tuple<string, string, string> ti in _logFileOc)
                             {
                                 DateTime dti;
-                                if (DateTime.TryParse(ti.Item2, out dti) == false)
+                                if (DateTime.TryParse(Helper.ConvertDateTime(ti.Item2), out dti) == false)
                                     continue;
-                                if (DateTime.Compare(dti, dt) <= 0 && 
-                                    (string.Compare(info, sa[0].Trim(), true) == 0 || string.Compare(info, "all", true) == 0))
+                                if (DateTime.Compare(dti, dt) <= 0 &&
+                                    (string.Compare(sa[0].Trim(), ti.Item1.Trim(), true) == 0 || 
+                                    string.Compare(sa[0].Trim(), "all", true) == 0))
                                     toc.Add(ti);
                             }
                             foreach (Tuple<string, string, string> ti in toc)
@@ -848,7 +875,7 @@ namespace SystemService
                             {
                                 foreach (Tuple<string, string, string> ti in _logFileOc)
                                 {
-                                    if (string.Compare(info, info.Trim(), true) == 0)
+                                    if (string.Compare(info.Trim(), ti.Item1.Trim(), true) == 0)
                                         toc.Add(ti);
                                 }
                                 foreach (Tuple<string, string, string> ti in toc)
@@ -867,12 +894,12 @@ namespace SystemService
                     case UserDateType.Date:
                         {
                             DateTime dt;
-                            if (DateTime.TryParse(info, out dt) == false)
+                            if (DateTime.TryParse(Helper.ConvertDateTime(info), out dt) == false)
                                 return Consts.MAN_DEL_LOG_USER_DATE_ERR + "无效的日期";
                             foreach (Tuple<string, string, string> ti in _logFileOc)
                             {
                                 DateTime dti;
-                                if (DateTime.TryParse(ti.Item2, out dti) == false)
+                                if (DateTime.TryParse(Helper.ConvertDateTime(ti.Item2), out dti) == false)
                                     continue;
                                 if (DateTime.Compare(dti, dt) <= 0)
                                     toc.Add(ti);
@@ -2192,29 +2219,32 @@ namespace SystemService
                         q = _dtuTaskList[s].RequestQueue;
                 }
 
-                if (ba == null || ba.Length < 1)
-                    q.Enqueue(new byte[] { });
-                else
+                if (q != null)
                 {
-                    if (len < 0)
-                        q.Enqueue(ba);
+                    if (ba == null || ba.Length < 1)
+                        q.Enqueue(new byte[] { });
                     else
                     {
-                        if (len == 0)
-                            q.Enqueue(new byte[] { });
+                        if (len < 0)
+                            q.Enqueue(ba);
                         else
                         {
-                            int balen = ba.Length;
-                            if (len >= balen)
-                                q.Enqueue(ba);
+                            if (len == 0)
+                                q.Enqueue(new byte[] { });
                             else
                             {
-                                byte[] ban = new byte[len];
-                                for (int i = 0; i < len; i++)
+                                int balen = ba.Length;
+                                if (len >= balen)
+                                    q.Enqueue(ba);
+                                else
                                 {
-                                    ban[i] = ba[i];
+                                    byte[] ban = new byte[len];
+                                    for (int i = 0; i < len; i++)
+                                    {
+                                        ban[i] = ba[i];
+                                    }
+                                    q.Enqueue(ban);
                                 }
-                                q.Enqueue(ban);
                             }
                         }
                     }

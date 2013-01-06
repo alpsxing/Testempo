@@ -786,7 +786,8 @@ namespace ServiceConfiguration
                                 if (sia != null && sia.Length == 4)
                                 {
                                     DateTime dt;
-                                    if(DateTime.TryParse(sia[1].Trim() + " " + sia[2].Trim(), out dt) == true)
+                                    string dtstr = Helper.ConvertDateTime(sia[1], Helper.DateTimeType.Date) + " " + Helper.ConvertDateTime(sia[2], Helper.DateTimeType.Time);
+                                    if (DateTime.TryParse(dtstr, out dt) == true)
                                         _serverLogOc.Add(new Tuple<string, string, string>(sia[0].Trim(), sia[1].Trim() + " " + sia[2].Trim(), sia[3].Trim()));
                                 }
                             }
@@ -1478,7 +1479,7 @@ namespace ServiceConfiguration
                 }
                 else if (string.IsNullOrWhiteSpace(dsl.DeleteUser) == false && string.IsNullOrWhiteSpace(dsl.DeleteDate) == true)
                 {
-                    s = dsl.DeleteDate;
+                    s = dsl.DeleteUser;
                     PutRequest(new Tuple<string,string>(Consts.MAN_DEL_LOG_USER, s));
                 }
             }
@@ -1506,7 +1507,7 @@ namespace ServiceConfiguration
                 }
             }
 
-            DeleteServerLog dsl = new DeleteServerLog(sloc);
+            DeleteServerLog dsl = new DeleteServerLog(sloc, DeleteServerLog.ServerLogType.Select);
             bool? b = dsl.ShowDialog();
             if (b == true)
             {
@@ -1518,7 +1519,8 @@ namespace ServiceConfiguration
                     {
                         foreach (Tuple<string, string, string> si in _serverLogOc)
                         {
-                            if (string.Compare(dsl.DeleteUser.Trim(), si.Item1.Trim(), true) == 0)
+                            if (string.Compare(dsl.DeleteUser.Trim(), "all", true) == 0 ||
+                                string.Compare(dsl.DeleteUser.Trim(), si.Item1.Trim(), true) == 0)
                             {
                                 DateTime dtf;
                                 if (DateTime.TryParse(si.Item2.Trim(), out dtf) == true)
@@ -1550,7 +1552,8 @@ namespace ServiceConfiguration
                 {
                     foreach (Tuple<string, string, string> si in _serverLogOc)
                     {
-                        if (string.Compare(dsl.DeleteUser.Trim(), si.Item1.Trim(), true) == 0)
+                        if (string.Compare(dsl.DeleteUser.Trim(), "all", true) == 0 ||
+                            string.Compare(dsl.DeleteUser.Trim(), si.Item1.Trim(), true) == 0)
                             slfoc.Add(si);
                     }
                 }

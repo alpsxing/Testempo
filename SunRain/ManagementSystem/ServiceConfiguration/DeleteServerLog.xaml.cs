@@ -51,20 +51,6 @@ namespace ServiceConfiguration
 
         private ServerLogType _windowType = ServerLogType.Delete;
 
-        private bool _inputIsOK = false;
-        public bool InputIsOK
-        {
-            get
-            {
-                return _inputIsOK;
-            }
-            set
-            {
-                _inputIsOK = value;
-                NotifyPropertyChanged("InputIsOK");
-            }
-        }
-
         private bool? _isDeleteUser = false;
         public bool? IsDeleteUser
         {
@@ -75,10 +61,7 @@ namespace ServiceConfiguration
             set
             {
                 _isDeleteUser = value;
-                if ((_isDeleteDate == true || _isDeleteUser == true) && _serverLogOc.Count > 0)
-                    InputIsOK = true;
-                else
-                    InputIsOK = false;
+                NotifyPropertyChanged("InputIsOK");
                 NotifyPropertyChanged("IsDeleteUser");
             }
         }
@@ -93,11 +76,16 @@ namespace ServiceConfiguration
             set
             {
                 _isDeleteDate = value;
-                if ((_isDeleteDate == true || _isDeleteUser == true) && _serverLogOc.Count > 0)
-                    InputIsOK = true;
-                else
-                    InputIsOK = false;
+                NotifyPropertyChanged("InputIsOK");
                 NotifyPropertyChanged("IsDeleteDate");
+            }
+        }
+
+        public bool InputIsOK
+        {
+            get
+            {
+                return (_isDeleteDate == true || _isDeleteUser == true);// && _serverLogOc.Count > 0;
             }
         }
 
@@ -135,14 +123,17 @@ namespace ServiceConfiguration
             {
                 Title = "查看服务器消息日志";
                 lblDate.Content = "查看日志开始日期";
+                Uri iconUri = new Uri("pack://application:,,,/ServiceConfiguration;component/Resources/viewlog.ico", UriKind.RelativeOrAbsolute);
+                Icon = BitmapFrame.Create(iconUri);
             }
 
             dpDate.DisplayDate = DateTime.Now;
+            dpDate.SelectedDate = DateTime.Now;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
         {
-            DeleteUser = (IsDeleteUser == true) ? ((cboxUser.SelectedIndex == 0) ? "all" : _serverLogOc[cboxUser.SelectedIndex]) : "";
+            DeleteUser = (IsDeleteUser == true) ? ((cboxUser.SelectedIndex == 0) ? "all" : _serverLogOc[cboxUser.SelectedIndex - 1]) : "";
             DeleteDate = (IsDeleteDate == true) ? (dpDate.DisplayDate.Year.ToString() + "-" + dpDate.DisplayDate.Month.ToString() + "-" + dpDate.DisplayDate.Day.ToString()) : "";
 
             DialogResult = true;

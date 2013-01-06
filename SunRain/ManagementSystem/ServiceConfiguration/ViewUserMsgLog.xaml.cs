@@ -102,88 +102,101 @@ namespace ServiceConfiguration
 
         public void DownloadFile(Tuple<string, string, string> ti)
         {
-            TreeViewItem tvi = new TreeViewItem();
-
-            string fileName = ti.Item1 + " " + ti.Item2 + " " + ti.Item3 + ".log";
-
-            ReadyString = "获取日志文件 : " + fileName;
-
-            StackPanel splf = new StackPanel();
-            splf.Orientation = System.Windows.Controls.Orientation.Horizontal;
-            splf.Margin = new Thickness(0, 0, 0, 0);
-            System.Windows.Controls.Label lbllf = new System.Windows.Controls.Label();
-            lbllf.Content = fileName;
-            splf.Children.Add(lbllf);
-            tvi.Header = splf;
-
-            ObservableCollection<LogFileMessage> lfmOc = new ObservableCollection<LogFileMessage>();
-            
-            try
+            Dispatcher.Invoke((ThreadStart)delegate()
             {
-                System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://" + ServerIP + ":" + ServerWebPort.ToString() + "/comway/service/message/" + fileName);
-                System.Net.HttpWebResponse myrp = (System.Net.HttpWebResponse)Myrq.GetResponse();
-                long totalBytes = myrp.ContentLength;
-                if (pbDownloadFile != null)
-                    pbDownloadFile.Maximum = (int)totalBytes;
-                System.IO.Stream st = myrp.GetResponseStream();
-                long totalDownloadedByte = 0;
-                byte[] by = new byte[1024];
-                int osize = -1;
-                string sf = "";
-                while ((osize = st.Read(by, 0, (int)by.Length)) > 0 && _cts.Token.IsCancellationRequested == false)
-                {
-                    sf = sf + System.Text.ASCIIEncoding.ASCII.GetString(by, 0, osize);
-                    totalDownloadedByte = osize + totalDownloadedByte;
-                    if (pbDownloadFile != null)
-                        pbDownloadFile.Value = ((int)totalDownloadedByte > (int)totalBytes) ? (int)totalBytes : (int)totalDownloadedByte;
-                }
-                if (pbDownloadFile != null)
-                    pbDownloadFile.Value = 0;
-                st.Close();
+                TreeViewItem tvi = new TreeViewItem();
 
-                #region
+                string fileName = ti.Item1 + " " + ti.Item2 + " " + ti.Item3 + ".log";
 
-                string[] sa = sf.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (string sai in sa)
+                ReadyString = "获取日志文件 : " + fileName;
+
+                StackPanel splf = new StackPanel();
+                splf.Orientation = System.Windows.Controls.Orientation.Horizontal;
+                splf.Margin = new Thickness(0, 0, 0, 0);
+                System.Windows.Controls.Label lbllf = new System.Windows.Controls.Label();
+                lbllf.Content = fileName;
+                splf.Children.Add(lbllf);
+                tvi.Header = splf;
+
+                ObservableCollection<LogFileMessage> lfmOc = new ObservableCollection<LogFileMessage>();
+
+                try
                 {
-                    string[] saia = sai.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
-                    if(saia != null && saia.Length != 4)
+                    System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://" + ServerIP + ":" + ServerWebPort.ToString() + "/comway/service/message/" + fileName);
+                    System.Net.HttpWebResponse myrp = (System.Net.HttpWebResponse)Myrq.GetResponse();
+                    long totalBytes = myrp.ContentLength;
+                    //Dispatcher.Invoke((ThreadStart)delegate()
+                    //{
+                        if (pbDownloadFile != null)
+                            pbDownloadFile.Maximum = (int)totalBytes;
+                    //}, null);
+                    System.IO.Stream st = myrp.GetResponseStream();
+                    long totalDownloadedByte = 0;
+                    byte[] by = new byte[1024];
+                    int osize = -1;
+                    string sf = "";
+                    while ((osize = st.Read(by, 0, (int)by.Length)) > 0 && _cts.Token.IsCancellationRequested == false)
                     {
-                        lfmOc.Add(new LogFileMessage()
-                        {
-                            UserName = saia[0],
-                            DTUID = saia[1],
-                            FlowType = (string.Compare(saia[2].Trim(), "true", true) == 0)? LogFileMessage.Flow.ToDTU : LogFileMessage.Flow.FromDTU,
-                            Message = saia[3]
-                        });
+                        sf = sf + System.Text.ASCIIEncoding.ASCII.GetString(by, 0, osize);
+                        totalDownloadedByte = osize + totalDownloadedByte;
+                        //Dispatcher.Invoke((ThreadStart)delegate()
+                        //{
+                            if (pbDownloadFile != null)
+                                pbDownloadFile.Value = ((int)totalDownloadedByte > (int)totalBytes) ? (int)totalBytes : (int)totalDownloadedByte;
+                        //}, null);
                     }
+                    //Dispatcher.Invoke((ThreadStart)delegate()
+                    //{
+                        if (pbDownloadFile != null)
+                            pbDownloadFile.Value = 0;
+                    //}, null);
+                    st.Close();
+
+                    #region
+
+                    string[] sa = sf.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string sai in sa)
+                    {
+                        string[] saia = sai.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                        if (saia != null && saia.Length == 5)
+                        {
+                            lfmOc.Add(new LogFileMessage()
+                            {
+                                UserName = saia[0],
+                                DTUID = saia[1],
+                                FlowType = (string.Compare(saia[2].Trim(), "true", true) == 0) ? LogFileMessage.Flow.ToDTU : LogFileMessage.Flow.FromDTU,
+                                TimeStamp = saia[3],
+                                Message = saia[4]
+                            });
+                        }
+                    }
+
+                    #endregion
+
+                    Image imglf = new Image();
+                    imglf.Source = new BitmapImage(new Uri("pack://application:,,,/serviceconfiguration;component/resources/logfileok.ico"));
+                    imglf.Width = 16;
+                    imglf.Height = 16;
+                    splf.Children.Insert(0, imglf);
+                }
+                catch (System.Exception ex)
+                {
+                    lbllf.Content = fileName + " - " + ex.Message;
+
+                    Image imglf = new Image();
+                    imglf.Source = new BitmapImage(new Uri("pack://application:,,,/serviceconfiguration;component/resources/logfileerror.ico"));
+                    imglf.Width = 16;
+                    imglf.Height = 16;
+                    splf.Children.Insert(0, imglf);
                 }
 
-                #endregion
-
-                Image imglf = new Image();
-                imglf.Source = new BitmapImage(new Uri("pack://application:,,,/serviceconfiguration;component/resources/logfileok.ico"));
-                imglf.Width = 16;
-                imglf.Height = 16;
-                splf.Children.Insert(0, imglf);
-            }
-            catch (System.Exception ex)
-            {
-                lbllf.Content = fileName + " - " + ex.Message;
-
-                Image imglf = new Image();
-                imglf.Source = new BitmapImage(new Uri("pack://application:,,,/serviceconfiguration;component/resources/logfileerror.ico"));
-                imglf.Width = 16;
-                imglf.Height = 16;
-                splf.Children.Insert(0, imglf);
-            }
-
-            _logFileOc.Add(new LogFile()
-            {
-                FileName = fileName,
-                TVI = tvi,
-                LogFileMessageOC = lfmOc
-            });
+                _logFileOc.Add(new LogFile()
+                {
+                    FileName = fileName,
+                    TVI = tvi,
+                    LogFileMessageOC = lfmOc
+                });
+            }, null);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -193,21 +206,24 @@ namespace ServiceConfiguration
             ReadyString = "获取日志文件中...";
 
             Task.Factory.StartNew(() =>
+            {
+                foreach (Tuple<string, string, string> ti in _userDateOc)
                 {
-                    foreach (Tuple<string, string, string> ti in _userDateOc)
-                    {
-                        if (_cts.Token.IsCancellationRequested == true)
-                            break;
-                        DownloadFile(ti);
-                    }
+                    if (_cts.Token.IsCancellationRequested == true)
+                        break;
+                    DownloadFile(ti);
+                }
+                Dispatcher.Invoke((ThreadStart)delegate()
+                {
                     if (pbDownloadFile != null)
                         pbDownloadFile.Value = 0;
-                    ReadyString = "就绪";
                     foreach (LogFile lfi in _logFileOc)
                     {
                         tvUserDate.Items.Add(lfi.TVI);
                     }
-                }, _cts.Token);
+                }, null);
+                ReadyString = "就绪";
+            }, _cts.Token);
         }
 
         #region Window Exit
@@ -297,6 +313,7 @@ namespace ServiceConfiguration
                         sb.Append(lfmi.UserName + "\t" +
                             lfmi.DTUID + "\t" +
                             ((lfmi.FlowType == LogFileMessage.Flow.ToDTU) ? "True" : "False") + "\t" +
+                            lfmi.TimeStamp + "\t" +
                             lfmi.Message);
                     }
                     sw.WriteLine(sb.ToString());

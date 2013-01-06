@@ -211,6 +211,8 @@ namespace InformationTransferLibrary
         public const int DTU_ACCOUNT_ITEM_COUNT = 4;
         public const int DTU_INFO_ITEM_COUNT = 7;
 
+        public const double MAX_DTU_MESSAGE_LOG_DATE = 30.0;
+
         //public const string DEFAULT_DIRECTORY = @"C:\COMWAY";
     }
 
@@ -637,7 +639,7 @@ namespace InformationTransferLibrary
 
         public static int FindStringCount(string src, string fstr)
         {
-            if (string.IsNullOrWhiteSpace(src) || string.IsNullOrWhiteSpace(fstr))
+            if (string.IsNullOrWhiteSpace(src) || string.IsNullOrEmpty(fstr))
                 return 0;
 
             int flen = fstr.Length;
@@ -652,6 +654,44 @@ namespace InformationTransferLibrary
                 index = src.IndexOf(fstr);
             }
             return count;
+        }
+
+        public enum DateTimeType
+        {
+            DateTime,
+            Date,
+            Time
+        }
+
+        public static string ConvertDateTime(string src, DateTimeType dtt = DateTimeType.DateTime)
+        {
+            if (string.IsNullOrEmpty(src))
+                return "";
+
+            src = src.Trim();
+            switch (dtt)
+            {
+                default:
+                case DateTimeType.DateTime:
+                    string[] srca = src.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    if (srca == null || srca.Length != 2)
+                        return src;
+                    string srca0 = srca[0];
+                    while (srca0.IndexOf("-") >= 0)
+                        srca0 = srca0.Replace("-", "/");
+                    string srca1 = srca[1];
+                    while (srca1.IndexOf("-") >= 0)
+                        srca1 = srca1.Replace("-", ":");
+                    return srca0 + " " + srca1;
+                case DateTimeType.Date:
+                    while (src.IndexOf("-") >= 0)
+                        src = src.Replace("-", "/");
+                    return src;
+                case DateTimeType.Time:
+                    while (src.IndexOf("-") >= 0)
+                        src = src.Replace("-", ":");
+                    return src;
+            }
         }
     }
 

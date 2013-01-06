@@ -203,7 +203,7 @@ namespace ServiceConfiguration
             }
         }
 
-        private bool _serverPortOK = false;
+        private bool _serverPortOK = true;
         public bool ServerPortOK
         {
             get
@@ -218,7 +218,7 @@ namespace ServiceConfiguration
             }
         }
 
-        private Brush _serverPortFG = Brushes.Red;
+        private Brush _serverPortFG = Brushes.Black;
         public Brush ServerPortFG
         {
             get
@@ -300,7 +300,7 @@ namespace ServiceConfiguration
             }
         }
 
-        private bool _serverWebPortOK = false;
+        private bool _serverWebPortOK = true;
         public bool ServerWebPortOK
         {
             get
@@ -315,7 +315,7 @@ namespace ServiceConfiguration
             }
         }
 
-        private Brush _serverWebPortFG = Brushes.Red;
+        private Brush _serverWebPortFG = Brushes.Black;
         public Brush ServerWebPortFG
         {
             get
@@ -653,14 +653,19 @@ namespace ServiceConfiguration
                     txtServerPort.Focus();
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(UserName) == true)
-                        txtUserName.Focus();
+                    if (string.IsNullOrWhiteSpace(ServerWebPortString) == true)
+                        txtServerWebPort.Focus();
                     else
                     {
-                        if (string.IsNullOrWhiteSpace(Password) == true)
-                            pbPassword.Focus();
+                        if (string.IsNullOrWhiteSpace(UserName) == true)
+                            txtUserName.Focus();
                         else
-                            txtServerIP.Focus();
+                        {
+                            if (string.IsNullOrWhiteSpace(Password) == true)
+                                pbPassword.Focus();
+                            else
+                                txtServerIP.Focus();
+                        }
                     }
                 }
             }
