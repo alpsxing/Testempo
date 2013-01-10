@@ -332,6 +332,19 @@ namespace ServiceConfiguration
             if (msg != "")
                 System.Windows.MessageBox.Show("以下日志文件没有被正确保存 :\n" + msg, "保存日志错误", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+        private void Message_DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (dgMessage.Items.Count < 1 || dgMessage.SelectedIndex < 0)
+                return;
+
+            LogFileMessage lfm = dgMessage.Items[dgMessage.SelectedIndex] as LogFileMessage;
+            if (lfm == null)
+                return;
+
+            ViewUserMsgLogDetail vumd = new ViewUserMsgLogDetail(lfm);
+            vumd.ShowDialog();
+        }
     }
 
     public class LogFile : NotifyPropertyChangedClass

@@ -18,7 +18,7 @@
             <ColumnDefinition Width="80"/>
             <ColumnDefinition Width="80"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Content="DTU ID" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"
+        <Label Grid.Row="0" Grid.Column="0" Content="DTU标识" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"
                Foreground="{Binding Path=DtuIdFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Grid.Row="0" Grid.Column="1" Margin="0,3,3,3" Name="txtDtuId"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
@@ -33,7 +33,7 @@
                  Text="{Binding Path=UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  Foreground="{Binding Path=UserNameFG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                  IsEnabled="{Binding Path=UserNameEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="SIM ID" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="SIM标识" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <TextBox Grid.Row="1" Grid.Column="1" Margin="0,3,3,3"
                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=SimId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"

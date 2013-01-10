@@ -8,7 +8,7 @@
     <Window.Resources>
         <itl:StringIntConverter x:Key="StringIntConverter"/>
     </Window.Resources>
-    <Grid IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>

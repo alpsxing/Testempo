@@ -94,6 +94,9 @@
     <Compile Include="ViewUserMsgLog.xaml.cs">
       <DependentUpon>ViewUserMsgLog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewUserMsgLogDetail.xaml.cs">
+      <DependentUpon>ViewUserMsgLogDetail.xaml</DependentUpon>
+    </Compile>
     <Page Include="DeleteServerLog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -142,6 +145,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ViewUserMsgLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewUserMsgLogDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

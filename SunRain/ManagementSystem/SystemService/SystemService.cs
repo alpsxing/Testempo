@@ -1333,8 +1333,6 @@ namespace SystemService
                 if (dtu.Online == false)
                     return Consts.MAN_KICK_DTU_ERR + "DTU(" + dtuId + ")已经不在线.";
 
-                dtu.Online = false;
-
                 if (dtu.DTUSocket != null && _dtuTaskList.ContainsKey(dtu.DTUSocket))
                 {
                     _dtuTaskList[dtu.DTUSocket].CTS.Cancel();
@@ -1362,7 +1360,8 @@ namespace SystemService
                     _terminalDTUMap.Remove(socTerm);
 
                 dtu.Controller = null;
-                
+                dtu.Online = false;
+  
                 Helper.SafeCloseSocket(dtu.DTUSocket);
             }
 
@@ -2121,8 +2120,16 @@ namespace SystemService
 
             //Debug.Assert(tdti.TaskSocket == soc);
             //Debug.Assert(dtu.DTUSocket == soc);
-            tdti.TaskSocket = null;
-            dtu.DTUSocket = null;
+            try
+            {
+                tdti.TaskSocket = null;
+            }
+            catch (Exception) { }
+            try
+            {
+                dtu.DTUSocket = null;
+            }
+            catch (Exception) { }
             Helper.SafeCloseSocket(soc);
         }
 

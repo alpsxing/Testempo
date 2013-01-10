@@ -236,7 +236,7 @@ namespace ManagementSystem
             }
         }
 
-        private string _readyString = "Ready";
+        private string _readyString = "已连接";
         public string ReadyString
         {
             get
@@ -270,6 +270,33 @@ namespace ManagementSystem
             get
             {
                 return !_inRun;
+            }
+        }
+
+        private bool _connected = true;
+        public bool Connected
+        {
+            get
+            {
+                return _connected;
+            }
+            set
+            {
+                _connected = value;
+                if (_connected == true)
+                    ReadyString = "已连接";
+                else
+                    ReadyString = "失去链接";
+                NotifyPropertyChanged("Connected");
+                NotifyPropertyChanged("NotConnected");
+            }
+        }
+
+        public bool NotConnected
+        {
+            get
+            {
+                return !_connected;
             }
         }
 
@@ -410,7 +437,7 @@ namespace ManagementSystem
                 catch (Exception) { }
                 try
                 {
-                    TerminateAllTerminals();
+                    TerminateAllTerminals(false);
                 }
                 catch (Exception) { }
                 try
@@ -523,13 +550,20 @@ namespace ManagementSystem
                             if (b == true)
                             {
                                 bool dupDtu = false;
+                                TerminalInformation curTi = null;
                                 foreach (TerminalInformation tii in TermInfoOc)
                                 {
                                     if (string.Compare(tii.CurrentDTU.DtuId, _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId, true) == 0)
                                     {
-                                        MessageBox.Show("DTU(" + _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId + ")已经被你控制.", "添加DTU失败.", MessageBoxButton.OK, MessageBoxImage.Error);
-                                        Helper.SafeCloseSocket(soc);
-                                        dupDtu = true;
+                                        if (tii.State == TerminalInformation.TiState.Connected)
+                                        {
+                                            MessageBox.Show("DTU(" + _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId + ")已经被你控制.", "添加DTU失败.", MessageBoxButton.OK, MessageBoxImage.Error);
+                                            Helper.SafeCloseSocket(soc);
+                                            dupDtu = true;
+                                        }
+                                        else
+                                            curTi = tii;
+
                                         break;
                                     }
                                 }
@@ -551,26 +585,38 @@ namespace ManagementSystem
                                         soc.ReceiveTimeout = -1;
 
                                         IPAddress ipad = ((IPEndPoint)soc.RemoteEndPoint).Address;
-                                        TerminalInformation ti = null;
-                                        Dispatcher.Invoke((ThreadStart)delegate()
+                                        if (curTi != null)
                                         {
-                                            ti = new TerminalInformation()
+                                            Dispatcher.Invoke((ThreadStart)delegate()
                                             {
-                                                ServerIP = IPAddress.Parse(ServerIP),
-                                                ServerIPString = ServerIP,
-                                                TerminalIP = ipad,
-                                                CurrentDTU = DTUInfoOC[sdtu.DTUSelectedIndex],
-                                                TerminalSocket = soc,
-                                                State = TerminalInformation.TiState.Connected,
-                                            };
-                                            ti.InitUI();
-                                            lock (_tiLock)
+                                                curTi.TerminalSocket = soc;
+                                                curTi.State = TerminalInformation.TiState.Connected;
+                                                curTi.InitUI(true);
+                                            }, null);
+                                        }
+                                        else
+                                        {
+                                            TerminalInformation ti = null;
+                                            Dispatcher.Invoke((ThreadStart)delegate()
                                             {
-                                                TermInfoOc.Add(ti);
-                                            }
-                                            UpdateTerminalInforView(ti);
-                                            tcTerminal.SelectedIndex = tcTerminal.Items.Count;
-                                        }, null);
+                                                ti = new TerminalInformation()
+                                                {
+                                                    ServerIP = IPAddress.Parse(ServerIP),
+                                                    ServerIPString = ServerIP,
+                                                    TerminalIP = ipad,
+                                                    CurrentDTU = DTUInfoOC[sdtu.DTUSelectedIndex],
+                                                    TerminalSocket = soc,
+                                                    State = TerminalInformation.TiState.Connected,
+                                                };
+                                                ti.InitUI();
+                                                lock (_tiLock)
+                                                {
+                                                    TermInfoOc.Add(ti);
+                                                }
+                                                UpdateTerminalInforView(ti);
+                                                tcTerminal.SelectedIndex = tcTerminal.Items.Count;
+                                            }, null);
+                                        }
                                     }
                                 }
                             }
@@ -638,7 +684,7 @@ namespace ManagementSystem
             {
                 Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
                 if (resp.Item1 != Consts.MAN_UNCTRL_DTU_OK)
-                    MessageBox.Show("删除DTU(" + ti.OldDTUID + ")错误 : " + resp.Item3, "删除DTU错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("删除DTU(" + ti.OldDTUID + ")时发现服务器端DTU状态异常 : " + resp.Item3, "删除DTU信息", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             View1DTU_MenuItem_Click(null, null);
@@ -692,7 +738,7 @@ namespace ManagementSystem
                     if (resp.Item1 != Consts.TERM_INIT_USER_OK)
                     {
                         MessageBox.Show("错误的服务器响应 : " + resp.Item1 + resp.Item3, "初始化使用者失败", MessageBoxButton.OK, MessageBoxImage.Error);
-                        TerminateAllTerminals();
+                        TerminateAllTerminals(false);
                         initOK = false;
                     }
                 }
@@ -700,7 +746,7 @@ namespace ManagementSystem
             catch (Exception ex)
             {
                 MessageBox.Show("无法获得初始化使用者响应 : " + ex.Message, "初始化使用者失败", MessageBoxButton.OK, MessageBoxImage.Error);
-                TerminateAllTerminals();
+                TerminateAllTerminals(false);
                 initOK = false;
             }
 
@@ -736,8 +782,6 @@ namespace ManagementSystem
                     }
                     if (string.IsNullOrWhiteSpace(dtus) == false)
                     {
-                        //_timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
-
                         byte[] bytes = Helper.DoSendReceive(_mainSocket, Consts.TERM_CHECK_DTU + dtus);
                         if (bytes.Length < 1)
                         {
@@ -777,11 +821,15 @@ namespace ManagementSystem
                                 }
                                 foreach (TerminalInformation tii in tiList)
                                 {
-                                    tii.State = TerminalInformation.TiState.Disconnected;
-                                    AddLog("DTU连接失效.", tii.OldDTUID, LogMessage.State.Infomation, LogMessage.Flow.None);
+                                    if (tii.State != TerminalInformation.TiState.Disconnected)
+                                    {
+                                        tii.State = TerminalInformation.TiState.Disconnected;
+                                        tii.ReqQueue.Clear();
+                                        tii.CTS.Cancel();
+                                        Helper.SafeCloseSocket(tii.TerminalSocket);
+                                        AddLog("DTU连接失效.", tii.OldDTUID, LogMessage.State.Infomation, LogMessage.Flow.None);
+                                    }
                                 }
-
-                                //_timerPulse.Change(Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
                             }
                         }
                     }
@@ -789,8 +837,7 @@ namespace ManagementSystem
                 catch (Exception ex)
                 {
                     AddLog("DTU检查失败 : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
-
-                    //_timerPulse.Change(Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
+                    TerminateAllTerminals();
                 }
             }
         }
@@ -827,8 +874,9 @@ namespace ManagementSystem
             }
         }
 
-        private void TerminateAllTerminals()
+        private void TerminateAllTerminals(bool showDlg = true)
         {
+            Connected = false;
             _timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
             _timerDTU.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_DTU);
             lock (_tiLock)
@@ -846,6 +894,13 @@ namespace ManagementSystem
                 }, null);
             }
             _cts.Cancel();
+            if (showDlg == true)
+            {
+                Dispatcher.Invoke((ThreadStart)delegate()
+                    {
+                        MessageBox.Show(this, "失去与服务器的连接，请重启程序。", "连接错误", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }, null);
+            }
             Helper.SafeCloseSocket(_mainSocket);
         }
 
@@ -1253,39 +1308,39 @@ namespace ManagementSystem
 
         #endregion
 
-        private void Reconnect_MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            IPAddress server = null;
-            IPEndPoint iep = null;
-            try
-            {
-                _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                server = IPAddress.Parse(ServerIP);
-                iep = new IPEndPoint(server, ServerPort);
-                _mainSocket.SendTimeout = Consts.TERM_TIMEOUT;
-                _mainSocket.ReceiveTimeout = Consts.TERM_TIMEOUT;
-                _mainSocket.Connect(iep);
-                if (_mainSocket.Connected)
-                {
-                    Task.Factory.StartNew(
-                        () =>
-                        {
-                            //ManTask(true);
-                        }, _cts.Token);
-                }
-                else
-                {
-                    Helper.SafeCloseSocket(_mainSocket);
-                    _mainSocket = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("无法重新连接服务器 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                Helper.SafeCloseSocket(_mainSocket);
-                _mainSocket = null;
-            }
-        }
+        //private void Reconnect_MenuItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    IPAddress server = null;
+        //    IPEndPoint iep = null;
+        //    try
+        //    {
+        //        _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //        server = IPAddress.Parse(ServerIP);
+        //        iep = new IPEndPoint(server, ServerPort);
+        //        _mainSocket.SendTimeout = Consts.TERM_TIMEOUT;
+        //        _mainSocket.ReceiveTimeout = Consts.TERM_TIMEOUT;
+        //        _mainSocket.Connect(iep);
+        //        if (_mainSocket.Connected)
+        //        {
+        //            Task.Factory.StartNew(
+        //                () =>
+        //                {
+        //                    //ManTask(true);
+        //                }, _cts.Token);
+        //        }
+        //        else
+        //        {
+        //            Helper.SafeCloseSocket(_mainSocket);
+        //            _mainSocket = null;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("无法重新连接服务器 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        Helper.SafeCloseSocket(_mainSocket);
+        //        _mainSocket = null;
+        //    }
+        //}
 
         private void View1DTU_MenuItem_Click(object sender, RoutedEventArgs e)
         {

@@ -616,8 +616,8 @@ namespace InformationTransferLibrary
         /// </summary>
         /// <param name="bytes"></param>
         /// <param name="len"></param>
-        /// <returns> First string is header, second string is content, 3rd string is conetnt without '\0', last is UFT coding from 3rd</returns>
-        public static Tuple<string, byte[], string, string, string> ExtractSocketResponse(byte[] bytes, int len)
+        /// <returns> First string is header, second string is content, last string is conetnt without '\0'</returns>
+        public static Tuple<string, byte[], string, string> ExtractSocketResponse(byte[] bytes, int len)
         {
             if (bytes == null || bytes.Length < 1 || len < Consts.PROTOCOL_HEADER_LENGTH)
                 return null;
@@ -631,7 +631,6 @@ namespace InformationTransferLibrary
             string header = System.Text.Encoding.ASCII.GetString(bh, 0, Consts.PROTOCOL_HEADER_LENGTH);
             string content = "";
             string contentTrim = "";
-            string contentTrimCoding = "";
             if (len > Consts.PROTOCOL_HEADER_LENGTH)
             {
                 for (int i = 0; i < len - Consts.PROTOCOL_HEADER_LENGTH; i++)
@@ -641,7 +640,7 @@ namespace InformationTransferLibrary
                 content = System.Text.Encoding.ASCII.GetString(bc, 0, len - Consts.PROTOCOL_HEADER_LENGTH);
                 contentTrim = content.Trim(new char[] { '\0' });
             }
-            return new Tuple<string, byte[], string, string, string>(header, bc, content, contentTrim, contentTrimCoding);
+            return new Tuple<string, byte[], string, string>(header, bc, content, contentTrim);
         }
 
         public static int FindStringCount(string src, string fstr)
@@ -1432,13 +1431,18 @@ namespace InformationTransferLibrary
         public delegate void MessageReceivedEventHandler(object sender, TerminalInformationEventArgs args);
         public MessageReceivedEventHandler MessageReceivedEvent;
 
-        public void InitUI()
+        public void InitUI(bool reNew = false)
         {
             InitTVItem();
             InitTabItem();
+            if (reNew == true)
+                _cts = new CancellationTokenSource();
             InitSocketTask();
-            MessageReceivedEvent += new MessageReceivedEventHandler(TIUC.MessageReceivedEventHandler);
-            SocketStateChangeEvent += new SocketStateChangeEventHandler(TIUC.SocketStateChangeEventHandler);
+            if (reNew == false)
+            {
+                MessageReceivedEvent += new MessageReceivedEventHandler(TIUC.MessageReceivedEventHandler);
+                SocketStateChangeEvent += new SocketStateChangeEventHandler(TIUC.SocketStateChangeEventHandler);
+            }
         }
 
         private void InitTVItem()

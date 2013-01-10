@@ -49,7 +49,8 @@
                   CanUserAddRows="False" CanUserDeleteRows="True" Grid.Column="1"
                   HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" 
                   VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
-                  SelectionMode="Single" HeadersVisibility="Column" CanUserSortColumns="False">
+                  SelectionMode="Single" HeadersVisibility="Column" CanUserSortColumns="False"
+                      MouseDoubleClick="Message_DataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="DTU标识" Width="100" MinWidth="50"
                                         Binding="{Binding Path=DTUID,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
