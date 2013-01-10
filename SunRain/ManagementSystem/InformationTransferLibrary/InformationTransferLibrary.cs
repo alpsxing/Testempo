@@ -39,6 +39,7 @@ namespace InformationTransferLibrary
         public const string TERM_LOGIN = "#010007";
         public const string TERM_LOGOUT = "#010008";
         public const string TERM_INIT_USER = "#010009";
+        public const string TERM_CHECK_DTU = "#010010";
 
         public const string TERM_TEST_CONN_OK = "#020001";
         public const string TERM_PULSE_REQ_OK = "#020002";
@@ -49,6 +50,7 @@ namespace InformationTransferLibrary
         public const string TERM_LOGIN_OK = "#020007";
         public const string TERM_LOGOUT_OK = "#020008";
         public const string TERM_INIT_USER_OK = "#020009";
+        public const string TERM_CHECK_DTU_OK = "#020010";
 
         public const string TERM_INVALID_REQUEST = "#030000";
         public const string TERM_GET_ALL_DTU_ERR = "#030003";
@@ -58,6 +60,7 @@ namespace InformationTransferLibrary
         public const string TERM_LOGIN_ERR = "#030007";
         public const string TERM_LOGOUT_ERR = "#030008";
         public const string TERM_INIT_USER_ERR = "#030009";
+        public const string TERM_CHECK_DTU_ERR = "#030010";
 
         public const string MAN_TEST_CONN = "#040001";
         //public const string MAN_PULSE_REQ = "#040002";
@@ -174,7 +177,8 @@ namespace InformationTransferLibrary
         public const int TERM_TASK_REQUEST_SLEEP_TIME = 500; // ms
         public const int TERM_TASK_TIMER_START_DELAY_TIME = 0; //ms
         //public const int TERM_TASK_TIMER_INTERVAL = 10000; //ms
-        public const int TERM_TASK_TIMER_PULSE = 5000; //ms
+        public const int TERM_TASK_TIMER_PULSE = 15000; //ms
+        public const int TERM_TASK_TIMER_DTU = 10000; //ms
 
         public const int MAN_TASK_TIMER_START_DELAY_TIME = 0; //ms
         public const int MAN_TASK_TIMER_INTERVAL = 3000; //ms
@@ -1447,7 +1451,7 @@ namespace InformationTransferLibrary
             sp.Orientation = Orientation.Horizontal;
             sp.Margin = new Thickness(0, 0, 0, 0);//-4, -4, -4, -4);
             Label lbl = new Label();
-            lbl.Content = CurrentDTU.DtuId;
+            lbl.Content = OldDTUID;
             sp.Children.Add(lbl);
             _curTvItem.Header = sp;
             Image img = new Image();
@@ -1457,17 +1461,17 @@ namespace InformationTransferLibrary
                 case TiState.Unknown:
                     img.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/dtuunknown.ico"));
                     lbl.Foreground = Brushes.Red;
-                    _curTvItem.ToolTip = CurrentDTU.DtuId + " : Unknown";
+                    _curTvItem.ToolTip = OldDTUID + " : 未知状态";
                     break;
                 case TiState.Connected:
                     img.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/dtuon.ico"));
                     lbl.Foreground = Brushes.Black;
-                    _curTvItem.ToolTip = CurrentDTU.DtuId + " : Connected";
+                    _curTvItem.ToolTip = OldDTUID + " : 已连接";
                     break;
                 case TiState.Disconnected:
                     img.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/dtuoff.ico"));
                     lbl.Foreground = Brushes.Red;
-                    _curTvItem.ToolTip = CurrentDTU.DtuId + " : Disconnected";
+                    _curTvItem.ToolTip = OldDTUID + " : 未连接";
                     break;
             }
             img.Width = 16;
@@ -1479,7 +1483,7 @@ namespace InformationTransferLibrary
             spSimId.Orientation = Orientation.Horizontal;
             spSimId.Margin = new Thickness(0, 0, 0, 0);
             Label lblSimId = new Label();
-            lblSimId.Content = "SIM ID :" + CurrentDTU.SimId;
+            lblSimId.Content = "SIM ID :" + OldSIMID;
             spSimId.Children.Add(lblSimId);
             tviSimId.Header = spSimId;
             Image imgSimId = new Image();
@@ -1494,7 +1498,7 @@ namespace InformationTransferLibrary
             spUser.Orientation = Orientation.Horizontal;
             spUser.Margin = new Thickness(0, 0, 0, 0);
             Label lblUser = new Label();
-            lblUser.Content = "用户 : " + CurrentDTU.UserName;
+            lblUser.Content = "用户 : " + OldUserName;
             spUser.Children.Add(lblUser);
             tviUser.Header = spUser;
             Image imgUser = new Image();
@@ -1509,7 +1513,7 @@ namespace InformationTransferLibrary
             spUserTel.Orientation = Orientation.Horizontal;
             spUserTel.Margin = new Thickness(0, 0, 0, 0);
             Label lblUserTel = new Label();
-            lblUserTel.Content = "联系方式 : " + CurrentDTU.UserTel;
+            lblUserTel.Content = "联系方式 : " + OldUserTel;
             spUserTel.Children.Add(lblUserTel);
             tviUserTel.Header = spUserTel;
             Image imgUserTel = new Image();
@@ -1539,7 +1543,7 @@ namespace InformationTransferLibrary
             sp.Margin = new Thickness(0, 0, 0, 0);//-4, -4, -4, -4);
 
             Label lbl = new Label();
-            lbl.Content = CurrentDTU.DtuId;
+            lbl.Content = OldDTUID;
             //lbl.FontWeight = FontWeights.Bold;
             sp.Children.Add(lbl);
 
@@ -1552,17 +1556,17 @@ namespace InformationTransferLibrary
                 case TiState.Unknown:
                     img.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/dtuunknown.ico"));
                     lbl.Foreground = Brushes.Red;
-                    _curTvItem.ToolTip = CurrentDTU.DtuId + " : Unknown";
+                    _curTvItem.ToolTip = OldDTUID + " : 未知状态";
                     break;
                 case TiState.Connected:
                     img.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/dtuon.ico"));
                     lbl.Foreground = Brushes.Black;
-                    _curTvItem.ToolTip = CurrentDTU.DtuId + " : Connected";
+                    _curTvItem.ToolTip = OldDTUID + " : 已连接";
                     break;
                 case TiState.Disconnected:
                     img.Source = new BitmapImage(new Uri("pack://application:,,,/InformationTransferLibrary;component/resources/dtuoff.ico"));
                     lbl.Foreground = Brushes.Red;
-                    _curTvItem.ToolTip = CurrentDTU.DtuId + " : Disconnected";
+                    _curTvItem.ToolTip = OldDTUID + " : 未连接";
                     break;
             }
             img.Width = 16;
@@ -1676,8 +1680,55 @@ namespace InformationTransferLibrary
             set
             {
                 _curDTU = value;
+                if (_curDTU != null)
+                {
+                    _oldDTUID = _curDTU.DtuId;
+                    _oldUserName = _curDTU.UserName;
+                    _oldSIMID = _curDTU.SimId;
+                    _oldUserTel = _curDTU.UserTel;
+                }
             }
         }
+
+        #region
+
+        private string _oldDTUID = "";
+        public string OldDTUID
+        {
+            get
+            {
+                return _oldDTUID;
+            }
+        }
+
+        private string _oldSIMID = "";
+        public string OldSIMID
+        {
+            get
+            {
+                return _oldSIMID;
+            }
+        }
+
+        private string _oldUserName = "";
+        public string OldUserName
+        {
+            get
+            {
+                return _oldUserName;
+            }
+        }
+
+        private string _oldUserTel = "";
+        public string OldUserTel
+        {
+            get
+            {
+                return _oldUserTel;
+            }
+        }
+
+        #endregion
 
         private Socket _termSocket = null;
         public Socket TerminalSocket

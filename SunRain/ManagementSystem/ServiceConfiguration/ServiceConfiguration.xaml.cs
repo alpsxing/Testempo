@@ -382,6 +382,7 @@ namespace ServiceConfiguration
             UserPermission = userPerm;
             ServerIP = serverip;
             ServerPort = serverport;
+            ServerWebPort = serverwebport;
 
             MaxLogCount = maxLogCount;
             MaxLogDisplayCount = maxLogDispLog;
@@ -1422,6 +1423,7 @@ namespace ServiceConfiguration
                 sw.WriteLine(EncryptDecrypt.Encrypt(UserName));
                 sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogCount.ToString()));
                 sw.WriteLine(EncryptDecrypt.Encrypt(MaxLogDisplayCount.ToString()));
+                sw.WriteLine(EncryptDecrypt.Encrypt(ServerWebPort.ToString()));
                 sw.Close();
                 sw.Dispose();
             }

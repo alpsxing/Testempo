@@ -1702,6 +1702,9 @@ namespace SystemService
                 case Consts.TERM_INIT_USER:
                     bar = System.Text.Encoding.ASCII.GetBytes(TermInitUser(soc, data.Item3));
                     break;
+                case Consts.TERM_CHECK_DTU:
+                    bar = System.Text.Encoding.ASCII.GetBytes(TermCheckDtu(soc, data.Item3));
+                    break;
             }
             PutTermDTUResponse(soc, bar, bar.Length);
         }
@@ -1792,6 +1795,30 @@ namespace SystemService
                     return Consts.TERM_INIT_USER_ERR + "用户(" + userName + ")的终端发送和接收任务还没有被创建.";
             }
             return Consts.TERM_INIT_USER_OK;
+        }
+
+        private string TermCheckDtu(Socket soc, string dtuIds)
+        {
+            if (string.IsNullOrWhiteSpace(dtuIds) == true)
+                return Consts.TERM_CHECK_DTU_ERR + "无查询的DTU ID";
+            string s = dtuIds.Trim();
+            string[] sa = s.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+            List<DTUInfo> tiList = new List<DTUInfo>();
+            string sret = "";
+            lock (_taskLock)
+            {
+                foreach (string sai in sa)
+                {
+                    DTUInfo di = Helper.FindDTUInfo(sai.Trim(), _dtuInfoOc);
+                    if (di == null || di.Online == false)
+                        continue;
+                    if (string.IsNullOrWhiteSpace(sret) == true)
+                        sret = sai;
+                    else
+                        sret = sret + "\t" + sai;
+                }
+            }
+            return Consts.TERM_CHECK_DTU_OK + sret;
         }
 
         #endregion

@@ -122,7 +122,7 @@ namespace ServiceConfiguration
 
                 try
                 {
-                    System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://" + ServerIP + ":" + ServerWebPort.ToString() + "/comway/service/message/" + fileName);
+                    System.Net.HttpWebRequest Myrq = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://" + ServerIP + ":" + ServerWebPort.ToString() + "/service/message/" + fileName);
                     System.Net.HttpWebResponse myrp = (System.Net.HttpWebResponse)Myrq.GetResponse();
                     long totalBytes = myrp.ContentLength;
                     //Dispatcher.Invoke((ThreadStart)delegate()

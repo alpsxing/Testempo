@@ -61,6 +61,7 @@ namespace ManagementSystem
 
         private Socket _mainSocket = null;
         private Timer _timerPulse = null;
+        private Timer _timerDTU = null;
 
         #endregion
 
@@ -618,15 +619,27 @@ namespace ManagementSystem
             {
                 ti = Helper.FindTermInfo(tvi, TermInfoOc);
             }
-            if (MessageBox.Show("确认删除DTU(" + ti.CurrentDTU.DtuId + ")?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("确认删除DTU(" + ti.OldDTUID + ")?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
+            byte[] bytes = null;
             _timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
-            byte[] bytes = Helper.DoSendReceive(_mainSocket, Consts.MAN_UNCTRL_DTU + UserName + "\t" + ti.CurrentDTU.DtuId);
+            try
+            {
+                bytes = Helper.DoSendReceive(_mainSocket, Consts.MAN_UNCTRL_DTU + UserName + "\t" + ti.OldDTUID);
+            }
+            catch (Exception ex)
+            {
+                AddLog("释放DTU发生错误 : " + ex.Message, ti.OldDTUID, LogMessage.State.Error, LogMessage.Flow.Request);
+                bytes = null;
+            }
             _timerPulse.Change(Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
-            Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
-            if (resp.Item1 != Consts.MAN_UNCTRL_DTU_OK)
-                MessageBox.Show("删除DTU(" + ti.CurrentDTU.DtuId + ")错误 : " + resp.Item3, "删除DTU错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (bytes != null)
+            {
+                Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
+                if (resp.Item1 != Consts.MAN_UNCTRL_DTU_OK)
+                    MessageBox.Show("删除DTU(" + ti.OldDTUID + ")错误 : " + resp.Item3, "删除DTU错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             View1DTU_MenuItem_Click(null, null);
 
@@ -658,6 +671,7 @@ namespace ManagementSystem
 
             _timerPBar = new Timer(new TimerCallback(PBarTimerCallBackHandler), null, Timeout.Infinite, 1000);
             _timerPulse = new Timer(new TimerCallback(PulseTimerCallBackHandler), null, Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
+            _timerDTU = new Timer(new TimerCallback(DtuTimerCallBackHandler), null, Consts.TERM_TASK_TIMER_DTU, Consts.TERM_TASK_TIMER_DTU);
         }
 
         private void InitUserName()
@@ -703,38 +717,120 @@ namespace ManagementSystem
                 StatusPbarValue = StatusPbarValue + 1 * 1000;
         }
 
+        private void DtuTimerCallBackHandler(object obj)
+        {
+            lock (_reqLock)
+            {
+                try
+                {
+                    string dtus = "";
+                    lock (_tiLock)
+                    {
+                        foreach (TerminalInformation tii in _termInfoOc)
+                        {
+                            if (string.IsNullOrWhiteSpace(dtus) == true)
+                                dtus = tii.OldDTUID.Trim();
+                            else
+                                dtus = dtus + "\t" + tii.OldDTUID.Trim();
+                        }
+                    }
+                    if (string.IsNullOrWhiteSpace(dtus) == false)
+                    {
+                        //_timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
+
+                        byte[] bytes = Helper.DoSendReceive(_mainSocket, Consts.TERM_CHECK_DTU + dtus);
+                        if (bytes.Length < 1)
+                        {
+                            AddLog("失去与服务器的连接.", "", LogMessage.State.Error, LogMessage.Flow.None);
+                            TerminateAllTerminals();
+                        }
+                        else
+                        {
+                            Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
+                            if (resp.Item1 != Consts.TERM_CHECK_DTU_OK)
+                            {
+                                AddLog("DTU检查错误 : " + resp.Item3, "", LogMessage.State.Error, LogMessage.Flow.Response);
+                                TerminateAllTerminals();
+                            }
+                            else
+                            {
+                                AddLog("DTU检查成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                                string s = resp.Item3;
+                                string[] sa = s.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                                List<TerminalInformation> tiList = new List<TerminalInformation>();
+                                lock (_tiLock)
+                                {
+                                    foreach (TerminalInformation tii in _termInfoOc)
+                                    {
+                                        bool find = false;
+                                        foreach (string sai in sa)
+                                        {
+                                            if (string.Compare(tii.OldDTUID.Trim(), sai.Trim(), true) == 0)
+                                            {
+                                                find = true;
+                                                break;
+                                            }
+                                        }
+                                        if (find == false)
+                                            tiList.Add(tii);
+                                    }
+                                }
+                                foreach (TerminalInformation tii in tiList)
+                                {
+                                    tii.State = TerminalInformation.TiState.Disconnected;
+                                    AddLog("DTU连接失效.", tii.OldDTUID, LogMessage.State.Infomation, LogMessage.Flow.None);
+                                }
+
+                                //_timerPulse.Change(Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AddLog("DTU检查失败 : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
+
+                    //_timerPulse.Change(Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
+                }
+            }
+        }
+
         private void PulseTimerCallBackHandler(object obj)
         {
-            try
+            lock (_reqLock)
             {
-                byte[] bytes = Helper.DoSendReceive(_mainSocket, Consts.TERM_PULSE_REQ);
-                if (bytes.Length < 1)
+                try
                 {
-                    AddLog("失去与服务器的连接.", "", LogMessage.State.Error, LogMessage.Flow.None);
-                    TerminateAllTerminals();
-                }
-                else
-                {
-                    Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
-                    if (resp.Item1 != Consts.TERM_PULSE_REQ_OK)
+                    byte[] bytes = Helper.DoSendReceive(_mainSocket, Consts.TERM_PULSE_REQ);
+                    if (bytes.Length < 1)
                     {
-                        AddLog("脉搏错误 : " + resp.Item3, "", LogMessage.State.Error, LogMessage.Flow.Response);
+                        AddLog("失去与服务器的连接.", "", LogMessage.State.Error, LogMessage.Flow.None);
                         TerminateAllTerminals();
                     }
                     else
-                        AddLog("脉搏成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                    {
+                        Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(bytes, bytes.Length);
+                        if (resp.Item1 != Consts.TERM_PULSE_REQ_OK)
+                        {
+                            AddLog("脉搏错误 : " + resp.Item3, "", LogMessage.State.Error, LogMessage.Flow.Response);
+                            TerminateAllTerminals();
+                        }
+                        else
+                            AddLog("脉搏成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                AddLog("脉搏失败 : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
-                TerminateAllTerminals();
+                catch (Exception ex)
+                {
+                    AddLog("脉搏失败 : " + ex.Message, "", LogMessage.State.Error, LogMessage.Flow.None);
+                    TerminateAllTerminals();
+                }
             }
         }
 
         private void TerminateAllTerminals()
         {
             _timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
+            _timerDTU.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_DTU);
             lock (_tiLock)
             {
                 Dispatcher.Invoke((ThreadStart)delegate()
