@@ -1882,6 +1882,7 @@ namespace SystemService
             int len = 0;
             DTUInfo dtu = null;
             CancellationTokenSource cts = _dtuTaskList[soc].CTS;
+            int waitDTUIDCount = 0;
 
             while (_cts.Token.IsCancellationRequested == false &&
                 cts.Token.IsCancellationRequested == false &&
@@ -1920,17 +1921,39 @@ namespace SystemService
 
                             string dtuId = System.Text.ASCIIEncoding.ASCII.GetString(ba);
                             dtuId = dtuId.Trim(new char[] { '\r', '\n', '\0' }).Trim();
-                            if (dtuId.Length != Consts.DTU_INFO_ITEM_COUNT)
-                                eventLogInformationTransfer.WriteEntry("再次等待DTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                            if (dtuId.Length < Consts.DTU_INFO_ITEM_COUNT)
+                            {
+                                if (dtuId == null)
+                                    dtuId = "";
+                                if (waitDTUIDCount < Consts.WAIT_DTU_ID_COUNT_MAX)
+                                {
+                                    eventLogInformationTransfer.WriteEntry("再次等待DTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                    waitDTUIDCount++;
+                                }
+                                else
+                                {
+                                    eventLogInformationTransfer.WriteEntry("没有获得DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                    break;
+                                }
+                            }
                             else
                             {
                                 lock (_taskLock)
                                 {
+                                    dtuId = dtuId.Substring(0, Consts.DTU_INFO_ITEM_COUNT);
                                     dtu = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                                     if (dtu == null)
                                     {
-                                        eventLogInformationTransfer.WriteEntry("未注册的DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
-                                        break;
+                                        if (waitDTUIDCount < Consts.WAIT_DTU_ID_COUNT_MAX)
+                                        {
+                                            eventLogInformationTransfer.WriteEntry("再次等待DTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                            waitDTUIDCount++;
+                                        }
+                                        else
+                                        {
+                                            eventLogInformationTransfer.WriteEntry("未注册的DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                            break;
+                                        }
                                     }
                                     else
                                     {

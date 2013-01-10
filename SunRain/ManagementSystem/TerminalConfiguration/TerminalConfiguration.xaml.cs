@@ -646,7 +646,7 @@ namespace TerminalConfiguration
         {
             if (EncryptDecryptLibrary.EncryptDecryptLibrary.CheckRunOrNot() == false)
             {
-                MessageBox.Show("No valid license.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("无有效许可.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 System.Environment.Exit(0);
             }
 
@@ -657,7 +657,7 @@ namespace TerminalConfiguration
             if (_localPortOc.Count > 0)
                 cboxLocalPort.SelectedIndex = 0;
             else
-                LogMessage("No valid port.", DTUConfigLogMessage.MessageState.Error);
+                LogMessage("无效端口.", DTUConfigLogMessage.MessageState.Error);
 
             int i = 300;
             while (i <= 115200)
@@ -719,16 +719,16 @@ namespace TerminalConfiguration
             if (IsModified == true)
             {
                 if (string.IsNullOrWhiteSpace(CFGFile))
-                    Title = "DTU Configuration - (NA) *";
+                    Title = "DTU配置 - (NA) *";
                 else
-                    Title = "DTU Configuration - " + CFGFile + " *";
+                    Title = "DTU配置 - " + CFGFile + " *";
             }
             else
             {
                 if (string.IsNullOrWhiteSpace(CFGFile))
-                    Title = "DTU Configuration - (NA)";
+                    Title = "DTU配置 - (NA)";
                 else
-                    Title = "DTU Configuration - " + CFGFile;
+                    Title = "DTU配置 - " + CFGFile;
             }
         }
 
@@ -793,7 +793,7 @@ namespace TerminalConfiguration
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            About ab = new About("DTU Configuration", "Copyright @ 2012");
+            About ab = new About("DTU配置", "Copyright @ 2012");
             ab.ShowDialog();
         }
 
@@ -831,13 +831,13 @@ namespace TerminalConfiguration
                 _sPort.ReadTimeout = Consts.DTU_CFG_TIMEOUT;
                 _sPort.Open();
                 if (_sPort.IsOpen)
-                    LogMessage((string)_localPortOc[cboxLocalPort.SelectedIndex] + " is opened.", DTUConfigLogMessage.MessageState.Infomation);
+                    LogMessage((string)_localPortOc[cboxLocalPort.SelectedIndex] + "被成功打开.", DTUConfigLogMessage.MessageState.Infomation);
                 else
-                    LogMessage("Cannot open " + (string)_localPortOc[cboxLocalPort.SelectedIndex] + ".", DTUConfigLogMessage.MessageState.Fail);
+                    LogMessage("不能成功打开" + (string)_localPortOc[cboxLocalPort.SelectedIndex] + ".", DTUConfigLogMessage.MessageState.Fail);
             }
             catch (Exception ex)
             {
-                LogMessage("Cannot open " + (string)_localPortOc[cboxLocalPort.SelectedIndex] + " : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
+                LogMessage("不能成功打开" + (string)_localPortOc[cboxLocalPort.SelectedIndex] + " : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
             }
         }
 
@@ -853,17 +853,17 @@ namespace TerminalConfiguration
             }
             catch (Exception ex)
             {
-                LogMessage("Cannot close " + (string)_localPortOc[cboxLocalPort.SelectedIndex] + " : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
+                LogMessage("不能成功关闭" + (string)_localPortOc[cboxLocalPort.SelectedIndex] + " : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
             }
 
             try
             {
                 _sPort.Dispose();
-                LogMessage((string)_localPortOc[cboxLocalPort.SelectedIndex] + " is disposed.", DTUConfigLogMessage.MessageState.Infomation);
+                LogMessage((string)_localPortOc[cboxLocalPort.SelectedIndex] + "被成功清除.", DTUConfigLogMessage.MessageState.Infomation);
             }
             catch (Exception ex)
             {
-                LogMessage("Cannot dispose " + (string)_localPortOc[cboxLocalPort.SelectedIndex] + " : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
+                LogMessage("不能成功清除" + (string)_localPortOc[cboxLocalPort.SelectedIndex] + " : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
             }
 
             _sPort = null;
@@ -918,7 +918,7 @@ namespace TerminalConfiguration
             if (IsModified == true)
             {
                 bool doSave = false;
-                if (MessageBox.Show("Do you want to save the current configuration first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show("需要保存当前的配置吗?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     doSave = true;
 
                 if (doSave == true)
@@ -1043,7 +1043,7 @@ namespace TerminalConfiguration
                     {
                         Dispatcher.Invoke((ThreadStart)delegate
                         {
-                            MessageBox.Show(this, "Please power off the DTU and then press OK.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show(this, "请关闭DTU然后按确认.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                         }, null);
                     }),
                     new DTUCommand.CommandQueryDelegate(
@@ -1051,7 +1051,7 @@ namespace TerminalConfiguration
                     {
                         Dispatcher.Invoke((ThreadStart)delegate
                         {
-                            MessageBox.Show(this, "Please press OK and then power on the DTU again.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show(this, "按确认以后请再次打开DTU.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                         }, null);
                     }));
 
@@ -1116,7 +1116,7 @@ namespace TerminalConfiguration
         {
             if (_sPort == null || _sPort.IsOpen == false)
             {
-                MessageBox.Show("Serial port is not opened.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("串口没有被正常打开.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             _dtuCmdOc.Clear();
@@ -1129,7 +1129,7 @@ namespace TerminalConfiguration
         {
             if (_sPort == null || _sPort.IsOpen == false)
             {
-                MessageBox.Show("Serial port is not opened.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("串口没有被正常打开.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             _dtuCmdOc.Clear();
@@ -1139,13 +1139,13 @@ namespace TerminalConfiguration
 
         private void Stop_DTU_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("It is not safe to stop operation.\n\nAre you sure to go on?", "Question", 
+            if (MessageBox.Show("该操作不安全.\n\n需要继续吗?", "确认", 
                 MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             if (_ctsIO != null)
                 _ctsIO.Cancel();
-            ReadyString = "Ready";
+            ReadyString = "就绪";
             StatusPbarValue = 0;
             InRun = false;
         }
@@ -1167,7 +1167,7 @@ namespace TerminalConfiguration
                     }
                     catch (Exception ex)
                     {
-                        LogMessage("Task is terminated : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
+                        LogMessage("任务异常终止 : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
                     }
                 }, _ctsIO.Token);
         }
@@ -1197,7 +1197,7 @@ namespace TerminalConfiguration
                     {
                         #region Command
 
-                        ReadyString = "Sending command to DTU : " + dtuci.CommandDisplay;
+                        ReadyString = "向DTU发送命令 : " + dtuci.CommandDisplay;
                         StatusPbarMax = _sPort.WriteTimeout + 1 * 1000;
                         StatusPbarValue = 0;
                         _timerPBar.Change(0, 1000);
@@ -1381,7 +1381,7 @@ namespace TerminalConfiguration
                     {
                         #region Query
 
-                        ReadyString = "Sending query to DTU : " + dtuci.CommandDisplay;
+                        ReadyString = "从DTU获取信息 : " + dtuci.CommandDisplay;
                         StatusPbarMax = _sPort.WriteTimeout + 1 * 1000;
                         StatusPbarValue = 0;
                         _timerPBar.Change(0, 1000);
@@ -1394,7 +1394,7 @@ namespace TerminalConfiguration
                         if (dtuci.AfterCommandSendDelegateHandler != null)
                             dtuci.AfterCommandSendDelegateHandler();
 
-                        ReadyString = "Reading response from DTU...";
+                        ReadyString = "正在等待DTU的响应...";
                         StatusPbarMax = _sPort.ReadTimeout + 1 * 1000;
                         StatusPbarValue = 0;
                         _timerPBar.Change(0, 1000);
@@ -1403,7 +1403,7 @@ namespace TerminalConfiguration
                         dtuci.Response = System.Text.Encoding.ASCII.GetString(bytes, 0, len);
                         _timerPBar.Change(Timeout.Infinite, 1000);
                         StatusPbarValue = 0;
-                        ReadyString = "Read response from DTU : " + dtuci.Response;
+                        ReadyString = "从DTU得到响应 : " + dtuci.Response;
 
                         #region Update Config Panel
 
@@ -1412,7 +1412,7 @@ namespace TerminalConfiguration
                             string[] sa = dtuci.Response.Split(new string[] { "\n", "\r", "\0" }, StringSplitOptions.RemoveEmptyEntries);
                             if (sa.Length != 3)
                             {
-                                LogMessage("Query response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                LogMessage("查询响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                 dtuci.State = DTUCommand.DTUCommandState.Fail;
                             }
                             else
@@ -1426,7 +1426,7 @@ namespace TerminalConfiguration
                                         sa = sa[1].Trim().Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
                                         if (sa.Length != 2)
                                         {
-                                            LogMessage("Query server response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                            LogMessage("查询服务器响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                             dtuci.State = DTUCommand.DTUCommandState.Fail;
                                         }
                                         else
@@ -1442,7 +1442,7 @@ namespace TerminalConfiguration
                                         index = _localBundOc.IndexOf(sa[1].Trim());
                                         if (index < 0)
                                         {
-                                            LogMessage("Query baud response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                            LogMessage("查询波特率响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                             dtuci.State = DTUCommand.DTUCommandState.Fail;
                                         }
                                         else
@@ -1451,7 +1451,7 @@ namespace TerminalConfiguration
                                     case "AT^UTCF=?\n":
                                         if (sa[1].Trim().Length != 3)
                                         {
-                                            LogMessage("Query format response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                            LogMessage("查询格式响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                             dtuci.State = DTUCommand.DTUCommandState.Fail;
                                         }
                                         else
@@ -1463,14 +1463,14 @@ namespace TerminalConfiguration
                                             index = _dtuDataOc.IndexOf(s1);
                                             if (index < 0)
                                             {
-                                                LogMessage("Query format-data response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                                LogMessage("查询数据格式响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                                 dtuci.State = DTUCommand.DTUCommandState.Fail;
                                             }
                                             else
                                                 cboxDtuData.SelectedIndex = index;
                                             if (s2 != "1" && s2 != "2" && s2 != "3")
                                             {
-                                                LogMessage("Query format-stop response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                                LogMessage("查询停止格式响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                                 dtuci.State = DTUCommand.DTUCommandState.Fail;
                                             }
                                             else
@@ -1478,14 +1478,14 @@ namespace TerminalConfiguration
                                                 int iv = int.Parse(s2);
                                                 cboxDtuStop.SelectedIndex = iv - 1;
                                             }
-                                            if (s2 != "0" && s2 != "1" && s2 != "2" && s2 != "3" && s2 != "4")
+                                            if (s3 != "0" && s3 != "1" && s3 != "2" && s3 != "3" && s3 != "4")
                                             {
-                                                LogMessage("Query format-parity response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                                LogMessage("查询校验格式响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                                 dtuci.State = DTUCommand.DTUCommandState.Fail;
                                             }
                                             else
                                             {
-                                                int iv = int.Parse(s2);
+                                                int iv = int.Parse(s3);
                                                 cboxDtuStop.SelectedIndex = iv;
                                             }
                                         }
@@ -1493,7 +1493,7 @@ namespace TerminalConfiguration
                                     case "AT^PKMD=?\n":
                                         if (sa[1].Trim() != "2")
                                         {
-                                            LogMessage("Query response fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                            LogMessage("查询响应失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                             dtuci.State = DTUCommand.DTUCommandState.Fail;
                                         }
                                         break;
@@ -1523,7 +1523,7 @@ namespace TerminalConfiguration
                             {
                                 Dispatcher.BeginInvoke((ThreadStart)delegate()
                                 {
-                                    LogMessage("DTU query is ok.", DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                    LogMessage("DTU查询正常.", DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                     dtuci.State = DTUCommand.DTUCommandState.OK;
                                 }, null);
                             }
@@ -1531,7 +1531,7 @@ namespace TerminalConfiguration
                             {
                                 Dispatcher.BeginInvoke((ThreadStart)delegate()
                                 {
-                                    LogMessage("DTU query fails : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.Fail, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                    LogMessage("DTU查询失败 : " + dtuci.ResponseDisplay, DTUConfigLogMessage.MessageState.Fail, DTUConfigLogMessage.MessageFlow.FromDTU);
                                     dtuci.State = DTUCommand.DTUCommandState.Fail;
                                 }, null);
                             }
@@ -1542,7 +1542,7 @@ namespace TerminalConfiguration
                         {
                             Dispatcher.BeginInvoke((ThreadStart)delegate()
                             {
-                                LogMessage("DTU query is ok.", DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
+                                LogMessage("DTU查询正常.", DTUConfigLogMessage.MessageState.OK, DTUConfigLogMessage.MessageFlow.FromDTU);
                                 dtuci.State = DTUCommand.DTUCommandState.OK;
                             }, null);
                         }
@@ -1558,12 +1558,12 @@ namespace TerminalConfiguration
                     {
                         if (dtuci.NeedCompareResponse == false)
                         {
-                            LogMessage("DTU command meets error : " + ex.Message, DTUConfigLogMessage.MessageState.Infomation);
+                            LogMessage("DTU命令错误 : " + ex.Message, DTUConfigLogMessage.MessageState.Infomation);
                             dtuci.State = DTUCommand.DTUCommandState.Infomation;
                         }
                         else
                         {
-                            LogMessage("DTU command meets error : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
+                            LogMessage("DTU命令错误 : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
                             dtuci.State = DTUCommand.DTUCommandState.Error;
                         }
                     }, null);
@@ -1574,7 +1574,7 @@ namespace TerminalConfiguration
             }
             _timerPBar.Change(Timeout.Infinite, 1000);
             StatusPbarValue = 0;
-            ReadyString = "Ready";
+            ReadyString = "就绪";
             InRun = false;
         }
 
@@ -1600,7 +1600,7 @@ namespace TerminalConfiguration
                     {
                         string[] sa = strLine.Split(new string[] { "\t" }, StringSplitOptions.None);
                         if (sa.Length != 3)
-                            LogMessage("Error local setting : " + strLine, state: DTUConfigLogMessage.MessageState.Fail);
+                            LogMessage("本地配置错误 : " + strLine, state: DTUConfigLogMessage.MessageState.Fail);
                         else
                         {
                             bool found = false;
@@ -1615,7 +1615,7 @@ namespace TerminalConfiguration
                             }
                             if (found == false)
                             {
-                                LogMessage("Error local port : " + sa[0].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
+                                LogMessage("本地端口错误 : " + sa[0].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
                                 if (_localPortOc.Count > 0)
                                     cboxLocalPort.SelectedIndex = 0;
                             }
@@ -1632,7 +1632,7 @@ namespace TerminalConfiguration
                             }
                             if (found == false)
                             {
-                                LogMessage("Error local bund rate : " + sa[1].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
+                                LogMessage("本地波特率错误 : " + sa[1].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
                                 if (_localBundOc.Count > 0)
                                     cboxLocalBund.SelectedIndex = 0;
                             }
@@ -1649,7 +1649,7 @@ namespace TerminalConfiguration
                             }
                             if (found == false)
                             {
-                                LogMessage("Error local parity : " + sa[2].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
+                                LogMessage("本地校验错误 : " + sa[2].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
                                 if (_localParityOc.Count > 0)
                                     cboxLocalParity.SelectedIndex = 0;
                             }
@@ -1659,7 +1659,7 @@ namespace TerminalConfiguration
                     {
                         string[] sa = strLine.Split(new string[] { "\t" }, StringSplitOptions.None);
                         if (sa.Length != 2)
-                            LogMessage("Error connection setting : " + strLine, state: DTUConfigLogMessage.MessageState.Fail);
+                            LogMessage("连接设置错误 : " + strLine, state: DTUConfigLogMessage.MessageState.Fail);
                         else
                         {
                             ServerIP = sa[0].Trim();
@@ -1671,7 +1671,7 @@ namespace TerminalConfiguration
                     {
                         string[] sa = strLine.Split(new string[] { "\t" }, StringSplitOptions.None);
                         if (sa.Length != 6)
-                            LogMessage("Error DTU setting : " + strLine, state: DTUConfigLogMessage.MessageState.Fail);
+                            LogMessage("DTU设置错误 : " + strLine, state: DTUConfigLogMessage.MessageState.Fail);
                         else
                         {
                             bool found = false;
@@ -1686,7 +1686,7 @@ namespace TerminalConfiguration
                             }
                             if (found == false)
                             {
-                                LogMessage("Error DTU bund rate : " + sa[0].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
+                                LogMessage("DTU波特率错误 : " + sa[0].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
                                 if (_localBundOc.Count > 0)
                                     cboxDtuBund.SelectedIndex = 0;
                             }
@@ -1703,7 +1703,7 @@ namespace TerminalConfiguration
                             }
                             if (found == false)
                             {
-                                LogMessage("Error DTU data : " + sa[1].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
+                                LogMessage("DTU数据错误 : " + sa[1].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
                                 if (_dtuDataOc.Count > 0)
                                     cboxDtuData.SelectedIndex = 0;
                             }
@@ -1720,7 +1720,7 @@ namespace TerminalConfiguration
                             }
                             if (found == false)
                             {
-                                LogMessage("Error DTU parity : " + sa[2].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
+                                LogMessage("DTU校验错误 : " + sa[2].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
                                 if (_dtuDataOc.Count > 0)
                                     cboxDtuParity.SelectedIndex = 0;
                             }
@@ -1737,7 +1737,7 @@ namespace TerminalConfiguration
                             }
                             if (found == false)
                             {
-                                LogMessage("Error DTU stop : " + sa[3].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
+                                LogMessage("DTU停止错误 : " + sa[3].Trim(), state: DTUConfigLogMessage.MessageState.Fail);
                                 if (_dtuStopOc.Count > 0)
                                     cboxDtuStop.SelectedIndex = 0;
                             }
@@ -1763,7 +1763,7 @@ namespace TerminalConfiguration
             }
             catch (Exception ex)
             {
-                LogMessage("Load config error : " + ex.Message, state: DTUConfigLogMessage.MessageState.Error);
+                LogMessage("装载配置错误 : " + ex.Message, state: DTUConfigLogMessage.MessageState.Error);
 
                 if (sr != null)
                 {
@@ -1807,11 +1807,11 @@ namespace TerminalConfiguration
                     sw.Close();
                     sw.Dispose();
 
-                    MessageBox.Show("The current config is saved.", "Save Config", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("成功保存当前配置.", "保存配置", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    LogMessage("Save config error : " + ex.Message, state: DTUConfigLogMessage.MessageState.Error);
+                    LogMessage("保存配置错误 : " + ex.Message, state: DTUConfigLogMessage.MessageState.Error);
 
                     if (sw != null)
                     {
@@ -1842,7 +1842,7 @@ namespace TerminalConfiguration
 
         private void ClearLog_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (_dtuLMOc.Count > 0 && MessageBox.Show("Do you want to clear the log?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (_dtuLMOc.Count > 0 && MessageBox.Show("确认清除日志?", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 _dtuLMOc.Clear();
         }
 
@@ -1867,7 +1867,7 @@ namespace TerminalConfiguration
             if (_localPortOc.Count > 0)
                 cboxLocalPort.SelectedIndex = 0;
             else
-                LogMessage("No valid port.", DTUConfigLogMessage.MessageState.Error);
+                LogMessage("无有效端口.", DTUConfigLogMessage.MessageState.Error);
         }
 
         private void ServerIP_TextBox_LostFocus(object sender, RoutedEventArgs e)

@@ -167,6 +167,8 @@ namespace InformationTransferLibrary
         public const int TERM_TIMEOUT = 30000; // ms
         public const int DTU_TIMEOUT = 90000; // ms
 
+        public const int WAIT_DTU_ID_COUNT_MAX = 10;
+
         public const int MIN_TIME_OUT = 10000;
 
         public const int TERM_TASK_REQUEST_SLEEP_TIME = 500; // ms
