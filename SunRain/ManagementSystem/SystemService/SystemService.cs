@@ -106,11 +106,11 @@ namespace SystemService
                             try
                             {
                                 File.Delete(f);
-                                eventLogInformationTransfer.WriteEntry("É¾³ı" + f, EventLogEntryType.Warning);
+                                eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f, EventLogEntryType.Warning);
                             }
                             catch (Exception ex)
                             {
-                                eventLogInformationTransfer.WriteEntry("É¾³ı" + f + "³öÏÖ´íÎó : " + ex.Message, EventLogEntryType.Error);
+                                eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f + "å‡ºç°é”™è¯¯ : " + ex.Message, EventLogEntryType.Error);
                             }
                         }
                         else
@@ -121,11 +121,11 @@ namespace SystemService
                                 try
                                 {
                                     File.Delete(f);
-                                    eventLogInformationTransfer.WriteEntry("É¾³ı" + f, EventLogEntryType.Warning);
+                                    eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f, EventLogEntryType.Warning);
                                 }
                                 catch (Exception ex)
                                 {
-                                    eventLogInformationTransfer.WriteEntry("É¾³ı" + f + "³öÏÖ´íÎó : " + ex.Message, EventLogEntryType.Error);
+                                    eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f + "å‡ºç°é”™è¯¯ : " + ex.Message, EventLogEntryType.Error);
                                 }
                             }
                             else
@@ -140,11 +140,11 @@ namespace SystemService
                                         try
                                         {
                                             File.Delete(f);
-                                            eventLogInformationTransfer.WriteEntry("É¾³ı" + f, EventLogEntryType.Warning);
+                                            eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f, EventLogEntryType.Warning);
                                         }
                                         catch (Exception ex)
                                         {
-                                            eventLogInformationTransfer.WriteEntry("É¾³ı" + f + "³öÏÖ´íÎó : " + ex.Message, EventLogEntryType.Error);
+                                            eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f + "å‡ºç°é”™è¯¯ : " + ex.Message, EventLogEntryType.Error);
                                         }
                                     }
                                     else
@@ -155,11 +155,11 @@ namespace SystemService
                                     try
                                     {
                                         File.Delete(f);
-                                        eventLogInformationTransfer.WriteEntry("É¾³ı" + f, EventLogEntryType.Warning);
+                                        eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f, EventLogEntryType.Warning);
                                     }
                                     catch (Exception ex)
                                     {
-                                        eventLogInformationTransfer.WriteEntry("É¾³ı" + f + "³öÏÖ´íÎó : " + ex.Message, EventLogEntryType.Error);
+                                        eventLogInformationTransfer.WriteEntry("åˆ é™¤" + f + "å‡ºç°é”™è¯¯ : " + ex.Message, EventLogEntryType.Error);
                                     }
                                 }
                             }
@@ -202,11 +202,11 @@ namespace SystemService
             {
                 StartSocketTask();
 
-                eventLogInformationTransfer.WriteEntry("³É¹¦Æô¶¯·şÎñ.");
+                eventLogInformationTransfer.WriteEntry("æˆåŠŸå¯åŠ¨æœåŠ¡.");
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("ÎŞ·¨Æô¶¯·şÎñ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("æ— æ³•å¯åŠ¨æœåŠ¡ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
         }
 
@@ -216,11 +216,11 @@ namespace SystemService
             {
                 StopSocketTask();
 
-                eventLogInformationTransfer.WriteEntry("³É¹¦Í£Ö¹·şÎñ.");
+                eventLogInformationTransfer.WriteEntry("æˆåŠŸåœæ­¢æœåŠ¡.");
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("Í£Ö¹·şÎñ³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("åœæ­¢æœåŠ¡å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
 
             SaveConfig();
@@ -333,7 +333,7 @@ namespace SystemService
 
                 Helper.SafeCloseIOStream(sr);
 
-                eventLogInformationTransfer.WriteEntry("×°ÔØÅäÖÃÎÄ¼ş³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("è£…è½½é…ç½®æ–‡ä»¶å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -357,7 +357,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sw);
 
-                eventLogInformationTransfer.WriteEntry("±£´æÅäÖÃÎÄ¼ş³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("ä¿å­˜é…ç½®æ–‡ä»¶å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -378,7 +378,7 @@ namespace SystemService
                     string[] sa = line.Split(new string[] { "\t" }, StringSplitOptions.None);
                     if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT)
                     {
-                        eventLogInformationTransfer.WriteEntry("ÓÃ»§ĞÅÏ¢´íÎó : " + line, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("ç”¨æˆ·ä¿¡æ¯é”™è¯¯ : " + line, EventLogEntryType.Warning);
                         continue;
                     }
                     string user = sa[0].Trim();
@@ -389,12 +389,12 @@ namespace SystemService
                     string rpm = EncryptDecrypt.Decrypt(pm);
                     if (rpm != "1" && rpm != "2")
                     {
-                        eventLogInformationTransfer.WriteEntry("ÓÃ»§È¨ÏŞ´íÎó : " + ruser, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("ç”¨æˆ·æƒé™é”™è¯¯ : " + ruser, EventLogEntryType.Warning);
                         rpm = "2";
                     }
                     UserInfo ui = Helper.FindUserInfo(ruser, _userInfoOc);
                     if (ui != null)
-                        eventLogInformationTransfer.WriteEntry("ÖØ¸´ÓÃ»§ : " + ruser, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("é‡å¤ç”¨æˆ· : " + ruser, EventLogEntryType.Warning);
                     else
                     {
                         UserInfo uiNew = new UserInfo()
@@ -416,7 +416,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sr);
 
-                eventLogInformationTransfer.WriteEntry("×°ÔØÓÃ»§ĞÅÏ¢³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("è£…è½½ç”¨æˆ·ä¿¡æ¯å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
             lock (_taskLock)
             {
@@ -464,7 +464,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sw);
 
-                eventLogInformationTransfer.WriteEntry("±£´æÓÃ»§ĞÅÏ¢³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("ä¿å­˜ç”¨æˆ·ä¿¡æ¯å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -485,7 +485,7 @@ namespace SystemService
                     string[] sa = line.Split(new string[] { "\t" }, StringSplitOptions.None);
                     if (sa == null || sa.Length != Consts.DTU_ACCOUNT_ITEM_COUNT)
                     {
-                        eventLogInformationTransfer.WriteEntry("DTUĞÅÏ¢´íÎó : " + line, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("DTUä¿¡æ¯é”™è¯¯ : " + line, EventLogEntryType.Warning);
                         continue;
                     }
                     string dtuId = sa[0].Trim();
@@ -498,7 +498,7 @@ namespace SystemService
                     string ruserTel = EncryptDecrypt.Decrypt(userTel);
                     DTUInfo di = Helper.FindDTUInfo(rdtuId, _dtuInfoOc);
                     if (di != null)
-                        eventLogInformationTransfer.WriteEntry("ÖØ¸´DTU : " + rdtuId, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("é‡å¤DTU : " + rdtuId, EventLogEntryType.Warning);
                     else
                     {
                         _dtuInfoOc.Add(new DTUInfo()
@@ -518,7 +518,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sr);
 
-                eventLogInformationTransfer.WriteEntry("×°ÔØDTU³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("è£…è½½DTUå‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
         
@@ -551,7 +551,7 @@ namespace SystemService
             {
                 Helper.SafeCloseIOStream(sw);
 
-                eventLogInformationTransfer.WriteEntry("±£´æDTUĞÅÏ¢³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                eventLogInformationTransfer.WriteEntry("ä¿å­˜DTUä¿¡æ¯å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
             }
         }
 
@@ -572,7 +572,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("¿ªÊ¼¹ÜÀí·şÎñ³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("å¼€å§‹ç®¡ç†æœåŠ¡å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                         _cts.Cancel();
                         System.Environment.Exit(1);
                     }
@@ -592,7 +592,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("¿ªÊ¼ÖÕ¶Ë·şÎñ³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("å¼€å§‹ç»ˆç«¯æœåŠ¡å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                         _cts.Cancel();
                         System.Environment.Exit(1);
                     }
@@ -612,7 +612,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("¿ªÊ¼DTU·şÎñ³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("å¼€å§‹DTUæœåŠ¡å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                         _cts.Cancel();
                         System.Environment.Exit(1);
                     }
@@ -630,14 +630,14 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("¹ÜÀí·şÎñ¿ªÊ¼ÕìÌı...");
+            eventLogInformationTransfer.WriteEntry("ç®¡ç†æœåŠ¡å¼€å§‹ä¾¦å¬...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _manTimeout;
                 soc.SendTimeout = _manTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
-                eventLogInformationTransfer.WriteEntry("»ñµÃÒ»¸ö¹ÜÀíÖÕ¶ËÁ¬½Ó" + ip);
+                eventLogInformationTransfer.WriteEntry("è·å¾—ä¸€ä¸ªç®¡ç†ç»ˆç«¯è¿æ¥" + ip);
 
                 Task t = new Task(
                     () =>
@@ -650,9 +650,9 @@ namespace SystemService
                     _manageTaskDict.Add(soc, t);
                 }
                 t.Start();
-                eventLogInformationTransfer.WriteEntry("¿ªÊ¼¹ÜÀíÈÎÎñ" + t.Id.ToString());
+                eventLogInformationTransfer.WriteEntry("å¼€å§‹ç®¡ç†ä»»åŠ¡" + t.Id.ToString());
             }
-            eventLogInformationTransfer.WriteEntry("¹ÜÀí·şÎñÍ£Ö¹ÕìÌı.");
+            eventLogInformationTransfer.WriteEntry("ç®¡ç†æœåŠ¡åœæ­¢ä¾¦å¬.");
         }
 
         /// <summary>
@@ -674,7 +674,7 @@ namespace SystemService
                     len = soc.Receive(bytes);
                     if (len < 1)
                     {
-                        eventLogInformationTransfer.WriteEntry("Ê§È¥Óë¹ÜÀíÖÕ¶Ë" + ip + "µÄÁ¬½Ó.", EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("å¤±å»ä¸ç®¡ç†ç»ˆç«¯" + ip + "çš„è¿æ¥.", EventLogEntryType.Warning);
                         break;
                     }
                     else
@@ -688,7 +688,7 @@ namespace SystemService
             }
             catch (Exception ex)
             {
-                eventLogInformationTransfer.WriteEntry("Óë¹ÜÀíÖÕ¶Ë" + ip + "µÄÁ¬½Ó³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                eventLogInformationTransfer.WriteEntry("ä¸ç®¡ç†ç»ˆç«¯" + ip + "çš„è¿æ¥å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
             }
             lock (_taskLock)
             {
@@ -701,7 +701,7 @@ namespace SystemService
             
                 Helper.SafeCloseSocket(soc);
             }
-            eventLogInformationTransfer.WriteEntry("¹ÜÀíÈÎÎñ" + Task.CurrentId.ToString() + "Í£Ö¹.");
+            eventLogInformationTransfer.WriteEntry("ç®¡ç†ä»»åŠ¡" + Task.CurrentId.ToString() + "åœæ­¢.");
         }
 
         /// <summary>
@@ -809,11 +809,11 @@ namespace SystemService
                 {
                     default:
                     case UserDateType.UserDate:
-                        return Consts.MAN_DEL_LOG_USER_DATE_ERR + "¿ÕµÄÓÃ»§ºÍÈÕÆÚ";
+                        return Consts.MAN_DEL_LOG_USER_DATE_ERR + "ç©ºçš„ç”¨æˆ·å’Œæ—¥æœŸ";
                     case UserDateType.User:
-                        return Consts.MAN_DEL_LOG_USER_DATE_ERR + "¿ÕµÄÓÃ»§";
+                        return Consts.MAN_DEL_LOG_USER_DATE_ERR + "ç©ºçš„ç”¨æˆ·";
                     case UserDateType.Date:
-                        return Consts.MAN_DEL_LOG_USER_DATE_ERR + "¿ÕµÄÈÕÆÚ";
+                        return Consts.MAN_DEL_LOG_USER_DATE_ERR + "ç©ºçš„æ—¥æœŸ";
                 }
             }
 
@@ -829,10 +829,10 @@ namespace SystemService
                         {
                             string[] sa = info.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
                             if (sa.Length != 2)
-                                return Consts.MAN_DEL_LOG_USER_DATE_ERR + "¿ÕµÄÓÃ»§»òÈÕÆÚ";
+                                return Consts.MAN_DEL_LOG_USER_DATE_ERR + "ç©ºçš„ç”¨æˆ·æˆ–æ—¥æœŸ";
                             DateTime dt;
                             if (DateTime.TryParse(Helper.ConvertDateTime(sa[1]), out dt) == false)
-                                return Consts.MAN_DEL_LOG_USER_DATE_ERR + "ÎŞĞ§µÄÈÕÆÚ";
+                                return Consts.MAN_DEL_LOG_USER_DATE_ERR + "æ— æ•ˆçš„æ—¥æœŸ";
                             dt = dt.AddDays(1.0);
                             foreach (Tuple<string, string, string> ti in _logFileOc)
                             {
@@ -895,7 +895,7 @@ namespace SystemService
                         {
                             DateTime dt;
                             if (DateTime.TryParse(Helper.ConvertDateTime(info), out dt) == false)
-                                return Consts.MAN_DEL_LOG_USER_DATE_ERR + "ÎŞĞ§µÄÈÕÆÚ";
+                                return Consts.MAN_DEL_LOG_USER_DATE_ERR + "æ— æ•ˆçš„æ—¥æœŸ";
                             foreach (Tuple<string, string, string> ti in _logFileOc)
                             {
                                 DateTime dti;
@@ -923,26 +923,26 @@ namespace SystemService
         private string AddUser(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
-                return Consts.MAN_ADD_USER_ERR + "ÎŞÓÃ»§ĞÅÏ¢.";
+                return Consts.MAN_ADD_USER_ERR + "æ— ç”¨æˆ·ä¿¡æ¯.";
             content = content.Trim();
 
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT)
-                return Consts.MAN_ADD_USER_ERR + "·Ç·¨ÓÃ»§ĞÅÏ¢ :" + content;
+                return Consts.MAN_ADD_USER_ERR + "éæ³•ç”¨æˆ·ä¿¡æ¯ :" + content;
             string userName = sa[0].Trim();
             string password = sa[1].Trim();
             string permission = sa[2].Trim();
             if (Helper.CheckValidChar(userName, Helper.CheckMethod.CharNum) == false)
-                return Consts.MAN_ADD_USER_ERR + "ÎŞĞ§ÓÃ»§Ãû : " + userName;
+                return Consts.MAN_ADD_USER_ERR + "æ— æ•ˆç”¨æˆ·å : " + userName;
             if (Helper.CheckValidChar(password, Helper.CheckMethod.CharNum) == false)
-                return Consts.MAN_ADD_USER_ERR + "ÎŞĞ§ÃÜÂë :" + password;
+                return Consts.MAN_ADD_USER_ERR + "æ— æ•ˆå¯†ç  :" + password;
             if (permission != "1" && permission != "2")
-                return Consts.MAN_ADD_USER_ERR + "ÎŞĞ§È¨ÏŞ : " + permission;
+                return Consts.MAN_ADD_USER_ERR + "æ— æ•ˆæƒé™ : " + permission;
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui != null)
-                    return Consts.MAN_ADD_USER_ERR + "ÖØ¸´ÓÃ»§ : " + userName;
+                    return Consts.MAN_ADD_USER_ERR + "é‡å¤ç”¨æˆ· : " + userName;
                 UserInfo uiNew = new UserInfo()
                 {
                     DisplayIcon = false,
@@ -961,21 +961,21 @@ namespace SystemService
         private string ModifyUser(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
-                return Consts.MAN_MODIFY_USER_ERR + "ÎŞÓÃ»§ĞÅÏ¢.";
+                return Consts.MAN_MODIFY_USER_ERR + "æ— ç”¨æˆ·ä¿¡æ¯.";
             content = content.Trim();
 
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT - 1)
-                return Consts.MAN_MODIFY_USER_ERR + "ÎŞĞ§ÓÃ»§ĞÅÏ¢ :" + content;
+                return Consts.MAN_MODIFY_USER_ERR + "æ— æ•ˆç”¨æˆ·ä¿¡æ¯ :" + content;
             string userName = sa[0].Trim();
             string password = sa[1].Trim();
             if (Helper.CheckValidChar(password, Helper.CheckMethod.CharNum) == false)
-                return Consts.MAN_MODIFY_USER_ERR + "ÎŞĞ§ÃÜÂë :" + password;
+                return Consts.MAN_MODIFY_USER_ERR + "æ— æ•ˆå¯†ç  :" + password;
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.MAN_MODIFY_USER_ERR + "ÎŞ´ËÓÃ»§ : " + userName;
+                    return Consts.MAN_MODIFY_USER_ERR + "æ— æ­¤ç”¨æˆ· : " + userName;
                 ui.Password = password;
                 SaveUser();
             }
@@ -985,16 +985,16 @@ namespace SystemService
         private string DeleteUser(string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return Consts.MAN_DELETE_USER_ERR + "ÎŞĞèÒªÉ¾³ıµÄÓÃ»§Ãû.";
+                return Consts.MAN_DELETE_USER_ERR + "æ— éœ€è¦åˆ é™¤çš„ç”¨æˆ·å.";
             userName = userName.Trim();
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.MAN_DELETE_USER_ERR + "ÓÃ»§(" + userName + ")²»´æÔÚ.";
+                    return Consts.MAN_DELETE_USER_ERR + "ç”¨æˆ·(" + userName + ")ä¸å­˜åœ¨.";
                 if (ui.Online == true)
-                    return Consts.MAN_DELETE_USER_ERR + "ÓÃ»§(" + userName + ")ÔÚÏßÖĞ.";
+                    return Consts.MAN_DELETE_USER_ERR + "ç”¨æˆ·(" + userName + ")åœ¨çº¿ä¸­.";
                 if (ui.Permission == "2")
                     ui.OnlineOfflineEvent -= new UserInfo.OnlineOfflineEventHandler(UserInfo_OnlineOfflineEvent);
                 UserInfo_OnlineOfflineEvent(ui, new CommonEventArgs() { CommonObject = ui });
@@ -1058,11 +1058,11 @@ namespace SystemService
         {
             // Must not do Trim() because there are empty(optional) fields.
             if (string.IsNullOrEmpty(content))
-                return Consts.MAN_ADD_DTU_ERR + "ÎŞDTUĞÅÏ¢.";
+                return Consts.MAN_ADD_DTU_ERR + "æ— DTUä¿¡æ¯.";
             //content = content.Trim();
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.None);
             if (sa == null || sa.Length != Consts.DTU_ACCOUNT_ITEM_COUNT)
-                return Consts.MAN_ADD_DTU_ERR + "·ÇÍêÕûµÄDTUĞÅÏ¢ :" + content;
+                return Consts.MAN_ADD_DTU_ERR + "éå®Œæ•´çš„DTUä¿¡æ¯ :" + content;
             string dtuId = sa[0].Trim();
             string simId = sa[1].Trim();
             string un = sa[2].Trim();
@@ -1071,7 +1071,7 @@ namespace SystemService
             {
                 DTUInfo di = Helper.FindDTUInfo(sa[0].Trim(), _dtuInfoOc);
                 if (di != null)
-                    return Consts.MAN_ADD_DTU_ERR + "ÖØ¸´µÄDTU : " + dtuId;
+                    return Consts.MAN_ADD_DTU_ERR + "é‡å¤çš„DTU : " + dtuId;
                 _dtuInfoOc.Add(new DTUInfo()
                 {
                     DisplayIcon = false,
@@ -1088,14 +1088,14 @@ namespace SystemService
         private string DeleteDTU(Socket soc, string dtuId)
         {
             if (string.IsNullOrEmpty(dtuId))
-                return Consts.MAN_ADD_DTU_ERR + "ÎŞDTU ID.";
+                return Consts.MAN_ADD_DTU_ERR + "æ— DTU ID.";
             dtuId = dtuId.Trim();
 
             lock (_taskLock)
             {
                 DTUInfo dtu = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                 if (dtu == null)
-                    return Consts.MAN_DELETE_DTU_ERR + "DTU(" + dtuId + ")²»´æÔÚ.";
+                    return Consts.MAN_DELETE_DTU_ERR + "DTU(" + dtuId + ")ä¸å­˜åœ¨.";
                 _dtuInfoOc.Remove(dtu);
                 SaveDTU();
 
@@ -1135,11 +1135,11 @@ namespace SystemService
         {
             // Must not do Trim() because there are empty(optional) fields.
             if (string.IsNullOrEmpty(content))
-                return Consts.MAN_MODIFY_DTU_ERR + "ÎŞDTUĞÅÏ¢.";
+                return Consts.MAN_MODIFY_DTU_ERR + "æ— DTUä¿¡æ¯.";
             //content = content.Trim();
             string[] sa = content.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.DTU_ACCOUNT_ITEM_COUNT)
-                return Consts.MAN_MODIFY_DTU_ERR + "·ÇÍêÕûµÄDTUĞÅÏ¢ :" + content;
+                return Consts.MAN_MODIFY_DTU_ERR + "éå®Œæ•´çš„DTUä¿¡æ¯ :" + content;
             string dtuId = sa[0].Trim();
             string simId = sa[1].Trim();
             string un = sa[2].Trim();
@@ -1148,7 +1148,7 @@ namespace SystemService
             {
                 DTUInfo di = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                 if (di == null)
-                    return Consts.MAN_MODIFY_DTU_ERR + "DTU ID(" + dtuId + ")²»´æÔÚ.";
+                    return Consts.MAN_MODIFY_DTU_ERR + "DTU ID(" + dtuId + ")ä¸å­˜åœ¨.";
                 di.SimId = simId;
                 di.UserName = un;
                 di.UserTel = utel;
@@ -1193,32 +1193,32 @@ namespace SystemService
             string headerErr = (isMan == true) ? Consts.MAN_LOGIN_ERR : Consts.TERM_LOGIN_ERR;
             string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
             if (string.IsNullOrWhiteSpace(s))
-                return headerErr + "ÎŞÓÃ»§ÃûºÍÃÜÂë.";
+                return headerErr + "æ— ç”¨æˆ·åå’Œå¯†ç .";
             string[] sa = s.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != Consts.USER_ACCOUNT_ITEM_COUNT - 1)
-                return headerErr + "ÎŞÓÃ»§Ãû»òÃÜÂë.";
+                return headerErr + "æ— ç”¨æˆ·åæˆ–å¯†ç .";
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(sa[0].Trim(), _userInfoOc);
                 if (ui == null)
-                    return headerErr + "ÎŞĞ§ÓÃ»§Ãû.";
+                    return headerErr + "æ— æ•ˆç”¨æˆ·å.";
                 if (string.Compare(sa[1].Trim(), ui.Password, true) != 0)
-                    return headerErr + "ÎŞĞ§ÃÜÂë.";
+                    return headerErr + "æ— æ•ˆå¯†ç .";
 
                 if (isMan == true)
                 {
                     if (ui.Permission != "0" && ui.Permission != "1")
-                        return headerErr + "ÆÕÍ¨ÓÃ»§²»ÔÊĞíµÇÂ¼·şÎñ¹ÜÀíÏµÍ³.";
+                        return headerErr + "æ™®é€šç”¨æˆ·ä¸å…è®¸ç™»å½•æœåŠ¡ç®¡ç†ç³»ç»Ÿ.";
                 }
                 else
                 {
                     if (ui.Permission != "2")
-                        return headerErr + "Ö»ÓĞÆÕÍ¨ÓÃ»§²Å¿ÉÒÔµÇÂ¼DTU¹ÜÀíÏµÍ³.";
+                        return headerErr + "åªæœ‰æ™®é€šç”¨æˆ·æ‰å¯ä»¥ç™»å½•DTUç®¡ç†ç³»ç»Ÿ.";
                 }
 
                 if (ui.Online == true)
-                    return headerErr + "´ËÓÃ»§ÒÑ¾­ÔÚ" + ui.DtLogString + "Ê±¿Ì´Ó" + ui.Information + "ÔÚÏß";
+                    return headerErr + "æ­¤ç”¨æˆ·å·²ç»åœ¨" + ui.DtLogString + "æ—¶åˆ»ä»" + ui.Information + "åœ¨çº¿";
 
                 ui.Online = true;
                 ui.DtLog = DateTime.Now;
@@ -1238,7 +1238,7 @@ namespace SystemService
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return headerErr + "ÎŞĞ§ÓÃ»§Ãû.";
+                    return headerErr + "æ— æ•ˆç”¨æˆ·å.";
 
                 ui.Online = false;
 
@@ -1279,14 +1279,14 @@ namespace SystemService
         private string KickOffUser(string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return Consts.MAN_KICK_USER_ERR + "¿ÕµÄÓÃ»§Ãû.";
+                return Consts.MAN_KICK_USER_ERR + "ç©ºçš„ç”¨æˆ·å.";
             userName = userName.Trim();
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.MAN_KICK_USER_ERR + "ÎŞĞ§ÓÃ»§Ãû.";
+                    return Consts.MAN_KICK_USER_ERR + "æ— æ•ˆç”¨æˆ·å.";
 
                 ui.Online = false;
 
@@ -1322,16 +1322,16 @@ namespace SystemService
         private string KickOffDTU(string dtuId)
         {
             if (string.IsNullOrEmpty(dtuId))
-                return Consts.MAN_KICK_DTU_ERR + "ÎŞDTU.";
+                return Consts.MAN_KICK_DTU_ERR + "æ— DTU.";
             dtuId = dtuId.Trim();
 
             lock (_taskLock)
             {
                 DTUInfo dtu = Helper.FindDTUInfo(dtuId, _dtuInfoOc);
                 if (dtu == null)
-                    return Consts.MAN_KICK_DTU_ERR + "DTU(" + dtuId + ")²»´æÔÚ.";
+                    return Consts.MAN_KICK_DTU_ERR + "DTU(" + dtuId + ")ä¸å­˜åœ¨.";
                 if (dtu.Online == false)
-                    return Consts.MAN_KICK_DTU_ERR + "DTU(" + dtuId + ")ÒÑ¾­²»ÔÚÏß.";
+                    return Consts.MAN_KICK_DTU_ERR + "DTU(" + dtuId + ")å·²ç»ä¸åœ¨çº¿.";
 
                 dtu.Online = false;
 
@@ -1372,22 +1372,22 @@ namespace SystemService
         private string ReleaseDTU(string dtuId)
         {
             if (string.IsNullOrEmpty(dtuId))
-                return Consts.MAN_UNCTRL_DTU_ERR + "ÎŞDTUÃû.";
+                return Consts.MAN_UNCTRL_DTU_ERR + "æ— DTUå.";
             //content = content.Trim();
             string[] sa = dtuId.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
             if (sa == null || sa.Length != 2)
-                return Consts.MAN_UNCTRL_DTU_ERR + "ÎŞÓÃ»§Ãû»òDTU ID.";
+                return Consts.MAN_UNCTRL_DTU_ERR + "æ— ç”¨æˆ·åæˆ–DTU ID.";
 
             lock (_taskLock)
             {
                 DTUInfo di = null;
                 di = Helper.FindDTUInfo(sa[1].Trim(), _dtuInfoOc);
                 if (di == null)
-                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")²»´æÔÚ.";
+                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")ä¸å­˜åœ¨.";
                 if (di.Online == false)
-                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")ÒÑ¾­²»ÔÚÏß.";
+                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")å·²ç»ä¸åœ¨çº¿.";
                 if (di.Controller == null)
-                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")ÒÑ¾­²»ÔÙ±»¿ØÖÆ.";
+                    return Consts.MAN_UNCTRL_DTU_ERR + "DTU(" + dtuId + ")å·²ç»ä¸å†è¢«æ§åˆ¶.";
 
                 UserInfo ui = di.Controller;
                 if (ui != null)
@@ -1429,14 +1429,14 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë·şÎñ¿ªÊ¼ÕìÌı...");
+            eventLogInformationTransfer.WriteEntry("ç»ˆç«¯æœåŠ¡å¼€å§‹ä¾¦å¬...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout =  _termTimeout;
                 soc.SendTimeout = _termTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
-                eventLogInformationTransfer.WriteEntry("»ñµÃÒ»¸öÖÕ¶ËÇëÇó" + ip);
+                eventLogInformationTransfer.WriteEntry("è·å¾—ä¸€ä¸ªç»ˆç«¯è¯·æ±‚" + ip);
 
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Task ts = new Task(
@@ -1463,9 +1463,9 @@ namespace SystemService
                 }
                 ts.Start();
                 tr.Start();
-                eventLogInformationTransfer.WriteEntry("¿ªÊ¼ÖÕ¶Ë·¢ËÍÈÎÎñ" + ts.Id.ToString() + "ºÍ½ÓÊÕÈÎÎñ" + tr.Id.ToString());
+                eventLogInformationTransfer.WriteEntry("å¼€å§‹ç»ˆç«¯å‘é€ä»»åŠ¡" + ts.Id.ToString() + "å’Œæ¥æ”¶ä»»åŠ¡" + tr.Id.ToString());
             }
-            eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë·şÎñÍ£Ö¹ÕìÌı.");
+            eventLogInformationTransfer.WriteEntry("ç»ˆç«¯æœåŠ¡åœæ­¢ä¾¦å¬.");
         }
 
         public void TermSendService(Socket soc)
@@ -1490,7 +1490,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë" + ip + "·¢ËÍÈÎÎñ" + Task.CurrentId.ToString() + "³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯" + ip + "å‘é€ä»»åŠ¡" + Task.CurrentId.ToString() + "å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_TERM);
                     break;
                 }
             }
@@ -1514,7 +1514,7 @@ namespace SystemService
                     len = soc.Receive(ba);
                     if (len < 1)
                     {
-                        eventLogInformationTransfer.WriteEntry("Ê§È¥µ½ÖÕ¶Ë" + ip + "µÄÁ¬½Ó.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                        eventLogInformationTransfer.WriteEntry("å¤±å»åˆ°ç»ˆç«¯" + ip + "çš„è¿æ¥.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                         break;
                     }
                     else
@@ -1528,7 +1528,7 @@ namespace SystemService
                                 {
                                     if (kvp.Value == null)
                                     {
-                                        eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë" + ip + "Ã»ÓĞ·ÖÅäÈÎºÎDTU", EventLogEntryType.Error, Consts.EVENT_ID_FROM_TERM);
+                                        eventLogInformationTransfer.WriteEntry("ç»ˆç«¯" + ip + "æ²¡æœ‰åˆ†é…ä»»ä½•DTU", EventLogEntryType.Error, Consts.EVENT_ID_FROM_TERM);
                                         break;
                                     }
                                     byte[] badtu = new byte[len];
@@ -1577,7 +1577,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë(" + ip + ")µÄ½ÓÊÕÈÎÎñ(" + Task.CurrentId.ToString() + ")³ö´í : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯(" + ip + ")çš„æ¥æ”¶ä»»åŠ¡(" + Task.CurrentId.ToString() + ")å‡ºé”™ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                     break;
                 }
             }
@@ -1724,26 +1724,26 @@ namespace SystemService
         private string TermAddDtu(Socket soc, string userAndDtuId)
         {
             if (string.IsNullOrWhiteSpace(userAndDtuId))
-                return Consts.TERM_ADD_DTU_ERR + "ÎŞÓÃ»§ÃûºÍDTU±êÊ¶.";
+                return Consts.TERM_ADD_DTU_ERR + "æ— ç”¨æˆ·åå’ŒDTUæ ‡è¯†.";
             string[] sa = userAndDtuId.Split(new string[] { "\t" }, StringSplitOptions.None);
             if (sa == null || sa.Length != 2)
-                return Consts.TERM_ADD_DTU_ERR + "´íÎóµÄÓÃ»§ÃûºÍDTU±êÊ¶.";
+                return Consts.TERM_ADD_DTU_ERR + "é”™è¯¯çš„ç”¨æˆ·åå’ŒDTUæ ‡è¯†.";
             string un = sa[0].Trim();
             string dtuId = sa[1].Trim();
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(un, _userInfoOc);
                 if (ui == null)
-                    return Consts.TERM_ADD_DTU_ERR + "ÎŞ´ËÓÃ»§ : " + un;
+                    return Consts.TERM_ADD_DTU_ERR + "æ— æ­¤ç”¨æˆ· : " + un;
                 if (ui.Online == false)
-                    return Consts.TERM_ADD_DTU_ERR + "ÓÃ»§(" + dtuId + ")²»ÔÚÏß.";
+                    return Consts.TERM_ADD_DTU_ERR + "ç”¨æˆ·(" + dtuId + ")ä¸åœ¨çº¿.";
                 DTUInfo di = Helper.FindDTUInfo(sa[1].Trim(), _dtuInfoOc);
                 if (di == null)
-                    return Consts.TERM_ADD_DTU_ERR + "ÎŞ´ËDTU : " + dtuId;
+                    return Consts.TERM_ADD_DTU_ERR + "æ— æ­¤DTU : " + dtuId;
                 if (di.Online == false)
-                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")²»ÔÚÏß.";
+                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")ä¸åœ¨çº¿.";
                 if (ui.UserDTUs.Contains(di) == true || di.Controller != null)
-                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")ÒÑ¾­±»ÓÃ»§(" + un + ")¿ØÖÆ.";
+                    return Consts.TERM_ADD_DTU_ERR + "DTU(" + dtuId + ")å·²ç»è¢«ç”¨æˆ·(" + un + ")æ§åˆ¶.";
 
                 di.Controller = ui;
                 if (ui.UserDTUs.Contains(di) == false)
@@ -1761,7 +1761,7 @@ namespace SystemService
                 soc.SendTimeout = -1;
                 soc.ReceiveTimeout = -1;
 
-                eventLogInformationTransfer.WriteEntry("DTU(" + dtuId + ")ÏÖÔÚ±»ÓÃ»§(" + un + ")¿ØÖÆ.");
+                eventLogInformationTransfer.WriteEntry("DTU(" + dtuId + ")ç°åœ¨è¢«ç”¨æˆ·(" + un + ")æ§åˆ¶.");
             }
 
             return Consts.TERM_ADD_DTU_OK;
@@ -1770,14 +1770,14 @@ namespace SystemService
         private string TermInitUser(Socket soc, string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return Consts.TERM_INIT_USER_ERR + "ÎŞÓÃ»§Ãû.";
+                return Consts.TERM_INIT_USER_ERR + "æ— ç”¨æˆ·å.";
             userName = userName.Trim();
 
             lock (_taskLock)
             {
                 UserInfo ui = Helper.FindUserInfo(userName, _userInfoOc);
                 if (ui == null)
-                    return Consts.TERM_INIT_USER_ERR + "ÎŞ´ËÓÃ»§:" + userName;
+                    return Consts.TERM_INIT_USER_ERR + "æ— æ­¤ç”¨æˆ·:" + userName;
 
                 if (_termTaskList.ContainsKey(soc) == true)
                 {
@@ -1789,7 +1789,7 @@ namespace SystemService
                         _commMsgDict[ui] = new List<CommunicationMessage>();
                 }
                 else
-                    return Consts.TERM_INIT_USER_ERR + "ÓÃ»§(" + userName + ")µÄÖÕ¶Ë·¢ËÍºÍ½ÓÊÕÈÎÎñ»¹Ã»ÓĞ±»´´½¨.";
+                    return Consts.TERM_INIT_USER_ERR + "ç”¨æˆ·(" + userName + ")çš„ç»ˆç«¯å‘é€å’Œæ¥æ”¶ä»»åŠ¡è¿˜æ²¡æœ‰è¢«åˆ›å»º.";
             }
             return Consts.TERM_INIT_USER_OK;
         }
@@ -1805,14 +1805,14 @@ namespace SystemService
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(iep);
             server.Listen(Consts.SOCKET_LISTEN_BACKLOG_COUNT);
-            eventLogInformationTransfer.WriteEntry("DTU·şÎñ¿ªÊ¼ÕìÌı...");
+            eventLogInformationTransfer.WriteEntry("DTUæœåŠ¡å¼€å§‹ä¾¦å¬...");
             while (_cts.Token.IsCancellationRequested == false)
             {
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _dtuTimeout;
                 soc.SendTimeout = _dtuTimeout;
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
-                eventLogInformationTransfer.WriteEntry("½ÓÊÜÀ´×Ô" + ip+ "µÄDTU.");
+                eventLogInformationTransfer.WriteEntry("æ¥å—æ¥è‡ª" + ip+ "çš„DTU.");
 
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Task ts = new Task(
@@ -1839,9 +1839,9 @@ namespace SystemService
                 }
                 ts.Start();
                 tr.Start();
-                eventLogInformationTransfer.WriteEntry("¿ªÊ¼DTU·¢ËÍÈÎÎñ" + ts.Id.ToString() + "ºÍ½ÓÊÕÈÎÎñ" + tr.Id.ToString());
+                eventLogInformationTransfer.WriteEntry("å¼€å§‹DTUå‘é€ä»»åŠ¡" + ts.Id.ToString() + "å’Œæ¥æ”¶ä»»åŠ¡" + tr.Id.ToString());
             }
-            eventLogInformationTransfer.WriteEntry("DTU·şÎñÍ£Ö¹ÕìÌı.");
+            eventLogInformationTransfer.WriteEntry("DTUæœåŠ¡åœæ­¢ä¾¦å¬.");
         }
 
         public void DTUSendService(Socket soc)
@@ -1866,7 +1866,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU(" + ip + ")µÄ·¢ËÍÈÎÎñ(" + Task.CurrentId.ToString() + ")³ö´í : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_DTU);
+                    eventLogInformationTransfer.WriteEntry("DTU(" + ip + ")çš„å‘é€ä»»åŠ¡(" + Task.CurrentId.ToString() + ")å‡ºé”™ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error, Consts.EVENT_ID_TO_DTU);
                     break;
                 }
             }
@@ -1899,13 +1899,13 @@ namespace SystemService
                         {
                             dtu = Helper.FindDTUInfo(soc, _dtuInfoOc);
                             if (dtu == null)
-                                eventLogInformationTransfer.WriteEntry("Ê§È¥ºÍDTU(" + ip + ")µÄÁ¬½Ó.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                eventLogInformationTransfer.WriteEntry("å¤±å»å’ŒDTU(" + ip + ")çš„è¿æ¥.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                             else
                             {
                                 dtu.Online = false;
                                 dtu.DTUSocket = null;
                                 dtu.Controller = null;
-                                eventLogInformationTransfer.WriteEntry("Ê§È¥ºÍÀ´×Ô" + ip + "µÄDTU(" + dtu.DtuId + ")µÄÁ¬½Ó.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                eventLogInformationTransfer.WriteEntry("å¤±å»å’Œæ¥è‡ª" + ip + "çš„DTU(" + dtu.DtuId + ")çš„è¿æ¥.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                             }
                             _dtuTaskList[soc].CurrentDTU = null;
                             break;
@@ -1927,12 +1927,12 @@ namespace SystemService
                                     dtuId = "";
                                 if (waitDTUIDCount < Consts.WAIT_DTU_ID_COUNT_MAX)
                                 {
-                                    eventLogInformationTransfer.WriteEntry("ÔÙ´ÎµÈ´ıDTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                    eventLogInformationTransfer.WriteEntry("å†æ¬¡ç­‰å¾…DTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                                     waitDTUIDCount++;
                                 }
                                 else
                                 {
-                                    eventLogInformationTransfer.WriteEntry("Ã»ÓĞ»ñµÃDTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                    eventLogInformationTransfer.WriteEntry("æ²¡æœ‰è·å¾—DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                                     break;
                                 }
                             }
@@ -1946,12 +1946,12 @@ namespace SystemService
                                     {
                                         if (waitDTUIDCount < Consts.WAIT_DTU_ID_COUNT_MAX)
                                         {
-                                            eventLogInformationTransfer.WriteEntry("ÔÙ´ÎµÈ´ıDTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                            eventLogInformationTransfer.WriteEntry("å†æ¬¡ç­‰å¾…DTU ID: " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                                             waitDTUIDCount++;
                                         }
                                         else
                                         {
-                                            eventLogInformationTransfer.WriteEntry("Î´×¢²áµÄDTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
+                                            eventLogInformationTransfer.WriteEntry("æœªæ³¨å†Œçš„DTU ID : " + dtuId, EventLogEntryType.Error, Consts.EVENT_ID_FROM_DTU);
                                             break;
                                         }
                                     }
@@ -1987,7 +1987,7 @@ namespace SystemService
                                 }
 
                                 if (socTerm == null)
-                                    eventLogInformationTransfer.WriteEntry("ºöÂÔÀ´×Ô" + ip + "µÄDTU(" + dtu.DtuId + ")µÄÏûÏ¢ÒòÎªËü²»ÔÙ±»¿ØÖÆ.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                    eventLogInformationTransfer.WriteEntry("å¿½ç•¥æ¥è‡ª" + ip + "çš„DTU(" + dtu.DtuId + ")çš„æ¶ˆæ¯å› ä¸ºå®ƒä¸å†è¢«æ§åˆ¶.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                                 else
                                 {
                                     TerminalDTUTaskInformation tdti = null;
@@ -1996,7 +1996,7 @@ namespace SystemService
 
                                     if (tdti == null)
                                     {
-                                        eventLogInformationTransfer.WriteEntry("ºöÂÔÀ´×Ô" + ip + "µÄDTU(" + dtu.DtuId + ")µÄÏûÏ¢ÒòÎª¿ØÖÆËüµÄÖÕ¶ËµÄÈÎÎñ·şÎñÃ»ÓĞÕı³£ÔË×÷.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                                        eventLogInformationTransfer.WriteEntry("å¿½ç•¥æ¥è‡ª" + ip + "çš„DTU(" + dtu.DtuId + ")çš„æ¶ˆæ¯å› ä¸ºæ§åˆ¶å®ƒçš„ç»ˆç«¯çš„ä»»åŠ¡æœåŠ¡æ²¡æœ‰æ­£å¸¸è¿ä½œ.", EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                                         if (_terminalDTUMap.ContainsKey(socTerm))
                                             _terminalDTUMap.Remove(socTerm);
                                     }
@@ -2045,7 +2045,7 @@ namespace SystemService
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("À´×Ô" + ip + "µÄDTUµÄ½ÓÊÕÈÎÎñ(" + Task.CurrentId.ToString() + ")³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
+                    eventLogInformationTransfer.WriteEntry("æ¥è‡ª" + ip + "çš„DTUçš„æ¥æ”¶ä»»åŠ¡(" + Task.CurrentId.ToString() + ")å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning, Consts.EVENT_ID_FROM_DTU);
                     break;
                 }
             }
@@ -2117,19 +2117,19 @@ namespace SystemService
                 {
                     t.Wait(Consts.TASK_STOP_WAIT_TIME);//, _manageCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("¹ÜÀíÈÎÎñ " + t.Id.ToString() + "Í£Ö¹.");
+                    eventLogInformationTransfer.WriteEntry("ç®¡ç†ä»»åŠ¡ " + t.Id.ToString() + "åœæ­¢.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("¹ÜÀíÈÎÎñ" + t.Id.ToString() + "²»ÄÜ¹»Õı³£Í£Ö¹ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("ç®¡ç†ä»»åŠ¡" + t.Id.ToString() + "ä¸èƒ½å¤Ÿæ­£å¸¸åœæ­¢ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("¹ÜÀíÈÎÎñinner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("ç®¡ç†ä»»åŠ¡inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("¹ÜÀíÈÎÎñ" + t.Id.ToString() + "ÎŞ·¨ÕıÈ·Í£Ö¹ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("ç®¡ç†ä»»åŠ¡" + t.Id.ToString() + "æ— æ³•æ­£ç¡®åœæ­¢ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
             }
             foreach (KeyValuePair<Socket, TerminalDTUTaskInformation> kvp in _termTaskList)
@@ -2143,37 +2143,37 @@ namespace SystemService
                 {
                     ts.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë·¢ËÍÈÎÎñ" + ts.Id.ToString() + "Í£Ö¹.");
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯å‘é€ä»»åŠ¡" + ts.Id.ToString() + "åœæ­¢.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë·¢ËÍÈÎÎñ" + ts.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯å‘é€ä»»åŠ¡" + ts.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë·¢ËÍÈÎÎñ inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("ç»ˆç«¯å‘é€ä»»åŠ¡ inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë·¢ËÍÈÎÎñ" + ts.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯å‘é€ä»»åŠ¡" + ts.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
                 try
                 {
                     tr.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë½ÓÊÕÈÎÎñ" + tr.Id.ToString() + "Í£Ö¹.");
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯æ¥æ”¶ä»»åŠ¡" + tr.Id.ToString() + "åœæ­¢.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë½ÓÊÕÈÎÎñ" + tr.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯æ¥æ”¶ä»»åŠ¡" + tr.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë½ÓÊÕÈÎÎñinner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("ç»ˆç«¯æ¥æ”¶ä»»åŠ¡inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("ÖÕ¶Ë½ÓÊÕÈÎÎñ" + tr.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("ç»ˆç«¯æ¥æ”¶ä»»åŠ¡" + tr.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
             }
             foreach (KeyValuePair<Socket, TerminalDTUTaskInformation> kvp in _dtuTaskList)
@@ -2187,37 +2187,37 @@ namespace SystemService
                 {
                     ts.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("DTU·¢ËÍÈÎÎñ" + ts.Id.ToString() + "Í£Ö¹.");
+                    eventLogInformationTransfer.WriteEntry("DTUå‘é€ä»»åŠ¡" + ts.Id.ToString() + "åœæ­¢.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU·¢ËÍÈÎÎñ" + ts.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTUå‘é€ä»»åŠ¡" + ts.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("DTU·¢ËÍÈÎÎñinner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("DTUå‘é€ä»»åŠ¡inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU·¢ËÍÈÎÎñ" + ts.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTUå‘é€ä»»åŠ¡" + ts.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
                 try
                 {
                     tr.Wait(Consts.TASK_STOP_WAIT_TIME);//, _termCts.Token);
 
-                    eventLogInformationTransfer.WriteEntry("DTU½ÓÊÕÈÎÎñ" + tr.Id.ToString() + "Í£Ö¹.");
+                    eventLogInformationTransfer.WriteEntry("DTUæ¥æ”¶ä»»åŠ¡" + tr.Id.ToString() + "åœæ­¢.");
                 }
                 catch (AggregateException ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU½ÓÊÕÈÎÎñ" + tr.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTUæ¥æ”¶ä»»åŠ¡" + tr.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : (AggregateException) " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     foreach (Exception exi in ex.InnerExceptions)
                     {
-                        eventLogInformationTransfer.WriteEntry("DTU½ÓÊÕÈÎÎñinner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                        eventLogInformationTransfer.WriteEntry("DTUæ¥æ”¶ä»»åŠ¡inner exception : " + exi.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLogInformationTransfer.WriteEntry("DTU½ÓÊÕÈÎÎñ" + tr.Id.ToString() + "²»ÄÜÕıÈ·Í£Ö¹ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
+                    eventLogInformationTransfer.WriteEntry("DTUæ¥æ”¶ä»»åŠ¡" + tr.Id.ToString() + "ä¸èƒ½æ­£ç¡®åœæ­¢ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Error);
                 }
             }
         }
@@ -2311,7 +2311,7 @@ namespace SystemService
                     }
                     catch (Exception ex)
                     {
-                        eventLogInformationTransfer.WriteEntry("±£´æÏûÏ¢ÈÕÖ¾µÄÊ±ºò³öÏÖ´íÎó : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
+                        eventLogInformationTransfer.WriteEntry("ä¿å­˜æ¶ˆæ¯æ—¥å¿—çš„æ—¶å€™å‡ºç°é”™è¯¯ : " + ex.Message + "\n\n" + ex.StackTrace, EventLogEntryType.Warning);
                     }
                     _commMsgDict.Remove(ui);
                 }
