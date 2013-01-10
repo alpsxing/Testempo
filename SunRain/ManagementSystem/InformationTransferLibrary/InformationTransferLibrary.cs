@@ -148,7 +148,7 @@ namespace InformationTransferLibrary
         /// For system service management
         /// </summary>
         public const int MAN_PORT = 5081;
-        public const int MAN_WEB_PORT = 80;
+        public const int MAN_WEB_PORT = 5086;
         /// <summary>
         /// For local terminal
         /// </summary>
@@ -616,8 +616,8 @@ namespace InformationTransferLibrary
         /// </summary>
         /// <param name="bytes"></param>
         /// <param name="len"></param>
-        /// <returns> First string is header, second string is content, last string is conetnt without '\0'</returns>
-        public static Tuple<string, byte[], string, string> ExtractSocketResponse(byte[] bytes, int len)
+        /// <returns> First string is header, second string is content, 3rd string is conetnt without '\0', last is UFT coding from 3rd</returns>
+        public static Tuple<string, byte[], string, string, string> ExtractSocketResponse(byte[] bytes, int len)
         {
             if (bytes == null || bytes.Length < 1 || len < Consts.PROTOCOL_HEADER_LENGTH)
                 return null;
@@ -631,6 +631,7 @@ namespace InformationTransferLibrary
             string header = System.Text.Encoding.ASCII.GetString(bh, 0, Consts.PROTOCOL_HEADER_LENGTH);
             string content = "";
             string contentTrim = "";
+            string contentTrimCoding = "";
             if (len > Consts.PROTOCOL_HEADER_LENGTH)
             {
                 for (int i = 0; i < len - Consts.PROTOCOL_HEADER_LENGTH; i++)
@@ -640,7 +641,7 @@ namespace InformationTransferLibrary
                 content = System.Text.Encoding.ASCII.GetString(bc, 0, len - Consts.PROTOCOL_HEADER_LENGTH);
                 contentTrim = content.Trim(new char[] { '\0' });
             }
-            return new Tuple<string, byte[], string, string>(header, bc, content, contentTrim);
+            return new Tuple<string, byte[], string, string, string>(header, bc, content, contentTrim, contentTrimCoding);
         }
 
         public static int FindStringCount(string src, string fstr)
