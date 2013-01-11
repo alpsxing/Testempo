@@ -1220,7 +1220,7 @@ namespace TerminalConfiguration
                             _timerPBar.Change(0, 1000);
                             byte[] bytes = new byte[1024];
                             int len = _sPort.Read(bytes, 0, 1024);
-                            dtuci.Return = Encoding.ASCII.GetString(bytes, 0, len);
+                            dtuci.Return = Encoding.UTF8.GetString(bytes, 0, len);
                             _timerPBar.Change(Timeout.Infinite, 1000);
                             StatusPbarValue = 0;
                             ReadyString = "Read return from DTU : " + dtuci.ReturnDisplay;
@@ -1309,7 +1309,7 @@ namespace TerminalConfiguration
                                 _timerPBar.Change(0, 1000);
                                 byte[] bytes = new byte[1024];
                                 int len = _sPort.Read(bytes, 0, 1024);
-                                dtuci.Return = Encoding.ASCII.GetString(bytes, 0, len);
+                                dtuci.Return = Encoding.UTF8.GetString(bytes, 0, len);
                                 _timerPBar.Change(Timeout.Infinite, 1000);
                                 StatusPbarValue = 0;
                                 ReadyString = "Read return from DTU : " + dtuci.ReturnDisplay;
@@ -1400,7 +1400,7 @@ namespace TerminalConfiguration
                         _timerPBar.Change(0, 1000);
                         byte[] bytes = new byte[1024];
                         int len = _sPort.Read(bytes, 0, 1024);
-                        dtuci.Response = Encoding.ASCII.GetString(bytes, 0, len);
+                        dtuci.Response = Encoding.UTF8.GetString(bytes, 0, len);
                         _timerPBar.Change(Timeout.Infinite, 1000);
                         StatusPbarValue = 0;
                         ReadyString = "从DTU得到响应 : " + dtuci.Response;

@@ -578,7 +578,7 @@ namespace ServiceConfiguration
                                 AddLog("请求 : 删除给定日期前用户服务器日志用户", flow: LogMessage.Flow.Request);
                                 break;
                         }
-                        _manSocket.Send(Encoding.ASCII.GetBytes(req.Item1 + req.Item2));
+                        _manSocket.Send(Encoding.UTF8.GetBytes(req.Item1 + req.Item2));
                         byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH_MAN];
                         int length = _manSocket.Receive(bytes);
                         if (length < 1)
@@ -654,7 +654,7 @@ namespace ServiceConfiguration
             Tuple<string, byte[], string, string> data = Helper.ExtractSocketResponse(bytes, len);
             if (data == null)
             {
-                AddLog("空的服务器响应 : " + Encoding.ASCII.GetString(bytes, 0, len), state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                AddLog("空的服务器响应 : " + Encoding.UTF8.GetString(bytes, 0, len), state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                 return;
             }
 

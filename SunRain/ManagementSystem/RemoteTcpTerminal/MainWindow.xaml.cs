@@ -221,7 +221,7 @@ namespace RemoteTcpTerminal
             int len = 0;
             try
             {
-                soc.Send(Encoding.ASCII.GetBytes(DTUID.Trim()));
+                soc.Send(Encoding.UTF8.GetBytes(DTUID.Trim()));
                 while (true)
                 {
                     len = soc.Receive(bytes);
@@ -257,7 +257,7 @@ namespace RemoteTcpTerminal
                         PostLog("Received Raw : " + rbrs);
                         PostLog("Received : " + rbs);
 
-                        bytes = Encoding.ASCII.GetBytes("Response : " + rbs);
+                        bytes = Encoding.UTF8.GetBytes("Response : " + rbs);
                         PostLog("Trying sending response : Response : " + rbs);
                         soc.Send(bytes);
                         PostLog("Sent.");

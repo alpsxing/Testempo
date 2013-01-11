@@ -341,7 +341,7 @@ namespace RemoteTcpServer
 
                         if (DoSendOrNot == true)
                         {
-                            bytes = Encoding.ASCII.GetBytes("Response : " + rbs);
+                            bytes = Encoding.UTF8.GetBytes("Response : " + rbs);
                             PostLog("Trying sending response : Response " + rbs);
                             server.Send(bytes);
                             PostLog("Sent.");

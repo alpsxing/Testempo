@@ -271,8 +271,8 @@ namespace InformationTransferLibrary
             using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
                 byte[] inputByteArray = Encoding.UTF8.GetBytes(pToEncrypt);
-                des.Key = ASCIIEncoding.ASCII.GetBytes(sKey);
-                des.IV = ASCIIEncoding.ASCII.GetBytes(sKey);
+                des.Key = Encoding.ASCII.GetBytes(sKey);
+                des.IV = Encoding.ASCII.GetBytes(sKey);
                 System.IO.MemoryStream ms = new System.IO.MemoryStream();
                 using (CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write))
                 {
@@ -297,8 +297,8 @@ namespace InformationTransferLibrary
             byte[] inputByteArray = Convert.FromBase64String(pToDecrypt);
             using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
-                des.Key = ASCIIEncoding.ASCII.GetBytes(sKey);
-                des.IV = ASCIIEncoding.ASCII.GetBytes(sKey);
+                des.Key = Encoding.ASCII.GetBytes(sKey);
+                des.IV = Encoding.ASCII.GetBytes(sKey);
                 System.IO.MemoryStream ms = new System.IO.MemoryStream();
                 using (CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write))
                 {
@@ -371,7 +371,7 @@ namespace InformationTransferLibrary
             if (string.IsNullOrWhiteSpace(header))
                 str = "";
             str = str.Trim(new char[] { '\0' });
-            return ComposeResponseBytes(Encoding.ASCII.GetBytes(header), Encoding.ASCII.GetBytes(str));
+            return ComposeResponseBytes(Encoding.UTF8.GetBytes(header), Encoding.UTF8.GetBytes(str));
         }
 
         public static byte[] ComposeResponseBytes(string header, byte[] ba)
@@ -379,20 +379,20 @@ namespace InformationTransferLibrary
             if (string.IsNullOrWhiteSpace(header))
                 header = "";
             header = header.Trim();
-            return ComposeResponseBytes(Encoding.ASCII.GetBytes(header), ba);
+            return ComposeResponseBytes(Encoding.UTF8.GetBytes(header), ba);
         }
 
-        public static int GetValidByteLength(byte[] ba)
-        {
-            if (ba == null)
-                return 0;
-            for (int i = 0; i < ba.Length; i++)
-            {
-                if (ba[i] == '\0')
-                    return i;
-            }
-            return ba.Length;
-        }
+        //public static int GetValidByteLength(byte[] ba)
+        //{
+        //    if (ba == null)
+        //        return 0;
+        //    for (int i = 0; i < ba.Length; i++)
+        //    {
+        //        if (ba[i] == '\0')
+        //            return i;
+        //    }
+        //    return ba.Length;
+        //}
 
         public static byte[] ComposeResponseBytes(byte[] bah, byte[] ba)
         {
@@ -400,7 +400,7 @@ namespace InformationTransferLibrary
                 bah = new byte[] { };
             if (ba == null)
                 ba = new byte[] { };
-            int len = GetValidByteLength(bah) + GetValidByteLength(ba);
+            int len = bah.Length + ba.Length;// GetValidByteLength(bah) + GetValidByteLength(ba);
             byte[] br = new byte[len];
             for (int i = 0; i < bah.Length; i++)
             {
@@ -534,7 +534,7 @@ namespace InformationTransferLibrary
         /// <returns>data with exactly received data length</returns>
         public static byte[] DoSendReceive(Socket soc, string cmd, bool doRec = true)
         {
-            soc.Send(Encoding.ASCII.GetBytes(cmd));
+            soc.Send(Encoding.UTF8.GetBytes(cmd));
             if (doRec == false)
                 return null;
             byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH];
@@ -628,7 +628,7 @@ namespace InformationTransferLibrary
             {
                 bh[i] = bytes[i];
             }
-            string header = Encoding.ASCII.GetString(bh, 0, Consts.PROTOCOL_HEADER_LENGTH);
+            string header = Encoding.UTF8.GetString(bh, 0, Consts.PROTOCOL_HEADER_LENGTH);
             string content = "";
             string contentTrim = "";
             if (len > Consts.PROTOCOL_HEADER_LENGTH)
@@ -637,7 +637,7 @@ namespace InformationTransferLibrary
                 {
                     bc[i] = bytes[i + Consts.PROTOCOL_HEADER_LENGTH];
                 }
-                content = Encoding.ASCII.GetString(bc, 0, len - Consts.PROTOCOL_HEADER_LENGTH);
+                content = Encoding.UTF8.GetString(bc, 0, len - Consts.PROTOCOL_HEADER_LENGTH);
                 contentTrim = content.Trim(new char[] { '\0' });
             }
             return new Tuple<string, byte[], string, string>(header, bc, content, contentTrim);
@@ -1847,7 +1847,7 @@ namespace InformationTransferLibrary
         {
             if (s == null || s.Length <= 0)
                 return;
-            ReqQueue.Enqueue(Encoding.ASCII.GetBytes(s));
+            ReqQueue.Enqueue(Encoding.UTF8.GetBytes(s));
         }
 
         private void DTUSendService()
@@ -2030,7 +2030,7 @@ namespace InformationTransferLibrary
                 _receivedBytes = value;
                 if (_receivedBytes != null)
                 {
-                    ReceivedBytesString = ASCIIEncoding.ASCII.GetString(_receivedBytes);
+                    ReceivedBytesString = Encoding.UTF8.GetString(_receivedBytes);
                     StringBuilder sb = new StringBuilder();
                     foreach (byte b in _receivedBytes)
                     {

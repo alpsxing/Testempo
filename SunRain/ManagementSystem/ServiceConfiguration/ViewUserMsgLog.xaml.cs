@@ -137,7 +137,7 @@ namespace ServiceConfiguration
                     string sf = "";
                     while ((osize = st.Read(by, 0, (int)by.Length)) > 0 && _cts.Token.IsCancellationRequested == false)
                     {
-                        sf = sf + ASCIIEncoding.ASCII.GetString(by, 0, osize);
+                        sf = sf + Encoding.UTF8.GetString(by, 0, osize);
                         totalDownloadedByte = osize + totalDownloadedByte;
                         //Dispatcher.Invoke((ThreadStart)delegate()
                         //{

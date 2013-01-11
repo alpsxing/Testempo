@@ -464,7 +464,7 @@ namespace ManagementSystem
                     client.Connect(iep);
                     if (client.Connected)
                     {
-                        client.Send(Encoding.ASCII.GetBytes(Consts.TERM_TEST_CONN));
+                        client.Send(Encoding.UTF8.GetBytes(Consts.TERM_TEST_CONN));
                         byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH];
                         int length = client.Receive(bytes);
                         if (length < 1)
@@ -476,7 +476,7 @@ namespace ManagementSystem
                         }
                         else
                         {
-                            string resp = Encoding.ASCII.GetString(bytes, 0, length);
+                            string resp = Encoding.UTF8.GetString(bytes, 0, length);
                             resp = resp.Trim(new char[] { '\0' });
                             if (resp == Consts.TERM_TEST_CONN_OK)
                             {

@@ -141,7 +141,7 @@ namespace ManagementSystem
         //        {
         //            CurrentStatus = "Retrieving DTU...";
         //            byte[] bytes = DoSocketSendReceive(_currentSocket, Consts.MAN_GET_ALL_DTU);
-        //            string content = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+        //            string content = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
         //            Helper.FillDTUInfoOC(DTUInfoOc, content);
         //            if (DTUInfoOc.Count < 1)
         //                MessageBox.Show("No DTU is available.", "DTU Error", MessageBoxButton.OK, MessageBoxImage.Error);
