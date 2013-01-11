@@ -161,8 +161,8 @@ namespace InformationTransferLibrary
         public const int MIN_PORT_NUMBER = 1;
         public const int MAX_PORT_NUMBER = 65534;
 
-        public const int SOCKET_RECEIVING_BUFFER_LENGTH = 1024;
-        public const int SOCKET_RECEIVING_BUFFER_LENGTH_MAN = 1024 * 128;
+        public const int SOCKET_RECEIVING_BUFFER_LENGTH = 1024 * 128;
+        //public const int SOCKET_RECEIVING_BUFFER_LENGTH_MAN = 1024 * 128;
         public const int SOCKET_LISTEN_BACKLOG_COUNT = 100;
 
         public const int DTU_CFG_TIMEOUT = 15000; // ms

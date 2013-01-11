@@ -664,7 +664,7 @@ namespace SystemService
         {
             string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
             string data = null;
-            byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH_MAN];
+            byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH];
             int len = 0;
             try
             {

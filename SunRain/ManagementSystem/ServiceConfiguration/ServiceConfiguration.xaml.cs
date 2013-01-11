@@ -514,6 +514,7 @@ namespace ServiceConfiguration
                                 0,
                                 Consts.MAN_TASK_TIMER_INTERVAL);
 
+            byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH];
             try
             {
                 while (!_cts.Token.IsCancellationRequested)
@@ -579,7 +580,6 @@ namespace ServiceConfiguration
                                 break;
                         }
                         _manSocket.Send(Encoding.UTF8.GetBytes(req.Item1 + req.Item2));
-                        byte[] bytes = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH_MAN];
                         int length = _manSocket.Receive(bytes);
                         if (length < 1)
                         {
