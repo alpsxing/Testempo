@@ -1,10 +1,10 @@
 ﻿<Window x:Class="ServiceConfiguration.ViewUserMsgLogDetail"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="查看具体消息" Height="270" Width="300" Icon="/ServiceConfiguration;component/Resources/viewlog.ico"
+        Title="查看具体消息" Height="245" Width="360" Icon="/ServiceConfiguration;component/Resources/viewlog.ico"
         WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" >
     <DockPanel>
-        <DockPanel DockPanel.Dock="Bottom" Height="33">
+        <DockPanel DockPanel.Dock="Bottom" Height="30">
             <Button DockPanel.Dock="Right" Content="确认" Width="75" Margin="3" IsDefault="True" IsCancel="True"/>
             <Grid/>
         </DockPanel>

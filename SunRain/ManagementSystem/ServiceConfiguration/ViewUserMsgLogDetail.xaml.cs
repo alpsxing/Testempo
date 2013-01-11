@@ -98,6 +98,8 @@ namespace ServiceConfiguration
         {
             InitializeComponent();
 
+            DataContext = this;
+
             if (lfm != null)
             {
                 DTUID = lfm.DTUID;
