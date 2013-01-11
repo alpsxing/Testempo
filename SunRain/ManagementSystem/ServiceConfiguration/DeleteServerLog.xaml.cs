@@ -134,7 +134,13 @@ namespace ServiceConfiguration
         private void OK_Button_Click(object sender, RoutedEventArgs e)
         {
             DeleteUser = (IsDeleteUser == true) ? ((cboxUser.SelectedIndex == 0) ? "all" : _serverLogOc[cboxUser.SelectedIndex - 1]) : "";
-            DeleteDate = (IsDeleteDate == true) ? (dpDate.DisplayDate.Year.ToString() + "-" + dpDate.DisplayDate.Month.ToString() + "-" + dpDate.DisplayDate.Day.ToString()) : "";
+            if (dpDate.SelectedDate == null)
+                DeleteDate = (IsDeleteDate == true) ? (dpDate.DisplayDate.Year.ToString() + "-" + dpDate.DisplayDate.Month.ToString() + "-" + dpDate.DisplayDate.Day.ToString()) : "";
+            else
+            {
+                DateTime selDt = (DateTime)dpDate.SelectedDate;
+                DeleteDate = (IsDeleteDate == true) ? (selDt.Year.ToString() + "-" + selDt.Month.ToString() + "-" + selDt.Day.ToString()) : "";
+            }
 
             DialogResult = true;
         }

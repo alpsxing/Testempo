@@ -1525,10 +1525,15 @@ namespace ServiceConfiguration
                                 string.Compare(dsl.DeleteUser.Trim(), si.Item1.Trim(), true) == 0)
                             {
                                 DateTime dtf;
-                                if (DateTime.TryParse(si.Item2.Trim(), out dtf) == true)
+                                string[] sia = si.Item2.Trim().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                if (sia != null && sia.Length == 2)
                                 {
-                                    if (DateTime.Compare(dt, dtf) <= 0)
-                                        slfoc.Add(si);
+                                    string dtstr = Helper.ConvertDateTime(sia[0], Helper.DateTimeType.Date) + " " + Helper.ConvertDateTime(sia[1], Helper.DateTimeType.Time);
+                                    if (DateTime.TryParse(dtstr, out dtf) == true)
+                                    {
+                                        if (DateTime.Compare(dt, dtf) <= 0)
+                                            slfoc.Add(si);
+                                    }
                                 }
                             }
                         }
@@ -1542,10 +1547,15 @@ namespace ServiceConfiguration
                         foreach (Tuple<string, string, string> si in _serverLogOc)
                         {
                             DateTime dtf;
-                            if (DateTime.TryParse(si.Item2.Trim(), out dtf) == true)
+                            string[] sia = si.Item2.Trim().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                            if (sia != null && sia.Length == 2)
                             {
-                                if (DateTime.Compare(dt, dtf) <= 0)
-                                    slfoc.Add(si);
+                                string dtstr = Helper.ConvertDateTime(sia[0], Helper.DateTimeType.Date) + " " + Helper.ConvertDateTime(sia[1], Helper.DateTimeType.Time);
+                                if (DateTime.TryParse(dtstr, out dtf) == true)
+                                {
+                                    if (DateTime.Compare(dt, dtf) <= 0)
+                                        slfoc.Add(si);
+                                }
                             }
                         }
                     }
