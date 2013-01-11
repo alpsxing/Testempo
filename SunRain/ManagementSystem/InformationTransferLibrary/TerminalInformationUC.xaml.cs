@@ -246,7 +246,7 @@ namespace InformationTransferLibrary
                 {
                     ba[i] = args.MessageByte[i];
                 }
-                string resp = System.Text.Encoding.ASCII.GetString(ba, 0, len);
+                string resp = Encoding.ASCII.GetString(ba, 0, len);
                 if (resp.StartsWith(Consts.TERM_INVALID_REQUEST, StringComparison.CurrentCultureIgnoreCase) == true)
                 {
                     Run runDTUCmd = new Run("失去到DTU的连接");

@@ -654,7 +654,7 @@ namespace ServiceConfiguration
             Tuple<string, byte[], string, string> data = Helper.ExtractSocketResponse(bytes, len);
             if (data == null)
             {
-                AddLog("空的服务器响应 : " + System.Text.Encoding.ASCII.GetString(bytes, 0, len), state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
+                AddLog("空的服务器响应 : " + Encoding.ASCII.GetString(bytes, 0, len), state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                 return;
             }
 

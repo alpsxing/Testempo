@@ -371,7 +371,7 @@ namespace InformationTransferLibrary
             if (string.IsNullOrWhiteSpace(header))
                 str = "";
             str = str.Trim(new char[] { '\0' });
-            return ComposeResponseBytes(System.Text.Encoding.ASCII.GetBytes(header), System.Text.Encoding.ASCII.GetBytes(str));
+            return ComposeResponseBytes(Encoding.ASCII.GetBytes(header), Encoding.ASCII.GetBytes(str));
         }
 
         public static byte[] ComposeResponseBytes(string header, byte[] ba)
@@ -379,7 +379,7 @@ namespace InformationTransferLibrary
             if (string.IsNullOrWhiteSpace(header))
                 header = "";
             header = header.Trim();
-            return ComposeResponseBytes(System.Text.Encoding.ASCII.GetBytes(header), ba);
+            return ComposeResponseBytes(Encoding.ASCII.GetBytes(header), ba);
         }
 
         public static int GetValidByteLength(byte[] ba)
@@ -628,7 +628,7 @@ namespace InformationTransferLibrary
             {
                 bh[i] = bytes[i];
             }
-            string header = System.Text.Encoding.ASCII.GetString(bh, 0, Consts.PROTOCOL_HEADER_LENGTH);
+            string header = Encoding.ASCII.GetString(bh, 0, Consts.PROTOCOL_HEADER_LENGTH);
             string content = "";
             string contentTrim = "";
             if (len > Consts.PROTOCOL_HEADER_LENGTH)
@@ -637,7 +637,7 @@ namespace InformationTransferLibrary
                 {
                     bc[i] = bytes[i + Consts.PROTOCOL_HEADER_LENGTH];
                 }
-                content = System.Text.Encoding.ASCII.GetString(bc, 0, len - Consts.PROTOCOL_HEADER_LENGTH);
+                content = Encoding.ASCII.GetString(bc, 0, len - Consts.PROTOCOL_HEADER_LENGTH);
                 contentTrim = content.Trim(new char[] { '\0' });
             }
             return new Tuple<string, byte[], string, string>(header, bc, content, contentTrim);
@@ -1847,7 +1847,7 @@ namespace InformationTransferLibrary
         {
             if (s == null || s.Length <= 0)
                 return;
-            ReqQueue.Enqueue(System.Text.Encoding.ASCII.GetBytes(s));
+            ReqQueue.Enqueue(Encoding.ASCII.GetBytes(s));
         }
 
         private void DTUSendService()
@@ -2030,7 +2030,7 @@ namespace InformationTransferLibrary
                 _receivedBytes = value;
                 if (_receivedBytes != null)
                 {
-                    ReceivedBytesString = System.Text.ASCIIEncoding.ASCII.GetString(_receivedBytes);
+                    ReceivedBytesString = ASCIIEncoding.ASCII.GetString(_receivedBytes);
                     StringBuilder sb = new StringBuilder();
                     foreach (byte b in _receivedBytes)
                     {

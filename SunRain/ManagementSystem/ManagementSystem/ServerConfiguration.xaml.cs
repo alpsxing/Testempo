@@ -476,7 +476,7 @@ namespace ManagementSystem
                         }
                         else
                         {
-                            string resp = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
+                            string resp = Encoding.ASCII.GetString(bytes, 0, length);
                             resp = resp.Trim(new char[] { '\0' });
                             if (resp == Consts.TERM_TEST_CONN_OK)
                             {

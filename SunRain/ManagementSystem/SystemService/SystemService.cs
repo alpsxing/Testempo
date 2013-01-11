@@ -679,10 +679,10 @@ namespace SystemService
                     }
                     else
                     {
-                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, len);
+                        data = Encoding.ASCII.GetString(bytes, 0, len);
                         // Management response MUST NOT have unnecessary blank characters at the begin or the end.
                         string resp = ProcessManagementData(soc, bytes, len);//.Trim();
-                        soc.Send(System.Text.Encoding.ASCII.GetBytes(resp));
+                        soc.Send(Encoding.ASCII.GetBytes(resp));
                     }
                 }
             }
@@ -1548,7 +1548,7 @@ namespace SystemService
                                         if (_commMsgDict.ContainsKey(ui))
                                         {
                                             List<CommunicationMessage> cmList = _commMsgDict[ui];
-                                            string sar = System.Text.ASCIIEncoding.ASCII.GetString(badtu);
+                                            string sar = ASCIIEncoding.ASCII.GetString(badtu);
                                             sar = sar.Replace("\r", @"\r");
                                             sar = sar.Replace("\n", @"\n");
                                             sar = sar.Replace("\t", @"\t");
@@ -1678,7 +1678,7 @@ namespace SystemService
                     bar = Helper.ComposeResponseBytes(Consts.TERM_INVALID_REQUEST, ba);
                     break;
                 case Consts.MAN_UNCTRL_DTU:
-                    bar = System.Text.Encoding.ASCII.GetBytes(ReleaseDTU(data.Item3));
+                    bar = Encoding.ASCII.GetBytes(ReleaseDTU(data.Item3));
                     break;
                 case Consts.TERM_TEST_CONN:
                     bar = Helper.ComposeResponseBytes(Consts.TERM_TEST_CONN_OK, "");
@@ -1690,19 +1690,19 @@ namespace SystemService
                     bar = Helper.ComposeResponseBytes(Consts.TERM_GET_ALL_DTU_OK, GetAllDTUInfo());
                     break;
                 case Consts.TERM_ADD_DTU:
-                    bar = System.Text.Encoding.ASCII.GetBytes(TermAddDtu(soc, data.Item3));
+                    bar = Encoding.ASCII.GetBytes(TermAddDtu(soc, data.Item3));
                     break;
                 case Consts.TERM_LOGIN:
-                    bar = System.Text.Encoding.ASCII.GetBytes(CheckLogin(soc, data.Item3, false));
+                    bar = Encoding.ASCII.GetBytes(CheckLogin(soc, data.Item3, false));
                     break;
                 case Consts.TERM_LOGOUT:
-                    bar = System.Text.Encoding.ASCII.GetBytes(CheckLogout(soc, data.Item3, false));
+                    bar = Encoding.ASCII.GetBytes(CheckLogout(soc, data.Item3, false));
                     break;
                 case Consts.TERM_INIT_USER:
-                    bar = System.Text.Encoding.ASCII.GetBytes(TermInitUser(soc, data.Item3));
+                    bar = Encoding.ASCII.GetBytes(TermInitUser(soc, data.Item3));
                     break;
                 case Consts.TERM_CHECK_DTU:
-                    bar = System.Text.Encoding.ASCII.GetBytes(TermCheckDtu(soc, data.Item3));
+                    bar = Encoding.ASCII.GetBytes(TermCheckDtu(soc, data.Item3));
                     break;
             }
             PutTermDTUResponse(soc, bar, bar.Length);
@@ -1714,7 +1714,7 @@ namespace SystemService
                 PutTermDTUResponse(s, new byte[] { }, 0);
             else
             {
-                byte[] ba = System.Text.Encoding.ASCII.GetBytes(str);
+                byte[] ba = Encoding.ASCII.GetBytes(str);
                 PutTermDTUResponse(s, ba, ba.Length);
             }
         }
@@ -1945,7 +1945,7 @@ namespace SystemService
                         {
                             #region Get DTU ID
 
-                            string dtuId = System.Text.ASCIIEncoding.ASCII.GetString(ba);
+                            string dtuId = ASCIIEncoding.ASCII.GetString(ba);
                             dtuId = dtuId.Trim(new char[] { '\r', '\n', '\0' }).Trim();
                             if (dtuId.Length < Consts.DTU_INFO_ITEM_COUNT)
                             {
@@ -2044,7 +2044,7 @@ namespace SystemService
                                             if (_commMsgDict.ContainsKey(ui))
                                             {
                                                 List<CommunicationMessage> cmList = _commMsgDict[ui];
-                                                string sar = System.Text.ASCIIEncoding.ASCII.GetString(bar);
+                                                string sar = ASCIIEncoding.ASCII.GetString(bar);
                                                 sar = sar.Replace("\r", @"\r");
                                                 sar = sar.Replace("\n", @"\n");
                                                 sar = sar.Replace("\t", @"\t");
