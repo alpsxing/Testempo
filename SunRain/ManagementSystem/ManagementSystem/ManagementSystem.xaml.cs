@@ -328,6 +328,20 @@ namespace ManagementSystem
             }
         }
 
+        private string _password = "";
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+            set
+            {
+                _password = value;
+                NotifyPropertyChanged("Password");
+            }
+        }
+
         private bool _view1DTUEnabled = false;
         public bool View1DTUEnabled
         {
@@ -372,7 +386,7 @@ namespace ManagementSystem
 
         #endregion
 
-        public MainWindow(Socket soc, string servIp, int servPort, string userName)
+        public MainWindow(Socket soc, string servIp, int servPort, string userName, string password)
 		{
 			InitializeComponent();
 
@@ -380,6 +394,7 @@ namespace ManagementSystem
 
             _mainSocket = soc;
             UserName = userName;
+            Password = password;
             ServerIP = servIp;
             ServerPort = servPort;
 
@@ -553,7 +568,7 @@ namespace ManagementSystem
                                 TerminalInformation curTi = null;
                                 foreach (TerminalInformation tii in TermInfoOc)
                                 {
-                                    if (string.Compare(tii.CurrentDTU.DtuId, _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId, true) == 0)
+                                    if (string.Compare(tii.OldDTUID, _dtuInfoOc[sdtu.DTUSelectedIndex].DtuId, true) == 0)
                                     {
                                         if (tii.State == TerminalInformation.TiState.Connected)
                                         {
@@ -634,7 +649,7 @@ namespace ManagementSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Socket错误 : " + ex.Message, "测试失败", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Socket错误 : " + ex.Message, "添加DTU失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(soc);
             }
         }
@@ -874,7 +889,7 @@ namespace ManagementSystem
             }
         }
 
-        private void TerminateAllTerminals(bool showDlg = true)
+        private void TerminateAllTerminals(bool showMsg = true)
         {
             Connected = false;
             _timerPulse.Change(Timeout.Infinite, Consts.TERM_TASK_TIMER_PULSE);
@@ -894,13 +909,8 @@ namespace ManagementSystem
                 }, null);
             }
             _cts.Cancel();
-            if (showDlg == true)
-            {
-                Dispatcher.Invoke((ThreadStart)delegate()
-                    {
-                        MessageBox.Show(this, "失去与服务器的连接，请重启程序。", "连接错误", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }, null);
-            }
+            if (showMsg == true)
+                AddLog("失去与服务器的连接", "", LogMessage.State.Error, LogMessage.Flow.None);
             Helper.SafeCloseSocket(_mainSocket);
         }
 
@@ -1308,39 +1318,97 @@ namespace ManagementSystem
 
         #endregion
 
-        //private void Reconnect_MenuItem_Click(object sender, RoutedEventArgs e)
-        //{
-        //    IPAddress server = null;
-        //    IPEndPoint iep = null;
-        //    try
-        //    {
-        //        _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        //        server = IPAddress.Parse(ServerIP);
-        //        iep = new IPEndPoint(server, ServerPort);
-        //        _mainSocket.SendTimeout = Consts.TERM_TIMEOUT;
-        //        _mainSocket.ReceiveTimeout = Consts.TERM_TIMEOUT;
-        //        _mainSocket.Connect(iep);
-        //        if (_mainSocket.Connected)
-        //        {
-        //            Task.Factory.StartNew(
-        //                () =>
-        //                {
-        //                    //ManTask(true);
-        //                }, _cts.Token);
-        //        }
-        //        else
-        //        {
-        //            Helper.SafeCloseSocket(_mainSocket);
-        //            _mainSocket = null;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("无法重新连接服务器 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        Helper.SafeCloseSocket(_mainSocket);
-        //        _mainSocket = null;
-        //    }
-        //}
+        private void Reconnect_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                IPAddress server = IPAddress.Parse(ServerIP);
+                IPEndPoint iep = new IPEndPoint(server, ServerPort);
+                _mainSocket.SendTimeout = Consts.TERM_TIMEOUT;
+                _mainSocket.ReceiveTimeout = Consts.TERM_TIMEOUT;
+                _mainSocket.Connect(iep);
+                if (_mainSocket.Connected)
+                {
+                    byte[] ba = Helper.DoSendReceive(_mainSocket, Consts.TERM_LOGIN + UserName + "\t" + Password);
+                    Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(ba, ba.Length);
+                    if (resp == null)
+                    {
+                        MessageBox.Show("登录失败 : 空的服务器响应.", "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                        TerminateAllTerminals();
+                    }
+                    else
+                    {
+                        switch (resp.Item1)
+                        {
+                            default:
+                                MessageBox.Show("登录失败 : 未知的服务器响应 - " + resp.Item1 + resp.Item3, "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                                TerminateAllTerminals();
+                                break;
+                            case Consts.TERM_LOGIN_OK:
+                                try
+                                {
+                                    ba = Helper.DoSendReceive(_mainSocket, Consts.TERM_INIT_USER + UserName);
+                                    resp = Helper.ExtractSocketResponse(ba, ba.Length);
+                                    if (resp == null)
+                                    {
+                                        MessageBox.Show("登录初始化用户失败 : 空的服务器响应.", "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        TerminateAllTerminals();
+                                    }
+                                    else
+                                    {
+                                        if (resp.Item1 != Consts.TERM_INIT_USER_OK)
+                                        {
+                                            MessageBox.Show("登录初始化用户失败 : 错误的服务器响应 - " + resp.Item1 + resp.Item3, "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                                            TerminateAllTerminals();
+                                        }
+                                        else
+                                        {
+                                            #region Reconnect OK
+
+                                            _timerPulse = new Timer(new TimerCallback(PulseTimerCallBackHandler), null, Consts.TERM_TASK_TIMER_PULSE, Consts.TERM_TASK_TIMER_PULSE);
+                                            _timerDTU = new Timer(new TimerCallback(DtuTimerCallBackHandler), null, Consts.TERM_TASK_TIMER_DTU, Consts.TERM_TASK_TIMER_DTU);
+                                            _cts = new CancellationTokenSource();
+                                            _logTask = Task.Factory.StartNew(
+                                                () =>
+                                                {
+                                                    DisplayLog();
+                                                }, _cts.Token
+                                            );
+
+                                            AddLog("重新登录成功", state: LogMessage.State.OK);
+
+                                            Connected = true;
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("无法获得初始化使用者响应 : " + ex.Message, "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    TerminateAllTerminals();
+                                }
+                                break;
+                            case Consts.TERM_LOGIN_ERR:
+                                MessageBox.Show("登录失败 : " + resp.Item3, "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                                TerminateAllTerminals();
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("登录失败 : 服务器连接错误", "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                    TerminateAllTerminals(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("登录失败 : " + ex.Message, "重新连接", MessageBoxButton.OK, MessageBoxImage.Error);
+                TerminateAllTerminals(true);
+            }
+        }
 
         private void View1DTU_MenuItem_Click(object sender, RoutedEventArgs e)
         {

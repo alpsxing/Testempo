@@ -386,7 +386,7 @@ namespace ManagementSystem
                                 logged = true;
                                 permission = resp.Item3;
                                 Visibility = System.Windows.Visibility.Collapsed;
-                                MainWindow mw = new MainWindow(soc, ServerIP, ServerPort, UserName);
+                                MainWindow mw = new MainWindow(soc, ServerIP, ServerPort, UserName, Password);
                                 mw.ShowDialog();
                                 break;
                             case Consts.TERM_LOGIN_ERR:

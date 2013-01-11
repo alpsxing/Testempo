@@ -47,13 +47,13 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="配置" IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
-                <!--MenuItem Header="重新连接" Click="Reconnect_MenuItem_Click"
+                <MenuItem Header="重新连接" Click="Reconnect_MenuItem_Click"
                           IsEnabled="{Binding Path=NotConnected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
                         <Image Source="resources/refreshterminal.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <Separator/-->
+                <Separator/>
                 <MenuItem Header="服务器配置" Click="ServerConfig_MenuItem_Click">
                     <MenuItem.Icon>
                         <Image Source="resources/remoteconfig.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -126,14 +126,14 @@
                     <Image Margin="-3" Source="resources/disconnectserver.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button-->
-            <!--Button Click="Reconnect_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+            <Button Click="Reconnect_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     IsEnabled="{Binding Path=NotConnected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                     ToolTip="重新连接">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/refreshterminal.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
-            <Separator/-->
+            <Separator/>
             <Button Click="ServerConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     ToolTip="服务器配置">
                 <Button.Content>

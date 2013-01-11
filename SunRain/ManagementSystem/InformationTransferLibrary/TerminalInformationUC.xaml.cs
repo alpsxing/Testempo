@@ -146,8 +146,11 @@ namespace InformationTransferLibrary
         {
             if (e.Key == Key.Return)
             {
-                ProcessDTUCommand(DTUCommand);
-                DTUCommand = "";
+                if (TI != null && TI.State == TerminalInformation.TiState.Connected)
+                {
+                    ProcessDTUCommand(DTUCommand);
+                    DTUCommand = "";
+                }
             }
         }
 
@@ -164,8 +167,11 @@ namespace InformationTransferLibrary
         {
             rtxtTerminal.AppendText("\n");
 
-            ProcessDTUCommand(DTUCommand);
-            DTUCommand = "";
+            if (TI != null && TI.State == TerminalInformation.TiState.Connected)
+            {
+                ProcessDTUCommand(DTUCommand);
+                DTUCommand = "";
+            }
         }
 
         private void TermInfoUCControl_Load(object sender, RoutedEventArgs e)
@@ -193,7 +199,7 @@ namespace InformationTransferLibrary
                     _noInfo = false;
                     fdTerminal.Blocks.Clear();
                 }
-                Run runNewLine = new Run(TI.CurrentDTU.DtuId + " => ");
+                Run runNewLine = new Run(TI.OldDTUID + " => ");
                 runNewLine.Foreground = Brushes.Blue;
               
                 Run runDTUCmd = new Run(s);
