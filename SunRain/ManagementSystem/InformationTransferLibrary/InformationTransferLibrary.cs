@@ -168,7 +168,7 @@ namespace InformationTransferLibrary
         public const int DTU_CFG_TIMEOUT = 15000; // ms
         public const int MAN_TIMEOUT = 30000; // ms
         public const int TERM_TIMEOUT = 30000; // ms
-        public const int DTU_TIMEOUT = 90000; // ms
+        public const int DTU_TIMEOUT = 60000; // ms
 
         public const int WAIT_DTU_ID_COUNT_MAX = 10;
 

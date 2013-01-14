@@ -359,7 +359,6 @@ namespace ManagementSystem
                 iep = new IPEndPoint(server, ServerPort);
                 soc.SendTimeout = Consts.TERM_TIMEOUT;
                 soc.ReceiveTimeout = Consts.TERM_TIMEOUT;
-                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 soc.Connect(iep);
                 if (soc.Connected)
                 {

@@ -491,7 +491,6 @@ namespace ServiceConfiguration
                 iep = new IPEndPoint(server, ServerPort);
                 s.SendTimeout = Consts.MAN_TIMEOUT;
                 s.ReceiveTimeout = Consts.MAN_TIMEOUT;
-                s.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 s.Connect(iep);
                 if(s.Connected)
                 {

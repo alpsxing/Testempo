@@ -636,7 +636,6 @@ namespace SystemService
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _manTimeout;
                 soc.SendTimeout = _manTimeout;
-                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
                 eventLogInformationTransfer.WriteEntry("获得一个管理终端连接" + ip);
 
@@ -1435,7 +1434,6 @@ namespace SystemService
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout =  _termTimeout;
                 soc.SendTimeout = _termTimeout;
-                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
                 eventLogInformationTransfer.WriteEntry("获得一个终端请求" + ip);
 
@@ -1762,7 +1760,7 @@ namespace SystemService
                 if (_terminalDTUMap.ContainsKey(soc) == false)
                     _terminalDTUMap.Add(soc, di.DTUSocket);
 
-                soc.SendTimeout = -1;
+                //soc.SendTimeout = -1;
                 soc.ReceiveTimeout = -1;
 
                 eventLogInformationTransfer.WriteEntry("DTU(" + dtuId + ")现在被用户(" + un + ")控制.");
@@ -1839,7 +1837,6 @@ namespace SystemService
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _dtuTimeout;
                 soc.SendTimeout = _dtuTimeout;
-                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
                 eventLogInformationTransfer.WriteEntry("接受来自" + ip+ "的DTU.");
 
@@ -1986,12 +1983,15 @@ namespace SystemService
                                     }
                                     else
                                     {
+                                        if (dtu.DTUSocket != null)
+                                            TerminateDTUSocket(dtu.DTUSocket);
+
                                         dtu.Online = true;
                                         dtu.DTUSocket = soc;
                                         getDTUId = false;
                                         _dtuTaskList[soc].CurrentDTU = dtu;
 
-                                        soc.SendTimeout = -1;
+                                        //soc.SendTimeout = -1;
                                         soc.ReceiveTimeout = -1;
                                     }
                                 }
