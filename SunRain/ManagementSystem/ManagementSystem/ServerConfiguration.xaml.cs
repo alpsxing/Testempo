@@ -461,6 +461,7 @@ namespace ManagementSystem
                     IPEndPoint iep = new IPEndPoint(ipad, ServerPort);
                     client.SendTimeout = Consts.TERM_TIMEOUT;
                     client.ReceiveTimeout = Consts.TERM_TIMEOUT;
+                    client.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                     client.Connect(iep);
                     if (client.Connected)
                     {

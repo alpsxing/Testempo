@@ -538,6 +538,7 @@ namespace ManagementSystem
                 IPEndPoint iep = new IPEndPoint(local, ServerPort);
                 soc.SendTimeout = Consts.TERM_TIMEOUT;
                 soc.ReceiveTimeout = Consts.TERM_TIMEOUT;
+                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 soc.Connect(iep);
                 if (soc.Connected)
                 {
@@ -1327,6 +1328,7 @@ namespace ManagementSystem
                 IPEndPoint iep = new IPEndPoint(server, ServerPort);
                 _mainSocket.SendTimeout = Consts.TERM_TIMEOUT;
                 _mainSocket.ReceiveTimeout = Consts.TERM_TIMEOUT;
+                _mainSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 _mainSocket.Connect(iep);
                 if (_mainSocket.Connected)
                 {

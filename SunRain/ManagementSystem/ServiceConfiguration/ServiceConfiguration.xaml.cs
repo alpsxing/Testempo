@@ -1325,6 +1325,7 @@ namespace ServiceConfiguration
                 iep = new IPEndPoint(server, ServerPort);
                 _manSocket.SendTimeout = Consts.MAN_TIMEOUT;
                 _manSocket.ReceiveTimeout = Consts.MAN_TIMEOUT;
+                _manSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 _manSocket.Connect(iep);
                 if (_manSocket.Connected)
                 {

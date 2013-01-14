@@ -636,6 +636,7 @@ namespace SystemService
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _manTimeout;
                 soc.SendTimeout = _manTimeout;
+                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
                 eventLogInformationTransfer.WriteEntry("获得一个管理终端连接" + ip);
 
@@ -1434,6 +1435,7 @@ namespace SystemService
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout =  _termTimeout;
                 soc.SendTimeout = _termTimeout;
+                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
                 eventLogInformationTransfer.WriteEntry("获得一个终端请求" + ip);
 
@@ -1837,6 +1839,7 @@ namespace SystemService
                 Socket soc = server.Accept();
                 soc.ReceiveTimeout = _dtuTimeout;
                 soc.SendTimeout = _dtuTimeout;
+                soc.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, true);
                 string ip = ((IPEndPoint)soc.RemoteEndPoint).Address.ToString();
                 eventLogInformationTransfer.WriteEntry("接受来自" + ip+ "的DTU.");
 
