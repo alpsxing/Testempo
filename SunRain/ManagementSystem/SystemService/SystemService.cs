@@ -1806,10 +1806,28 @@ namespace SystemService
             string sret = "";
             lock (_taskLock)
             {
+                UserInfo ui = Helper.FindUserInfo(soc, _userInfoOc);
+                if (ui == null)
+                    return Consts.TERM_CHECK_DTU_ERR + "无法查询到当前用户";
+
                 foreach (string sai in sa)
                 {
                     DTUInfo di = Helper.FindDTUInfo(sai.Trim(), _dtuInfoOc);
                     if (di == null || di.Online == false)
+                        continue;
+                    bool diffSocket = false;
+                    foreach(DTUInfo dii in ui.UserDTUs)
+                    {
+                        if (string.Compare(dii.DtuId.Trim(), di.DtuId.Trim(), true) == 0)
+                        {
+                            if (dii.DTUSocket != di.DTUSocket)
+                            {
+                                diffSocket = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (diffSocket == true)
                         continue;
                     if (string.IsNullOrWhiteSpace(sret) == true)
                         sret = sai;
