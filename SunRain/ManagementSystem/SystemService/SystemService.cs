@@ -1240,8 +1240,6 @@ namespace SystemService
                 if (ui == null)
                     return headerErr + "无效用户名.";
 
-                ui.Online = false;
-
                 if (isMan == false)
                 {
                     foreach (TerminalDTUTaskInformation tdti in ui.UserTermSockets)
@@ -1267,10 +1265,12 @@ namespace SystemService
                 }
                 ui.UserDTUs.Clear();
 
-                Debug.Assert(ui.UserSocket == soc);
+                //Debug.Assert(ui.UserSocket == soc);
 
                 Helper.SafeCloseSocket(soc);
                 ui.UserSocket = null;
+
+                ui.Online = false;
             }
 
             return headerOk;
@@ -1392,7 +1392,7 @@ namespace SystemService
                 if (ui != null)
                 {
                     if (string.Compare("admin", sa[0].Trim(), true) != 0)
-                        Debug.Assert(string.Compare(ui.UserName, sa[0].Trim(), true) == 0);
+                        return Consts.MAN_UNCTRL_DTU_ERR + "只有admin可以进行释放DTU的操作";// Debug.Assert(string.Compare(ui.UserName, sa[0].Trim(), true) == 0);
                     if (ui.UserDTUs.Contains(di) == true)
                         ui.UserDTUs.Remove(di);
                 }

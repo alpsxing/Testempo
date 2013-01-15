@@ -382,6 +382,7 @@ namespace ManagementSystem
                                 Helper.SafeCloseSocket(soc);
                                 break;
                             case Consts.TERM_LOGIN_OK:
+                                SaveConfig();
                                 //Helper.SafeCloseSocket(soc);
                                 logged = true;
                                 permission = resp.Item3;
