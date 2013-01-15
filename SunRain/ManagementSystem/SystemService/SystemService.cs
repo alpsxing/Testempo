@@ -23,6 +23,8 @@ namespace SystemService
 {
     public partial class SystemService : ServiceBase
     {
+        public const string VERSION_STRING = "0.1";
+
         private ObservableCollection<UserInfo> _userInfoOc = new ObservableCollection<UserInfo>();
         private ObservableCollection<DTUInfo> _dtuInfoOc = new ObservableCollection<DTUInfo>();
 
@@ -720,8 +722,8 @@ namespace SystemService
             {
                 default:
                     return Consts.MAN_INVALID_REQUEST + data;
-                case Consts.MAN_TEST_CONN:
-                    return Consts.MAN_TEST_CONN_OK;
+                //case Consts.MAN_TEST_CONN:
+                //    return Consts.MAN_TEST_CONN_OK;
                 case Consts.MAN_GET_ALL_DTU:
                     return GetAllDTU();
                 case Consts.MAN_ADD_DTU:
@@ -1210,6 +1212,14 @@ namespace SystemService
                 {
                     if (ui.Permission != "0" && ui.Permission != "1")
                         return headerErr + "普通用户不允许登录服务管理系统.";
+                    if (ui.Permission == "0")
+                    {
+                        IPAddress ipadMan = ((IPEndPoint)soc.RemoteEndPoint).Address;
+                        string manHost = Dns.GetHostEntry(ipadMan).HostName.Trim().ToUpper();
+                        string localHost = Dns.GetHostName().Trim().ToUpper();
+                        if (manHost.StartsWith(localHost) == false && localHost.StartsWith(manHost) == false)
+                            return headerErr + "超级用户只允许从本地登录DTU管理系统.";
+                    }
                 }
                 else
                 {
@@ -1684,7 +1694,7 @@ namespace SystemService
                     bar = Helper.ComposeResponseBytes(Consts.TERM_TEST_CONN_OK, "");
                     break;
                 case Consts.TERM_PULSE_REQ:
-                    bar = Helper.ComposeResponseBytes(Consts.TERM_PULSE_REQ_OK, "");
+                    bar = Helper.ComposeResponseBytes(Consts.TERM_PULSE_REQ_OK, VERSION_STRING);
                     break;
                 case Consts.TERM_GET_ALL_DTU:
                     bar = Helper.ComposeResponseBytes(Consts.TERM_GET_ALL_DTU_OK, GetAllDTUInfo());

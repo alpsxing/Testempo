@@ -712,7 +712,7 @@ namespace ManagementSystem
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            About ab = new About("DTU管理系统", "版权@2012");
+            About ab = new About("DTU管理系统", "版权@2012", Consts.VERSION_STRING);
             ab.ShowDialog();
         }
 
@@ -876,7 +876,20 @@ namespace ManagementSystem
                             TerminateAllTerminals();
                         }
                         else
-                            AddLog("脉搏成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                        {
+                            string ver = "";
+                            try
+                            {
+                                string[] sa = Consts.VERSION_STRING.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                if (sa != null && sa.Length == 2)
+                                    ver = sa[1].Trim();
+                            }
+                            catch (Exception) { }
+                            if(string.Compare(ver.Trim(), resp.Item4.Trim(), true) == 0)
+                                AddLog("脉搏成功.", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                            else
+                                AddLog("脉搏成功(" + resp.Item4 + ").", "", LogMessage.State.Infomation, LogMessage.Flow.Response);
+                        }
                     }
                 }
                 catch (Exception ex)

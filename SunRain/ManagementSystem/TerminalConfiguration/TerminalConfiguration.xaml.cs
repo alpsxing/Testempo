@@ -793,7 +793,7 @@ namespace TerminalConfiguration
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            About ab = new About("DTU配置", "Copyright @ 2012");
+            About ab = new About("DTU配置", "版权@2012", Consts.VERSION_STRING);
             ab.ShowDialog();
         }
 

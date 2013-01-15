@@ -461,7 +461,7 @@ namespace ServiceConfiguration
 
         private void About_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            About ab = new About("服务管理系统", "版权 @ 2012");
+            About ab = new About("服务管理系统", "版权@2012", Consts.VERSION_STRING);
             ab.ShowDialog();
         }
 

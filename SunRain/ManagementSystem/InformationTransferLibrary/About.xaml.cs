@@ -50,6 +50,20 @@ namespace InformationTransferLibrary
             }
         }
 
+        private string _version = "";
+        public string Label2Version
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+                NotifyPropertyChanged("Label2Version");
+            }
+        }
+
         private string _content2 = "";
         public string Label2Content
         {
@@ -64,14 +78,15 @@ namespace InformationTransferLibrary
             }
         }
 
-        public About(string content1 = "", string content2 = "")
+        public About(string content1 = "", string content2 = "", string version = "")
         {
             InitializeComponent();
 
             DataContext = this;
 
             Label1Content = content1;
-            Label2Content = content2;
+            Label2Version =version;
+            Label2Content =content2;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)

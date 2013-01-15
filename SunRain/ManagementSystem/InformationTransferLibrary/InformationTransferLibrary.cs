@@ -62,7 +62,7 @@ namespace InformationTransferLibrary
         public const string TERM_INIT_USER_ERR = "#030009";
         public const string TERM_CHECK_DTU_ERR = "#030010";
 
-        public const string MAN_TEST_CONN = "#040001";
+        //public const string MAN_TEST_CONN = "#040001";
         //public const string MAN_PULSE_REQ = "#040002";
         public const string MAN_GET_ALL_DTU = "#040003";
         public const string MAN_ADD_DTU = "#040004";
@@ -85,7 +85,7 @@ namespace InformationTransferLibrary
         public const string MAN_DEL_LOG_USER_DATE = "#040021";
         public const string MAN_GET_LOG_INFO = "#040022";
 
-        public const string MAN_TEST_CONN_OK = "#050001";
+        //public const string MAN_TEST_CONN_OK = "#050001";
         //public const string MAN_PULSE_REQ_OK = "#050002";
         public const string MAN_GET_ALL_DTU_OK = "#050003";
         public const string MAN_ADD_DTU_OK = "#050004";
@@ -220,6 +220,8 @@ namespace InformationTransferLibrary
         public const double MAX_DTU_MESSAGE_LOG_DATE = 30.0;
 
         //public const string DEFAULT_DIRECTORY = @"C:\COMWAY";
+
+        public const string VERSION_STRING = "版本号 0.1";
     }
 
     [ValueConversion(typeof(string), typeof(int))]
