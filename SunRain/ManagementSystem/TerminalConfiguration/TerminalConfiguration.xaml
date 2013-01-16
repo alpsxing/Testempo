@@ -45,7 +45,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="清楚日志" Click="ClearLog_MenuItem_Click">
+                <MenuItem Header="清除日志" Click="ClearLog_MenuItem_Click">
                     <MenuItem.Icon>
                         <Image Source="resources/clearlog.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>

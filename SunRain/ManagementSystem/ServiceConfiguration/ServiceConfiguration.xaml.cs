@@ -531,7 +531,7 @@ namespace ServiceConfiguration
                                 AddLog("请求 : 添加DTU", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_GET_ALL_DTU:
-                                AddLog("请求 : 获取所有DTU信息", flow: LogMessage.Flow.Request);
+                                //AddLog("请求 : 获取所有DTU信息", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_DELETE_DTU:
                                 AddLog("请求 : 删除DTU", flow: LogMessage.Flow.Request);
@@ -540,7 +540,7 @@ namespace ServiceConfiguration
                                 AddLog("请求 : 修改DTU信息", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_GET_ALL_USER:
-                                AddLog("请求 : 获取所有用户信息", flow: LogMessage.Flow.Request);
+                                //AddLog("请求 : 获取所有用户信息", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_ADD_USER:
                                 AddLog("请求 : 添加用户", flow: LogMessage.Flow.Request);
@@ -567,7 +567,7 @@ namespace ServiceConfiguration
                                 AddLog("请求 : 释放DTU控制", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_GET_LOG_INFO:
-                                AddLog("请求 : 获取所有服务器日志用户", flow: LogMessage.Flow.Request);
+                                //AddLog("请求 : 获取所有服务器日志用户", flow: LogMessage.Flow.Request);
                                 break;
                             case Consts.MAN_DEL_LOG_USER:
                                 AddLog("请求 : 删除用户服务器日志", flow: LogMessage.Flow.Request);
@@ -692,11 +692,11 @@ namespace ServiceConfiguration
                     AddLog("无效的请求 : " + data.Item1 + data.Item3, state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_GET_ALL_USER_OK:
-                    AddLog("成功获得所有用户信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    //AddLog("成功获得所有用户信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     ProcessAllUser(data.Item3);
                     break;
                 case Consts.MAN_GET_ALL_DTU_OK:
-                    AddLog("成功获得所有DTU信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    //AddLog("成功获得所有DTU信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     ProcessAllDTU(data.Item3);
                     break;
                 case Consts.MAN_GET_ALL_USER_ERR:
@@ -774,7 +774,7 @@ namespace ServiceConfiguration
                     AddLog("登录失败 : " + data.Item3, state: LogMessage.State.Fail, flow: LogMessage.Flow.Response);
                     break;
                 case Consts.MAN_GET_LOG_INFO_OK:
-                    AddLog("成功获得所有服务器日志用户信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
+                    //AddLog("成功获得所有服务器日志用户信息.", state: LogMessage.State.OK, flow: LogMessage.Flow.Response);
                     lock (_serverLogLock)
                     {
                         _serverLogOc.Clear();
@@ -1356,58 +1356,62 @@ namespace ServiceConfiguration
         private void ClearLog_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (_logOc.Count > 0 && MessageBox.Show("需要保存日志吗?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
                 SaveLog();
+                lock (_logLock)
+                {
+                    _logDispOc.Clear();
+                }
+            }
             else
-                SaveLog(false);
+            {
+                lock (_logLock)
+                {
+                    _logOc.Clear();
+                    _logDispOc.Clear();
+                }
+            }
         }
 
         /// <summary>
         /// Auto Clear
         /// </summary>
-        private void SaveLog(bool doSave = true)
+        private void SaveLog()
         {
             lock (_logLock)
             {
-                if (doSave == true)
+                try
                 {
-                    try
+                    DateTime dt = DateTime.Now;
+                    string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
+                        + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
+                         + "." + dt.Millisecond.ToString();
+                    string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+                    StreamWriter sw = new StreamWriter(folder + @"\COMWAY\ServiceConfiguration\log\" + sdt + ".log");
+                    StringBuilder sb = new StringBuilder();
+                    foreach (LogMessage lm in _logOc)
                     {
-                        DateTime dt = DateTime.Now;
-                        string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
-                            + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
-                             + "." + dt.Millisecond.ToString();
-                        string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
-                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\ServiceConfiguration\log\" + sdt + ".log");
-                        StringBuilder sb = new StringBuilder();
-                        foreach (LogMessage lm in _logOc)
-                        {
-                            sb.Append(lm.IndexString
-                                + "\t" + lm.MsgDateTime
-                                + "\t" + lm.FlowType.ToString()
-                                + "\t" + lm.StateType.ToString()
-                                + "\t" + (string.IsNullOrWhiteSpace(lm.IPAddr) ? "(NA)" : lm.IPAddr)
-                                + "\t" + lm.Message + "\n");
-                        }
-                        sw.Write(sb.ToString());
-                        sw.Flush();
-                        sw.Close();
-                        sw.Dispose();
-
-                        _logOc.Clear();
-                        //_logDispOc.Clear();
+                        sb.Append(lm.IndexString
+                            + "\t" + lm.MsgDateTime
+                            + "\t" + lm.FlowType.ToString()
+                            + "\t" + lm.StateType.ToString()
+                            + "\t" + (string.IsNullOrWhiteSpace(lm.IPAddr) ? "(NA)" : lm.IPAddr)
+                            + "\t" + lm.Message + "\n");
                     }
-                    catch (Exception ex)
-                    {
-                        _logOc.Clear();
-                        //_logDispOc.Clear();
+                    sw.Write(sb.ToString());
+                    sw.Flush();
+                    sw.Close();
+                    sw.Dispose();
 
-                        AddLog("保存日志出现错误 : " + ex.Message, "", state: LogMessage.State.Error);
-                    }
+                    _logOc.Clear();
+
+                    MessageBox.Show("日志已成功保存", "保存日志", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                else
+                catch (Exception ex)
                 {
                     _logOc.Clear();
-                    _logDispOc.Clear();
+
+                    AddLog("保存日志出现错误 : " + ex.Message, "", state: LogMessage.State.Error);
                 }
             }
         }

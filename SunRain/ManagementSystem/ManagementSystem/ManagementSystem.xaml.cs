@@ -933,9 +933,21 @@ namespace ManagementSystem
         private void ClearLog_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (LogMsgOc.Count > 0 && MessageBox.Show("是否需要保存日志?", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
                 SaveLog();
+                lock (_logLock)
+                {
+                    LogMsgDispOc.Clear();
+                }
+            }
             else
-                SaveLog(false);                
+            {
+                lock (_logLock)
+                {
+                    LogMsgOc.Clear();
+                    LogMsgDispOc.Clear();
+                }
+            }
         }
 
         #endregion
@@ -1170,50 +1182,42 @@ namespace ManagementSystem
         /// <summary>
         /// Auto Clear
         /// </summary>
-        private void SaveLog(bool doSave = true)
+        private void SaveLog()
         {
             lock (_logLock)
             {
-                if (doSave == true)
+                try
                 {
-                    try
+                    DateTime dt = DateTime.Now;
+                    string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
+                        + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
+                         + "." + dt.Millisecond.ToString();
+                    string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+                    StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\log\" + sdt + ".log");
+                    StringBuilder sb = new StringBuilder();
+                    foreach (LogMessage lm in LogMsgOc)
                     {
-                        DateTime dt = DateTime.Now;
-                        string sdt = dt.Year.ToString() + "_" + dt.Month.ToString() + "_" + dt.Day.ToString()
-                            + "." + dt.Hour.ToString() + "_" + dt.Minute.ToString() + "_" + dt.Second.ToString()
-                             + "." + dt.Millisecond.ToString();
-                        string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
-                        StreamWriter sw = new StreamWriter(folder + @"\COMWAY\DTUManagement\log\" + sdt + ".log");
-                        StringBuilder sb = new StringBuilder();
-                        foreach(LogMessage lm in LogMsgOc)
-                        {
-                            sb.Append(lm.IndexString
-                                + "\t" + lm.MsgDateTime
-                                + "\t" + lm.FlowType.ToString()
-                                + "\t" + lm.StateType.ToString()
-                                + "\t" + (string.IsNullOrWhiteSpace(lm.IPAddr)? "(NA)" : lm.IPAddr)
-                                + "\t" + lm.Message + "\n");
-                        }
-                        sw.Write(sb.ToString());
-                        sw.Flush();
-                        sw.Close();
-                        sw.Dispose();
-
-                        LogMsgOc.Clear();
-                        //LogMsgDispOc.Clear();
+                        sb.Append(lm.IndexString
+                            + "\t" + lm.MsgDateTime
+                            + "\t" + lm.FlowType.ToString()
+                            + "\t" + lm.StateType.ToString()
+                            + "\t" + (string.IsNullOrWhiteSpace(lm.IPAddr) ? "(NA)" : lm.IPAddr)
+                            + "\t" + lm.Message + "\n");
                     }
-                    catch (Exception ex)
-                    {
-                        LogMsgOc.Clear();
-                        //LogMsgDispOc.Clear();
+                    sw.Write(sb.ToString());
+                    sw.Flush();
+                    sw.Close();
+                    sw.Dispose();
 
-                        AddLog("保存日志失败 : " + ex.Message, "", state: LogMessage.State.Error);
-                    }
+                    LogMsgOc.Clear();
+
+                    MessageBox.Show("日志已成功保存", "保存日志", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                else
+                catch (Exception ex)
                 {
                     LogMsgOc.Clear();
-                    LogMsgDispOc.Clear();
+
+                    AddLog("保存日志失败 : " + ex.Message, "", state: LogMessage.State.Error);
                 }
             }
         }

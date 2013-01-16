@@ -54,11 +54,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="服务器配置" Click="ServerConfig_MenuItem_Click">
+                <!--MenuItem Header="服务器配置" Click="ServerConfig_MenuItem_Click">
                     <MenuItem.Icon>
                         <Image Source="resources/remoteconfig.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
-                </MenuItem>
+                </MenuItem-->
                 <MenuItem Header="本地配置" Click="LocalConfig_MenuItem_Click">
                     <MenuItem.Icon>
                         <Image Source="resources/localconfig.ico" Height="15" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -134,12 +134,12 @@
                 </Button.Content>
             </Button>
             <Separator/>
-            <Button Click="ServerConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
+            <!--Button Click="ServerConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     ToolTip="服务器配置">
                 <Button.Content>
                     <Image Margin="-3" Source="resources/remoteconfig.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
-            </Button>
+            </Button-->
             <Button Click="LocalConfig_MenuItem_Click" BorderBrush="DarkGray" Margin="1"
                     ToolTip="本地配置">
                 <Button.Content>

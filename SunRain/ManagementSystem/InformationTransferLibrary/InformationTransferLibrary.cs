@@ -192,7 +192,7 @@ namespace InformationTransferLibrary
 
         public const int MAX_LOG_DISPLAY_COUNT = 1000;
         public const int MIN_MAX_LOG_DISPLAY_COUNT = 100;
-        public const int MAX_LOG_COUNT = 10000;
+        public const int MAX_LOG_COUNT = 3000;
         public const int MIN_MAX_LOG_COUNT = 1000;
 
         public const int PROTOCOL_HEADER_LENGTH = 7;
