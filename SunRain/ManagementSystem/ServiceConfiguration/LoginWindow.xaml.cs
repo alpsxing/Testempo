@@ -538,10 +538,10 @@ namespace ServiceConfiguration
                 s.Close();
                 s.Dispose();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if(logged == false)
-                    MessageBox.Show("登录失败 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(s);
             }
         }

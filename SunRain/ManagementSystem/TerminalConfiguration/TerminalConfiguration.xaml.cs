@@ -65,6 +65,8 @@ namespace TerminalConfiguration
         private CancellationTokenSource _cts = null;
         private Task _logTask = null;
 
+        private Task _serialOpTask = null;
+
         private SerialPort _sPort = null;
 
         //private ObservableCollection<string> _cmdList = new ObservableCollection<string>();
@@ -1139,12 +1141,27 @@ namespace TerminalConfiguration
 
         private void Stop_DTU_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("该操作不安全.\n\n需要继续吗?", "确认", 
+            if (MessageBox.Show("该操作不安全，可能需要等待15秒左右.\n\n需要继续吗?", "确认", 
                 MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             if (_ctsIO != null)
+            {
                 _ctsIO.Cancel();
+            }
+            if (_serialOpTask != null)
+            {
+                try
+                {
+                    _serialOpTask.Wait();
+                }
+                catch (AggregateException)
+                {
+                    LogMessage("任务异常终止", DTUConfigLogMessage.MessageState.Error);
+                }
+                _serialOpTask = null;
+            }
+            _timerPBar.Change(Timeout.Infinite, 1000);
             ReadyString = "就绪";
             StatusPbarValue = 0;
             InRun = false;
@@ -1154,7 +1171,7 @@ namespace TerminalConfiguration
         {
             InRun = true;
             _ctsIO = new CancellationTokenSource();
-            Task.Factory.StartNew(
+            _serialOpTask = Task.Factory.StartNew(
                 () =>
                 {
                     try
@@ -1165,9 +1182,14 @@ namespace TerminalConfiguration
                             DoWriteTask();
                         //}
                     }
-                    catch (Exception ex)
+                    catch (ThreadAbortException)
                     {
-                        LogMessage("任务异常终止 : " + ex.Message, DTUConfigLogMessage.MessageState.Error);
+                        Thread.ResetAbort();
+                        LogMessage("任务异常终止", DTUConfigLogMessage.MessageState.Error);
+                    }
+                    catch (Exception)
+                    {
+                        LogMessage("任务异常终止", DTUConfigLogMessage.MessageState.Error);
                     }
                 }, _ctsIO.Token);
         }
