@@ -713,6 +713,21 @@ namespace TerminalConfiguration
 
             _timerPBar = new Timer(new TimerCallback(PBarTimerCallBackHandler), null, Timeout.Infinite, 1000);
 
+            try
+            {
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+                folder = folder + @"\COMWAY\DTUConfiguration";
+
+                StreamReader sr = new StreamReader(folder + @"\default.ini");
+                string line = sr.ReadLine();
+                sr.Close();
+                sr.Dispose();
+                line = line.Trim();
+                LoadConfig(line);
+                RegisterPackage = "";
+            }
+            catch (Exception) { }
+
             _inInit = false;
         }
 
@@ -774,15 +789,35 @@ namespace TerminalConfiguration
 
             if (e.Cancel == false)
             {
+                string folder = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+                folder = folder + @"\COMWAY\DTUConfiguration";
+
                 if (IsModified == true)
                 {
-                    bool doSave = false;
-                    if (MessageBox.Show("Do you want to save the current configuration first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                        doSave = true;
+                    if (string.IsNullOrWhiteSpace(CFGFile))
+                        SaveConfig(folder + @"\default.set", false);
+                    else
+                    {
+                        bool doSave = false;
+                        if (MessageBox.Show("Do you want to save the current configuration first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                            doSave = true;
 
-                    if (doSave == true)
-                        SaveConfig_MenuItem_Click(null, null);
+                        if (doSave == true)
+                            SaveConfig_MenuItem_Click(null, null);
+                    }
                 }
+
+                try
+                {
+                    StreamWriter sw = new StreamWriter(folder + @"\default.ini");
+                    if (string.IsNullOrWhiteSpace(CFGFile))
+                        sw.WriteLine(folder + @"\default.set");
+                    else
+                        sw.WriteLine(CFGPath + @"\" + CFGFile);
+                    sw.Close();
+                    sw.Dispose();
+                }
+                catch (Exception) { }
 
                 CloseSerialPort();
                 _cts.Cancel();
@@ -1617,7 +1652,7 @@ namespace TerminalConfiguration
                     strLine = sr.ReadLine();
                     if (string.IsNullOrWhiteSpace(strLine))
                         break;
-                    strLine = strLine.Trim();
+                    //strLine = strLine.Trim();
                     if (i == 0)
                     {
                         string[] sa = strLine.Split(new string[] { "\t" }, StringSplitOptions.None);
@@ -1807,7 +1842,7 @@ namespace TerminalConfiguration
             _inInit = false;
         }
 
-        private void SaveConfig(string cfg)
+        private void SaveConfig(string cfg, bool showDlg = true)
         {
             lock (_saveCfgLock)
             {
@@ -1829,7 +1864,8 @@ namespace TerminalConfiguration
                     sw.Close();
                     sw.Dispose();
 
-                    MessageBox.Show("成功保存当前配置.", "保存配置", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if(showDlg == true)
+                        MessageBox.Show("成功保存当前配置.", "保存配置", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
