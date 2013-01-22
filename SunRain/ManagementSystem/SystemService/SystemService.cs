@@ -1401,8 +1401,8 @@ namespace SystemService
                 UserInfo ui = di.Controller;
                 if (ui != null)
                 {
-                    if (string.Compare("admin", sa[0].Trim(), true) != 0)
-                        return Consts.MAN_UNCTRL_DTU_ERR + "只有admin可以进行释放DTU的操作";// Debug.Assert(string.Compare(ui.UserName, sa[0].Trim(), true) == 0);
+                    //if (string.Compare("admin", sa[0].Trim(), true) != 0)
+                    //    return Consts.MAN_UNCTRL_DTU_ERR + "只有admin可以进行释放DTU的操作";// Debug.Assert(string.Compare(ui.UserName, sa[0].Trim(), true) == 0);
                     if (ui.UserDTUs.Contains(di) == true)
                         ui.UserDTUs.Remove(di);
                 }

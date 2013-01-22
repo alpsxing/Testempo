@@ -370,7 +370,7 @@ namespace ManagementSystem
                     Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(ba, len);
                     if (resp == null)
                     {
-                        MessageBox.Show("登录失败 : 空的服务器响应.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("登录失败 : 服务器故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         Helper.SafeCloseSocket(soc);
                     }
                     else
@@ -378,7 +378,7 @@ namespace ManagementSystem
                         switch (resp.Item1)
                         {
                             default:
-                                MessageBox.Show("登录失败 : 未知的服务器响应 - " + resp.Item1 + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : 服务器故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 Helper.SafeCloseSocket(soc);
                                 break;
                             case Consts.TERM_LOGIN_OK:
@@ -393,21 +393,21 @@ namespace ManagementSystem
                             case Consts.TERM_LOGIN_ERR:
                                 Helper.SafeCloseSocket(soc);
                                 logged = true;
-                                MessageBox.Show("登录失败 : " + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("登录失败 : 服务器连接错误", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败 : 服务器故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     Helper.SafeCloseSocket(soc);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (logged == false)
-                    MessageBox.Show("登录失败 : " + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败 : 服务器故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

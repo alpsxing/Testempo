@@ -492,7 +492,7 @@ namespace ServiceConfiguration
                 s.SendTimeout = Consts.MAN_TIMEOUT;
                 s.ReceiveTimeout = Consts.MAN_TIMEOUT;
                 s.Connect(iep);
-                if(s.Connected)
+                if (s.Connected)
                 {
                     byte[] ba = new byte[Consts.SOCKET_RECEIVING_BUFFER_LENGTH];
                     int len = 0;
@@ -502,7 +502,7 @@ namespace ServiceConfiguration
                     Tuple<string, byte[], string, string> resp = Helper.ExtractSocketResponse(ba, len);
                     if (resp == null)
                     {
-                        MessageBox.Show("登录失败 : 空的服务器响应.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("登录失败 : 服务器故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         s.Shutdown(SocketShutdown.Both);
                         s.Disconnect(false);
                         s.Close();
@@ -513,7 +513,7 @@ namespace ServiceConfiguration
                         switch (resp.Item1)
                         {
                             default:
-                                MessageBox.Show("登录失败 : 未知的服务器响应 - " + resp.Item1 + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : 服务器故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                             case Consts.MAN_LOGIN_OK:
                                 logged = true;
@@ -524,14 +524,17 @@ namespace ServiceConfiguration
                                 break;
                             case Consts.MAN_LOGIN_ERR:
                                 logged = true;
-                                MessageBox.Show("登录失败 : " + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                if (string.Compare(UserName.Trim(), "admin", true) == 0)
+                                    MessageBox.Show("登录失败 : 请检查admin的密码并确保admin是在服务器本地登录.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                else
+                                    MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("登录失败 : 服务器连接错误", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("服务器故障", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 s.Shutdown(SocketShutdown.Both);
                 s.Disconnect(false);
@@ -540,8 +543,8 @@ namespace ServiceConfiguration
             }
             catch (Exception)
             {
-                if(logged == false)
-                    MessageBox.Show("登录失败.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (logged == false)
+                    MessageBox.Show("服务器故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(s);
             }
         }
