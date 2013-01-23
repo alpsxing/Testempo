@@ -484,7 +484,6 @@ namespace ServiceConfiguration
             IPEndPoint iep = null;
             string permission = "2";
             bool logged = false;
-            bool normal = false;
             try
             {
                 s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -525,7 +524,7 @@ namespace ServiceConfiguration
                                     MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                             case Consts.MAN_LOGIN_OK:
-                                normal = true;
+                                logged = true;
                                 permission = resp.Item3;
                                 Visibility = System.Windows.Visibility.Collapsed;
                                 MainWindow mw = new MainWindow(s, UserName, Password, permission, ServerIP, ServerPort, ServerWebPort);
@@ -536,7 +535,7 @@ namespace ServiceConfiguration
                                 if (string.Compare(UserName.Trim(), "admin", true) == 0)
                                     MessageBox.Show("登录失败 : 请检查admin的密码并确保admin是在服务器本地登录.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 else
-                                    MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show("登录失败 : " + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                         }
                     }
@@ -557,19 +556,7 @@ namespace ServiceConfiguration
             catch (Exception)
             {
                 if (logged == false)
-                {
-                    if (normal == true)
-                    {
-                        MessageBox.Show("应用程序错误或者和服务器连接故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    else
-                    {
-                        if (string.Compare(UserName.Trim(), "admin", true) == 0)
-                            MessageBox.Show("登录失败 : 请检查admin的密码并确保admin是在服务器本地登录.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                        else
-                            MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
+                    MessageBox.Show("应用程序错误或者和服务器连接故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Helper.SafeCloseSocket(s);
             }
         }

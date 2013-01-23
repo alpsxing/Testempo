@@ -352,7 +352,6 @@ namespace ManagementSystem
             IPEndPoint iep = null;
             string permission = "2";
             bool logged = false;
-            bool normal = false;
             try
             {
                 soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -372,7 +371,7 @@ namespace ManagementSystem
                     if (resp == null)
                     {
                         logged = true;
-                        MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("登录失败 : 应用程序错误.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         Helper.SafeCloseSocket(soc);
                     }
                     else
@@ -381,12 +380,12 @@ namespace ManagementSystem
                         {
                             default:
                                 logged = true;
-                                MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : 应用程序错误.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 Helper.SafeCloseSocket(soc);
                                 break;
                             case Consts.TERM_LOGIN_OK:
                                 SaveConfig();
-                                normal = true;
+                                logged = true;
                                 permission = resp.Item3;
                                 Visibility = System.Windows.Visibility.Collapsed;
                                 MainWindow mw = new MainWindow(soc, ServerIP, ServerPort, UserName, Password);
@@ -395,7 +394,7 @@ namespace ManagementSystem
                             case Consts.TERM_LOGIN_ERR:
                                 Helper.SafeCloseSocket(soc);
                                 logged = true;
-                                MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("登录失败 : " + resp.Item3, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                         }
                     }
@@ -403,19 +402,14 @@ namespace ManagementSystem
                 else
                 {
                     logged = true;
-                    MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登录失败 : 服务器连接故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     Helper.SafeCloseSocket(soc);
                 }
             }
             catch (Exception)
             {
                 if (logged == false)
-                {
-                    if(normal == true)
-                        MessageBox.Show("应用程序错误或者和服务器连接故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    else
-                        MessageBox.Show("登录失败 : 请检查用户名和密码.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    MessageBox.Show("应用程序错误或者和服务器连接故障.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
