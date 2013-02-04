@@ -1,0 +1,62 @@
+﻿<Window x:Class="Bumblebee.SetCmd.VehicleInformation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="设置车辆信息参数" Height="180" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="3"/>
+            <RowDefinition/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" 
+               Content="车辆识别代码 :" Foreground="{Binding Path=VehicleIDCodeForeground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Label Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"
+               Content="车辆号牌号码 :" Foreground="{Binding Path=VehicleNumberCodeForeground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Label Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="车辆号牌分类 :"/>
+        <Button Grid.Row="5" Grid.Column="1" Margin="-50,3,0,1" Width="75" Content="确认"
+                IsEnabled="{Binding Path=OKEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                IsDefault="{Binding Path=OKDefault,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                Click="OK_Button_Click"/>
+        <Button Grid.Row="5" Grid.Column="1" Margin="105,3,0,1" Width="75" Content="取消" IsCancel="True" 
+                IsDefault="{Binding Path=CancelDefault,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                Click="Cancel_Button_Click"/>
+        <TextBox Grid.Column="1" Grid.Row="1" Name="txtVehicleIDCode"
+                             HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                             Text="{Binding Path=VehicleIDCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Column="1" Grid.Row="2" Name="txtVehicleNumberCode"
+                             HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                             Text="{Binding Path=VehicleNumberCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <ComboBox Grid.Column="1" Grid.Row="3" Name="cboxVehicleNumberCategory" SelectedIndex="0"
+                  SelectedItem="{Binding Path=VehicleNumberCategory,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <ComboBoxItem Content="大型汽车"/>
+            <ComboBoxItem Content="挂车"/>
+            <ComboBoxItem Content="小型汽车"/>
+            <ComboBoxItem Content="使馆汽车"/>
+            <ComboBoxItem Content="领馆汽车"/>
+            <ComboBoxItem Content="港澳出入境"/>
+            <ComboBoxItem Content="教练汽车"/>
+            <ComboBoxItem Content="警用汽车"/>
+            <ComboBoxItem Content="普通摩托"/>
+            <ComboBoxItem Content="轻便摩托"/>
+            <ComboBoxItem Content="使馆摩托"/>
+            <ComboBoxItem Content="领馆摩托"/>
+            <ComboBoxItem Content="教练摩托"/>
+            <ComboBoxItem Content="警用摩托"/>
+            <ComboBoxItem Content="低速车"/>
+            <ComboBoxItem Content="临时行驶"/>
+            <ComboBoxItem Content="临时入境"/>
+            <ComboBoxItem Content="拖拉机"/>
+            <ComboBoxItem Content="其他类型"/>
+        </ComboBox>
+    </Grid>
+</Window>

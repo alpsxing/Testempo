@@ -1,0 +1,31 @@
+﻿<Window x:Class="Bumblebee.TimeoutConfiguration"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="设置超时时间" Height="200" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="10"/>
+            <RowDefinition/>
+            <RowDefinition Height="5"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="1" Grid.Column="0" Content="超时时间" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <Label Grid.Row="1" Grid.Column="2" Content="(ms)" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Content="注 : 有的终端反应比较慢, 所以等待时间比较长." HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Content="      该值如果设置较大, 则处理数据的时间将加长." HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Content="      默认为1000ms, 超时将认为终端无反应." HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+        <Button Grid.Row="6" Grid.Column="2" Margin="-80,2,10,2" Width="75" Content="确认"/>
+        <Button Grid.Row="6" Grid.Column="3" Margin="-45,2,2,2" Width="75" Content="取消" IsCancel="True" IsDefault="True"/>
+    </Grid>
+</Window>
