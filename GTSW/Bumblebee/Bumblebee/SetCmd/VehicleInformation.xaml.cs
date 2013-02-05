@@ -34,7 +34,7 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return _vehicleIDCode;
+                return (_vehicleIDCode == null) ? "" : _vehicleIDCode.Trim();
             }
             set
             {
@@ -55,7 +55,7 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return _vehicleNumberCode;
+                return (_vehicleNumberCode == null) ? "" : _vehicleNumberCode.Trim();
             }
             set
             {
@@ -76,7 +76,7 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return _vehicleNumberCategory;
+                return (_vehicleNumberCategory == null) ? "" : _vehicleNumberCategory.Trim();
             }
             set
             {
@@ -143,11 +143,15 @@ namespace Bumblebee.SetCmd
 
         #endregion
 
-        public VehicleInformation()
+        public VehicleInformation(string vehicleIDCode, string vehicleNumberCode, string vehicleNumberCategory)
         {
             InitializeComponent();
 
             DataContext = this;
+
+            VehicleIDCode = vehicleIDCode;
+            VehicleNumberCode = vehicleNumberCode;
+            VehicleNumberCategory = vehicleNumberCategory;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)

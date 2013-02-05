@@ -71,6 +71,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ExtSetCmd\SinglePulseCount.xaml.cs">
+      <DependentUpon>SinglePulseCount.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExtSetCmd\StateConfiguration.xaml.cs">
+      <DependentUpon>StateConfiguration.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GetCmdConfiguration.xaml.cs">
       <DependentUpon>GetCmdConfiguration.xaml</DependentUpon>
     </Compile>
@@ -104,6 +110,14 @@
     <Compile Include="TimeoutConfiguration.xaml.cs">
       <DependentUpon>TimeoutConfiguration.xaml</DependentUpon>
     </Compile>
+    <Page Include="ExtSetCmd\SinglePulseCount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExtSetCmd\StateConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GetCmdConfiguration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

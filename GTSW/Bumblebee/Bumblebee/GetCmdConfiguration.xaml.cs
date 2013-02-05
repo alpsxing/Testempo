@@ -140,11 +140,20 @@ namespace Bumblebee
 
         #endregion
 
-        public GetCmdConfiguration(DateTime start, DateTime stop, int min, int max, int current)
+        public GetCmdConfiguration(string title, DateTime start, DateTime stop, 
+            int min, int max, int current)
         {
             InitializeComponent();
 
             DataContext = this;
+
+            if (title != null)
+            {
+                if (title.Length > 6)
+                    Title = title.Substring(6);
+                else
+                    Title = title;
+            }
 
             if (DateTime.Compare(start, stop) > 0)
                 throw new Exception("start > stop");

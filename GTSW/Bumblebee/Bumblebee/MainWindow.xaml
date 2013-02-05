@@ -283,7 +283,7 @@
                                                     <DataTemplate>
                                                         <Button IsEnabled="{Binding Path=GetCmdSetParEnabled, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                                                 Visibility="{Binding Path=GetCmdSetParVisibility, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
-                                                                Content="设置参数" Click="GetCmdSetPar_Button_Click"/>
+                                                                Content="设置参数" Click="ExtSetCmdSetPar_Button_Click"/>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>

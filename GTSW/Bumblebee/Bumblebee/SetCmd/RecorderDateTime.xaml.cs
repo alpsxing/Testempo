@@ -64,17 +64,17 @@ namespace Bumblebee.SetCmd
             }
         }
 
-        private bool _isSystemUserModeDateTime = true;
-        public bool IsSystemUserModeDateTime
+        private bool _isSystemModeDateTime = true;
+        public bool IsSystemModeDateTime
         {
             get
             {
-                return _isSystemUserModeDateTime;
+                return _isSystemModeDateTime;
             }
             set
             {
-                _isSystemUserModeDateTime = value;
-                NotifyPropertyChanged("IsSystemUserModeDateTime");
+                _isSystemModeDateTime = value;
+                NotifyPropertyChanged("IsSystemModeDateTime");
                 NotifyPropertyChanged("SystemModeDateTimeChecked");
                 NotifyPropertyChanged("UserModeDateTimeChecked");
             }

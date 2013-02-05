@@ -13,12 +13,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Bumblebee.SetCmd
+namespace Bumblebee.ExtSetCmd
 {
     /// <summary>
-    /// Interaction logic for Recorder1stInstallDateTime.xaml
+    /// Interaction logic for SinglePulseCount.xaml
     /// </summary>
-    public partial class Recorder1stInstallDateTime : Window, INotifyPropertyChanged
+    public partial class SinglePulseCount : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(string propertyName)
@@ -29,29 +29,27 @@ namespace Bumblebee.SetCmd
 
         #region Properties
 
-        private DateTime _firstInstallDateTime = DateTime.Now;
-        public DateTime FirstInstallDateTime
+        private int _pulseCount = 8;
+        public int PulseCount
         {
             get
             {
-                return _firstInstallDateTime;
+                return _pulseCount;
             }
             set
             {
-                _firstInstallDateTime = value;
-                NotifyPropertyChanged("FirstInstallDateTime");
+                _pulseCount = value;
+                NotifyPropertyChanged("PulseCount");
             }
         }
 
         #endregion
 
-        public Recorder1stInstallDateTime(DateTime firstInstallDateTime)
+        public SinglePulseCount()
         {
             InitializeComponent();
 
             DataContext = this;
-
-            FirstInstallDateTime = firstInstallDateTime;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)

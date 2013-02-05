@@ -34,7 +34,7 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return _d2;
+                return (_d2 == null) ? "" : _d2.Trim();
             }
             set
             {
@@ -51,7 +51,7 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return _d1;
+                return (_d1 == null) ? "" : _d1.Trim();
             }
             set
             {
@@ -68,7 +68,7 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return _d0;
+                return (_d0 == null) ? "" : _d0.Trim();
             }
             set
             {
@@ -111,11 +111,15 @@ namespace Bumblebee.SetCmd
 
         #endregion
 
-        public StateConfigureInformation()
+        public StateConfigureInformation(string d2, string d1, string d0)
         {
             InitializeComponent();
 
             DataContext = this;
+
+            D2 = d2;
+            D1 = d1;
+            D0 = d0;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

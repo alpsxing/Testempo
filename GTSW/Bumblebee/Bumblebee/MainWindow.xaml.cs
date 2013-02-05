@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using Bumblebee.SetCmd;
+using Bumblebee.ExtSetCmd;
 
 namespace Bumblebee
 {
@@ -255,6 +256,8 @@ namespace Bumblebee
                 default:
                 case RunMode.User:
                     GetCmdEnabled = true;
+                    ExtGetCmdEnabled = true;
+                    ExtSetCmdEnabled = true;
                     break;
                 case RunMode.Admin:
                     GetCmdEnabled = true;
@@ -617,7 +620,7 @@ namespace Bumblebee
             CmdDefinition cd = btn.DataContext as CmdDefinition;
             if (cd == null)
                 return;
-            GetCmdConfiguration gcc = new GetCmdConfiguration(
+            GetCmdConfiguration gcc = new GetCmdConfiguration(cd.CmdContent,
                 cd.StartDateTime, cd.StopDateTime,
                 cd.DataCountPerUnitMin, cd.DataCountPerUnitMax, cd.DataCountPerUnit);
             bool? b = gcc.ShowDialog();
@@ -731,16 +734,30 @@ namespace Bumblebee
                 default:
                     break;
                 case "82H : 车辆信息":
-                    VehicleInformation vi = new VehicleInformation();
+                    VehicleInformation vi = new VehicleInformation(cd.VehicleIDCode, cd.VehicleNumberCode, cd.VehicleNumberCategory);
                     b = vi.ShowDialog();
+                    if (b == true)
+                    {
+                        cd.VehicleIDCode = vi.VehicleIDCode;
+                        cd.VehicleNumberCode = vi.VehicleNumberCode;
+                        cd.VehicleNumberCategory = vi.VehicleNumberCategory;
+                    }
                     break;
                 case "83H : 记录仪初次安装日期":
-                    Recorder1stInstallDateTime r1idt = new Recorder1stInstallDateTime();
+                    Recorder1stInstallDateTime r1idt = new Recorder1stInstallDateTime(cd.FirstInstallDateTime);
                     b = r1idt.ShowDialog();
+                    if (b == true)
+                        cd.FirstInstallDateTime = r1idt.FirstInstallDateTime;
                     break;
                 case "84H : 状态量配置信息":
-                    StateConfigureInformation sci = new StateConfigureInformation();
+                    StateConfigureInformation sci = new StateConfigureInformation(cd.D2, cd.D1, cd.D0);
                     b = sci.ShowDialog();
+                    if (b == true)
+                    {
+                        cd.D2 = sci.D2;
+                        cd.D1 = sci.D1;
+                        cd.D0 = sci.D0;
+                    }
                     break;
                 case "C2H : 记录仪时间":
                     RecorderDateTime rdt = new RecorderDateTime();
@@ -799,6 +816,38 @@ namespace Bumblebee
                 case "E4H : 返回正常工作状态":
                     CheckCmdState = "检定返回";
                     break;
+            }
+        }
+
+        private void ExtSetCmdSetPar_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn == null)
+                return;
+            CmdDefinition cd = btn.DataContext as CmdDefinition;
+            if (cd == null)
+                return;
+            bool? b = false;
+            switch (cd.CmdContent)
+            {
+                default:
+                    break;
+                case "D0H : 状态量配置":
+                    StateConfiguration sc = new StateConfiguration();
+                    b = sc.ShowDialog();
+                    break;
+                case "D1H : 传感器单圈脉冲数":
+                    SinglePulseCount spc = new SinglePulseCount();
+                    b = spc.ShowDialog();
+                    break;
+            }
+            if (b == true)
+            {
+                cd.CmdState = "设置完成.";
+            }
+            else
+            {
+                cd.CmdState = "取消设置.";
             }
         }
     }
@@ -895,8 +944,6 @@ namespace Bumblebee
             set
             {
                 _startDateTime = value;
-                //if (DateTime.Compare(StartDateTime, StopDateTime) > 0)
-                //    throw new Exception("StartDateTime > StopDateTime");
                 NotifyPropertyChanged("StartDateTime");
             }
         }
@@ -911,8 +958,6 @@ namespace Bumblebee
             set
             {
                 _stopDateTime = value;
-                //if (DateTime.Compare(StopDateTime, StartDateTime) < 0)
-                //    throw new Exception("StopDateTime < StartDateTime");
                 NotifyPropertyChanged("StopDateTime");
             }
         }
@@ -927,8 +972,6 @@ namespace Bumblebee
             set
             {
                 _dataCountPerUnitMax = value;
-                //if (DataCountPerUnitMax < DataCountPerUnitMin)
-                //    throw new Exception("DataCountPerUnitMax < DataCountPerUnitMin");
                 NotifyPropertyChanged("DataCountPerUnitMax");
             }
         }
@@ -943,8 +986,6 @@ namespace Bumblebee
             set
             {
                 _dataCountPerUnitMin = value;
-                //if (DataCountPerUnitMin > DataCountPerUnitMax)
-                //    throw new Exception("DataCountPerUnitMin > DataCountPerUnitMax");
                 NotifyPropertyChanged("DataCountPerUnitMin");
             }
         }
@@ -959,10 +1000,6 @@ namespace Bumblebee
             set
             {
                 _dataCountPerUnit = value;
-                //if (DataCountPerUnit < DataCountPerUnitMin)
-                //    throw new Exception("DataCountPerUnit < DataCountPerUnitMin");
-                //if (DataCountPerUnit > DataCountPerUnitMax)
-                //    throw new Exception("DataCountPerUnit > DataCountPerUnitMax");
                 NotifyPropertyChanged("DataCountPerUnit");
             }
         }
@@ -1069,17 +1106,17 @@ namespace Bumblebee
             }
         }
 
-        private bool _isSystemUserModeDateTime = true;
-        public bool IsSystemUserModeDateTime
+        private bool _isSystemModeDateTime = true;
+        public bool IsSystemModeDateTime
         {
             get
             {
-                return _isSystemUserModeDateTime;
+                return _isSystemModeDateTime;
             }
             set
             {
-                _isSystemUserModeDateTime = value;
-                NotifyPropertyChanged("IsSystemUserModeDateTime");
+                _isSystemModeDateTime = value;
+                NotifyPropertyChanged("IsSystemModeDateTime");
             }
         }
 
