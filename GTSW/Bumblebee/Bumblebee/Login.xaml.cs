@@ -104,9 +104,9 @@ namespace Bumblebee
                         case "USER":
                             rm = MainWindow.RunMode.User;
                             break;
-                        case "SUPER":
-                            rm = MainWindow.RunMode.Super;
-                            break;
+                        //case "SUPER":
+                        //    rm = MainWindow.RunMode.Super;
+                        //    break;
                         case "ADMIN":
                             rm = MainWindow.RunMode.Admin;
                             break;

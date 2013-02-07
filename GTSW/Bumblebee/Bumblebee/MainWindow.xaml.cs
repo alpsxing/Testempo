@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -34,8 +35,8 @@ namespace Bumblebee
         public enum RunMode
         {
             User,
-            Admin,
-            Super
+            Admin//,
+            //Super
         }
 
         #region Variables
@@ -46,6 +47,29 @@ namespace Bumblebee
         #endregion
 
         #region Properties
+
+        private bool _inRun = false;
+        public bool InRun
+        {
+            get
+            {
+                return _inRun;
+            }
+            set
+            {
+                _inRun = value;
+                NotifyPropertyChanged("InRun");
+                NotifyPropertyChanged("NotInRun");
+            }
+        }
+
+        public bool NotInRun
+        {
+            get
+            {
+                return !_inRun;
+            }
+        }
 
         private bool _getCmdEnbaled = false;
         public bool GetCmdEnabled
@@ -113,7 +137,7 @@ namespace Bumblebee
             set
             {
                 _extSetCmdEnbaled = value;
-                NotifyPropertyChanged("SetCmdEnabled");
+                NotifyPropertyChanged("ExtSetCmdEnabled");
             }
         }
 
@@ -159,6 +183,60 @@ namespace Bumblebee
                     return false;
                 else
                     return true;
+            }
+        }
+
+        public int PBarMinimum
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+                NotifyPropertyChanged("PBarMinimum");
+            }
+        }
+
+        private int _pBarMaximum = 100;
+        public int PBarMaximum
+        {
+            get
+            {
+                return _pBarMaximum;
+            }
+            set
+            {
+                _pBarMaximum = value;
+                NotifyPropertyChanged("PBarMaximum");
+            }
+        }
+
+        private int _pBarValue = 0;
+        public int PBarValue
+        {
+            get
+            {
+                return _pBarValue;
+            }
+            set
+            {
+                _pBarValue = value;
+                NotifyPropertyChanged("PBarValue");
+            }
+        }
+
+        private string _readyString = "就绪";
+        public string ReadyString
+        {
+            get
+            {
+                return _readyString;
+            }
+            set
+            {
+                _readyString = value;
+                NotifyPropertyChanged("ReadyString");
             }
         }
 
@@ -263,14 +341,16 @@ namespace Bumblebee
                     GetCmdEnabled = true;
                     SetCmdEnabled = true;
                     ChkCmdEnabled = true;
+                    ExtGetCmdEnabled = false;
+                    ExtSetCmdEnabled = false;
                     break;
-                case RunMode.Super:
-                    GetCmdEnabled = true;
-                    SetCmdEnabled = true;
-                    ChkCmdEnabled = true;
-                    ExtGetCmdEnabled = true;
-                    ExtSetCmdEnabled = true;
-                    break;
+                //case RunMode.Super:
+                //    GetCmdEnabled = true;
+                //    SetCmdEnabled = true;
+                //    ChkCmdEnabled = true;
+                //    ExtGetCmdEnabled = true;
+                //    ExtSetCmdEnabled = true;
+                //    break;
             }
 
             InitializeComponent();
@@ -760,16 +840,26 @@ namespace Bumblebee
                     }
                     break;
                 case "C2H : 记录仪时间":
-                    RecorderDateTime rdt = new RecorderDateTime();
+                    RecorderDateTime rdt = new RecorderDateTime(cd.IsSystemModeDateTime, cd.UserModeDateTime);
                     b = rdt.ShowDialog();
+                    if (b == true)
+                    {
+                        cd.IsSystemModeDateTime = rdt.IsSystemModeDateTime;
+                        cd.SystemModeDateTime = rdt.SystemModeDateTime;
+                        cd.UserModeDateTime = rdt.UserModeDateTime;
+                    }
                     break;
                 case "C3H : 记录仪脉冲系数":
-                    RecorederPulseCoefficient rpc = new RecorederPulseCoefficient();
+                    RecorederPulseCoefficient rpc = new RecorederPulseCoefficient(cd.PulseCoefficient);
                     b = rpc.ShowDialog();
+                    if (b == true)
+                        cd.PulseCoefficient = rpc.PulseCoefficient;
                     break;
                 case "C4H : 初始里程":
-                    InitialDistance id = new InitialDistance();
+                    InitialDistance id = new InitialDistance(cd.InitialDistanceValue);
                     b = id.ShowDialog();
+                    if (b == true)
+                        cd.InitialDistanceValue = id.InitialDistanceValue;
                     break;
             }
             if (b == true)
@@ -1120,8 +1210,8 @@ namespace Bumblebee
             }
         }
 
-        private string _systemModeDateTime = "";
-        public string SystemModeDateTime
+        private DateTime _systemModeDateTime = DateTime.Now;
+        public DateTime SystemModeDateTime
         {
             get
             {
@@ -1134,8 +1224,8 @@ namespace Bumblebee
             }
         }
 
-        private string _userModeDateTime = "";
-        public string UserModeDateTime
+        private DateTime _userModeDateTime = DateTime.Now;
+        public DateTime UserModeDateTime
         {
             get
             {
@@ -1204,5 +1294,63 @@ namespace Bumblebee
         }
 
         #endregion
+    }
+
+    public class Bools2BoolConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter,
+        CultureInfo culture)
+        {
+            bool bRetVal = true;
+            if (values != null)
+            {
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (values[i] is bool)
+                    {
+                        bRetVal = bRetVal & (bool)(values[i]);
+                    }
+                    else
+                        bRetVal = bRetVal & false;
+                }
+                return bRetVal;
+            }
+            return false;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter,
+        CultureInfo culture)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+    }
+
+    public class Bools2BoolOrConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter,
+        CultureInfo culture)
+        {
+            bool bRetVal = true;
+            if (values != null)
+            {
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (values[i] is bool)
+                    {
+                        bRetVal = bRetVal | (bool)(values[i]);
+                    }
+                    else
+                        bRetVal = bRetVal | false;
+                }
+                return bRetVal;
+            }
+            return false;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter,
+        CultureInfo culture)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
     }
 }

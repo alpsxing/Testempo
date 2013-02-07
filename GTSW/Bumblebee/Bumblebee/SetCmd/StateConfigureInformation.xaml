@@ -34,11 +34,11 @@
         <Label Grid.Row="1" Grid.Column="4" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
                Content="D3"/>
         <Label Grid.Row="1" Grid.Column="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-               Content="D2"/>
+               Content="D2" Foreground="{Binding Path=D2Foreground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="1" Grid.Column="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-               Content="D1"/>
+               Content="D1" Foreground="{Binding Path=D1Foreground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="1" Grid.Column="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-               Content="D0"/>
+               Content="D0" Foreground="{Binding Path=D0Foreground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
                Content="制动"/>
         <Label Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 

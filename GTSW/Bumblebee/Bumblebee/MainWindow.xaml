@@ -1,8 +1,11 @@
 ﻿<Window x:Class="Bumblebee.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:bb="clr-namespace:Bumblebee"
         Title="GB/T 19056-2013数据分析软件" Width="1000" Height="600" WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <bb:Bools2BoolConverter x:Key="Bools2BoolConverter"/>
+        <bb:Bools2BoolOrConverter x:Key="Bools2BoolOrConverter"/>
         <Style x:Key="styleLVHeaderCmd" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Visibility" Value="Collapsed" />
         </Style>
@@ -60,6 +63,10 @@
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" Height="30">
+            <ProgressBar Value="{Binding Path=PBarValue,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                         Minimum="{Binding Path=PBarMinimum,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                         Maximum="{Binding Path=PBarMaximum,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                         Width="200" Height="15"/>
             <Label Content="{Binding Path=ReadyString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,-5,0,0"/>
         </StatusBar>
         <Grid>
@@ -220,13 +227,15 @@
                         </Border>
                     </Expander>
                         <Expander Header="扩展采集指令" Name="expExtGetCmd" IsExpanded="False">
-                            <Border BorderThickness="1" BorderBrush="#FF828790"
-                                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
-                                <ListView Name="lvExtGetCmd" SelectionMode="Single" ItemsSource="{Binding}"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                          BorderThickness="0"
-                                          IsEnabled="{Binding Path=ExtGetCmdEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                            <Border BorderThickness="1" BorderBrush="#FF828790">
+                                <Border.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource Bools2BoolConverter}">
+                                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="ExtGetCmdEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    </MultiBinding>
+                                </Border.IsEnabled>
+                                <ListView Name="lvExtGetCmd" SelectionMode="Single" ItemsSource="{Binding}" BorderThickness="0"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                     <ListView.View>
                                         <GridView x:Name="gvExtGetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
                                             <GridViewColumn Width="200">
@@ -260,13 +269,15 @@
                             </Border>
                         </Expander>
                         <Expander Header="扩展设置指令" Name="expExtSetCmd" IsExpanded="False">
-                            <Border BorderThickness="1" BorderBrush="#FF828790"
-                                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
-                                <ListView Name="lvExtSetCmd" SelectionMode="Single" ItemsSource="{Binding}"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                          BorderThickness="0"
-                                          IsEnabled="{Binding Path=ExtSetCmdEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                            <Border BorderThickness="1" BorderBrush="#FF828790">
+                                <Border.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource Bools2BoolConverter}">
+                                        <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="ExtSetCmdEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    </MultiBinding>
+                                </Border.IsEnabled>
+                                <ListView Name="lvExtSetCmd" SelectionMode="Single" ItemsSource="{Binding}" BorderThickness="0"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                     <ListView.View>
                                         <GridView x:Name="gvExtSetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
                                             <GridViewColumn Width="200">

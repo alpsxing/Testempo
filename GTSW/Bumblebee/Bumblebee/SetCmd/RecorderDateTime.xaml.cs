@@ -36,8 +36,8 @@ namespace Bumblebee.SetCmd
 
         #region Properties
 
-        private string _systemModeDateTime = "";
-        public string SystemModeDateTime
+        private DateTime _systemModeDateTime = DateTime.Now;
+        public DateTime SystemModeDateTime
         {
             get
             {
@@ -47,11 +47,21 @@ namespace Bumblebee.SetCmd
             {
                 _systemModeDateTime = value;
                 NotifyPropertyChanged("SystemModeDateTime");
+                NotifyPropertyChanged("SystemModeDateTimeString");
             }
         }
 
-        private string _userModeDateTime = "";
-        public string UserModeDateTime
+        public string SystemModeDateTimeString
+        {
+            get
+            {
+                return _systemModeDateTime.Year.ToString() + "-" + _systemModeDateTime.Month.ToString() + "-" + _systemModeDateTime.Day.ToString() + " " +
+                    _systemModeDateTime.Hour.ToString() + ":" + _systemModeDateTime.Minute.ToString() + ":" + _systemModeDateTime.Second.ToString();
+            }
+        }
+
+        private DateTime _userModeDateTime = DateTime.Now;
+        public DateTime UserModeDateTime
         {
             get
             {
@@ -84,12 +94,12 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return IsSystemUserModeDateTime;
+                return IsSystemModeDateTime;
             }
             set
             {
                 if (value == true)
-                    IsSystemUserModeDateTime = true;
+                    IsSystemModeDateTime = true;
             }
         }
 
@@ -97,18 +107,18 @@ namespace Bumblebee.SetCmd
         {
             get
             {
-                return !IsSystemUserModeDateTime;
+                return !IsSystemModeDateTime;
             }
             set
             {
                 if (value == true)
-                    IsSystemUserModeDateTime = false;
+                    IsSystemModeDateTime = false;
             }
         }
 
         #endregion
 
-        public RecorderDateTime()
+        public RecorderDateTime(bool isSystemModeDateTime, DateTime userDateTime)
         {
             InitializeComponent();
 
@@ -134,9 +144,7 @@ namespace Bumblebee.SetCmd
 
         private void SystemModeTimerCallback(object obj)
         {
-            DateTime dt = DateTime.Now;
-            SystemModeDateTime = dt.Year.ToString() + "-" + dt.Month.ToString() + "-" + dt.Day.ToString() + " " +
-                dt.Hour.ToString() + ":" + dt.Minute.ToString() + ":" + dt.Second.ToString();
+            SystemModeDateTime = DateTime.Now;
         }
     }
 }

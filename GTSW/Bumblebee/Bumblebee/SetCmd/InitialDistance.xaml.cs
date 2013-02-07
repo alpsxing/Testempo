@@ -45,11 +45,13 @@ namespace Bumblebee.SetCmd
 
         #endregion
 
-        public InitialDistance()
+        public InitialDistance(int initialDistanceValue)
         {
             InitializeComponent();
 
             DataContext = this;
+
+            InitialDistanceValue = initialDistanceValue;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)

@@ -39,10 +39,28 @@ namespace Bumblebee.SetCmd
             set
             {
                 _d2 = value;
+                if (string.IsNullOrWhiteSpace(_d2))
+                    D2Foreground = Brushes.Red;
+                else
+                    D2Foreground = Brushes.Black;
                 NotifyPropertyChanged("D2");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
                 NotifyPropertyChanged("CancelDefault");
+            }
+        }
+
+        private SolidColorBrush _d2Foreground = Brushes.Red;
+        public SolidColorBrush D2Foreground
+        {
+            get
+            {
+                return _d2Foreground;
+            }
+            set
+            {
+                _d2Foreground = value;
+                NotifyPropertyChanged("D2Foreground");
             }
         }
 
@@ -56,10 +74,28 @@ namespace Bumblebee.SetCmd
             set
             {
                 _d1 = value;
+                if (string.IsNullOrWhiteSpace(_d1))
+                    D1Foreground = Brushes.Red;
+                else
+                    D1Foreground = Brushes.Black;
                 NotifyPropertyChanged("D1");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
                 NotifyPropertyChanged("CancelDefault");
+            }
+        }
+
+        private SolidColorBrush _d1Foreground = Brushes.Red;
+        public SolidColorBrush D1Foreground
+        {
+            get
+            {
+                return _d1Foreground;
+            }
+            set
+            {
+                _d1Foreground = value;
+                NotifyPropertyChanged("D1Foreground");
             }
         }
 
@@ -73,10 +109,28 @@ namespace Bumblebee.SetCmd
             set
             {
                 _d0 = value;
+                if (string.IsNullOrWhiteSpace(_d0))
+                    D0Foreground = Brushes.Red;
+                else
+                    D0Foreground = Brushes.Black;
                 NotifyPropertyChanged("D0");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
                 NotifyPropertyChanged("CancelDefault");
+            }
+        }
+
+        private SolidColorBrush _d0Foreground = Brushes.Red;
+        public SolidColorBrush D0Foreground
+        {
+            get
+            {
+                return _d0Foreground;
+            }
+            set
+            {
+                _d0Foreground = value;
+                NotifyPropertyChanged("D0Foreground");
             }
         }
 

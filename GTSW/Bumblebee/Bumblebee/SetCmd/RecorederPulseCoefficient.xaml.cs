@@ -45,11 +45,13 @@ namespace Bumblebee.SetCmd
 
         #endregion
 
-        public RecorederPulseCoefficient()
+        public RecorederPulseCoefficient(int pulseCoefficient)
         {
             InitializeComponent();
 
             DataContext = this;
+
+            PulseCoefficient = pulseCoefficient;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
