@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.IO.Ports;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,6 +22,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Linq;
 
 using Bumblebee.SetCmd;
 using Bumblebee.ExtSetCmd;
@@ -39,10 +49,56 @@ namespace Bumblebee
             //Super
         }
 
+        public enum LogType
+        {
+            Common,
+            Information,
+            Error
+        }
+
         #region Variables
+
+        private string[] _bauds = new string[]
+        {
+            "115200",
+            "57600",
+            "56000",
+            "43000",
+            "38400",
+            "19200",
+            "9600",
+            "4800",
+            "2400",
+            "1200",
+            "600",
+            "300"
+        };
 
         private RunMode _runMode = RunMode.User;
         private bool _normalClose = false;
+
+        private Task _serialPosrtTask = null;
+        private CancellationTokenSource _cts = null;
+        private object _cmdLock = new object();
+        private Queue<CmdDefinition> _cdQueue = new Queue<CmdDefinition>();
+
+        private SerialPort _sPort = null;
+
+        private Task _displayLogTask = null;
+        private object _logLock = new object();
+        private Queue<Tuple<string, LogType>> _logQueue = new Queue<Tuple<string, LogType>>();
+
+        private XmlDocument _xd = new XmlDocument();
+
+        private string _port = "";
+        private string _baud = "";
+        private string _parity = "";
+        private string _data = "";
+        private string _start = "";
+        private string _stop = "";
+        private string _timeout = "";
+        private string _servip = "";
+        private string _servport = "";
 
         #endregion
 
@@ -658,6 +714,10 @@ namespace Bumblebee
             #endregion
 
             #endregion
+
+            _cts = new CancellationTokenSource();
+            _serialPosrtTask = Task.Factory.StartNew(new Action(SerialPortTaskHandler), _cts.Token);
+            _displayLogTask = Task.Factory.StartNew(new Action(DisplayLogHandler), _cts.Token);
         }
 
         #region Window Exit
@@ -682,11 +742,22 @@ namespace Bumblebee
 
             if (e.Cancel == false)
             {
+                _cts.Cancel();
+                try
+                {
+                    _serialPosrtTask.Wait(10000, _cts.Token);
+                }
+                catch (Exception) { }
+                try
+                {
+                    _displayLogTask.Wait(1000, _cts.Token);
+                }
+                catch (Exception) { }
             }
 
             base.OnClosing(e);
 
-            if(e.Cancel == false)
+            if (e.Cancel == false)
                 System.Environment.Exit(0);
         }
 
@@ -717,22 +788,43 @@ namespace Bumblebee
             }
         }
 
+        private void RefreshSerialPort_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void ConfigSerialPort_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             SerialPortConfiguration spc = new SerialPortConfiguration();
-            spc.ShowDialog();
+            bool? b = spc.ShowDialog();
+            if (b == true)
+            {
+                SaveConfig();
+            }
+        }
+
+        private void DisconnectSerialPort_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
         }
 
         private void ConfigTimeout_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             TimeoutConfiguration tc = new TimeoutConfiguration();
-            tc.ShowDialog();
+            bool? b = tc.ShowDialog();
+            if (b == true)
+            {
+                SaveConfig();
+            }
         }
 
         private void ConfigServer_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             ServerConfiguration sc = new ServerConfiguration();
-            sc.ShowDialog();
+            bool? b = sc.ShowDialog();
+            if (b == true)
+            {
+                SaveConfig();
+            }
         }
 
         private void GetSetCmdSetPar_CheckBox_CheckedUnchecked(object sender, RoutedEventArgs e)
@@ -940,6 +1032,330 @@ namespace Bumblebee
                 cd.CmdState = "取消设置.";
             }
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Process[] ps = Process.GetProcesses();
+            foreach (Process pi in ps)
+            {
+                if (string.Compare(pi.ProcessName, Assembly.GetExecutingAssembly().GetName().Name, true) == 0)
+                {
+                    MessageBox.Show("\"GB/T 19056-2013数据分析软件\"已经在运行中.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Environment.Exit(0);
+                }
+            }
+
+            LoadConfig();
+
+            if (string.IsNullOrWhiteSpace(_port) == false)
+            {
+                try
+                {
+                    _sPort = new SerialPort();
+                    _sPort.PortName = "";
+                    _sPort.Open();
+                    if (_sPort.IsOpen)
+                    {
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _sPort = null;
+                }
+            }
+        }
+
+        private void LogMessageSeperator()
+        {
+            LogMessage("---------------------------------------------------------------------------------");
+            LogMessage("");
+        }
+
+        private void LogMessageInformation(string msg)
+        {
+            LogMessage(msg, LogType.Information);
+        }
+
+        private void LogMessageError(string msg)
+        {
+            LogMessage(msg, LogType.Error);
+        }
+
+        private void LogMessage(string msg, LogType lt = LogType.Common)
+        {
+            lock (_logLock)
+            {
+                if (_cts.IsCancellationRequested == true)
+                {
+                    _logQueue.Clear();
+                    return;
+                }
+
+                Dispatcher.Invoke((ThreadStart)delegate
+                {
+                    _logQueue.Enqueue(new Tuple<string, LogType>(msg, lt));
+                }, null);
+            }
+        }
+
+        private void DisplayLogHandler()
+        {
+            while (_cts.IsCancellationRequested == false)
+            {
+                lock (_logLock)
+                {
+                    if (_cts.IsCancellationRequested == true)
+                    {
+                        _logQueue.Clear();
+                        return;
+                    }
+
+                    if (_logQueue.Count > 0)
+                    {
+                        Tuple<string, LogType> di = _logQueue.Dequeue();
+
+                        Dispatcher.Invoke((ThreadStart)delegate
+                        {
+                            #region
+
+                            Run rch = new Run(di.Item1);
+                            Paragraph pch = new Paragraph(rch);
+                            switch (di.Item2)
+                            {
+                                default:
+                                case LogType.Common:
+                                    pch.Foreground = Brushes.Black;
+                                    break;
+                                case LogType.Information:
+                                    pch.Foreground = Brushes.Blue;
+                                    break;
+                                case LogType.Error:
+                                    pch.Foreground = Brushes.Red;
+                                    break;
+                            }
+                            fldocLog.Blocks.Add(pch);
+                            rtxtLog.ScrollToEnd();
+
+                            #endregion
+                        }, null);
+                    }
+                }
+
+                Thread.Sleep(100);
+            }
+        }
+
+        private void SaveConfig()
+        {
+        }
+
+        private void LoadConfig()
+        {
+            if (File.Exists("config.xml"))
+            {
+                try
+                {
+                    _xd.Load("config.xml");
+                    XmlNodeList xnl = _xd.ChildNodes;
+                    foreach (XmlNode xni in xnl)
+                    {
+                        switch (xni.Name.ToUpper().Trim())
+                        {
+                            default: 
+                                break;
+                            case "PORT":
+                                if (xni.Attributes["value"] != null)
+                                {
+                                    _port = xni.Attributes["value"].Value;
+                                    if (string.IsNullOrWhiteSpace(_port))
+                                    {
+                                        LogMessageError("配置文件中串口端口号项为空.");
+                                    }
+                                    else
+                                    {
+                                        string[] ps = SerialPort.GetPortNames();
+                                        if (ps == null || ps.Length < 1)
+                                        {
+                                            LogMessageError("计算机无可用端口.");
+                                        }
+                                        else
+                                        {
+                                            bool found = false;
+                                            foreach (string pi in ps)
+                                            {
+                                                if (string.Compare(pi.ToUpper().Trim(), _port.ToUpper().Trim()) == 0)
+                                                {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (found == false)
+                                            {
+                                                LogMessageError("配置文件中串口端口号项(" + _port + ")不正确,使用默认端口号:" + ps[0] + ".");
+                                                _port = ps[0];
+                                            }
+                                            else
+                                            {
+                                                LogMessageInformation("当前端口号:" + _port + ".");
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    LogMessageError("配置文件缺少串口端口号项.");
+
+                                    string[] ps = SerialPort.GetPortNames();
+                                    if (ps == null || ps.Length < 1)
+                                    {
+                                        LogMessageError("计算机无可用端口.");
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("使用默认端口号:" + ps[0] + ".");
+                                        _port = ps[0];
+                                    }
+                                }
+                                break;
+                            case "BAUD":
+                                if (xni.Attributes["value"] != null)
+                                {
+                                    _baud = xni.Attributes["value"].Value;
+                                    if (string.IsNullOrWhiteSpace(_baud))
+                                    {
+                                        LogMessageError("配置文件中串口波特率项为空.");
+                                    }
+                                    else
+                                    {
+                                        bool found = false;
+                                        foreach (string bi in _bauds)
+                                        {
+                                            if (string.Compare(bi.ToUpper().Trim(), _baud.ToUpper().Trim()) == 0)
+                                            {
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                        if (found == false)
+                                        {
+                                            LogMessageError("配置文件中串口波特率项(" + _baud + ")不正确,使用默认波特率:" + _bauds[0] + ".");
+                                            _baud = _bauds[0];
+                                        }
+                                        else
+                                        {
+                                            LogMessageInformation("当前波特率:" + _baud + ".");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    LogMessageError("配置文件缺少串口波特率项.");
+
+                                    LogMessageError("使用默认波特率:" + _bauds[0] + ".");
+                                    _baud = _bauds[0];
+                                }
+                                break;
+                            case "PARITY":
+                                break;
+                            case "DATA":
+                                break;
+                            case "START":
+                                break;
+                            case "STOP":
+                                break;
+                            case "TIMEOUT":
+                                break;
+                            case "SERVIP":
+                                break;
+                            case "SERVPORT":
+                                break;
+                        }
+                    }
+                    LogMessage("成功加载配置文件.", LogType.Information);
+                }
+                catch (Exception ex)
+                {
+                    LogMessage("加载配置文件出现错误,重置配置文件.\n" + ex.Message, LogType.Error);
+                    CreateNewConfig(false);
+                }
+            }
+            else
+            {
+                LogMessage("无配置文件,创建新配置文件.", LogType.Information);
+                CreateNewConfig();
+            }
+
+            LogMessageSeperator();
+        }
+
+        private void CreateNewConfig(bool isNew = true)
+        {
+            try
+            {
+                StreamWriter sw = new StreamWriter("config.xml", false);
+                sw.WriteLine("<Bumblebee>");
+                sw.WriteLine("</Bumblebee>");
+                sw.Flush();
+                sw.Close();
+                sw.Dispose();
+            }
+            catch (Exception ex)
+            {
+                if(isNew == true)
+                    LogMessage("创建新的配置文件出现错误.\n" + ex.Message, LogType.Error);
+                else
+                    LogMessage("重置配置文件出现错误.\n" + ex.Message, LogType.Error);
+            }
+        }
+
+        #region Serial Port Task
+
+        private void SerialPortTaskHandler()
+        {
+            try
+            {
+                while (_cts.IsCancellationRequested == false)
+                {
+                    lock (_cmdLock)
+                    {
+                        if (_cdQueue.Count > 0)
+                        {
+                            CmdDefinition cd = _cdQueue.Dequeue();
+
+                            #region Process Cmd
+
+                            #endregion
+                        }
+                    }
+
+                    Thread.Sleep(100);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("串口通信错误，请重新启动软件。\n" + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void PutCmd(CmdDefinition cd)
+        {
+            while (_cts.IsCancellationRequested == false)
+            {
+                lock (_cmdLock)
+                {
+                    if (_cdQueue.Count < 1)
+                    {
+                        _cdQueue.Enqueue(cd);
+
+                        break;
+                    }
+                }
+
+                Thread.Sleep(100);
+            }
+        }
+
+        #endregion
     }
 
     public abstract class NotifiedClass : INotifyPropertyChanged
@@ -954,6 +1370,95 @@ namespace Bumblebee
 
     public class CmdDefinition : NotifiedClass
     {
+        public static Dictionary<string, string> _definedCmds = new Dictionary<string, string>();
+
+        static CmdDefinition()
+        {
+            #region Get Cmd
+
+            _definedCmds.Add("00H", "AA 75 00 00 00 00 DF");
+            _definedCmds.Add("01H", "AA 75 01 00 00 00 DE");
+            _definedCmds.Add("02H", "AA 75 02 00 00 00 DD");
+            _definedCmds.Add("03H", "AA 75 03 00 00 00 DC");
+            _definedCmds.Add("04H", "AA 75 04 00 00 00 DB");
+            _definedCmds.Add("05H", "AA 75 05 00 00 00 DA");
+            _definedCmds.Add("06H", "AA 75 06 00 00 00 D9");
+            _definedCmds.Add("07H", "AA 75 07 00 00 00 D8");
+            _definedCmds.Add("08H", "");
+            _definedCmds.Add("09H", "");
+            _definedCmds.Add("10H", "");
+            _definedCmds.Add("11H", "");
+            _definedCmds.Add("12H", "");
+            _definedCmds.Add("13H", "");
+            _definedCmds.Add("14H", "");
+            _definedCmds.Add("15H", "");
+
+            #endregion
+
+            #region Set Cmd
+
+            _definedCmds.Add("82H", "");
+            _definedCmds.Add("83H", "");
+            _definedCmds.Add("84H", "");
+            _definedCmds.Add("C2H", "");
+            _definedCmds.Add("C3H", "");
+            _definedCmds.Add("C4H", "");
+
+            #endregion
+
+            #region Chk Cmd
+
+            _definedCmds.Add("E0H", "");
+            _definedCmds.Add("E1H", "");
+            _definedCmds.Add("E2H", "");
+            _definedCmds.Add("E3H", "");
+            _definedCmds.Add("E4H", "");
+
+            #endregion
+
+            #region Ext Get Cmd
+
+            _definedCmds.Add("20H", "");
+            _definedCmds.Add("21H", "");
+
+            #endregion
+
+            #region Ext Set Cmd
+
+            _definedCmds.Add("D0H", "");
+            _definedCmds.Add("D1H", "");
+
+            #endregion
+        }
+
+        private string _cmd = "";
+        public string CMD
+        {
+            get
+            {
+                return _cmd;
+            }
+            set
+            {
+                _cmd = value;
+                NotifyPropertyChanged("CMD");
+            }
+        }
+
+        private string _response = "";
+        public string Response
+        {
+            get
+            {
+                return _response;
+            }
+            set
+            {
+                _response = value;
+                NotifyPropertyChanged("Response");
+            }
+        }
+
         private string _cmdContent = "";
         public string CmdContent
         {

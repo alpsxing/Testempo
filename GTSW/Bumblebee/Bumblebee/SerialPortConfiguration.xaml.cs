@@ -132,7 +132,8 @@ namespace Bumblebee
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach (string s in SerialPort.GetPortNames())
+            string[] ps = SerialPort.GetPortNames();
+            foreach (string s in ps)
             {
                 _localPortOc.Add(s);
             }

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Bumblebee.TimeoutConfiguration"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="设置超时时间" Height="200" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="设置超时时间" Height="200" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/Bumblebee;component/Resources/timeoutconfig.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>

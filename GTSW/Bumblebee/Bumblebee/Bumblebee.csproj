@@ -43,22 +43,50 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="UIAutomationProvider">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="UIAutomationTypes">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Xceed.Wpf.DataGrid">
       <HintPath>.\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
@@ -203,14 +231,17 @@
     <Resource Include="Resources\trash.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\disconnect.png" />
-    <Resource Include="Resources\exit.png" />
+    <Resource Include="Resources\disconnect.ico" />
+    <Resource Include="Resources\exit.ico" />
     <Resource Include="Resources\pause.png" />
     <Resource Include="Resources\play.png" />
-    <Resource Include="Resources\serialportconfig.png" />
-    <Resource Include="Resources\serverconfig.png" />
-    <Resource Include="Resources\stop.png" />
-    <Resource Include="Resources\timeoutconfig.png" />
+    <Resource Include="Resources\serialportconfig.ico" />
+    <Resource Include="Resources\serverconfig.ico" />
+    <Resource Include="Resources\refreshserialport.ico" />
+    <Resource Include="Resources\app.ico" />
+    <Resource Include="Resources\login.ico" />
+    <Content Include="Resources\stop.png" />
+    <Resource Include="Resources\timeoutconfig.ico" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

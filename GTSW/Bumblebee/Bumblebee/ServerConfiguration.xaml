@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Bumblebee.ServerConfiguration"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="设置管理平台参数" Height="150" Width="300" WindowStartupLocation="CenterScreen">
+        Title="设置管理平台参数" Height="150" Width="300" WindowStartupLocation="CenterScreen" Icon="/Bumblebee;component/Resources/serverconfig.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>

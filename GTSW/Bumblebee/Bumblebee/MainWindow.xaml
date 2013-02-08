@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:bb="clr-namespace:Bumblebee"
-        Title="GB/T 19056-2013数据分析软件" Width="1000" Height="600" WindowStartupLocation="CenterScreen">
+        Title="GB/T 19056-2013数据分析软件" Width="1000" Height="800" WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded" Icon="/Bumblebee;component/Resources/app.ico">
     <Window.Resources>
         <bb:Bools2BoolConverter x:Key="Bools2BoolConverter"/>
         <bb:Bools2BoolOrConverter x:Key="Bools2BoolOrConverter"/>
@@ -14,44 +15,59 @@
         <Menu DockPanel.Dock="Top" Height="27">
             <MenuItem Header="文件">
                 <MenuItem Header="打开数据报表(PDF)" 
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                 <MenuItem Header="打开U盘数据文件(VDR)" 
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                 <MenuItem Header="打开U盘数据报表(PDF)" 
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                 <Separator/>
                 <MenuItem Header="退出" Click="Window_Exit"
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
-                        <Image Source="resources/exit.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
+                        <Image Source="resources/exit.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="设置">
-                <MenuItem Header="设置串口参数" Click="ConfigSerialPort_MenuItem_Click"
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                <MenuItem Header="重新连接串口" Click="RefreshSerialPort_MenuItem_Click"
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
-                        <Image Source="resources/serialportconfig.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
+                        <Image Source="resources/refreshserialport.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="关闭串口"
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                <MenuItem Header="设置串口参数" Click="ConfigSerialPort_MenuItem_Click"
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
-                        <Image Source="resources/disconnect.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
+                        <Image Source="resources/serialportconfig.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="关闭串口" Click="DisconnectSerialPort_MenuItem_Click"
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="resources/disconnect.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="设置超时时间" Click="ConfigTimeout_MenuItem_Click"
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
-                        <Image Source="resources/timeoutconfig.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
+                        <Image Source="resources/timeoutconfig.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="连接管理平台" Click="ConfigServer_MenuItem_Click"
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.Icon>
-                        <Image Source="resources/serverconfig.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
+                        <Image Source="resources/serverconfig.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -62,6 +78,47 @@
                           HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
             </MenuItem>
         </Menu>
+        <ToolBar DockPanel.Dock="Top" Height="35">
+            <Button Margin="-1" Click="RefreshSerialPort_MenuItem_Click"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/refreshserialport.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Margin="-1" Click="ConfigSerialPort_MenuItem_Click"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/serialportconfig.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Margin="-1" Click="DisconnectSerialPort_MenuItem_Click"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/disconnect.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Margin="-1" Click="ConfigTimeout_MenuItem_Click"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/timeoutconfig.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Margin="-1" Click="ConfigServer_MenuItem_Click"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/serverconfig.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
+            <Button Margin="-1" Click="Window_Exit"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/exit.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+        </ToolBar>
         <StatusBar DockPanel.Dock="Bottom" Height="30">
             <ProgressBar Value="{Binding Path=PBarValue,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                          Minimum="{Binding Path=PBarMinimum,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
@@ -327,11 +384,21 @@
                                     </DockPanel>
                                 </Button.Content>
                             </Button>
-                            <CheckBox Content="日志自动清除" DockPanel.Dock="Right"
+                            <CheckBox Content="日志自动清除" DockPanel.Dock="Right" IsChecked="True" IsThreeState="False"
                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             <Grid/>
                         </DockPanel>
-                        <RichTextBox IsReadOnly="True"/>
+                        <RichTextBox Margin="0,0,3,0" Name="rtxtLog" IsReadOnly="True" FontSize="11"
+                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" FontFamily="SimSun">
+                            <RichTextBox.Resources>
+                                <Style TargetType="{x:Type Paragraph}">
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </RichTextBox.Resources>
+                            <RichTextBox.Document>
+                                <FlowDocument Focusable="True" LineHeight="1" Name="fldocLog"/>
+                            </RichTextBox.Document>
+                        </RichTextBox>
                     </DockPanel>
                 </TabItem>
                 <TabItem Header="数据16进制显示">
@@ -355,11 +422,21 @@
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
-                                    <CheckBox Content="接收显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0"
+                                    <CheckBox Content="接收显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0" IsChecked="True" IsThreeState="False"
                                               HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     <Grid/>
                                 </DockPanel>
-                                <RichTextBox IsReadOnly="True"/>
+                                <RichTextBox Margin="0,0,3,0" Name="rtxtRecv" IsReadOnly="True" FontSize="11"
+                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                                    <RichTextBox.Resources>
+                                        <Style TargetType="{x:Type Paragraph}">
+                                            <Setter Property="Margin" Value="0"/>
+                                        </Style>
+                                    </RichTextBox.Resources>
+                                    <RichTextBox.Document>
+                                        <FlowDocument Focusable="True" LineHeight="1" Name="fldocRecv"/>
+                                    </RichTextBox.Document>
+                                </RichTextBox>
                             </DockPanel>
                         </GroupBox>
                         <GridSplitter Grid.Row="0" Height="3"
@@ -379,11 +456,21 @@
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
-                                    <CheckBox Content="发送显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <CheckBox Content="发送显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0" IsChecked="True" IsThreeState="False"
+                                              HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     <Grid/>
                                 </DockPanel>
-                                <RichTextBox IsReadOnly="True"/>
+                                <RichTextBox Margin="0,0,3,0" Name="rtxtSend" IsReadOnly="True" FontSize="11"
+                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                                    <RichTextBox.Resources>
+                                        <Style TargetType="{x:Type Paragraph}">
+                                            <Setter Property="Margin" Value="0"/>
+                                        </Style>
+                                    </RichTextBox.Resources>
+                                    <RichTextBox.Document>
+                                        <FlowDocument Focusable="True" LineHeight="1" Name="fldocSend"/>
+                                    </RichTextBox.Document>
+                                </RichTextBox>
                             </DockPanel>
                         </GroupBox>
                     </Grid>
