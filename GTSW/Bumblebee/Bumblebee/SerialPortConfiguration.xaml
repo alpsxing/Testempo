@@ -26,12 +26,12 @@
         <Label Grid.Row="4" Grid.Column="0" Margin="0,1,0,1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="数据位"/>
         <Label Grid.Row="5" Grid.Column="0" Margin="0,1,0,1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="起始位"/>
         <Label Grid.Row="6" Grid.Column="0" Margin="0,1,0,1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="停止位"/>
-        <Button Grid.Row="8" Grid.Column="0" Margin="0,2,-20,2" Width="75" Content="确认" Name="btnOK"/>
-        <Button Grid.Row="8" Grid.Column="1" Margin="10,2,0,2" Width="75" Content="取消" IsCancel="True" IsDefault="True"/>
+        <Button Grid.Row="8" Grid.Column="0" Margin="0,2,-20,2" Width="75" Content="确认" Name="btnOK" Click="OK_Button_Click"/>
+        <Button Grid.Row="8" Grid.Column="1" Margin="10,2,0,2" Width="75" Content="取消" IsCancel="True" IsDefault="True" Click="Cancel_Button_Click"/>
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" Name="cboxSerialPort"
-                  SelectedItem="{Binding Path=SelectedSerialPort,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}"/>
+                  SelectedValue="{Binding Path=SelectedSerialPort,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,2,2,2" Name="cboxBaud" SelectedIndex="0"
-                  SelectedItem="{Binding Path=SelectedBaud,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
+                  SelectedValue="{Binding Path=SelectedBaud,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
             <ComboBoxItem Content="115200"/>
             <ComboBoxItem Content="57600"/>
             <ComboBoxItem Content="56000"/>
@@ -46,24 +46,24 @@
             <ComboBoxItem Content="300"/>
         </ComboBox>
         <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,2,2,2" Name="cboxParity" SelectedIndex="0"
-                  SelectedItem="{Binding Path=SelectedParity,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
+                  SelectedValue="{Binding Path=SelectedParity,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
             <ComboBoxItem Content="Odd"/>
             <ComboBoxItem Content="Even"/>
             <ComboBoxItem Content="None"/>
         </ComboBox>
         <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,2,2,2" Name="cboxDataBit" SelectedIndex="0"
-                  SelectedItem="{Binding Path=SelectedDataBit,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
+                  SelectedValue="{Binding Path=SelectedDataBit,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
             <ComboBoxItem Content="8"/>
             <ComboBoxItem Content="7"/>
             <ComboBoxItem Content="6"/>
             <ComboBoxItem Content="5"/>
         </ComboBox>
         <ComboBox Grid.Row="5" Grid.Column="1" Margin="0,2,2,2" Name="cboxStartBit" SelectedIndex="0"
-                  SelectedItem="{Binding Path=SelectedStartBit,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
+                  SelectedValue="{Binding Path=SelectedStartBit,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
             <ComboBoxItem Content="1"/>
         </ComboBox>
         <ComboBox Grid.Row="6" Grid.Column="1" Margin="0,2,2,2" Name="cboxStopBit" SelectedIndex="0"
-                  SelectedItem="{Binding Path=SelectedStopBit,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
+                  SelectedValue="{Binding Path=SelectedStopBit,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}">
             <ComboBoxItem Content="1"/>
             <ComboBoxItem Content="1.5"/>
             <ComboBoxItem Content="2"/>

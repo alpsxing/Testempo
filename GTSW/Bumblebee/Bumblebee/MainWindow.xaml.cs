@@ -74,6 +74,28 @@ namespace Bumblebee
             "300"
         };
 
+        private string[] _parities = new string[]
+        {
+            "Odd",
+            "Even",
+            "None"
+        };
+
+        private string[] _dataBits = new string[]
+        {
+            "8",
+            "7",
+            "6",
+            "5"
+        };
+
+        private string[] _stopBits = new string[]
+        {
+            "1",
+            "1.5",
+            "2"
+        };
+
         private RunMode _runMode = RunMode.User;
         private bool _normalClose = false;
 
@@ -89,16 +111,6 @@ namespace Bumblebee
         private Queue<Tuple<string, LogType>> _logQueue = new Queue<Tuple<string, LogType>>();
 
         private XmlDocument _xd = new XmlDocument();
-
-        private string _port = "";
-        private string _baud = "";
-        private string _parity = "";
-        private string _data = "";
-        private string _start = "";
-        private string _stop = "";
-        private string _timeout = "";
-        private string _servip = "";
-        private string _servport = "";
 
         #endregion
 
@@ -295,6 +307,133 @@ namespace Bumblebee
                 NotifyPropertyChanged("ReadyString");
             }
         }
+
+        private string _port = "";
+        public string Port
+        {
+            get
+            {
+                return _port;
+            }
+            set
+            {
+                _port = value;
+                NotifyPropertyChanged("Port");
+            }
+        }
+
+        private string _baud = "";
+        public string Baud
+        {
+            get
+            {
+                return _baud;
+            }
+            set
+            {
+                _baud = value;
+                NotifyPropertyChanged("Baud");
+            }
+        }
+
+        private string _parity = "";
+        public string Parity
+        {
+            get
+            {
+                return _parity;
+            }
+            set
+            {
+                _parity = value;
+                NotifyPropertyChanged("Parity");
+            }
+        }
+
+        private string _dataBit = "";
+        public string DataBit
+        {
+            get
+            {
+                return _dataBit;
+            }
+            set
+            {
+                _dataBit = value;
+                NotifyPropertyChanged("DataBit");
+            }
+        }
+
+        private string _startBit = "";
+        public string StartBit
+        {
+            get
+            {
+                return _startBit;
+            }
+            set
+            {
+                _startBit = value;
+                NotifyPropertyChanged("StartBit");
+            }
+        }
+
+        private string _stopBit = "";
+        public string StopBit
+        {
+            get
+            {
+                return _stopBit;
+            }
+            set
+            {
+                _stopBit = value;
+                NotifyPropertyChanged("StopBit");
+            }
+        }
+
+        private string _timeout = "";
+        public string TimeOut
+        {
+            get
+            {
+                return _timeout;
+            }
+            set
+            {
+                _timeout = value;
+                NotifyPropertyChanged("TimeOut");
+            }
+        }
+
+        private string _serverip = "";
+        public string ServerIP
+        {
+            get
+            {
+                return _serverip;
+            }
+            set
+            {
+                _serverip = value;
+                NotifyPropertyChanged("ServerIP");
+            }
+        }
+
+        private string _serverport = "";
+        public string ServerPort
+        {
+            get
+            {
+                return _serverport;
+            }
+            set
+            {
+                _serverport = value;
+                NotifyPropertyChanged("ServerPort");
+            }
+        }
+
 
         #endregion
 
@@ -717,7 +856,6 @@ namespace Bumblebee
 
             _cts = new CancellationTokenSource();
             _serialPosrtTask = Task.Factory.StartNew(new Action(SerialPortTaskHandler), _cts.Token);
-            _displayLogTask = Task.Factory.StartNew(new Action(DisplayLogHandler), _cts.Token);
         }
 
         #region Window Exit
@@ -799,6 +937,12 @@ namespace Bumblebee
             bool? b = spc.ShowDialog();
             if (b == true)
             {
+                Port = spc.SelectedSerialPort;
+                Baud = spc.SelectedBaud;
+                Parity = spc.SelectedParity;
+                DataBit = spc.SelectedDataBit;
+                StartBit = spc.SelectedStartBit;
+                StopBit = spc.SelectedStopBit;
                 SaveConfig();
             }
         }
@@ -813,6 +957,7 @@ namespace Bumblebee
             bool? b = tc.ShowDialog();
             if (b == true)
             {
+                TimeOut = tc.TimeOut.ToString();
                 SaveConfig();
             }
         }
@@ -823,6 +968,8 @@ namespace Bumblebee
             bool? b = sc.ShowDialog();
             if (b == true)
             {
+                ServerIP = sc.ServerIP;
+                ServerPort = sc.ServerPort.ToString();
                 SaveConfig();
             }
         }
@@ -1063,6 +1210,8 @@ namespace Bumblebee
                     _sPort = null;
                 }
             }
+
+            _displayLogTask = Task.Factory.StartNew(new Action(DisplayLogHandler), _cts.Token);
         }
 
         private void LogMessageSeperator()
@@ -1147,6 +1296,42 @@ namespace Bumblebee
 
         private void SaveConfig()
         {
+            try
+            {
+                StreamWriter sw = new StreamWriter("config.xml", false);
+                sw.WriteLine("<bumblebee>");
+                sw.WriteLine("    <port>" + Port + "</port>");
+                sw.WriteLine("    <baud>" + Baud + "</baud>");
+                sw.WriteLine("    <parity>" + Parity + "</parity>");
+                sw.WriteLine("    <data>" + DataBit + "</data>");
+                sw.WriteLine("    <start>" + StartBit + "</start>");
+                sw.WriteLine("    <stop>" + StopBit + "</stop>");
+                sw.WriteLine("    <timeout>" + TimeOut + "</timeout>");
+                sw.WriteLine("    <serverip>" + ServerIP + "</serverip>");
+                sw.WriteLine("    <serverport>" + ServerPort + "</serverport>");
+                sw.WriteLine("</bumblebee>");
+                sw.Flush();
+                sw.Close();
+                sw.Dispose();
+
+                LogMessage("成功保存配置文件.", LogType.Information);
+            }
+            catch (Exception ex)
+            {
+                LogMessage("保存配置文件出现错误.\n" + ex.Message, LogType.Error);
+            }
+
+            LogMessageInformation("当前端口号:" + Port + ".");
+            LogMessageInformation("当前波特率:" + Baud + ".");
+            LogMessageInformation("当前校验位:" + Parity + ".");
+            LogMessageInformation("当前数据位:" + DataBit + ".");
+            LogMessageInformation("当前开始位:" + StartBit + ".");
+            LogMessageInformation("当前停止位:" + StopBit + ".");
+            LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+            LogMessageInformation("当前服务器IP:" + ServerIP + ".");
+            LogMessageInformation("当前服务器端口:" + ServerPort + ".");
+
+            LogMessageSeperator();
         }
 
         private void LoadConfig()
@@ -1157,22 +1342,92 @@ namespace Bumblebee
                 {
                     _xd.Load("config.xml");
                     XmlNodeList xnl = _xd.ChildNodes;
-                    foreach (XmlNode xni in xnl)
+                    if (xnl.Count != 1)
                     {
-                        switch (xni.Name.ToUpper().Trim())
+                        LogMessage("加载配置文件出现错误,重置配置文件.", LogType.Error);
+                        CreateNewConfig(false);
+                        string[] ps = SerialPort.GetPortNames();
+                        if (ps == null || ps.Length < 1)
                         {
-                            default: 
-                                break;
-                            case "PORT":
-                                if (xni.Attributes["value"] != null)
-                                {
-                                    _port = xni.Attributes["value"].Value;
-                                    if (string.IsNullOrWhiteSpace(_port))
+                            Port = "";
+                        }
+                        else
+                        {
+                            Port = ps[0];
+                        }
+                        Baud = _bauds[0];
+                        Parity = _parities[0];
+                        DataBit = _dataBits[0];
+                        StartBit = "1";
+                        StopBit = _stopBits[0];
+                        TimeOut = "1000";
+                        ServerIP = "127.0.0.1";
+                        ServerPort = "8678";
+                    }
+                    else
+                    {
+                        XmlNodeList xnls = xnl[0].ChildNodes;
+                        foreach (XmlNode xni in xnls)
+                        {
+                            switch (xni.Name.ToUpper().Trim())
+                            {
+                                default:
+                                    break;
+                                case "PORT":
+                                    #region
+
+                                    if (xni.InnerText != null)
                                     {
-                                        LogMessageError("配置文件中串口端口号项为空.");
+                                        Port = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(Port))
+                                        {
+                                            LogMessageError("配置文件中串口端口号项为空.");
+
+                                            string[] ps = SerialPort.GetPortNames();
+                                            if (ps == null || ps.Length < 1)
+                                            {
+                                                LogMessageError("计算机无可用端口.");
+                                            }
+                                            else
+                                            {
+                                                LogMessageError("使用默认端口号:" + ps[0] + ".");
+                                                Port = ps[0];
+                                            }
+                                        }
+                                        else
+                                        {
+                                            string[] ps = SerialPort.GetPortNames();
+                                            if (ps == null || ps.Length < 1)
+                                            {
+                                                LogMessageError("计算机无可用端口.");
+                                            }
+                                            else
+                                            {
+                                                bool found = false;
+                                                foreach (string pi in ps)
+                                                {
+                                                    if (string.Compare(pi.ToUpper().Trim(), Port.ToUpper().Trim()) == 0)
+                                                    {
+                                                        found = true;
+                                                        break;
+                                                    }
+                                                }
+                                                if (found == false)
+                                                {
+                                                    LogMessageError("配置文件中串口端口号项(" + Port + ")不正确,使用默认端口号:" + ps[0] + ".");
+                                                    Port = ps[0];
+                                                }
+                                                else
+                                                {
+                                                    LogMessageInformation("当前端口号:" + Port + ".");
+                                                }
+                                            }
+                                        }
                                     }
                                     else
                                     {
+                                        LogMessageError("配置文件缺少串口端口号项.");
+
                                         string[] ps = SerialPort.GetPortNames();
                                         if (ps == null || ps.Length < 1)
                                         {
@@ -1180,10 +1435,33 @@ namespace Bumblebee
                                         }
                                         else
                                         {
+                                            LogMessageError("使用默认端口号:" + ps[0] + ".");
+                                            Port = ps[0];
+                                        }
+                                    }
+                                    xni.InnerText = Port;
+
+                                    #endregion
+                                    break;
+                                case "BAUD":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        Baud = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(Baud))
+                                        {
+                                            LogMessageError("配置文件中串口波特率项为空.");
+
+                                            LogMessageError("使用默认波特率:" + _bauds[0] + ".");
+                                            Baud = _bauds[0];
+                                        }
+                                        else
+                                        {
                                             bool found = false;
-                                            foreach (string pi in ps)
+                                            foreach (string bi in _bauds)
                                             {
-                                                if (string.Compare(pi.ToUpper().Trim(), _port.ToUpper().Trim()) == 0)
+                                                if (string.Compare(bi.ToUpper().Trim(), Baud.ToUpper().Trim()) == 0)
                                                 {
                                                     found = true;
                                                     break;
@@ -1191,98 +1469,380 @@ namespace Bumblebee
                                             }
                                             if (found == false)
                                             {
-                                                LogMessageError("配置文件中串口端口号项(" + _port + ")不正确,使用默认端口号:" + ps[0] + ".");
-                                                _port = ps[0];
+                                                LogMessageError("配置文件中串口波特率项(" + Baud + ")不正确,使用默认波特率:" + _bauds[0] + ".");
+                                                Baud = _bauds[0];
                                             }
                                             else
                                             {
-                                                LogMessageInformation("当前端口号:" + _port + ".");
+                                                LogMessageInformation("当前波特率:" + Baud + ".");
                                             }
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    LogMessageError("配置文件缺少串口端口号项.");
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口波特率项.");
 
-                                    string[] ps = SerialPort.GetPortNames();
-                                    if (ps == null || ps.Length < 1)
-                                    {
-                                        LogMessageError("计算机无可用端口.");
+                                        LogMessageError("使用默认波特率:" + _bauds[0] + ".");
+                                        Baud = _bauds[0];
                                     }
-                                    else
+                                    xni.InnerText = Baud;
+
+                                    #endregion
+                                    break;
+                                case "PARITY":
+                                    #region
+
+                                    if (xni.InnerText != null)
                                     {
-                                        LogMessageError("使用默认端口号:" + ps[0] + ".");
-                                        _port = ps[0];
-                                    }
-                                }
-                                break;
-                            case "BAUD":
-                                if (xni.Attributes["value"] != null)
-                                {
-                                    _baud = xni.Attributes["value"].Value;
-                                    if (string.IsNullOrWhiteSpace(_baud))
-                                    {
-                                        LogMessageError("配置文件中串口波特率项为空.");
-                                    }
-                                    else
-                                    {
-                                        bool found = false;
-                                        foreach (string bi in _bauds)
+                                        Parity = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(Parity))
                                         {
-                                            if (string.Compare(bi.ToUpper().Trim(), _baud.ToUpper().Trim()) == 0)
-                                            {
-                                                found = true;
-                                                break;
-                                            }
-                                        }
-                                        if (found == false)
-                                        {
-                                            LogMessageError("配置文件中串口波特率项(" + _baud + ")不正确,使用默认波特率:" + _bauds[0] + ".");
-                                            _baud = _bauds[0];
+                                            LogMessageError("配置文件中串口校验位项为空.");
                                         }
                                         else
                                         {
-                                            LogMessageInformation("当前波特率:" + _baud + ".");
+                                            bool found = false;
+                                            foreach (string bi in _parities)
+                                            {
+                                                if (string.Compare(bi.ToUpper().Trim(), Parity.ToUpper().Trim()) == 0)
+                                                {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (found == false)
+                                            {
+                                                LogMessageError("配置文件中串口校验位项(" + Parity + ")不正确,使用默认校验位:" + _parities[0] + ".");
+                                                Parity = _parities[0];
+                                            }
+                                            else
+                                            {
+                                                LogMessageInformation("当前校验位:" + Parity + ".");
+                                            }
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    LogMessageError("配置文件缺少串口波特率项.");
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口校验位项.");
 
-                                    LogMessageError("使用默认波特率:" + _bauds[0] + ".");
-                                    _baud = _bauds[0];
-                                }
-                                break;
-                            case "PARITY":
-                                break;
-                            case "DATA":
-                                break;
-                            case "START":
-                                break;
-                            case "STOP":
-                                break;
-                            case "TIMEOUT":
-                                break;
-                            case "SERVIP":
-                                break;
-                            case "SERVPORT":
-                                break;
+                                        LogMessageError("使用默认校验位:" + _parities[0] + ".");
+                                        Parity = _parities[0];
+                                    }
+                                    xni.InnerText = Parity;
+
+                                    #endregion
+                                    break;
+                                case "DATA":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        DataBit = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(DataBit))
+                                        {
+                                            LogMessageError("配置文件中串口数据位项为空.");
+                                        }
+                                        else
+                                        {
+                                            bool found = false;
+                                            foreach (string bi in _dataBits)
+                                            {
+                                                if (string.Compare(bi.ToUpper().Trim(), DataBit.ToUpper().Trim()) == 0)
+                                                {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (found == false)
+                                            {
+                                                LogMessageError("配置文件中串口数据位项(" + DataBit + ")不正确,使用默认数据位:" + _dataBits[0] + ".");
+                                                DataBit = _dataBits[0];
+                                            }
+                                            else
+                                            {
+                                                LogMessageInformation("当前数据位:" + DataBit + ".");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口数据位项.");
+
+                                        LogMessageError("使用默认数据位:" + _dataBits[0] + ".");
+                                        DataBit = _dataBits[0];
+                                    }
+                                    xni.InnerText = DataBit;
+
+                                    #endregion
+                                    break;
+                                case "START":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        StartBit = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(StartBit))
+                                        {
+                                            LogMessageError("配置文件中串口起始位项为空.");
+                                        }
+                                        else
+                                        {
+                                            if (StartBit != "1")
+                                            {
+                                                LogMessageError("配置文件中串口起始位项(" + StartBit + ")不正确,使用默认起始位:1.");
+                                                StartBit = "1";
+                                            }
+                                            else
+                                            {
+                                                LogMessageInformation("当前起始位:" + StartBit + ".");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口起始位项.");
+
+                                        LogMessageError("使用默认起始位:1.");
+                                        StartBit = "1";
+                                    }
+                                    xni.InnerText = StartBit;
+
+                                    #endregion
+                                    break;
+                                case "STOP":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        StopBit = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(StopBit))
+                                        {
+                                            LogMessageError("配置文件中串口停止位项为空.");
+                                        }
+                                        else
+                                        {
+                                            bool found = false;
+                                            foreach (string bi in _stopBits)
+                                            {
+                                                if (string.Compare(bi.ToUpper().Trim(), StopBit.ToUpper().Trim()) == 0)
+                                                {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (found == false)
+                                            {
+                                                LogMessageError("配置文件中串口停止位项(" + StopBit + ")不正确,使用默认停止位:" + _stopBits[0] + ".");
+                                                StopBit = _stopBits[0];
+                                            }
+                                            else
+                                            {
+                                                LogMessageInformation("当前停止位:" + StopBit + ".");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口停止位项.");
+
+                                        LogMessageError("使用默认停止位:" + _stopBits[0] + ".");
+                                        StopBit = _stopBits[0];
+                                    }
+                                    xni.InnerText = StopBit;
+
+                                    #endregion
+                                    break;
+                                case "TIMEOUT":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        TimeOut = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(TimeOut))
+                                        {
+                                            LogMessageError("配置文件中超时时间项为空.");
+                                        }
+                                        else
+                                        {
+                                            int timeout = -1;
+                                            if (int.TryParse(TimeOut, out timeout) == false)
+                                            {
+                                                LogMessageError("配置文件中超时时间(" + TimeOut + ")不正确,使用默认超时时间:1000ms.");
+                                                TimeOut = "1000";
+                                            }
+                                            else
+                                            {
+                                                if (timeout < 1)
+                                                {
+                                                    LogMessageError("配置文件中超时时间(" + TimeOut + ")不正确,使用默认超时时间:1000ms.");
+                                                    TimeOut = "1000";
+                                                }
+                                                else
+                                                {
+                                                    LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少超时时间项.");
+
+                                        LogMessageError("使用默认超时时间:1000ms.");
+                                        TimeOut = "1000";
+                                    }
+                                    xni.InnerText = TimeOut;
+
+                                    #endregion
+                                    break;
+                                case "SERVERIP":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        ServerIP = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(ServerIP))
+                                        {
+                                            LogMessageError("配置文件中服务器IP项为空.");
+                                        }
+                                        else
+                                        {
+                                            IPAddress timeout = null;
+                                            if (IPAddress.TryParse(ServerIP, out timeout) == false)
+                                            {
+                                                LogMessageError("配置文件中服务器IP(" + ServerIP + ")不正确,使用默认服务器IP:127.0.0.1.");
+                                                TimeOut = "127.0.0.1";
+                                            }
+                                            else
+                                            {
+                                                LogMessageInformation("当前服务器IP:" + ServerIP + ".");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少服务器IP项.");
+
+                                        LogMessageError("使用默认服务器IP:127.0.0.1.");
+                                        ServerIP = "127.0.0.1";
+                                    }
+                                    xni.InnerText = ServerIP;
+
+                                    #endregion
+                                    break;
+                                case "SERVERPORT":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        ServerPort = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(ServerPort))
+                                        {
+                                            LogMessageError("配置文件中服务器端口项为空.");
+                                        }
+                                        else
+                                        {
+                                            int timeout = -1;
+                                            if (int.TryParse(ServerPort, out timeout) == false)
+                                            {
+                                                LogMessageError("配置文件中服务器端口(" + ServerPort + ")不正确,使用默认服务器端口:8678.");
+                                                TimeOut = "8678";
+                                            }
+                                            else
+                                            {
+                                                if (timeout < 1)
+                                                {
+                                                    LogMessageError("配置文件中服务器端口(" + ServerPort + ")不正确,使用默认服务器端口:8678.");
+                                                    ServerPort = "8678";
+                                                }
+                                                else
+                                                {
+                                                    LogMessageInformation("当前服务器端口:" + ServerPort + ".");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少服务器端口项.");
+
+                                        LogMessageError("使用默认服务器端口:8678.");
+                                        ServerPort = "8678";
+                                    }
+                                    xni.InnerText = ServerPort;
+
+                                    #endregion
+                                    break;
+                            }
                         }
+
+                        LogMessage("成功加载配置文件.", LogType.Information);
                     }
-                    LogMessage("成功加载配置文件.", LogType.Information);
                 }
                 catch (Exception ex)
                 {
                     LogMessage("加载配置文件出现错误,重置配置文件.\n" + ex.Message, LogType.Error);
                     CreateNewConfig(false);
+                    string[] ps = SerialPort.GetPortNames();
+                    if (ps == null || ps.Length < 1)
+                    {
+                        Port = "";
+                    }
+                    else
+                    {
+                        Port = ps[0];
+                    }
+                    Baud = _bauds[0];
+                    Parity = _parities[0];
+                    DataBit = _dataBits[0];
+                    StartBit = "1";
+                    StopBit = _stopBits[0];
+                    TimeOut = "1000";
+                    ServerIP = "127.0.0.1";
+                    ServerPort = "8678";
+
+                    LogMessageInformation("当前端口号:" + Port + ".");
+                    LogMessageInformation("当前波特率:" + Baud + ".");
+                    LogMessageInformation("当前校验位:" + Parity + ".");
+                    LogMessageInformation("当前数据位:" + DataBit + ".");
+                    LogMessageInformation("当前开始位:" + StartBit + ".");
+                    LogMessageInformation("当前停止位:" + StopBit + ".");
+                    LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+                    LogMessageInformation("当前服务器IP:" + ServerIP + ".");
+                    LogMessageInformation("当前服务器端口:" + ServerPort + ".");
                 }
             }
             else
             {
                 LogMessage("无配置文件,创建新配置文件.", LogType.Information);
                 CreateNewConfig();
+                string[] ps = SerialPort.GetPortNames();
+                if (ps == null || ps.Length < 1)
+                {
+                    Port = "";
+                }
+                else
+                {
+                    Port = ps[0];
+                }
+                Baud = _bauds[0];
+                Parity = _parities[0];
+                DataBit = _dataBits[0];
+                StartBit = "1";
+                StopBit = _stopBits[0];
+                TimeOut = "1000";
+                ServerIP = "127.0.0.1";
+                ServerPort = "8678";
+
+                LogMessageInformation("当前端口号:" + Port + ".");
+                LogMessageInformation("当前波特率:" + Baud + ".");
+                LogMessageInformation("当前校验位:" + Parity + ".");
+                LogMessageInformation("当前数据位:" + DataBit + ".");
+                LogMessageInformation("当前开始位:" + StartBit + ".");
+                LogMessageInformation("当前停止位:" + StopBit + ".");
+                LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+                LogMessageInformation("当前服务器IP:" + ServerIP + ".");
+                LogMessageInformation("当前服务器端口:" + ServerPort + ".");
             }
 
             LogMessageSeperator();
@@ -1293,8 +1853,25 @@ namespace Bumblebee
             try
             {
                 StreamWriter sw = new StreamWriter("config.xml", false);
-                sw.WriteLine("<Bumblebee>");
-                sw.WriteLine("</Bumblebee>");
+                sw.WriteLine("<bumblebee>");
+                string[] ps = SerialPort.GetPortNames();
+                if (ps == null || ps.Length < 1)
+                {
+                    sw.WriteLine("    <port></port>");
+                }
+                else
+                {
+                    sw.WriteLine("    <port>" + ps[0] + "</port>");
+                }
+                sw.WriteLine("    <baud>" + _bauds[0] + "</baud>");
+                sw.WriteLine("    <parity>" +_parities[0]+ "</parity>");
+                sw.WriteLine("    <data>" + _dataBits[0] + "</data>");
+                sw.WriteLine("    <start>1</start>");
+                sw.WriteLine("    <stop>" + _stopBits[0] + "</stop>");
+                sw.WriteLine("    <timeout>1000</timeout>");
+                sw.WriteLine("    <serverip>127.0.0.1</serverip>");
+                sw.WriteLine("    <serverport>8678</serverport>");
+                sw.WriteLine("</bumblebee>");
                 sw.Flush();
                 sw.Close();
                 sw.Dispose();

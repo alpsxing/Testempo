@@ -388,7 +388,7 @@
                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             <Grid/>
                         </DockPanel>
-                        <RichTextBox Margin="0,0,3,0" Name="rtxtLog" IsReadOnly="True" FontSize="11"
+                        <RichTextBox Margin="0,0,3,0" Name="rtxtLog" IsReadOnly="True" FontSize="13"
                                              VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" FontFamily="SimSun">
                             <RichTextBox.Resources>
                                 <Style TargetType="{x:Type Paragraph}">
