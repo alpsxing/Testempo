@@ -436,6 +436,47 @@ namespace Bumblebee
             }
         }
 
+        private bool? _autoClearLog = true;
+        public bool? AutoClearLog
+        {
+            get
+            {
+                return _autoClearLog;
+            }
+            set
+            {
+                _autoClearLog = value;
+                NotifyPropertyChanged("AutoClearLog");
+            }
+        }
+
+        private bool? _autoClearRecv = true;
+        public bool? AutoClearRecv
+        {
+            get
+            {
+                return _autoClearRecv;
+            }
+            set
+            {
+                _autoClearRecv = value;
+                NotifyPropertyChanged("AutoClearRecv");
+            }
+        }
+
+        private bool? _autoClearSend = true;
+        public bool? AutoClearSend
+        {
+            get
+            {
+                return _autoClearSend;
+            }
+            set
+            {
+                _autoClearSend = value;
+                NotifyPropertyChanged("AutoClearSend");
+            }
+        }
 
         #endregion
 
@@ -920,6 +961,11 @@ namespace Bumblebee
                 cd.CmdState = "设置完成.";
                 cd.StartDateTime = gcc.StartDateTime;
                 cd.StopDateTime = gcc.StopDateTime;
+                foreach (CmdDefinition cdi in _getCmdOc)
+                {
+                    cdi.StartDateTime = gcc.StartDateTime;
+                    cdi.StopDateTime = gcc.StopDateTime;
+                }
                 cd.DataCountPerUnit = gcc.UnitData;
             }
             else
@@ -2041,6 +2087,13 @@ namespace Bumblebee
         {
             InRun = true;
 
+            if (AutoClearLog == true)
+                fldocLog.Blocks.Clear();
+            if (AutoClearRecv == true)
+                fldocRecv.Blocks.Clear();
+            if (AutoClearSend == true)
+                fldocSend.Blocks.Clear();
+
             _serialPortTask = Task.Factory.StartNew(new Action(SerialPortTaskHander), _cts.Token);
         }
 
@@ -2048,7 +2101,27 @@ namespace Bumblebee
         {
             try
             {
-                Thread.Sleep(3000);
+                foreach (CmdDefinition cdi in _getCmdOc)
+                {
+                    if (cdi.CmdSelected == false)
+                        continue;
+                }
+
+                foreach (CmdDefinition cdi in _setCmdOc)
+                {
+                }
+
+                foreach (CmdDefinition cdi in _chkCmdOc)
+                {
+                }
+
+                foreach (CmdDefinition cdi in _extGetCmdOc)
+                {
+                }
+
+                foreach (CmdDefinition cdi in _extSetCmdOc)
+                {
+                }
             }
             catch (Exception ex)
             {
@@ -2072,66 +2145,66 @@ namespace Bumblebee
 
     public class CmdDefinition : NotifiedClass
     {
-        public static Dictionary<string, string> _definedCmds = new Dictionary<string, string>();
+        //public static Dictionary<string, string> _definedCmds = new Dictionary<string, string>();
 
-        static CmdDefinition()
-        {
-            #region Get Cmd
+        //static CmdDefinition()
+        //{
+        //    #region Get Cmd
 
-            _definedCmds.Add("00H", "AA 75 00 00 00 00 DF");
-            _definedCmds.Add("01H", "AA 75 01 00 00 00 DE");
-            _definedCmds.Add("02H", "AA 75 02 00 00 00 DD");
-            _definedCmds.Add("03H", "AA 75 03 00 00 00 DC");
-            _definedCmds.Add("04H", "AA 75 04 00 00 00 DB");
-            _definedCmds.Add("05H", "AA 75 05 00 00 00 DA");
-            _definedCmds.Add("06H", "AA 75 06 00 00 00 D9");
-            _definedCmds.Add("07H", "AA 75 07 00 00 00 D8");
-            _definedCmds.Add("08H", "");
-            _definedCmds.Add("09H", "");
-            _definedCmds.Add("10H", "");
-            _definedCmds.Add("11H", "");
-            _definedCmds.Add("12H", "");
-            _definedCmds.Add("13H", "");
-            _definedCmds.Add("14H", "");
-            _definedCmds.Add("15H", "");
+        //    _definedCmds.Add("00H", "AA 75 00 00 00 00 DF");
+        //    _definedCmds.Add("01H", "AA 75 01 00 00 00 DE");
+        //    _definedCmds.Add("02H", "AA 75 02 00 00 00 DD");
+        //    _definedCmds.Add("03H", "AA 75 03 00 00 00 DC");
+        //    _definedCmds.Add("04H", "AA 75 04 00 00 00 DB");
+        //    _definedCmds.Add("05H", "AA 75 05 00 00 00 DA");
+        //    _definedCmds.Add("06H", "AA 75 06 00 00 00 D9");
+        //    _definedCmds.Add("07H", "AA 75 07 00 00 00 D8");
+        //    _definedCmds.Add("08H", "AA 75 08");
+        //    _definedCmds.Add("09H", "AA 75 09");
+        //    _definedCmds.Add("10H", "AA 75 10");
+        //    _definedCmds.Add("11H", "AA 75 11");
+        //    _definedCmds.Add("12H", "AA 75 12");
+        //    _definedCmds.Add("13H", "AA 75 13");
+        //    _definedCmds.Add("14H", "AA 75 14");
+        //    _definedCmds.Add("15H", "AA 75 15");
 
-            #endregion
+        //    #endregion
 
-            #region Set Cmd
+        //    #region Set Cmd
 
-            _definedCmds.Add("82H", "");
-            _definedCmds.Add("83H", "");
-            _definedCmds.Add("84H", "");
-            _definedCmds.Add("C2H", "");
-            _definedCmds.Add("C3H", "");
-            _definedCmds.Add("C4H", "");
+        //    _definedCmds.Add("82H", "");
+        //    _definedCmds.Add("83H", "");
+        //    _definedCmds.Add("84H", "");
+        //    _definedCmds.Add("C2H", "");
+        //    _definedCmds.Add("C3H", "");
+        //    _definedCmds.Add("C4H", "");
 
-            #endregion
+        //    #endregion
 
-            #region Chk Cmd
+        //    #region Chk Cmd
 
-            _definedCmds.Add("E0H", "");
-            _definedCmds.Add("E1H", "");
-            _definedCmds.Add("E2H", "");
-            _definedCmds.Add("E3H", "");
-            _definedCmds.Add("E4H", "");
+        //    _definedCmds.Add("E0H", "");
+        //    _definedCmds.Add("E1H", "");
+        //    _definedCmds.Add("E2H", "");
+        //    _definedCmds.Add("E3H", "");
+        //    _definedCmds.Add("E4H", "");
 
-            #endregion
+        //    #endregion
 
-            #region Ext Get Cmd
+        //    #region Ext Get Cmd
 
-            _definedCmds.Add("20H", "");
-            _definedCmds.Add("21H", "");
+        //    _definedCmds.Add("20H", "");
+        //    _definedCmds.Add("21H", "");
 
-            #endregion
+        //    #endregion
 
-            #region Ext Set Cmd
+        //    #region Ext Set Cmd
 
-            _definedCmds.Add("D0H", "");
-            _definedCmds.Add("D1H", "");
+        //    _definedCmds.Add("D0H", "");
+        //    _definedCmds.Add("D1H", "");
 
-            #endregion
-        }
+        //    #endregion
+        //}
 
         private string _cmd = "";
         public string CMD
@@ -2231,7 +2304,7 @@ namespace Bumblebee
 
         #region Get Cmd
 
-        private DateTime _startDateTime = DateTime.Now;
+        private DateTime _startDateTime = DateTime.Now.Subtract(new TimeSpan(0, 0, 1));
         public DateTime StartDateTime
         {
             get
@@ -2501,6 +2574,48 @@ namespace Bumblebee
         }
 
         #endregion
+
+        public string[] GetConcreteCmds()
+        {
+            string header = CmdContent.Substring(0, 3);
+            switch (header.ToUpper())
+            {
+                default:
+                    return null;
+                case "00H":
+                    return new string[] { "AA 75 00 00 00 00 DF" };
+                case "01H":
+                    return new string[] { "AA 75 01 00 00 00 DE" };
+                case "02H":
+                    return new string[] { "AA 75 02 00 00 00 DD" };
+                case "03H":
+                    return new string[] { "AA 75 03 00 00 00 DC" };
+                case "04H":
+                    return new string[] { "AA 75 04 00 00 00 DB" };
+                case "05H":
+                    return new string[] { "AA 75 05 00 00 00 DA" };
+                case "06H":
+                    return new string[] { "AA 75 06 00 00 00 D9" };
+                case "07H":
+                    return new string[] { "AA 75 07 00 00 00 D8" };
+                case "08H":
+                    return new string[] { "AA 75 08 00 00 00 D8" };
+                case "09H":
+                    return new string[] { "AA 75 09 00 00 00 D8" };
+                case "10H":
+                    return new string[] { "AA 75 10 00 00 00 D8" };
+                case "11H":
+                    return new string[] { "AA 75 11 00 00 00 D8" };
+                case "12H":
+                    return new string[] { "AA 75 12 00 00 00 D8" };
+                case "13H":
+                    return new string[] { "AA 75 13 00 00 00 D8" };
+                case "14H":
+                    return new string[] { "AA 75 14 00 00 00 D8" };
+                case "15H":
+                    return new string[] { "AA 75 15 00 00 00 D8" };
+            }
+        }
     }
 
     public class Bools2BoolConverter : IMultiValueConverter

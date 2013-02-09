@@ -383,7 +383,8 @@
                                     </DockPanel>
                                 </Button.Content>
                             </Button>
-                            <CheckBox Content="日志自动清除" DockPanel.Dock="Right" IsChecked="True" IsThreeState="False"
+                            <CheckBox Content="日志自动清除" DockPanel.Dock="Right" IsThreeState="False"
+                                      IsChecked="{Binding Path=AutoClearLog,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             <Grid/>
                         </DockPanel>
@@ -421,7 +422,8 @@
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
-                                    <CheckBox Content="接收显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0" IsChecked="True" IsThreeState="False"
+                                    <CheckBox Content="接收显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0" IsThreeState="False"
+                                              IsChecked="{Binding Path=AutoClearRecv,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                               HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     <Grid/>
                                 </DockPanel>
@@ -455,7 +457,8 @@
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
-                                    <CheckBox Content="发送显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0" IsChecked="True" IsThreeState="False"
+                                    <CheckBox Content="发送显示区自动清除" DockPanel.Dock="Right" Margin="0,0,5,0" IsThreeState="False"
+                                              IsChecked="{Binding Path=AutoClearSend,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                               HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     <Grid/>
                                 </DockPanel>
