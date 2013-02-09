@@ -58,9 +58,27 @@ namespace Bumblebee
         }
 
         #endregion
-        public ServerConfiguration()
+
+        public ServerConfiguration(string serverip, string serverport)
         {
             InitializeComponent();
+
+            DataContext = this;
+
+            ServerIP = serverip;
+            int value = -1;
+            if (int.TryParse(serverport, out value) == false)
+            {
+                ServerPort = 8678;
+            }
+            else
+            {
+                if (value < 1)
+                    value = 1;
+                if (value > 65535)
+                    value = 65535;
+                ServerPort = value;
+            }
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)

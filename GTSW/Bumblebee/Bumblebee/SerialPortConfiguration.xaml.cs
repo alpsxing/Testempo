@@ -37,7 +37,7 @@ namespace Bumblebee
         #region Properties
 
         private string _selectedSerialPort = null;
-        public string SelectedSerialPort 
+        public string SelectedSerialPort
         {
             get
             {
@@ -122,12 +122,24 @@ namespace Bumblebee
 
         #endregion
 
-        public SerialPortConfiguration()
+        public SerialPortConfiguration(string port, string baud, string parity,
+            string dataBit, string startBit, string stopBit)
         {
             InitializeComponent();
 
             DataContext = this;
             cboxSerialPort.ItemsSource = _localPortOc;
+            cboxBaud.ItemsSource = MainWindow._bauds;
+            cboxParity.ItemsSource = MainWindow._parities;
+            cboxDataBit.ItemsSource = MainWindow._dataBits;
+            cboxStopBit.ItemsSource = MainWindow._stopBits;
+
+            SelectedSerialPort = port;
+            SelectedBaud = baud;
+            SelectedParity = parity;
+            SelectedDataBit = dataBit;
+            SelectedStartBit = startBit;
+            SelectedStopBit = stopBit;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -138,14 +150,91 @@ namespace Bumblebee
                 _localPortOc.Add(s);
             }
 
+            int index = -1;
             if (_localPortOc.Count > 0)
-                cboxSerialPort.SelectedIndex = 0;
+            {
+                index = Helper.FindIndex<string>(ps, SelectedSerialPort);
+                if (index < 0)
+                {
+                    SelectedSerialPort = ps[0];
+                    cboxSerialPort.SelectedIndex = 0;
+                }
+                else
+                {
+                    cboxSerialPort.SelectedIndex = index;
+                }
+            }
             else
+            {
+                cboxSerialPort.IsEnabled = false;
+                SelectedSerialPort = "";
                 btnOK.IsEnabled = false;
+            }
+
+            index = Helper.FindIndex<string>(MainWindow._bauds, SelectedBaud);
+            if (index < 0)
+            {
+                SelectedBaud = MainWindow._bauds[0];
+                cboxBaud.SelectedIndex = 0;
+            }
+            else
+            {
+                cboxBaud.SelectedIndex = index;
+            }
+
+            index = Helper.FindIndex<string>(MainWindow._parities, SelectedParity);
+            if (index < 0)
+            {
+                SelectedParity = MainWindow._parities[0];
+                cboxParity.SelectedIndex = 0;
+            }
+            else
+            {
+                cboxParity.SelectedIndex = index;
+            }
+
+            index = Helper.FindIndex<string>(MainWindow._dataBits, SelectedDataBit);
+            if (index < 0)
+            {
+                SelectedDataBit = MainWindow._dataBits[0];
+                cboxDataBit.SelectedIndex = 0;
+            }
+            else
+            {
+                cboxDataBit.SelectedIndex = index;
+            }
+
+            SelectedStartBit = "1";
+
+            index = Helper.FindIndex<string>(MainWindow._stopBits, SelectedStopBit);
+            if (index < 0)
+            {
+                SelectedStopBit = MainWindow._stopBits[0];
+                cboxStopBit.SelectedIndex = 0;
+            }
+            else
+            {
+                cboxStopBit.SelectedIndex = index;
+            }
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
         {
+            string[] ps = SerialPort.GetPortNames();
+            if(ps == null || ps.Length < 1)
+            {
+                SelectedSerialPort= "";
+            }
+            else
+            {
+                SelectedSerialPort = _localPortOc[cboxSerialPort.SelectedIndex];
+            }
+            SelectedBaud = MainWindow._bauds[cboxBaud.SelectedIndex];
+            SelectedParity = MainWindow._parities[cboxParity.SelectedIndex];
+            SelectedDataBit = MainWindow._dataBits[cboxDataBit.SelectedIndex];
+            SelectedStartBit = "1";
+            SelectedStopBit = MainWindow._stopBits[cboxStopBit.SelectedIndex];
+
             DialogResult = true;
         }
 

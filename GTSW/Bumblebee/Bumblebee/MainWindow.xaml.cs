@@ -58,7 +58,7 @@ namespace Bumblebee
 
         #region Variables
 
-        private string[] _bauds = new string[]
+        public static string[] _bauds = new string[]
         {
             "115200",
             "57600",
@@ -74,14 +74,14 @@ namespace Bumblebee
             "300"
         };
 
-        private string[] _parities = new string[]
+        public static string[] _parities = new string[]
         {
             "Odd",
             "Even",
             "None"
         };
 
-        private string[] _dataBits = new string[]
+        public static string[] _dataBits = new string[]
         {
             "8",
             "7",
@@ -89,7 +89,7 @@ namespace Bumblebee
             "5"
         };
 
-        private string[] _stopBits = new string[]
+        public static string[] _stopBits = new string[]
         {
             "1",
             "1.5",
@@ -111,6 +111,8 @@ namespace Bumblebee
         private Queue<Tuple<string, LogType>> _logQueue = new Queue<Tuple<string, LogType>>();
 
         private XmlDocument _xd = new XmlDocument();
+
+        private Task _serialPortTask = null;
 
         #endregion
 
@@ -928,12 +930,14 @@ namespace Bumblebee
 
         private void RefreshSerialPort_MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            DisconnectSerialPort(true);
 
+            OpenSerialPort();
         }
 
         private void ConfigSerialPort_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            SerialPortConfiguration spc = new SerialPortConfiguration();
+            SerialPortConfiguration spc = new SerialPortConfiguration(Port, Baud, Parity, DataBit, StartBit, StopBit);
             bool? b = spc.ShowDialog();
             if (b == true)
             {
@@ -944,16 +948,23 @@ namespace Bumblebee
                 StartBit = spc.SelectedStartBit;
                 StopBit = spc.SelectedStopBit;
                 SaveConfig();
+
+                DisconnectSerialPort(true);
+
+                OpenSerialPort();
             }
         }
 
         private void DisconnectSerialPort_MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            DisconnectSerialPort();
+
+            LogMessageSeperator();
         }
 
         private void ConfigTimeout_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            TimeoutConfiguration tc = new TimeoutConfiguration();
+            TimeoutConfiguration tc = new TimeoutConfiguration(TimeOut);
             bool? b = tc.ShowDialog();
             if (b == true)
             {
@@ -964,7 +975,7 @@ namespace Bumblebee
 
         private void ConfigServer_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ServerConfiguration sc = new ServerConfiguration();
+            ServerConfiguration sc = new ServerConfiguration(ServerIP, ServerPort);
             bool? b = sc.ShowDialog();
             if (b == true)
             {
@@ -1194,25 +1205,94 @@ namespace Bumblebee
 
             LoadConfig();
 
-            if (string.IsNullOrWhiteSpace(_port) == false)
+            OpenSerialPort();
+
+            _displayLogTask = Task.Factory.StartNew(new Action(DisplayLogHandler), _cts.Token);
+        }
+
+        private void OpenSerialPort()
+        {
+            if (string.IsNullOrWhiteSpace(Port) == false)
             {
                 try
                 {
                     _sPort = new SerialPort();
-                    _sPort.PortName = "";
+                    _sPort.PortName = Port;
+                    _sPort.BaudRate = int.Parse(Baud);
+                    if (string.Compare(Parity, "Odd", true) == 0)
+                        _sPort.Parity = System.IO.Ports.Parity.Odd;
+                    else if (string.Compare(Parity, "Even", true) == 0)
+                        _sPort.Parity = System.IO.Ports.Parity.Even;
+                    else
+                        _sPort.Parity = System.IO.Ports.Parity.None;
+                    _sPort.DataBits = int.Parse(DataBit);
+                    if (string.Compare(StopBit, "1", true) == 0)
+                        _sPort.StopBits = StopBits.One;
+                    else if (string.Compare(StopBit, "1.5", true) == 0)
+                        _sPort.StopBits = StopBits.OnePointFive;
+                    else
+                        _sPort.StopBits = StopBits.Two;
                     _sPort.Open();
                     if (_sPort.IsOpen)
                     {
+                        LogMessageInformation("成功打开串口" + Port + ".");
+
+                        ReadyString = "端口号:" + Port + " 波特率:" + Baud + " 校验位:" + Parity;
+                    }
+                    else
+                    {
+                        LogMessageError("无法打开串口" + Port + ".");
+
+                        ReadyString = "串口已关闭.";
                     }
                 }
                 catch (Exception ex)
                 {
                     _sPort = null;
+                    LogMessageError("无法打开串口" + Port + ".\n" + ex.Message);
+
+                    ReadyString = "串口已关闭.";
                 }
             }
+            else
+            {
+                LogMessageError("计算机无可用串口.");
 
-            _displayLogTask = Task.Factory.StartNew(new Action(DisplayLogHandler), _cts.Token);
+                ReadyString = "无可用串口.";
+            }
+
+            LogMessageSeperator();
         }
+
+
+        private void DisconnectSerialPort(bool isRefresh = false)
+        {
+            if (_sPort != null)
+            {
+                try
+                {
+                    _sPort.Close();
+                    _sPort.Dispose();
+                    _sPort = null;
+
+                    LogMessageInformation("成功关闭串口" + Port + ".");
+                }
+                catch (Exception ex)
+                {
+                    _sPort = null;
+
+                    LogMessageError("关闭串口" + Port + "出现错误.\n" + ex.Message);
+                }
+            }
+            else
+            {
+                if(isRefresh == false)
+                    LogMessageInformation("无打开的串口.");
+            }
+
+            ReadyString = "串口已关闭.";
+        }
+
 
         private void LogMessageSeperator()
         {
@@ -1232,7 +1312,7 @@ namespace Bumblebee
 
         private void LogMessage(string msg, LogType lt = LogType.Common)
         {
-            lock (_logLock)
+            //lock (_logLock)
             {
                 if (_cts.IsCancellationRequested == true)
                 {
@@ -1240,10 +1320,7 @@ namespace Bumblebee
                     return;
                 }
 
-                Dispatcher.Invoke((ThreadStart)delegate
-                {
-                    _logQueue.Enqueue(new Tuple<string, LogType>(msg, lt));
-                }, null);
+                _logQueue.Enqueue(new Tuple<string, LogType>(msg, lt));
             }
         }
 
@@ -1290,7 +1367,7 @@ namespace Bumblebee
                     }
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
         }
 
@@ -1321,13 +1398,13 @@ namespace Bumblebee
                 LogMessage("保存配置文件出现错误.\n" + ex.Message, LogType.Error);
             }
 
-            LogMessageInformation("当前端口号:" + Port + ".");
-            LogMessageInformation("当前波特率:" + Baud + ".");
-            LogMessageInformation("当前校验位:" + Parity + ".");
-            LogMessageInformation("当前数据位:" + DataBit + ".");
-            LogMessageInformation("当前开始位:" + StartBit + ".");
-            LogMessageInformation("当前停止位:" + StopBit + ".");
-            LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+            LogMessageInformation("当前串口号:" + Port + ".");
+            LogMessageInformation("当前串口波特率:" + Baud + ".");
+            LogMessageInformation("当前串口校验位:" + Parity + ".");
+            LogMessageInformation("当前串口数据位:" + DataBit + ".");
+            LogMessageInformation("当前串口开始位:" + StartBit + ".");
+            LogMessageInformation("当前串口停止位:" + StopBit + ".");
+            LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
             LogMessageInformation("当前服务器IP:" + ServerIP + ".");
             LogMessageInformation("当前服务器端口:" + ServerPort + ".");
 
@@ -1386,11 +1463,11 @@ namespace Bumblebee
                                             string[] ps = SerialPort.GetPortNames();
                                             if (ps == null || ps.Length < 1)
                                             {
-                                                LogMessageError("计算机无可用端口.");
+                                                LogMessageError("计算机无可用串口.");
                                             }
                                             else
                                             {
-                                                LogMessageError("使用默认端口号:" + ps[0] + ".");
+                                                LogMessageError("使用默认串口端口号:" + ps[0] + ".");
                                                 Port = ps[0];
                                             }
                                         }
@@ -1399,7 +1476,7 @@ namespace Bumblebee
                                             string[] ps = SerialPort.GetPortNames();
                                             if (ps == null || ps.Length < 1)
                                             {
-                                                LogMessageError("计算机无可用端口.");
+                                                LogMessageError("计算机无可用串口.");
                                             }
                                             else
                                             {
@@ -1414,12 +1491,12 @@ namespace Bumblebee
                                                 }
                                                 if (found == false)
                                                 {
-                                                    LogMessageError("配置文件中串口端口号项(" + Port + ")不正确,使用默认端口号:" + ps[0] + ".");
+                                                    LogMessageError("配置文件中串口端口号项(" + Port + ")不正确,使用默认串口端口号:" + ps[0] + ".");
                                                     Port = ps[0];
                                                 }
                                                 else
                                                 {
-                                                    LogMessageInformation("当前端口号:" + Port + ".");
+                                                    LogMessageInformation("当前串口端口号:" + Port + ".");
                                                 }
                                             }
                                         }
@@ -1431,11 +1508,11 @@ namespace Bumblebee
                                         string[] ps = SerialPort.GetPortNames();
                                         if (ps == null || ps.Length < 1)
                                         {
-                                            LogMessageError("计算机无可用端口.");
+                                            LogMessageError("计算机无可用串口.");
                                         }
                                         else
                                         {
-                                            LogMessageError("使用默认端口号:" + ps[0] + ".");
+                                            LogMessageError("使用默认串口端口号:" + ps[0] + ".");
                                             Port = ps[0];
                                         }
                                     }
@@ -1453,7 +1530,7 @@ namespace Bumblebee
                                         {
                                             LogMessageError("配置文件中串口波特率项为空.");
 
-                                            LogMessageError("使用默认波特率:" + _bauds[0] + ".");
+                                            LogMessageError("使用默认串口波特率:" + _bauds[0] + ".");
                                             Baud = _bauds[0];
                                         }
                                         else
@@ -1469,12 +1546,12 @@ namespace Bumblebee
                                             }
                                             if (found == false)
                                             {
-                                                LogMessageError("配置文件中串口波特率项(" + Baud + ")不正确,使用默认波特率:" + _bauds[0] + ".");
+                                                LogMessageError("配置文件中串口波特率项(" + Baud + ")不正确,使用默认串口波特率:" + _bauds[0] + ".");
                                                 Baud = _bauds[0];
                                             }
                                             else
                                             {
-                                                LogMessageInformation("当前波特率:" + Baud + ".");
+                                                LogMessageInformation("当前串口波特率:" + Baud + ".");
                                             }
                                         }
                                     }
@@ -1482,7 +1559,7 @@ namespace Bumblebee
                                     {
                                         LogMessageError("配置文件缺少串口波特率项.");
 
-                                        LogMessageError("使用默认波特率:" + _bauds[0] + ".");
+                                        LogMessageError("使用默认串口波特率:" + _bauds[0] + ".");
                                         Baud = _bauds[0];
                                     }
                                     xni.InnerText = Baud;
@@ -1512,12 +1589,12 @@ namespace Bumblebee
                                             }
                                             if (found == false)
                                             {
-                                                LogMessageError("配置文件中串口校验位项(" + Parity + ")不正确,使用默认校验位:" + _parities[0] + ".");
+                                                LogMessageError("配置文件中串口校验位项(" + Parity + ")不正确,使用默认串口校验位:" + _parities[0] + ".");
                                                 Parity = _parities[0];
                                             }
                                             else
                                             {
-                                                LogMessageInformation("当前校验位:" + Parity + ".");
+                                                LogMessageInformation("当前串口校验位:" + Parity + ".");
                                             }
                                         }
                                     }
@@ -1525,7 +1602,7 @@ namespace Bumblebee
                                     {
                                         LogMessageError("配置文件缺少串口校验位项.");
 
-                                        LogMessageError("使用默认校验位:" + _parities[0] + ".");
+                                        LogMessageError("使用默认串口校验位:" + _parities[0] + ".");
                                         Parity = _parities[0];
                                     }
                                     xni.InnerText = Parity;
@@ -1555,12 +1632,12 @@ namespace Bumblebee
                                             }
                                             if (found == false)
                                             {
-                                                LogMessageError("配置文件中串口数据位项(" + DataBit + ")不正确,使用默认数据位:" + _dataBits[0] + ".");
+                                                LogMessageError("配置文件中串口数据位项(" + DataBit + ")不正确,使用默认串口数据位:" + _dataBits[0] + ".");
                                                 DataBit = _dataBits[0];
                                             }
                                             else
                                             {
-                                                LogMessageInformation("当前数据位:" + DataBit + ".");
+                                                LogMessageInformation("当前串口数据位:" + DataBit + ".");
                                             }
                                         }
                                     }
@@ -1568,7 +1645,7 @@ namespace Bumblebee
                                     {
                                         LogMessageError("配置文件缺少串口数据位项.");
 
-                                        LogMessageError("使用默认数据位:" + _dataBits[0] + ".");
+                                        LogMessageError("使用默认串口数据位:" + _dataBits[0] + ".");
                                         DataBit = _dataBits[0];
                                     }
                                     xni.InnerText = DataBit;
@@ -1589,12 +1666,12 @@ namespace Bumblebee
                                         {
                                             if (StartBit != "1")
                                             {
-                                                LogMessageError("配置文件中串口起始位项(" + StartBit + ")不正确,使用默认起始位:1.");
+                                                LogMessageError("配置文件中串口起始位项(" + StartBit + ")不正确,使用默认串口起始位:1.");
                                                 StartBit = "1";
                                             }
                                             else
                                             {
-                                                LogMessageInformation("当前起始位:" + StartBit + ".");
+                                                LogMessageInformation("当前串口起始位:" + StartBit + ".");
                                             }
                                         }
                                     }
@@ -1602,7 +1679,7 @@ namespace Bumblebee
                                     {
                                         LogMessageError("配置文件缺少串口起始位项.");
 
-                                        LogMessageError("使用默认起始位:1.");
+                                        LogMessageError("使用默认串口起始位:1.");
                                         StartBit = "1";
                                     }
                                     xni.InnerText = StartBit;
@@ -1632,12 +1709,12 @@ namespace Bumblebee
                                             }
                                             if (found == false)
                                             {
-                                                LogMessageError("配置文件中串口停止位项(" + StopBit + ")不正确,使用默认停止位:" + _stopBits[0] + ".");
+                                                LogMessageError("配置文件中串口停止位项(" + StopBit + ")不正确,使用默认串口停止位:" + _stopBits[0] + ".");
                                                 StopBit = _stopBits[0];
                                             }
                                             else
                                             {
-                                                LogMessageInformation("当前停止位:" + StopBit + ".");
+                                                LogMessageInformation("当前串口停止位:" + StopBit + ".");
                                             }
                                         }
                                     }
@@ -1645,7 +1722,7 @@ namespace Bumblebee
                                     {
                                         LogMessageError("配置文件缺少串口停止位项.");
 
-                                        LogMessageError("使用默认停止位:" + _stopBits[0] + ".");
+                                        LogMessageError("使用默认串口停止位:" + _stopBits[0] + ".");
                                         StopBit = _stopBits[0];
                                     }
                                     xni.InnerText = StopBit;
@@ -1660,35 +1737,40 @@ namespace Bumblebee
                                         TimeOut = xni.InnerText;
                                         if (string.IsNullOrWhiteSpace(TimeOut))
                                         {
-                                            LogMessageError("配置文件中超时时间项为空.");
+                                            LogMessageError("配置文件中串口超时时间项为空.");
                                         }
                                         else
                                         {
                                             int timeout = -1;
                                             if (int.TryParse(TimeOut, out timeout) == false)
                                             {
-                                                LogMessageError("配置文件中超时时间(" + TimeOut + ")不正确,使用默认超时时间:1000ms.");
+                                                LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:1000ms.");
                                                 TimeOut = "1000";
                                             }
                                             else
                                             {
-                                                if (timeout < 1)
+                                                if (timeout < 1000)
                                                 {
-                                                    LogMessageError("配置文件中超时时间(" + TimeOut + ")不正确,使用默认超时时间:1000ms.");
+                                                    LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:1000ms.");
                                                     TimeOut = "1000";
+                                                }
+                                                else if (timeout > 120000)
+                                                {
+                                                    LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:120000ms.");
+                                                    TimeOut = "120000";
                                                 }
                                                 else
                                                 {
-                                                    LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+                                                    LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
                                                 }
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        LogMessageError("配置文件缺少超时时间项.");
+                                        LogMessageError("配置文件缺少串口超时时间项.");
 
-                                        LogMessageError("使用默认超时时间:1000ms.");
+                                        LogMessageError("使用默认串口超时时间:1000ms.");
                                         TimeOut = "1000";
                                     }
                                     xni.InnerText = TimeOut;
@@ -1801,13 +1883,13 @@ namespace Bumblebee
                     ServerIP = "127.0.0.1";
                     ServerPort = "8678";
 
-                    LogMessageInformation("当前端口号:" + Port + ".");
-                    LogMessageInformation("当前波特率:" + Baud + ".");
-                    LogMessageInformation("当前校验位:" + Parity + ".");
-                    LogMessageInformation("当前数据位:" + DataBit + ".");
-                    LogMessageInformation("当前开始位:" + StartBit + ".");
-                    LogMessageInformation("当前停止位:" + StopBit + ".");
-                    LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+                    LogMessageInformation("当前串口端口号:" + Port + ".");
+                    LogMessageInformation("当前串口波特率:" + Baud + ".");
+                    LogMessageInformation("当前串口校验位:" + Parity + ".");
+                    LogMessageInformation("当前串口数据位:" + DataBit + ".");
+                    LogMessageInformation("当前串口开始位:" + StartBit + ".");
+                    LogMessageInformation("当前串口停止位:" + StopBit + ".");
+                    LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
                     LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                     LogMessageInformation("当前服务器端口:" + ServerPort + ".");
                 }
@@ -1834,13 +1916,13 @@ namespace Bumblebee
                 ServerIP = "127.0.0.1";
                 ServerPort = "8678";
 
-                LogMessageInformation("当前端口号:" + Port + ".");
-                LogMessageInformation("当前波特率:" + Baud + ".");
-                LogMessageInformation("当前校验位:" + Parity + ".");
-                LogMessageInformation("当前数据位:" + DataBit + ".");
-                LogMessageInformation("当前开始位:" + StartBit + ".");
-                LogMessageInformation("当前停止位:" + StopBit + ".");
-                LogMessageInformation("当前超时时间:" + TimeOut + "ms.");
+                LogMessageInformation("当前串口端口号:" + Port + ".");
+                LogMessageInformation("当前串口波特率:" + Baud + ".");
+                LogMessageInformation("当前串口校验位:" + Parity + ".");
+                LogMessageInformation("当前串口数据位:" + DataBit + ".");
+                LogMessageInformation("当前串口开始位:" + StartBit + ".");
+                LogMessageInformation("当前串口停止位:" + StopBit + ".");
+                LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
                 LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                 LogMessageInformation("当前服务器端口:" + ServerPort + ".");
             }
@@ -1933,6 +2015,49 @@ namespace Bumblebee
         }
 
         #endregion
+
+        private void ClearLog_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (fldocLog.Blocks.Count > 0 && MessageBox.Show("请确认清空日志.", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+            fldocLog.Blocks.Clear();
+        }
+
+        private void ClearRecv_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (fldocRecv.Blocks.Count > 0 && MessageBox.Show("请确认清空接受区.", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+            fldocRecv.Blocks.Clear();
+        }
+
+        private void ClearSend_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (fldocSend.Blocks.Count > 0 && MessageBox.Show("请确认清空发送区.", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+            fldocSend.Blocks.Clear();
+        }
+
+        private void Start_Button_Click(object sender, RoutedEventArgs e)
+        {
+            InRun = true;
+
+            _serialPortTask = Task.Factory.StartNew(new Action(SerialPortTaskHander), _cts.Token);
+        }
+
+        private void SerialPortTaskHander()
+        {
+            try
+            {
+                Thread.Sleep(3000);
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                InRun = false;
+            }
+        }
     }
 
     public abstract class NotifiedClass : INotifyPropertyChanged
@@ -2433,6 +2558,19 @@ namespace Bumblebee
         CultureInfo culture)
         {
             throw new Exception("The method or operation is not implemented.");
+        }
+    }
+
+    public class Helper
+    {
+        public static int FindIndex<T>(T[] ta, T ti)
+        {
+            for (int i = 0; i < ta.Length; i++)
+            {
+                if (ta[i].Equals(ti))
+                    return i;
+            }
+            return -1;
         }
     }
 }

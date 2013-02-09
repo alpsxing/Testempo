@@ -25,8 +25,7 @@
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                 <Separator/>
                 <MenuItem Header="退出" Click="Window_Exit"
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
                     <MenuItem.Icon>
                         <Image Source="resources/exit.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
@@ -112,8 +111,7 @@
                 </Button.Content>
             </Button>
             <Separator/>
-            <Button Margin="-1" Click="Window_Exit"
-                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+            <Button Margin="-1" Click="Window_Exit">
                 <Button.Content>
                     <Image Source="resources/exit.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
@@ -132,9 +130,10 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0" Margin="0,0,3,0">
-                <DockPanel DockPanel.Dock="Bottom" Height="35" Margin="5">
+                <DockPanel DockPanel.Dock="Bottom" Height="35" Margin="5"
+                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <Grid DockPanel.Dock="Left" Width="25"/>
-                    <Button DockPanel.Dock="Left" Margin="0,2,0,2">
+                    <Button DockPanel.Dock="Left" Margin="0,2,0,2" Click="Start_Button_Click">
                         <Button.Content>
                             <DockPanel>
                                 <Image DockPanel.Dock="Left" Source="resources/play.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -375,7 +374,7 @@
                 <TabItem Header="操作日志">
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" Height="35">
-                            <Button DockPanel.Dock="Left" Margin="0,2,0,2">
+                            <Button DockPanel.Dock="Left" Margin="0,2,0,2" Click="ClearLog_Button_Click">
                                 <Button.Content>
                                     <DockPanel>
                                         <Image DockPanel.Dock="Left" Source="resources/trash.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -413,7 +412,7 @@
                                     <Button Content="清零" DockPanel.Dock="Left" Margin="3" Width="60"/>
                                     <Label Content="{Binding Path=ReceivingByteNumberString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                            Width="150" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                    <Button DockPanel.Dock="Right" Margin="0,2,0,2">
+                                    <Button DockPanel.Dock="Right" Margin="0,2,0,2" Click="ClearRecv_Button_Click">
                                         <Button.Content>
                                             <DockPanel>
                                                 <Image DockPanel.Dock="Left" Source="resources/trash.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -447,7 +446,7 @@
                                     <Button Content="清零" DockPanel.Dock="Left" Margin="3" Width="60"/>
                                     <Label Content="{Binding Path=SendingByteNumberString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                                Width="150" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                    <Button DockPanel.Dock="Right" Margin="0,2,0,2">
+                                    <Button DockPanel.Dock="Right" Margin="0,2,0,2" Click="ClearSend_Button_Click">
                                         <Button.Content>
                                             <DockPanel>
                                                 <Image DockPanel.Dock="Left" Source="resources/trash.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>

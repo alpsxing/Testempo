@@ -44,9 +44,26 @@ namespace Bumblebee
         }
 
         #endregion
-        public TimeoutConfiguration()
+
+        public TimeoutConfiguration(string timeout)
         {
             InitializeComponent();
+
+            DataContext = this;
+
+            int value = -1;
+            if (int.TryParse(timeout, out value) == false)
+            {
+                TimeOut = 1000;
+            }
+            else
+            {
+                if (value < 1000)
+                    value = 1000;
+                if (value > 120000)
+                    value = 120000;
+                TimeOut = value;
+            }
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
