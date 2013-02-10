@@ -123,6 +123,7 @@
                          Maximum="{Binding Path=PBarMaximum,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                          Width="200" Height="15"/>
             <Label Content="{Binding Path=ReadyString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,-5,0,0"/>
+            <Label Content="{Binding Path=ReadyString2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,-5,0,0"/>
         </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -389,14 +390,14 @@
                             <Grid/>
                         </DockPanel>
                         <RichTextBox Margin="0,0,3,0" Name="rtxtLog" IsReadOnly="True" FontSize="13"
-                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" FontFamily="SimSun">
+                                     VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" FontFamily="SimSun">
                             <RichTextBox.Resources>
                                 <Style TargetType="{x:Type Paragraph}">
                                     <Setter Property="Margin" Value="0"/>
                                 </Style>
                             </RichTextBox.Resources>
                             <RichTextBox.Document>
-                                <FlowDocument Focusable="True" LineHeight="1" Name="fldocLog"/>
+                                <FlowDocument Focusable="True" LineHeight="1" Name="fldocLog" PageWidth="1000"/>
                             </RichTextBox.Document>
                         </RichTextBox>
                     </DockPanel>
@@ -428,14 +429,14 @@
                                     <Grid/>
                                 </DockPanel>
                                 <RichTextBox Margin="0,0,3,0" Name="rtxtRecv" IsReadOnly="True" FontSize="11"
-                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
                                     <RichTextBox.Resources>
                                         <Style TargetType="{x:Type Paragraph}">
                                             <Setter Property="Margin" Value="0"/>
                                         </Style>
                                     </RichTextBox.Resources>
                                     <RichTextBox.Document>
-                                        <FlowDocument Focusable="True" LineHeight="1" Name="fldocRecv"/>
+                                        <FlowDocument Focusable="True" LineHeight="1" Name="fldocRecv" PageWidth="1000"/>
                                     </RichTextBox.Document>
                                 </RichTextBox>
                             </DockPanel>
@@ -463,14 +464,14 @@
                                     <Grid/>
                                 </DockPanel>
                                 <RichTextBox Margin="0,0,3,0" Name="rtxtSend" IsReadOnly="True" FontSize="11"
-                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
                                     <RichTextBox.Resources>
                                         <Style TargetType="{x:Type Paragraph}">
                                             <Setter Property="Margin" Value="0"/>
                                         </Style>
                                     </RichTextBox.Resources>
                                     <RichTextBox.Document>
-                                        <FlowDocument Focusable="True" LineHeight="1" Name="fldocSend"/>
+                                        <FlowDocument Focusable="True" LineHeight="1" Name="fldocSend" PageWidth="1000"/>
                                     </RichTextBox.Document>
                                 </RichTextBox>
                             </DockPanel>

@@ -113,6 +113,9 @@ namespace Bumblebee
         private XmlDocument _xd = new XmlDocument();
 
         private Task _serialPortTask = null;
+        private List<CmdDefinition> _cmdsList = new List<CmdDefinition>();
+
+        private Timer _timerPBar = null;
 
         #endregion
 
@@ -268,16 +271,14 @@ namespace Bumblebee
             }
         }
 
-        private int _pBarMaximum = 100;
         public int PBarMaximum
         {
             get
             {
-                return _pBarMaximum;
+                return 100;
             }
             set
             {
-                _pBarMaximum = value;
                 NotifyPropertyChanged("PBarMaximum");
             }
         }
@@ -307,6 +308,20 @@ namespace Bumblebee
             {
                 _readyString = value;
                 NotifyPropertyChanged("ReadyString");
+            }
+        }
+
+        private string _readyString2 = "";
+        public string ReadyString2
+        {
+            get
+            {
+                return _readyString2;
+            }
+            set
+            {
+                _readyString2 = value;
+                NotifyPropertyChanged("ReadyString2");
             }
         }
 
@@ -403,8 +418,24 @@ namespace Bumblebee
             }
             set
             {
-                _timeout = value;
+                _timeout = value;                
+                double step = (double)(int.Parse(TimeOut)) / 100.0;
+                PBarStep = (int)Math.Floor(step);
                 NotifyPropertyChanged("TimeOut");
+            }
+        }
+
+        private int _pBarStep = 0;
+        public int PBarStep
+        {
+            get
+            {
+                return _pBarStep;
+            }
+            set
+            {
+                _pBarStep = value;
+                NotifyPropertyChanged("PBarStep");
             }
         }
 
@@ -436,7 +467,7 @@ namespace Bumblebee
             }
         }
 
-        private bool? _autoClearLog = true;
+        private bool? _autoClearLog = false;
         public bool? AutoClearLog
         {
             get
@@ -450,7 +481,7 @@ namespace Bumblebee
             }
         }
 
-        private bool? _autoClearRecv = true;
+        private bool? _autoClearRecv = false;
         public bool? AutoClearRecv
         {
             get
@@ -464,7 +495,7 @@ namespace Bumblebee
             }
         }
 
-        private bool? _autoClearSend = true;
+        private bool? _autoClearSend = false;
         public bool? AutoClearSend
         {
             get
@@ -678,7 +709,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 7,
-                    DataCountPerUnit = 7
+                    DataCountPerUnit = 7,
+                    DataSingleCount = 126
                 });
             _getCmdOc.Add(
                 new CmdDefinition()
@@ -689,7 +721,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 1,
-                    DataCountPerUnit = 1
+                    DataCountPerUnit = 1,
+                    DataSingleCount = 666
                 });
             _getCmdOc.Add(
                 new CmdDefinition()
@@ -700,7 +733,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 4,
-                    DataCountPerUnit = 4
+                    DataCountPerUnit = 4,
+                    DataSingleCount = 234
                 });
             _getCmdOc.Add(
                 new CmdDefinition()
@@ -711,7 +745,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 19,
-                    DataCountPerUnit = 19
+                    DataCountPerUnit = 19,
+                    DataSingleCount = 50
                 });
             _getCmdOc.Add(
                 new CmdDefinition()
@@ -722,7 +757,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 39,
-                    DataCountPerUnit = 39
+                    DataCountPerUnit = 39,
+                    DataSingleCount = 25
                 });
             _getCmdOc.Add(
                 new CmdDefinition()
@@ -733,7 +769,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 141,
-                    DataCountPerUnit = 141
+                    DataCountPerUnit = 141,
+                    DataSingleCount = 7
                 });
             _getCmdOc.Add(
                 new CmdDefinition()
@@ -744,7 +781,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 141,
-                    DataCountPerUnit = 141
+                    DataCountPerUnit = 141,
+                    DataSingleCount = 7
                 });
             _getCmdOc.Add(
                 new CmdDefinition()
@@ -755,7 +793,8 @@ namespace Bumblebee
                     CmdState = "状态提示...",
                     DataCountPerUnitMin = 1,
                     DataCountPerUnitMax = 7,
-                    DataCountPerUnit = 7
+                    DataCountPerUnit = 7,
+                    DataSingleCount = 133
                 });
 
             #endregion
@@ -1016,6 +1055,10 @@ namespace Bumblebee
             {
                 TimeOut = tc.TimeOut.ToString();
                 SaveConfig();
+
+                DisconnectSerialPort(true);
+
+                OpenSerialPort();
             }
         }
 
@@ -1254,6 +1297,15 @@ namespace Bumblebee
             OpenSerialPort();
 
             _displayLogTask = Task.Factory.StartNew(new Action(DisplayLogHandler), _cts.Token);
+
+            _timerPBar = new Timer(new TimerCallback(PBarTimerCallBackHandler), null, Timeout.Infinite, 100);
+
+        }
+
+        private void PBarTimerCallBackHandler(object obj)
+        {
+            if (PBarValue + PBarStep <= PBarMaximum)
+                PBarValue = PBarValue + PBarStep;
         }
 
         private void OpenSerialPort()
@@ -1278,6 +1330,8 @@ namespace Bumblebee
                         _sPort.StopBits = StopBits.OnePointFive;
                     else
                         _sPort.StopBits = StopBits.Two;
+                    _sPort.WriteTimeout = int.Parse(TimeOut);
+                    _sPort.ReadTimeout = int.Parse(TimeOut);
                     _sPort.Open();
                     if (_sPort.IsOpen)
                     {
@@ -1339,10 +1393,17 @@ namespace Bumblebee
             ReadyString = "串口已关闭.";
         }
 
-
         private void LogMessageSeperator()
         {
-            LogMessage("---------------------------------------------------------------------------------");
+            LogMessage("");
+            LogMessage("".PadRight(100, '='));
+            LogMessage("");
+        }
+
+        private void LogMessageSubSeperator()
+        {
+            LogMessage("");
+            LogMessage("".PadRight(100, '-'));
             LogMessage("");
         }
 
@@ -2094,6 +2155,8 @@ namespace Bumblebee
             if (AutoClearSend == true)
                 fldocSend.Blocks.Clear();
 
+            _cmdsList.Clear();
+
             _serialPortTask = Task.Factory.StartNew(new Action(SerialPortTaskHander), _cts.Token);
         }
 
@@ -2101,10 +2164,14 @@ namespace Bumblebee
         {
             try
             {
+                #region Create Concrete Cmds
+
                 foreach (CmdDefinition cdi in _getCmdOc)
                 {
                     if (cdi.CmdSelected == false)
                         continue;
+
+                        _cmdsList.Add(cdi);
                 }
 
                 foreach (CmdDefinition cdi in _setCmdOc)
@@ -2122,14 +2189,169 @@ namespace Bumblebee
                 foreach (CmdDefinition cdi in _extSetCmdOc)
                 {
                 }
+
+                #endregion
+
+                #region Send & Receive
+
+                foreach (CmdDefinition cdi in _cmdsList)
+                {
+                    string cmd = cdi.GetConcreteCmds()[0];
+
+                    #region Send
+
+                    ReadyString2 = "发送(" + cdi.CmdContent + "):" + cmd + "...";
+
+                    PBarValue = 0;
+                    _timerPBar.Change(0, 100);
+
+                    string[] sa = cmd.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    int lenSend = sa.Length;
+                    byte[] ba = new byte[lenSend];
+                    for (int i = 0; i < lenSend; i++)
+                    {
+                        ba[i] = byte.Parse(sa[i], NumberStyles.HexNumber);
+                    }
+                    _sPort.Write(ba, 0, lenSend);
+
+                    #endregion
+
+                    Thread.Sleep(int.Parse(TimeOut));
+
+                    _timerPBar.Change(Timeout.Infinite, 100);
+                    PBarValue = 0;
+
+                    #region Receive
+
+                    ReadyString2 = "读取结果...";
+
+                    PBarValue = 0;
+                    _timerPBar.Change(0, 100);
+
+                    byte[] bytes = new byte[1024];
+                    int lenRecv = _sPort.Read(bytes, 0, 1024);
+                    byte[] baRecev = new byte[lenRecv];
+                    for (int i = 0; i < lenRecv; i++)
+                    {
+                        baRecev[i] = bytes[i];
+                    }
+                    string sRecv = BytesToHexString(baRecev);
+                    int lenSRecv = sRecv.Length;
+
+                    if (lenRecv > 5)
+                    {
+                        string sToXor = sRecv.Substring(0, lenSRecv - 3);
+                        string sFromXor = cdi.XORData(sToXor);
+                        string sXor = sRecv.Substring(lenSRecv - 2, 2);
+                        if (string.Compare(sFromXor, sXor, true) != 0)
+                        {
+                            LogMessageError(cdi.CmdContent + "(" + cmd + ")的返回结果的校验错误:" + sRecv);
+                        }
+                        else
+                        {
+                            string header0 = string.Format("{0:X2}", baRecev[0]);
+                            string header1 = string.Format("{0:X2}", baRecev[1]);
+                            string header2 = string.Format("{0:X2}", baRecev[2]);
+                            if (string.Compare(header0, "55", true) != 0 || string.Compare(header1, "7A", true) != 0)
+                            {
+                                LogMessageError(cdi.CmdContent + "(" + cmd + ")的返回结果的起始字头错误:" + sRecv);
+                            }
+                            else
+                            {
+                                if (string.Compare(header2, "FA", true) == 0 || string.Compare(header2, "FB", true) == 0)
+                                {
+                                    LogMessageError(cdi.CmdContent + "(" + cmd + ")出错:" + sRecv);
+                                }
+                                else
+                                {
+                                    #region Display Result
+
+                                    switch (sa[3].ToUpper())
+                                    {
+                                        default:
+                                            LogMessageError("未知的命令:(" + cdi.CmdContent + ")" + cmd);
+                                            break;
+                                        case "00":
+                                            break;
+                                        case "01":
+                                            break;
+                                        case "02":
+                                            break;
+                                        case "03":
+                                            break;
+                                        case "04":
+                                            break;
+                                        case "05":
+                                            break;
+                                        case "06":
+                                            break;
+                                        case "07":
+                                            break;
+                                        case "08":
+                                            break;
+                                        case "09":
+                                            break;
+                                        case "10":
+                                            break;
+                                        case "11":
+                                            break;
+                                        case "12":
+                                            break;
+                                        case "13":
+                                            break;
+                                        case "14":
+                                            break;
+                                        case "15":
+                                            break;
+                                    }
+
+                                    #endregion
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        LogMessageError(cdi.CmdContent + "(" + cmd + ")的返回结果格式错误:" + sRecv);
+                    }
+
+                    #endregion
+
+                    Thread.Sleep(int.Parse(TimeOut));
+
+                    if (_cmdsList.Count > 1 && cdi != _cmdsList[_cmdsList.Count - 1])
+                        LogMessageSubSeperator();
+
+                    _timerPBar.Change(Timeout.Infinite, 100);
+                    PBarValue = 0;
+
+                    ReadyString2 = "";
+                }
+
+                #endregion
             }
             catch (Exception ex)
             {
+                LogMessageError("串口读写错误.\n" + ex.Message);
             }
             finally
             {
                 InRun = false;
+ 
+                LogMessageSeperator();
             }
+        }
+
+        private string BytesToHexString(byte[] bs)
+        {
+            if (bs == null || bs.Length < 1)
+                return "";
+            string s = "";
+            foreach (byte bi in bs)
+            {
+                s= s + " " + string.Format("{0:X2}", bi);
+            }
+            return s.Trim();
         }
     }
 
@@ -2371,6 +2593,39 @@ namespace Bumblebee
             {
                 _dataCountPerUnit = value;
                 NotifyPropertyChanged("DataCountPerUnit");
+                NotifyPropertyChanged("DataTotalCount");
+            }
+        }
+
+        private int _dataSingleCount = 1;
+        public int DataSingleCount
+        {
+            get
+            {
+                return _dataSingleCount;
+            }
+            set
+            {
+                _dataSingleCount = value;
+                NotifyPropertyChanged("DataSingleCount");
+                NotifyPropertyChanged("DataTotalCount");
+                NotifyPropertyChanged("DataTotalCountEnabled");
+            }
+        }
+
+        public int DataTotalCount
+        {
+            get
+            {
+                return DataCountPerUnit * DataSingleCount;
+            }
+        }
+
+        public bool DataTotalCountEnabled
+        {
+            get
+            {
+                return (DataTotalCount <= 1000);
             }
         }
 
@@ -2575,13 +2830,46 @@ namespace Bumblebee
 
         #endregion
 
+        /// <summary>
+        /// Format : XX XX XX XX XX
+        /// Must be Hex and with " "
+        /// </summary>
+        /// <param name="src"></param>
+        /// <returns></returns>
+        public string XORData(string src)
+        {
+            string[] srca = src.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            int len = srca.Length;
+            int[] inta = new int[len];
+            int value = 0;
+            for (int i = 0; i < len; i++)
+            {
+                value = value ^ int.Parse(srca[i], NumberStyles.HexNumber);
+            }
+            return String.Format("{0:X2}", value);
+        }
+
         public string[] GetConcreteCmds()
         {
+            #region GetCmd
+            
+            string startStopDT = StartDateTime.ToString("yy MM dd HH mm ss") + " " + StopDateTime.ToString("yy MM dd HH mm ss");
+            string dataCntPerUnit = DataCountPerUnit.ToString("X");
+            int len = dataCntPerUnit.Length;
+            if (len > 8)
+                dataCntPerUnit = dataCntPerUnit.Substring(len - 4, 4);
+            else
+                dataCntPerUnit = dataCntPerUnit.PadLeft(4, '0');
+            dataCntPerUnit = dataCntPerUnit.Insert(2, " ");
+
+            #endregion
+
+            string cmd = "";
             string header = CmdContent.Substring(0, 3);
             switch (header.ToUpper())
             {
                 default:
-                    return null;
+                    return new string[] { };
                 case "00H":
                     return new string[] { "AA 75 00 00 00 00 DF" };
                 case "01H":
@@ -2599,21 +2887,37 @@ namespace Bumblebee
                 case "07H":
                     return new string[] { "AA 75 07 00 00 00 D8" };
                 case "08H":
-                    return new string[] { "AA 75 08 00 00 00 D8" };
+                    cmd = "AA 75 08 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
                 case "09H":
-                    return new string[] { "AA 75 09 00 00 00 D8" };
+                    cmd = "AA 75 09 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
                 case "10H":
-                    return new string[] { "AA 75 10 00 00 00 D8" };
+                    cmd = "AA 75 10 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
                 case "11H":
-                    return new string[] { "AA 75 11 00 00 00 D8" };
+                    cmd = "AA 75 11 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
                 case "12H":
-                    return new string[] { "AA 75 12 00 00 00 D8" };
+                    cmd = "AA 75 12 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
                 case "13H":
-                    return new string[] { "AA 75 13 00 00 00 D8" };
+                    cmd = "AA 75 13 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
                 case "14H":
-                    return new string[] { "AA 75 14 00 00 00 D8" };
+                    cmd = "AA 75 14 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
                 case "15H":
-                    return new string[] { "AA 75 15 00 00 00 D8" };
+                    cmd = "AA 75 15 00 0E 00 " + startStopDT + " " + dataCntPerUnit;
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
             }
         }
     }
