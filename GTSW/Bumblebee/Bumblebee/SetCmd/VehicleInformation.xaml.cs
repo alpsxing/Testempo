@@ -39,13 +39,13 @@ namespace Bumblebee.SetCmd
             set
             {
                 _vehicleIDCode = value;
-                if (string.IsNullOrWhiteSpace(VehicleIDCode))
+                if (string.IsNullOrWhiteSpace(_vehicleIDCode))
                     VehicleIDCodeForeground = Brushes.Red;
                 else
                 {
                     Encoding gb = Encoding.GetEncoding("GB2312");
-                    byte[] ba = gb.GetBytes(VehicleNumberCode);
-                    if (ba == null || ba.Length < 1 || ba.Length > 17)
+                    byte[] ba = gb.GetBytes(_vehicleIDCode);
+                    if (ba == null || ba.Length != 17)
                         VehicleIDCodeForeground = Brushes.Red;
                     else
                         VehicleIDCodeForeground = Brushes.Black;
@@ -67,13 +67,13 @@ namespace Bumblebee.SetCmd
             set
             {
                 _vehicleNumberCode = value;
-                if (string.IsNullOrWhiteSpace(VehicleNumberCode))
+                if (string.IsNullOrWhiteSpace(_vehicleNumberCode))
                     VehicleNumberCodeForeground = Brushes.Red;
                 else
                 {
                     Encoding gb = Encoding.GetEncoding("GB2312");
-                    byte[] ba = gb.GetBytes(VehicleNumberCode);
-                    if(ba == null || ba.Length < 1 || ba.Length > 12)
+                    byte[] ba = gb.GetBytes(_vehicleNumberCode);
+                    if(ba == null || ba.Length < 6 || ba.Length > 9)
                         VehicleNumberCodeForeground = Brushes.Red;
                     else
                         VehicleNumberCodeForeground = Brushes.Black;
@@ -138,12 +138,12 @@ namespace Bumblebee.SetCmd
                 {
                     Encoding gb = Encoding.GetEncoding("GB2312");
                     byte[] ba = gb.GetBytes(VehicleIDCode);
-                    if (ba == null || ba.Length < 1 || ba.Length > 17)
+                    if (ba == null || ba.Length != 17)
                         return false;
                     else
                     {
                         ba = gb.GetBytes(VehicleNumberCode);
-                        if (ba == null || ba.Length < 1 || ba.Length > 12)
+                        if (ba == null || ba.Length < 6 || ba.Length > 9)
                             return false;
                         else
                             return true;
@@ -183,6 +183,7 @@ namespace Bumblebee.SetCmd
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
         {
+            VehicleNumberCategory = ((ComboBoxItem)cboxVehicleNumberCategory.SelectedItem).Content.ToString();
             DialogResult = true;
         }
 
@@ -197,6 +198,35 @@ namespace Bumblebee.SetCmd
                 txtVehicleIDCode.Focus();
             else if (string.IsNullOrWhiteSpace(VehicleNumberCode))
                 txtVehicleNumberCode.Focus();
+            if (string.IsNullOrWhiteSpace(VehicleNumberCategory))
+            {
+                VehicleNumberCategory = ((ComboBoxItem)cboxVehicleNumberCategory.Items[0]).Content.ToString().Trim();
+                cboxVehicleNumberCategory.SelectedIndex = 0;
+            }
+            else
+            {
+                int index = -1;
+                for (int i = 0; i < cboxVehicleNumberCategory.Items.Count; i++)
+                {
+                    if (string.Compare(VehicleNumberCategory.Trim(), 
+                        ((ComboBoxItem)cboxVehicleNumberCategory.Items[i]).Content.ToString().Trim(), 
+                        true) == 0)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index == -1)
+                {
+                    VehicleNumberCategory = ((ComboBoxItem)cboxVehicleNumberCategory.Items[0]).Content.ToString().Trim();
+                    cboxVehicleNumberCategory.SelectedIndex = 0;
+                }
+                else
+                {
+                    VehicleNumberCategory = ((ComboBoxItem)cboxVehicleNumberCategory.Items[index]).Content.ToString().Trim();
+                    cboxVehicleNumberCategory.SelectedIndex = index;
+                }
+            }
         }
     }
 }

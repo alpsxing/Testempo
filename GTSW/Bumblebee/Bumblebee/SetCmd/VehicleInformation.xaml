@@ -36,7 +36,6 @@
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
                              Text="{Binding Path=VehicleNumberCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Column="1" Grid.Row="3" Name="cboxVehicleNumberCategory" SelectedIndex="0"
-                  SelectedItem="{Binding Path=VehicleNumberCategory,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                   HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <ComboBoxItem Content="大型汽车"/>
             <ComboBoxItem Content="挂车"/>

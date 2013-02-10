@@ -2171,51 +2171,87 @@ namespace Bumblebee
 
         private void SerialPortTaskHander()
         {
-            try
+            #region Create Concrete Cmds
+
+            foreach (CmdDefinition cdi in _getCmdOc)
             {
-                #region Create Concrete Cmds
+                if (cdi.CmdSelected == false)
+                    continue;
 
-                foreach (CmdDefinition cdi in _getCmdOc)
+                _cmdsList.Add(cdi);
+            }
+
+            foreach (CmdDefinition cdi in _setCmdOc)
+            {
+                if (cdi.CmdSelected == false)
+                    continue;
+
+                _cmdsList.Add(cdi);
+            }
+
+            foreach (CmdDefinition cdi in _chkCmdOc)
+            {
+            }
+
+            foreach (CmdDefinition cdi in _extGetCmdOc)
+            {
+            }
+
+            foreach (CmdDefinition cdi in _extSetCmdOc)
+            {
+            }
+
+            #endregion
+
+            #region Send & Receive
+
+            foreach (CmdDefinition cdi in _cmdsList)
+            {
+                try
                 {
-                    if (cdi.CmdSelected == false)
+                    string[] cmda = cdi.GetConcreteCmds();
+                    if (cmda == null || cmda.Length < 1 || cmda.Length > 2)
+                    {
+                        LogMessageError("命令(" + cdi.CmdContent + ")格式错误.");
+                        cdi.CmdState = "参数错误.";
                         continue;
+                    }
+                    else if (cmda.Length == 2)
+                    {
+                        LogMessageError("命令(" + cdi.CmdContent + ")错误:" + cmda[1]);
+                        cdi.CmdState = "参数错误.";
+                        continue;
+                    }
 
-                        _cmdsList.Add(cdi);
-                }
-
-                foreach (CmdDefinition cdi in _setCmdOc)
-                {
-                }
-
-                foreach (CmdDefinition cdi in _chkCmdOc)
-                {
-                }
-
-                foreach (CmdDefinition cdi in _extGetCmdOc)
-                {
-                }
-
-                foreach (CmdDefinition cdi in _extSetCmdOc)
-                {
-                }
-
-                #endregion
-
-                #region Send & Receive
-
-                foreach (CmdDefinition cdi in _cmdsList)
-                {
-                    string cmd = cdi.GetConcreteCmds()[0];
+                    string cmd = cmda[0];
 
                     #region Send
 
                     ReadyString2 = "发送(" + cdi.CmdContent + "):" + cmd + "...";
 
+                    string[] sa = cmd.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    int lenSend = sa.Length;
+
+                    Dispatcher.Invoke((ThreadStart)delegate
+                    {
+                        #region
+
+                        Run rch = new Run(cmd);
+                        Paragraph pch = new Paragraph(rch);
+                        fldocSend.Blocks.Add(pch);
+                        Run rch1 = new Run("");
+                        Paragraph pch1 = new Paragraph(rch1);
+                        fldocSend.Blocks.Add(pch1);
+                        rtxtSend.ScrollToEnd();
+
+                        SendingByteNumber = SendingByteNumber + lenSend;
+
+                        #endregion
+                    }, null);
+
                     PBarValue = 0;
                     _timerPBar.Change(0, 100);
 
-                    string[] sa = cmd.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                    int lenSend = sa.Length;
                     byte[] ba = new byte[lenSend];
                     for (int i = 0; i < lenSend; i++)
                     {
@@ -2247,7 +2283,24 @@ namespace Bumblebee
                     string sRecv = BytesToHexString(baRecev);
                     int lenSRecv = sRecv.Length;
 
-                    if (lenRecv > 5)
+                    Dispatcher.Invoke((ThreadStart)delegate
+                    {
+                        #region
+
+                        Run rch = new Run(sRecv);
+                        Paragraph pch = new Paragraph(rch);
+                        fldocRecv.Blocks.Add(pch);
+                        Run rch1 = new Run("");
+                        Paragraph pch1 = new Paragraph(rch1);
+                        fldocRecv.Blocks.Add(pch1);
+                        rtxtRecv.ScrollToEnd();
+
+                        ReceivingByteNumber = ReceivingByteNumber + lenRecv;
+                        
+                        #endregion
+                    }, null);
+
+                    if (lenRecv >= 5)
                     {
                         string sToXor = sRecv.Substring(0, lenSRecv - 3);
                         string sFromXor = cdi.XORData(sToXor);
@@ -2255,6 +2308,8 @@ namespace Bumblebee
                         if (string.Compare(sFromXor, sXor, true) != 0)
                         {
                             LogMessageError("命令(" + cdi.CmdContent + ")的响应的校验错误.");
+
+                            cdi.CmdState = "执行错误.";
                         }
                         else
                         {
@@ -2264,20 +2319,28 @@ namespace Bumblebee
                             if (string.Compare(header0, "55", true) != 0 || string.Compare(header1, "7A", true) != 0)
                             {
                                 LogMessageError("命令(" + cdi.CmdContent + ")的响应的起始字头错误:" + header0 + " " + header1);
+
+                                cdi.CmdState = "执行错误.";
                             }
                             else
                             {
                                 if (string.Compare(header2, "FA", true) == 0)
                                 {
                                     LogMessageError("采集数据命令(" + cdi.CmdContent + ")的命令帧接收错误.");
+
+                                    cdi.CmdState = "执行错误.";
                                 }
                                 else if (string.Compare(header2, "FB", true) == 0)
                                 {
                                     LogMessageError("设置参数命令(" + cdi.CmdContent + ")的命令帧接收错误.");
+                                
+                                    cdi.CmdState = "执行错误.";
                                 }
                                 else if (string.Compare(header2, sa[2], true) != 0)
                                 {
                                     LogMessageError("响应与命令(" + cdi.CmdContent + ")的命令字不匹配:" + header2);
+
+                                    cdi.CmdState = "执行错误.";
                                 }
                                 else
                                 {
@@ -2288,6 +2351,8 @@ namespace Bumblebee
                                     if (baRecev.Length != 6 + dataLen + 1)
                                     {
                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度不匹配.");
+
+                                        cdi.CmdState = "执行错误.";
                                     }
                                     else
                                     {
@@ -2361,13 +2426,13 @@ namespace Bumblebee
                                                         distance1 = distance1.Substring(1);
                                                     if (string.IsNullOrWhiteSpace(distance1))
                                                         distance1 = "0";
-                                                    distance1 = (distance1 + "0 (单位:0.1千米)").PadRight(27-4);
+                                                    distance1 = (distance1 + "0 (单位:0.1千米)").PadRight(27 - 4);
                                                     string distance2 = baData[16].ToString("X") + baData[17].ToString("X") + baData[18].ToString("X") + baData[19].ToString("X");
                                                     while (distance2.StartsWith("0"))
                                                         distance2 = distance2.Substring(1);
                                                     if (string.IsNullOrWhiteSpace(distance2))
                                                         distance2 = "0";
-                                                    distance2 = (distance2 + "0 (单位:0.1千米)").PadRight(27-4);
+                                                    distance2 = (distance2 + "0 (单位:0.1千米)").PadRight(27 - 4);
                                                     LogMessage("+-------------------+----------------------------+");
                                                     LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                     LogMessage("+-------------------+----------------------------+");
@@ -2554,6 +2619,8 @@ namespace Bumblebee
                                         }
 
                                         #endregion
+
+                                        cdi.CmdState = "成功执行.";
                                     }
                                 }
                             }
@@ -2569,32 +2636,33 @@ namespace Bumblebee
                     Thread.Sleep(int.Parse(TimeOut));
 
                     if (_cmdsList.Count > 1 && cdi != _cmdsList[_cmdsList.Count - 1])
-                    {
                         LogMessage("");
-                        //LogMessageSubSeperator();
-                    }
 
                     _timerPBar.Change(Timeout.Infinite, 100);
                     PBarValue = 0;
 
                     ReadyString2 = "";
+
+                    //cdi.CmdState = "成功执行.";
                 }
+                catch (Exception ex)
+                {
+                    LogMessageError("串口读写错误或响应处理错误.\n" + ex.Message);
 
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                LogMessageError("串口读写错误.\n" + ex.Message);
+                    _timerPBar.Change(Timeout.Infinite, 100);
+                    PBarValue = 0;
 
-                _timerPBar.Change(Timeout.Infinite, 100);
-                PBarValue = 0;
+                    ReadyString2 = "";
+
+                    cdi.CmdState = "执行异常.";
+                }
             }
-            finally
-            {
-                InRun = false;
- 
-                LogMessageSeperator();
-            }
+
+            #endregion
+
+            InRun = false;
+
+            LogMessageSeperator();
         }
 
         private int GetChineseNumber(string src)
@@ -2621,9 +2689,19 @@ namespace Bumblebee
             string s = "";
             foreach (byte bi in bs)
             {
-                s= s + " " + string.Format("{0:X2}", bi);
+                s = s + " " + string.Format("{0:X2}", bi);
             }
             return s.Trim();
+        }
+
+        private void ClearReceivingNumber_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ReceivingByteNumber = 0;
+        }
+
+        private void ClearSendingNumber_Button_Click(object sender, RoutedEventArgs e)
+        {
+            SendingByteNumber = 0;
         }
     }
 
@@ -2731,7 +2809,25 @@ namespace Bumblebee
             set
             {
                 _cmdState = value;
+                if (_cmdState.IndexOf("错误") >= 0 || _cmdState.IndexOf("异常") >= 0)
+                    CmdStateForeground = Brushes.Red;
+                else
+                    CmdStateForeground = Brushes.Black;
                 NotifyPropertyChanged("CmdState");
+            }
+        }
+
+        private Brush _cmdStateForeground = Brushes.Black;
+        public Brush CmdStateForeground
+        {
+            get
+            {
+                return _cmdStateForeground;
+            }
+            set
+            {
+                _cmdStateForeground = value;
+                NotifyPropertyChanged("CmdStateForeground");
             }
         }
 
@@ -3042,14 +3138,28 @@ namespace Bumblebee
         #endregion
 
         /// <summary>
-        /// Format : XX XX XX XX XX
-        /// Must be Hex and with " "
+        /// Format : XX XX XX XX XX or XXXXXXXXXX
+        /// Must be Hex and with " " when hasBlank is true
+        /// Caller must make sure of each data is of "XX"
         /// </summary>
         /// <param name="src"></param>
+        /// <param name="hasBlank">Default is true</param>
         /// <returns></returns>
-        public string XORData(string src)
+        public string XORData(string src, bool hasBlank = true)
         {
-            string[] srca = src.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            if (src == null || src.Length < 1)
+                return "";
+            string[] srca = null;
+            if (hasBlank == false)
+            {
+                int slen = src.Length - 2;
+                while (slen > 0)
+                {
+                    src = src.Insert(slen, " ");
+                    slen = slen - 2;
+                }
+            }
+            srca = src.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             int len = srca.Length;
             int[] inta = new int[len];
             int value = 0;
@@ -3058,6 +3168,62 @@ namespace Bumblebee
                 value = value ^ int.Parse(srca[i], NumberStyles.HexNumber);
             }
             return String.Format("{0:X2}", value);
+        }
+
+        public string CmdBytesToString(byte[] ba, bool addBlank = false)
+        {
+            if (ba == null || ba.Length < 1)
+                return "";
+
+            string s = "";
+            foreach (byte bi in ba)
+            {
+                string si = bi.ToString("X");
+                if (si.Length > 2)
+                    si = si.Substring(si.Length - 2, 2);
+                else if (si.Length == 1)
+                    si = "0" + si;
+                else if (si.Length < 1)
+                    si = "00";
+                s = s + ((addBlank == true) ? " " : "") + si;
+            }
+
+            return s.Trim();
+        }
+
+        public byte[] PadBytes(byte[] src, int len)
+        {
+            if (src == null)
+                src = new byte[] { };
+            if (len <= src.Length)
+                return src;
+            byte[] dest = new byte[len];
+            for (int i = 0; i < len; i++)
+            {
+                if (i < src.Length)
+                    dest[i] = src[i];
+                else
+                    dest[i] = (byte)0;
+            }
+            return dest;
+        }
+
+        /// <summary>
+        /// Caller must make sure of each data is of "XX"
+        /// </summary>
+        /// <param name="src"></param>
+        /// <returns></returns>
+        public string InsertBlank(string src)
+        {
+            if (src == null || src.Length < 1)
+                return "";
+            int len = src.Length - 2;
+            while (len > 0)
+            {
+                src = src.Insert(len, " ");
+                len = len - 2;
+            }
+            return src;
         }
 
         public string[] GetConcreteCmds()
@@ -3135,35 +3301,50 @@ namespace Bumblebee
                     else
                     {
                         Encoding gb = Encoding.GetEncoding("GB2312");
-                        byte[] ba = gb.GetBytes(VehicleNumberCode);
-                        if (ba == null || ba.Length < 1 || ba.Length > 17)
+                        byte[] ba1 = gb.GetBytes(VehicleIDCode);
+                        if (ba1 == null || ba1.Length != 17)
                             return new string[] { "", "车辆识别代码长度错误." };
                         else
                         {
-                            if (string.IsNullOrWhiteSpace(VehicleIDCode))
+                            if (string.IsNullOrWhiteSpace(VehicleNumberCode))
                                 return new string[] { "", "车辆号牌号码为空." };
                             else
                             {
-                                ba = gb.GetBytes(VehicleNumberCode);
-                                if (ba == null || ba.Length < 1 || ba.Length > 12)
+                                byte[] ba2 = gb.GetBytes(VehicleNumberCode);
+                                if (ba2 == null || ba2.Length < 6 || ba2.Length > 9)
                                     return new string[] { "", "车辆号牌号码长度错误." };
                                 else
                                 {
+                                    if (string.IsNullOrWhiteSpace(VehicleNumberCategory))
+                                        return new string[] { "", "车辆号牌分类为空." };
+                                    else
+                                    {
+                                        byte[] ba3 = gb.GetBytes(VehicleNumberCategory);
+                                        if (ba3 == null || ba3.Length < 1 || ba3.Length > 8)
+                                            return new string[] { "", "车辆号牌分类长度错误." };
+                                        else
+                                        {
+                                            string finalData = CmdBytesToString(PadBytes(ba1, 17)) + CmdBytesToString(PadBytes(ba2, 12)) + CmdBytesToString(PadBytes(ba2, 12));
+                                            string finalDataLen = String.Format("{0:X4}", finalData.Length / 2);
+                                            string finalCmd = "AA7582" + finalDataLen + "00" + finalData;
+                                            finalCmd = finalCmd + XORData(finalCmd, false);
+                                            return new string[] { InsertBlank(finalCmd) };
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                    break;
                 case "83H":
-                    break;
+                    return new string[] { };
                 case "84H":
-                    break;
+                    return new string[] { };
                 case "C2H":
-                    break;
+                    return new string[] { };
                 case "C3H":
-                    break;
+                    return new string[] { };
                 case "C4H":
-                    break;
+                    return new string[] { };
             }
         }
     }
