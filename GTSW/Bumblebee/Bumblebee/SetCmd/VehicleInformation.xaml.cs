@@ -42,7 +42,14 @@ namespace Bumblebee.SetCmd
                 if (string.IsNullOrWhiteSpace(VehicleIDCode))
                     VehicleIDCodeForeground = Brushes.Red;
                 else
-                    VehicleIDCodeForeground = Brushes.Black;
+                {
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    byte[] ba = gb.GetBytes(VehicleNumberCode);
+                    if (ba == null || ba.Length < 1 || ba.Length > 17)
+                        VehicleIDCodeForeground = Brushes.Red;
+                    else
+                        VehicleIDCodeForeground = Brushes.Black;
+                }
                 NotifyPropertyChanged("VehicleIDCode");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
@@ -63,7 +70,14 @@ namespace Bumblebee.SetCmd
                 if (string.IsNullOrWhiteSpace(VehicleNumberCode))
                     VehicleNumberCodeForeground = Brushes.Red;
                 else
-                    VehicleNumberCodeForeground = Brushes.Black;
+                {
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    byte[] ba = gb.GetBytes(VehicleNumberCode);
+                    if(ba == null || ba.Length < 1 || ba.Length > 12)
+                        VehicleNumberCodeForeground = Brushes.Red;
+                    else
+                        VehicleNumberCodeForeground = Brushes.Black;
+                }
                 NotifyPropertyChanged("VehicleNumberCode");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
@@ -121,7 +135,20 @@ namespace Bumblebee.SetCmd
                     string.IsNullOrWhiteSpace(VehicleNumberCode))
                     return false;
                 else
-                    return true;
+                {
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    byte[] ba = gb.GetBytes(VehicleIDCode);
+                    if (ba == null || ba.Length < 1 || ba.Length > 17)
+                        return false;
+                    else
+                    {
+                        ba = gb.GetBytes(VehicleNumberCode);
+                        if (ba == null || ba.Length < 1 || ba.Length > 12)
+                            return false;
+                        else
+                            return true;
+                    }
+                }
             }
         }
 
