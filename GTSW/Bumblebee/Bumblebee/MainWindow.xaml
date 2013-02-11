@@ -132,9 +132,15 @@
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0" Margin="0,0,3,0">
                 <DockPanel DockPanel.Dock="Bottom" Height="35" Margin="5"
-                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                              IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                     <Grid DockPanel.Dock="Left" Width="25"/>
                     <Button DockPanel.Dock="Left" Margin="0,2,0,2" Click="Start_Button_Click">
+                        <!--Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource Bools2BoolOrConverter}">
+                                <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                <Binding Path="InChkCmd" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            </MultiBinding>
+                        </Button.IsEnabled-->
                         <Button.Content>
                             <DockPanel>
                                 <Image DockPanel.Dock="Left" Source="resources/play.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -172,7 +178,8 @@
                                                             <CheckBox Content="{Binding Path=CmdContent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                       IsChecked="{Binding Path=CmdSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                       IsThreeState="False"
-                                                                      Checked="GetSetCmdSetPar_CheckBox_CheckedUnchecked" Unchecked="GetSetCmdSetPar_CheckBox_CheckedUnchecked" />
+                                                                      Checked="GetSetCmdSetPar_CheckBox_CheckedUnchecked" Unchecked="GetSetCmdSetPar_CheckBox_CheckedUnchecked"
+                                                                      Foreground ="{Binding Path=CmdStateForeground, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                                         </DataTemplate>
                                                     </GridViewColumn.CellTemplate>
                                                 </GridViewColumn>
@@ -220,7 +227,8 @@
                                                             <CheckBox Content="{Binding Path=CmdContent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                       IsChecked="{Binding Path=CmdSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                       IsThreeState="False"
-                                                                      Checked="GetSetCmdSetPar_CheckBox_CheckedUnchecked" Unchecked="GetSetCmdSetPar_CheckBox_CheckedUnchecked"/>
+                                                                      Checked="GetSetCmdSetPar_CheckBox_CheckedUnchecked" Unchecked="GetSetCmdSetPar_CheckBox_CheckedUnchecked"
+                                                                      Foreground ="{Binding Path=CmdStateForeground, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                                         </DataTemplate>
                                                     </GridViewColumn.CellTemplate>
                                                 </GridViewColumn>
@@ -248,43 +256,50 @@
                             </Border>
                         </Expander>
                         <Expander Header="检定指令" Name="expChkCmd" IsExpanded="False">
-                         <Border BorderThickness="1" BorderBrush="#FF828790"
-                                IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
-                            <DockPanel IsEnabled="{Binding Path=ChkCmdEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
-                                <GroupBox BorderThickness="0" Margin="0,10,0,3">
-                                    <GroupBox.Header>
-                                        <DockPanel>
-                                            <Label DockPanel.Dock="Right" Content="{Binding Path=CheckCmdState,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                            <CheckBox DockPanel.Dock="Left" Content="检定模式" IsThreeState="False" 
-                                                      IsChecked="{Binding Path=CheckModeChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                            <Grid Width="205"/>
-                                        </DockPanel>
-                                    </GroupBox.Header>
-                                    <StackPanel IsEnabled="{Binding Path=CheckModeSelectEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
-                                        <ListView Name="lvChkCmd" SelectionMode="Single" ItemsSource="{Binding}"
-                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"                                                  
-                                                  BorderThickness="0">
-                                            <ListView.View>
-                                                <GridView x:Name="gvChkCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
-                                                    <GridViewColumn Width="200">
-                                                        <GridViewColumn.CellTemplate>
-                                                            <DataTemplate>
-                                                                <RadioButton Content="{Binding Path=CmdContent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                             IsChecked="{Binding Path=CmdSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                             IsThreeState="False" Height="25" Margin="25,0,0,0"
-                                                                             Checked="ChkCmd_RadioButton_Checked"/>
-                                                            </DataTemplate>
-                                                        </GridViewColumn.CellTemplate>
-                                                    </GridViewColumn>
-                                                </GridView>
-                                            </ListView.View>
-                                        </ListView>
-                                    </StackPanel>
-                                </GroupBox>
-                            </DockPanel>
-                        </Border>
-                    </Expander>
+                            <Border BorderThickness="1" BorderBrush="#FF828790">
+                                <DockPanel IsEnabled="{Binding Path=ChkCmdEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                                    <GroupBox BorderThickness="0" Margin="0,10,0,3">
+                                        <GroupBox.IsEnabled>
+                                            <MultiBinding Converter="{StaticResource Bools2BoolOrConverter}">
+                                                <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="InChkCmd" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </GroupBox.IsEnabled>
+                                        <GroupBox.Header>
+                                            <DockPanel>
+                                                <Label DockPanel.Dock="Right" Content="{Binding Path=CheckCmdState,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                <CheckBox DockPanel.Dock="Left" Content="检定模式" IsThreeState="False" 
+                                                          IsChecked="{Binding Path=CheckModeChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                <Grid Width="205"/>
+                                            </DockPanel>
+                                        </GroupBox.Header>
+                                        <StackPanel IsEnabled="{Binding Path=CheckModeSelectEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                                            <ListView Name="lvChkCmd" SelectionMode="Single" ItemsSource="{Binding}"
+                                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                      ScrollViewer.VerticalScrollBarVisibility="Auto"                                                  
+                                                      BorderThickness="0">
+                                                <ListView.View>
+                                                    <GridView x:Name="gvChkCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
+                                                        <GridViewColumn Width="200">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <RadioButton Content="{Binding Path=CmdContent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                 IsChecked="{Binding Path=CmdSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                 IsEnabled="{Binding Path=ChkCmdEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                                                                                 IsThreeState="False" Height="25" Margin="25,0,0,0"
+                                                                                 Checked="ChkCmd_RadioButton_Checked"
+                                                                                 Foreground ="{Binding Path=CmdStateForeground, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </DockPanel>
+                            </Border>
+                        </Expander>
                         <Expander Header="扩展采集指令" Name="expExtGetCmd" IsExpanded="False">
                             <Border BorderThickness="1" BorderBrush="#FF828790">
                                 <Border.IsEnabled>
@@ -302,7 +317,8 @@
                                                     <DataTemplate>
                                                         <CheckBox Content="{Binding Path=CmdContent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                     IsChecked="{Binding Path=CmdSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                    IsThreeState="False"/>
+                                                                    IsThreeState="False"
+                                                                  Foreground ="{Binding Path=CmdStateForeground, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
@@ -345,7 +361,8 @@
                                                     <DataTemplate>
                                                         <CheckBox Content="{Binding Path=CmdContent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                     IsChecked="{Binding Path=CmdSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                    IsThreeState="False"/>
+                                                                    IsThreeState="False"
+                                                                  Foreground ="{Binding Path=CmdStateForeground, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>

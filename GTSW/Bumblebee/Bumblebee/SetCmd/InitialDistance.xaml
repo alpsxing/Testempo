@@ -27,6 +27,7 @@
                 Click="Cancel_Button_Click"/>
         <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="1"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                             Value="{Binding Path=InitialDistanceValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                             Value="{Binding Path=InitialDistanceValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                             Minimum="0" Maximum="99999999"/>
     </Grid>
 </Window>

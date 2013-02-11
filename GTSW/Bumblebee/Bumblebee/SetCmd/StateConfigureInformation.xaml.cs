@@ -42,7 +42,14 @@ namespace Bumblebee.SetCmd
                 if (string.IsNullOrWhiteSpace(_d2))
                     D2Foreground = Brushes.Red;
                 else
-                    D2Foreground = Brushes.Black;
+                {
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    byte[] ba = gb.GetBytes(_d2);
+                    if (ba == null || ba.Length < 1 || ba.Length > 10)
+                        D2Foreground = Brushes.Red;
+                    else
+                        D2Foreground = Brushes.Black;
+                }
                 NotifyPropertyChanged("D2");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
@@ -77,7 +84,14 @@ namespace Bumblebee.SetCmd
                 if (string.IsNullOrWhiteSpace(_d1))
                     D1Foreground = Brushes.Red;
                 else
-                    D1Foreground = Brushes.Black;
+                {
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    byte[] ba = gb.GetBytes(_d1);
+                    if (ba == null || ba.Length < 1 || ba.Length > 10)
+                        D1Foreground = Brushes.Red;
+                    else
+                        D1Foreground = Brushes.Black;
+                }
                 NotifyPropertyChanged("D1");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
@@ -112,7 +126,14 @@ namespace Bumblebee.SetCmd
                 if (string.IsNullOrWhiteSpace(_d0))
                     D0Foreground = Brushes.Red;
                 else
-                    D0Foreground = Brushes.Black;
+                {
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    byte[] ba = gb.GetBytes(_d0);
+                    if (ba == null || ba.Length < 1 || ba.Length > 10)
+                        D0Foreground = Brushes.Red;
+                    else
+                        D0Foreground = Brushes.Black;
+                }
                 NotifyPropertyChanged("D0");
                 NotifyPropertyChanged("OKEnabled");
                 NotifyPropertyChanged("OKDefault");
@@ -143,7 +164,26 @@ namespace Bumblebee.SetCmd
                     string.IsNullOrWhiteSpace(D0))
                     return false;
                 else
-                    return true;
+                {
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    byte[] ba = gb.GetBytes(_d2);
+                    if (ba == null || ba.Length < 1 || ba.Length > 10)
+                        return false;
+                    else
+                    {
+                        ba = gb.GetBytes(_d1);
+                        if (ba == null || ba.Length < 1 || ba.Length > 10)
+                            return false;
+                        else
+                        {
+                            ba = gb.GetBytes(_d0);
+                            if (ba == null || ba.Length < 1 || ba.Length > 10)
+                                return false;
+                            else
+                                return true;
+                        }
+                    }
+                }
             }
         }
 

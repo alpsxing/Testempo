@@ -24,6 +24,7 @@
                 Click="Cancel_Button_Click"/>
         <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="1"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                             Value="{Binding Path=PulseCoefficient,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                             Value="{Binding Path=PulseCoefficient,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                             Minimum="0" Maximum="65535"/>
     </Grid>
 </Window>
