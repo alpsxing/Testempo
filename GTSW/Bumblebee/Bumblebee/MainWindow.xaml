@@ -267,9 +267,11 @@
                                         </GroupBox.IsEnabled>
                                         <GroupBox.Header>
                                             <DockPanel>
-                                                <Label DockPanel.Dock="Right" Content="{Binding Path=CheckCmdState,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                <Label DockPanel.Dock="Right" Content="{Binding Path=CheckCmdState,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                                                       Foreground="{Binding Path=CheckCmdStateForeground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                                 <CheckBox DockPanel.Dock="Left" Content="检定模式" IsThreeState="False" 
-                                                          IsChecked="{Binding Path=CheckModeChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                          IsChecked="{Binding Path=CheckModeChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                          Foreground="{Binding Path=CheckCmdStateForeground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                                 <Grid Width="205"/>
                                             </DockPanel>
                                         </GroupBox.Header>
@@ -280,7 +282,7 @@
                                                       BorderThickness="0">
                                                 <ListView.View>
                                                     <GridView x:Name="gvChkCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
-                                                        <GridViewColumn Width="200">
+                                                        <GridViewColumn Width="225">
                                                             <GridViewColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <RadioButton Content="{Binding Path=CmdContent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"

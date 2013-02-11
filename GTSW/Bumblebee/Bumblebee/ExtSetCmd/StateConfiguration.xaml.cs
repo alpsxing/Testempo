@@ -71,121 +71,139 @@ namespace Bumblebee.ExtSetCmd
             }
         }
 
-        private string _d7 = "高有效";
-        public string D7
+        private int _d7State = 1;
+        public int D7State
         {
             get
             {
-                return _d7;
+                return _d7State;
             }
             set
             {
-                _d7 = value;
-                NotifyPropertyChanged("D7");
+                _d7State = value;
+                if (_d7State != 1 && _d7State != 0 && _d7State != 3)
+                    _d7State = 3;
+                NotifyPropertyChanged("D7State");
             }
         }
 
-        private string _d6 = "高有效";
-        public string D6
+        private int _d6State = 1;
+        public int D6State
         {
             get
             {
-                return _d6;
+                return _d6State;
             }
             set
             {
-                _d6 = value;
-                NotifyPropertyChanged("D6");
+                _d6State = value;
+                if (_d7State != 1 && _d6State != 0 && _d6State != 3)
+                    _d6State = 3;
+                NotifyPropertyChanged("D6State");
             }
         }
 
-        private string _d5 = "高有效";
-        public string D5
+        private int _d5State = 1;
+        public int D5State
         {
             get
             {
-                return _d5;
+                return _d5State;
             }
             set
             {
-                _d5 = value;
-                NotifyPropertyChanged("D5");
+                _d5State = value;
+                if (_d5State != 1 && _d5State != 0 && _d5State != 3)
+                    _d5State = 3;
+                NotifyPropertyChanged("D5State");
             }
         }
 
-        private string _d4 = "高有效";
-        public string D4
+        private int _d4State = 1;
+        public int D4State
         {
             get
             {
-                return _d4;
+                return _d4State;
             }
             set
             {
-                _d4 = value;
-                NotifyPropertyChanged("D4");
+                _d4State = value;
+                if (_d4State != 1 && _d4State != 0 && _d4State != 3)
+                    _d4State = 3;
+                NotifyPropertyChanged("D4State");
             }
         }
 
-        private string _d3 = "高有效";
-        public string D3
+        private int _d3State = 1;
+        public int D3State
         {
             get
             {
-                return _d3;
+                return _d3State;
             }
             set
             {
-                _d3 = value;
-                NotifyPropertyChanged("D3");
+                _d3State = value;
+                if (_d3State != 1 && _d3State != 0 && _d3State != 3)
+                    _d3State = 3;
+                NotifyPropertyChanged("D3State");
             }
         }
 
-        private string _d2 = "高有效";
-        public string D2
+        private int _d2State = 1;
+        public int D2State
         {
             get
             {
-                return _d2;
+                return _d2State;
             }
             set
             {
-                _d2 = value;
-                NotifyPropertyChanged("D2");
+                _d2State = value;
+                if (_d2State != 1 && _d2State != 0 && _d2State != 3)
+                    _d2State = 3;
+                NotifyPropertyChanged("D2State");
             }
         }
 
-        private string _d1 = "高有效";
-        public string D1
+        private int _d1State = 1;
+        public int D1State
         {
             get
             {
-                return _d1;
+                return _d1State;
             }
             set
             {
-                _d1 = value;
-                NotifyPropertyChanged("D1");
+                _d1State = value;
+                if (_d1State != 1 && _d1State != 0 && _d1State != 3)
+                    _d1State = 3;
+                NotifyPropertyChanged("D1State");
             }
         }
 
-        private string _d0 = "高有效";
-        public string D0
+        private int _d0State = 1;
+        public int D0State
         {
             get
             {
-                return _d0;
+                return _d0State;
             }
             set
             {
-                _d0 = value;
-                NotifyPropertyChanged("D0");
+                _d0State = value;
+                if (_d0State != 1 && _d0State != 0 && _d0State != 3)
+                    _d0State = 3;
+                NotifyPropertyChanged("D0State");
             }
         }
 
         #endregion
 
-        public StateConfiguration(string d2Label = "自定义", string d1Label = "自定义", string d0Label = "自定义")
+        public StateConfiguration(string d2Label = "自定义", string d1Label = "自定义", string d0Label = "自定义",
+            int d7State = 1, int d6State = 1, int d5State = 1, int d4State = 1,
+            int d3State = 1, int d2State = 1, int d1State = 1, int d0State = 1)
         {
             InitializeComponent();
 
@@ -194,15 +212,232 @@ namespace Bumblebee.ExtSetCmd
             D2Label = d2Label;
             D1Label = d1Label;
             D0Label = d0Label;
+
+            D7State = d7State;
+            D6State = d6State;
+            D5State = d5State;
+            D4State = d4State;
+            D3State = d3State;
+            D2State = d2State;
+            D1State = d1State;
+            D0State = d0State;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            switch (D7State)
+            {
+                default:
+                case 3:
+                    cboxD7.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD7.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD7.SelectedIndex = 1;
+                    break;
+            }
+            switch (D6State)
+            {
+                default:
+                case 3:
+                    cboxD6.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD6.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD6.SelectedIndex = 1;
+                    break;
+            }
+            switch (D5State)
+            {
+                default:
+                case 3:
+                    cboxD5.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD5.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD5.SelectedIndex = 1;
+                    break;
+            }
+            switch (D4State)
+            {
+                default:
+                case 3:
+                    cboxD4.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD4.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD4.SelectedIndex = 1;
+                    break;
+            }
+            switch (D3State)
+            {
+                default:
+                case 3:
+                    cboxD3.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD3.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD3.SelectedIndex = 1;
+                    break;
+            }
+            switch (D2State)
+            {
+                default:
+                case 3:
+                    cboxD2.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD2.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD2.SelectedIndex = 1;
+                    break;
+            }
+            switch (D1State)
+            {
+                default:
+                case 3:
+                    cboxD1.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD1.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD1.SelectedIndex = 1;
+                    break;
+            }
+            switch (D0State)
+            {
+                default:
+                case 3:
+                    cboxD0.SelectedIndex = 2;
+                    break;
+                case 1:
+                    cboxD0.SelectedIndex = 0;
+                    break;
+                case 0:
+                    cboxD0.SelectedIndex = 1;
+                    break;
+            }
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
         {
+            switch (cboxD7.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D7State = 3;
+                    break;
+                case 1:
+                    D7State = 0;
+                    break;
+                case 0:
+                    D7State = 1;
+                    break;
+            }
+            switch (cboxD6.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D6State = 3;
+                    break;
+                case 1:
+                    D6State = 0;
+                    break;
+                case 0:
+                    D6State = 1;
+                    break;
+            }
+            switch (cboxD5.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D5State = 3;
+                    break;
+                case 1:
+                    D5State = 0;
+                    break;
+                case 0:
+                    D5State = 1;
+                    break;
+            }
+            switch (cboxD4.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D4State = 3;
+                    break;
+                case 1:
+                    D4State = 0;
+                    break;
+                case 0:
+                    D4State = 1;
+                    break;
+            }
+            switch (cboxD3.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D3State = 3;
+                    break;
+                case 1:
+                    D3State = 0;
+                    break;
+                case 0:
+                    D3State = 1;
+                    break;
+            }
+            switch (cboxD2.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D2State = 3;
+                    break;
+                case 1:
+                    D2State = 0;
+                    break;
+                case 0:
+                    D2State = 1;
+                    break;
+            }
+            switch (cboxD1.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D1State = 3;
+                    break;
+                case 1:
+                    D1State = 0;
+                    break;
+                case 0:
+                    D1State = 1;
+                    break;
+            }
+            switch (cboxD0.SelectedIndex)
+            {
+                default:
+                case 2:
+                    D0State = 3;
+                    break;
+                case 1:
+                    D0State = 0;
+                    break;
+                case 0:
+                    D0State = 1;
+                    break;
+            }
+
             DialogResult = true;
         }
 

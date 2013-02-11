@@ -65,6 +65,9 @@ namespace Bumblebee
             E4H
         }
 
+        public const int MAX_DISPLAY_LINE_COUNT = 1000;
+        public const int CHK_CMD_INTERVAL = 500;
+
         #region Variables
 
         public static string[] _bauds = new string[]
@@ -124,6 +127,7 @@ namespace Bumblebee
         private Task _serialPortTask = null;
         private Task _serialPortChkTask = null;
         private List<CmdDefinition> _cmdsList = new List<CmdDefinition>();
+        private bool _displayedEnterChk = false;
 
         private Timer _timerPBar = null;
 
@@ -300,14 +304,14 @@ namespace Bumblebee
                     }
                     else
                     {
-                        if (string.Compare(header, "E0H", true) == 0)
-                        {
-                            cdi.ChkCmdEnabled = false;
-                        }
-                        else
-                        {
+                        //if (string.Compare(header, "E0H", true) == 0)
+                        //{
+                        //    cdi.ChkCmdEnabled = false;
+                        //}
+                        //else
+                        //{
                             cdi.ChkCmdEnabled = true;
-                        }
+                        //}
                     }
                 }
                 NotifyPropertyChanged("AlreadyEnterCheck");
@@ -391,7 +395,7 @@ namespace Bumblebee
             }
         }
 
-        private string _port = "";
+        private string _port = "COM1";
         public string Port
         {
             get
@@ -405,7 +409,7 @@ namespace Bumblebee
             }
         }
 
-        private string _baud = "";
+        private string _baud = "115200";
         public string Baud
         {
             get
@@ -419,7 +423,7 @@ namespace Bumblebee
             }
         }
 
-        private string _parity = "";
+        private string _parity = "Odd";
         public string Parity
         {
             get
@@ -433,7 +437,7 @@ namespace Bumblebee
             }
         }
 
-        private string _dataBit = "";
+        private string _dataBit = "8";
         public string DataBit
         {
             get
@@ -447,7 +451,7 @@ namespace Bumblebee
             }
         }
 
-        private string _startBit = "";
+        private string _startBit = "1";
         public string StartBit
         {
             get
@@ -461,7 +465,7 @@ namespace Bumblebee
             }
         }
 
-        private string _stopBit = "";
+        private string _stopBit = "1";
         public string StopBit
         {
             get
@@ -475,7 +479,7 @@ namespace Bumblebee
             }
         }
 
-        private string _timeout = "";
+        private string _timeout = "1000";
         public string TimeOut
         {
             get
@@ -491,7 +495,35 @@ namespace Bumblebee
             }
         }
 
-        private int _pBarStep = 0;
+        private string _cmdInterval = "1000";
+        public string CmdInterval
+        {
+            get
+            {
+                return _cmdInterval;
+            }
+            set
+            {
+                _cmdInterval = value;
+                NotifyPropertyChanged("CmdInterval");
+            }
+        }
+
+        private string _writeReadInterval = "1000";
+        public string WriteReadInterval
+        {
+            get
+            {
+                return _writeReadInterval;
+            }
+            set
+            {
+                _writeReadInterval = value;
+                NotifyPropertyChanged("WriteReadInterval");
+            }
+        }
+
+        private int _pBarStep = 10;
         public int PBarStep
         {
             get
@@ -505,7 +537,7 @@ namespace Bumblebee
             }
         }
 
-        private string _serverip = "";
+        private string _serverip = "127.0.0.1";
         public string ServerIP
         {
             get
@@ -519,7 +551,7 @@ namespace Bumblebee
             }
         }
 
-        private string _serverport = "";
+        private string _serverport = "8768";
         public string ServerPort
         {
             get
@@ -533,7 +565,7 @@ namespace Bumblebee
             }
         }
 
-        private bool? _autoClearLog = false;
+        private bool? _autoClearLog = true;
         public bool? AutoClearLog
         {
             get
@@ -547,7 +579,7 @@ namespace Bumblebee
             }
         }
 
-        private bool? _autoClearRecv = false;
+        private bool? _autoClearRecv = true;
         public bool? AutoClearRecv
         {
             get
@@ -561,7 +593,7 @@ namespace Bumblebee
             }
         }
 
-        private bool? _autoClearSend = false;
+        private bool? _autoClearSend = true;
         public bool? AutoClearSend
         {
             get
@@ -572,6 +604,48 @@ namespace Bumblebee
             {
                 _autoClearSend = value;
                 NotifyPropertyChanged("AutoClearSend");
+            }
+        }
+
+        private string _d2 = "自定义";
+        public string D2
+        {
+            get
+            {
+                return _d2;
+            }
+            set
+            {
+                _d2 = value;
+                NotifyPropertyChanged("D2");
+            }
+        }
+
+        private string _d1 = "自定义";
+        public string D1
+        {
+            get
+            {
+                return _d1;
+            }
+            set
+            {
+                _d1 = value;
+                NotifyPropertyChanged("D1");
+            }
+        }
+
+        private string _d0 = "自定义";
+        public string D0
+        {
+            get
+            {
+                return _d0;
+            }
+            set
+            {
+                _d0 = value;
+                NotifyPropertyChanged("D0");
             }
         }
 
@@ -595,7 +669,27 @@ namespace Bumblebee
             set
             {
                 _checkCmdState = value;
+                if (_checkCmdState.IndexOf("出错") >= 0 ||
+                    _checkCmdState.IndexOf("错误") >= 0 ||
+                    _checkCmdState.IndexOf("异常") >= 0)
+                    CheckCmdStateForeground = Brushes.Red;
+                else
+                    CheckCmdStateForeground = Brushes.Black;
                 NotifyPropertyChanged("CheckCmdState");
+            }
+        }
+
+        private Brush _checkCmdStateForeground = Brushes.Black;
+        public Brush CheckCmdStateForeground
+        {
+            get
+            {
+                return _checkCmdStateForeground;
+            }
+            set
+            {
+                _checkCmdStateForeground = value;
+                NotifyPropertyChanged("CheckCmdStateForeground");
             }
         }
 
@@ -1126,11 +1220,13 @@ namespace Bumblebee
 
         private void ConfigTimeout_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            TimeoutConfiguration tc = new TimeoutConfiguration(TimeOut);
+            TimeoutConfiguration tc = new TimeoutConfiguration(TimeOut, CmdInterval, WriteReadInterval);
             bool? b = tc.ShowDialog();
             if (b == true)
             {
                 TimeOut = tc.TimeOut.ToString();
+                CmdInterval = tc.CmdInterval.ToString();
+                WriteReadInterval = tc.WriteReadInterval.ToString();
                 SaveConfig();
 
                 DisconnectSerialPort(true);
@@ -1246,6 +1342,9 @@ namespace Bumblebee
                         cd.FirstInstallDateTime = r1idt.FirstInstallDateTime;
                     break;
                 case "84H : 状态量配置信息":
+                    cd.D2 = D2;
+                    cd.D1 = D1;
+                    cd.D0 = D0;
                     StateConfigureInformation sci = new StateConfigureInformation(cd.D2, cd.D1, cd.D0);
                     b = sci.ShowDialog();
                     if (b == true)
@@ -1253,6 +1352,9 @@ namespace Bumblebee
                         cd.D2 = sci.D2;
                         cd.D1 = sci.D1;
                         cd.D0 = sci.D0;
+                        D2 = cd.D2;
+                        D1 = cd.D1;
+                        D0 = cd.D0;
                     }
                     break;
                 case "C2H : 记录仪时间":
@@ -1308,19 +1410,19 @@ namespace Bumblebee
                 default:
                     break;
                 case "E0H : 进入检定状态":
-                    CheckCmdState = "进入检定";
+                    CheckCmdState = "进入检定.";
                     break;
                 case "E1H : 进入里程误差测量":
-                    CheckCmdState = "检定里程";
+                    CheckCmdState = "检定里程.";
                     break;
                 case "E2H : 进入脉冲系数误差测量":
-                    CheckCmdState = "检定脉冲";
+                    CheckCmdState = "检定脉冲.";
                     break;
                 case "E3H : 进入实时时间程误差测量":
-                    CheckCmdState = "检定时钟";
+                    CheckCmdState = "检定时钟.";
                     break;
                 case "E4H : 返回正常工作状态":
-                    CheckCmdState = "检定返回";
+                    CheckCmdState = "检定返回.";
                     break;
             }
         }
@@ -1339,12 +1441,26 @@ namespace Bumblebee
                 default:
                     break;
                 case "D0H : 状态量配置":
-                    StateConfiguration sc = new StateConfiguration();
+                    StateConfiguration sc = new StateConfiguration(D2, D1, D0, cd.D7State, cd.D6State,
+                        cd.D5State, cd.D4State, cd.D3State, cd.D2State, cd.D1State, cd.D0State);
                     b = sc.ShowDialog();
+                    if (b == true)
+                    {
+                        cd.D7State = sc.D7State;
+                        cd.D6State = sc.D6State;
+                        cd.D5State = sc.D5State;
+                        cd.D4State = sc.D4State;
+                        cd.D3State = sc.D3State;
+                        cd.D2State = sc.D2State;
+                        cd.D1State = sc.D1State;
+                        cd.D0State = sc.D0State;
+                    }
                     break;
                 case "D1H : 传感器单圈脉冲数":
-                    SinglePulseCount spc = new SinglePulseCount();
+                    SinglePulseCount spc = new SinglePulseCount(cd.SinglePulseCnt);
                     b = spc.ShowDialog();
+                    if (b == true)
+                        cd.SinglePulseCnt = spc.PulseCount;
                     break;
             }
             if (b == true)
@@ -1536,6 +1652,11 @@ namespace Bumblebee
                         {
                             #region
 
+                            while (fldocLog.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                            {
+                                fldocLog.Blocks.Remove(fldocLog.Blocks.FirstBlock);
+                            }
+                            
                             Run rch = new Run(di.Item1);
                             Paragraph pch = new Paragraph(rch);
                             switch (di.Item2)
@@ -1584,6 +1705,8 @@ namespace Bumblebee
                 sw.WriteLine("    <start>" + StartBit + "</start>");
                 sw.WriteLine("    <stop>" + StopBit + "</stop>");
                 sw.WriteLine("    <timeout>" + TimeOut + "</timeout>");
+                sw.WriteLine("    <cmdintvl>" + CmdInterval + "</cmdintvl>");
+                sw.WriteLine("    <wrintvl>" + WriteReadInterval + "</wrintvl>");
                 sw.WriteLine("    <serverip>" + ServerIP + "</serverip>");
                 sw.WriteLine("    <serverport>" + ServerPort + "</serverport>");
                 sw.WriteLine("</bumblebee>");
@@ -1605,6 +1728,8 @@ namespace Bumblebee
             LogMessageInformation("当前串口开始位:" + StartBit + ".");
             LogMessageInformation("当前串口停止位:" + StopBit + ".");
             LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
+            LogMessageInformation("当前串口命令间隔时间:" + CmdInterval + "ms.");
+            LogMessageInformation("当前串口读写间隔时间:" + WriteReadInterval + "ms.");
             LogMessageInformation("当前服务器IP:" + ServerIP + ".");
             LogMessageInformation("当前服务器端口:" + ServerPort + ".");
 
@@ -1977,6 +2102,102 @@ namespace Bumblebee
 
                                     #endregion
                                     break;
+                                case "CMDINTVL":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        CmdInterval = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(CmdInterval))
+                                        {
+                                            LogMessageError("配置文件中串口命令间隔时间项为空.");
+                                        }
+                                        else
+                                        {
+                                            int timeout = -1;
+                                            if (int.TryParse(CmdInterval, out timeout) == false)
+                                            {
+                                                LogMessageError("配置文件中串口命令间隔时间(" + CmdInterval + ")不正确,使用默认串口命令间隔时间:1000ms.");
+                                                CmdInterval = "1000";
+                                            }
+                                            else
+                                            {
+                                                if (timeout < 1000)
+                                                {
+                                                    LogMessageError("配置文件中串口命令间隔时间(" + CmdInterval + ")不正确,使用默认串口命令间隔时间:1000ms.");
+                                                    CmdInterval = "1000";
+                                                }
+                                                else if (timeout > 10000)
+                                                {
+                                                    LogMessageError("配置文件中串口命令间隔时间(" + CmdInterval + ")不正确,使用默认串口命令间隔时间:10000ms.");
+                                                    CmdInterval = "10000";
+                                                }
+                                                else
+                                                {
+                                                    LogMessageInformation("当前串口命令间隔时间:" + CmdInterval + "ms.");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口命令间隔时间项.");
+
+                                        LogMessageError("使用默认串口命令间隔时间:1000ms.");
+                                        CmdInterval = "1000";
+                                    }
+                                    xni.InnerText = CmdInterval;
+
+                                    #endregion
+                                    break;
+                                case "WRINTVL":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        WriteReadInterval = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(WriteReadInterval))
+                                        {
+                                            LogMessageError("配置文件中串口读写间隔时间项为空.");
+                                        }
+                                        else
+                                        {
+                                            int timeout = -1;
+                                            if (int.TryParse(WriteReadInterval, out timeout) == false)
+                                            {
+                                                LogMessageError("配置文件中串口读写间隔时间(" + WriteReadInterval + ")不正确,使用默认串口读写间隔时间:1000ms.");
+                                                TimeOut = "1000";
+                                            }
+                                            else
+                                            {
+                                                if (timeout < 1000)
+                                                {
+                                                    LogMessageError("配置文件中串口读写间隔时间(" + WriteReadInterval + ")不正确,使用默认串口读写间隔时间:1000ms.");
+                                                    WriteReadInterval = "1000";
+                                                }
+                                                else if (timeout > 10000)
+                                                {
+                                                    LogMessageError("配置文件中串口读写间隔时间(" + WriteReadInterval + ")不正确,使用默认串口读写间隔时间:10000ms.");
+                                                    WriteReadInterval = "10000";
+                                                }
+                                                else
+                                                {
+                                                    LogMessageInformation("当前串口读写间隔时间:" + WriteReadInterval + "ms.");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口读写间隔时间项.");
+
+                                        LogMessageError("使用默认串口读写间隔时间:1000ms.");
+                                        WriteReadInterval = "1000";
+                                    }
+                                    xni.InnerText = WriteReadInterval;
+
+                                    #endregion
+                                    break;
                                 case "SERVERIP":
                                     #region
 
@@ -2080,6 +2301,9 @@ namespace Bumblebee
                     StartBit = "1";
                     StopBit = _stopBits[0];
                     TimeOut = "1000";
+                    WriteReadInterval = "100";
+                    CmdInterval = "100";
+                    TimeOut = "1000";
                     ServerIP = "127.0.0.1";
                     ServerPort = "8678";
 
@@ -2090,6 +2314,8 @@ namespace Bumblebee
                     LogMessageInformation("当前串口开始位:" + StartBit + ".");
                     LogMessageInformation("当前串口停止位:" + StopBit + ".");
                     LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
+                    LogMessageInformation("当前串口命令间隔时间:" + CmdInterval + "ms.");
+                    LogMessageInformation("当前串口读写间隔时间:" + WriteReadInterval + "ms.");
                     LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                     LogMessageInformation("当前服务器端口:" + ServerPort + ".");
                 }
@@ -2113,6 +2339,8 @@ namespace Bumblebee
                 StartBit = "1";
                 StopBit = _stopBits[0];
                 TimeOut = "1000";
+                WriteReadInterval = "100";
+                CmdInterval = "100";
                 ServerIP = "127.0.0.1";
                 ServerPort = "8678";
 
@@ -2123,6 +2351,8 @@ namespace Bumblebee
                 LogMessageInformation("当前串口开始位:" + StartBit + ".");
                 LogMessageInformation("当前串口停止位:" + StopBit + ".");
                 LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
+                LogMessageInformation("当前串口命令间隔时间:" + CmdInterval + "ms.");
+                LogMessageInformation("当前串口读写间隔时间:" + WriteReadInterval + "ms.");
                 LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                 LogMessageInformation("当前服务器端口:" + ServerPort + ".");
             }
@@ -2201,12 +2431,12 @@ namespace Bumblebee
 
             InRun = true;
 
-            if (AutoClearLog == true)
-                fldocLog.Blocks.Clear();
-            if (AutoClearRecv == true)
-                fldocRecv.Blocks.Clear();
-            if (AutoClearSend == true)
-                fldocSend.Blocks.Clear();
+            //if (AutoClearLog == true)
+            //    fldocLog.Blocks.Clear();
+            //if (AutoClearRecv == true)
+            //    fldocRecv.Blocks.Clear();
+            //if (AutoClearSend == true)
+            //    fldocSend.Blocks.Clear();
 
             _cmdsList.Clear();
 
@@ -2214,6 +2444,8 @@ namespace Bumblebee
 
             if (InChkCmd == true)
             {
+                _displayedEnterChk = false;
+
                 _serialPortChkTask = Task.Factory.StartNew(new Action(SerialPortChkTaskHander), _cts.Token);
             }
             else
@@ -2224,50 +2456,87 @@ namespace Bumblebee
 
         private void SerialPortChkTaskHander()
         {
+            SerialPortChkWriteReadType wrt = SerialPortChkWriteReadType.E0H;
+            SerialPortChkWriteReadType wrtPrev = SerialPortChkWriteReadType.E0H;
+
             try
             {
                 while (_cts.IsCancellationRequested == false)
                 {
-                    if (InChkCmd == false)
-                    {
-                        SerialPortChkWriteReadHandler(_chkCmdOc[_chkCmdOc.Count - 1]);
-                        break;
-                    }
-
                     foreach (CmdDefinition cdi in _chkCmdOc)
                     {
                         if (cdi.CmdSelected == false)
                             continue;
 
-                        if (string.Compare(cdi.CmdContent, "E4H : 返回正常工作状态", true) == 0)
+                        switch (cdi.CmdContent.Substring(0, 3).ToUpper())
                         {
-                            SerialPortChkWriteReadHandler(cdi, SerialPortChkWriteReadType.E4H);
-                            CheckModeChecked = false;
-                            AlreadyEnterCheck = false;
-                        }
-                        else
-                        {
-                            switch (cdi.CmdContent.Substring(0, 3).ToUpper())
-                            {
-                                default:
-                                    LogMessageError("命令(" + cdi.CmdContent + ")未知.");
-                                    break;
-                                case "E0H":
-                                    SerialPortChkWriteReadHandler(cdi, SerialPortChkWriteReadType.E0H);
-                                    AlreadyEnterCheck = true;
-                                    break;
-                                case "E1H":
-                                    SerialPortChkWriteReadHandler(cdi, SerialPortChkWriteReadType.E1H);
-                                    break;
-                                case "E2H":
-                                    SerialPortChkWriteReadHandler(cdi, SerialPortChkWriteReadType.E2H);
-                                    break;
-                                case "E3H":
-                                    SerialPortChkWriteReadHandler(cdi, SerialPortChkWriteReadType.E3H);
-                                    break;
-                            }
+                            default:
+                            case "E0H":
+                                wrt = SerialPortChkWriteReadType.E0H;
+                                AlreadyEnterCheck = true;
+                                break;
+                            case "E1H":
+                                wrt = SerialPortChkWriteReadType.E1H;
+                                break;
+                            case "E2H":
+                                wrt = SerialPortChkWriteReadType.E2H;
+                                break;
+                            case "E3H":
+                                wrt = SerialPortChkWriteReadType.E3H;
+                                break;
+                            case "E4H":
+                                wrt = SerialPortChkWriteReadType.E4H;
+                                CheckModeChecked = false;
+                                AlreadyEnterCheck = false;
+                                break;
                         }
                     }
+
+                    if (wrt != wrtPrev)
+                    {
+                        switch (wrt)
+                        {
+                            default:
+                                break;
+                            case SerialPortChkWriteReadType.E1H:
+                                //SerialPortChkWriteReadHandler(_chkCmdOc[0], SerialPortChkWriteReadType.E0H);
+                                //_sPort.DiscardInBuffer();
+                                //_sPort.DiscardOutBuffer();
+                                //Thread.Sleep(int.Parse(CmdInterval));
+                                //SerialPortChkWriteReadHandler(_chkCmdOc[(int)wrt], wrt);
+                                //break;
+                            case SerialPortChkWriteReadType.E0H:
+                                //SerialPortChkWriteReadHandler(_chkCmdOc[(int)wrt], wrt);
+                                //break;
+                            case SerialPortChkWriteReadType.E2H:
+                            case SerialPortChkWriteReadType.E3H:
+                                //SerialPortChkWriteReadHandler(_chkCmdOc[0], SerialPortChkWriteReadType.E0H);
+                                //_sPort.DiscardInBuffer();
+                                //_sPort.DiscardOutBuffer();
+                                //Thread.Sleep(int.Parse(CmdInterval));
+                                SerialPortChkWriteReadHandler(_chkCmdOc[(int)wrt], wrt);
+                                break;
+                        }
+
+                        wrtPrev = wrt;
+                    }
+                    else
+                    {
+                        SerialPortChkWriteReadHandler(_chkCmdOc[0], SerialPortChkWriteReadType.E0H);
+                    }
+
+                    Thread.Sleep(CHK_CMD_INTERVAL);
+                }
+
+                //_sPort.DiscardInBuffer();
+                //_sPort.DiscardOutBuffer();
+
+                if (InChkCmd == false)
+                {
+                    SerialPortChkWriteReadHandler(_chkCmdOc[_chkCmdOc.Count - 1]);
+
+                    _timerPBar.Change(Timeout.Infinite, 100);
+                    PBarValue = 0;
                 }
             }
             catch (Exception ex)
@@ -2277,20 +2546,56 @@ namespace Bumblebee
                 _timerPBar.Change(Timeout.Infinite, 100);
                 PBarValue = 0;
 
-                ReadyString2 = "";
+                //ReadyString2 = "";
 
                 CheckCmdState = "执行异常.";
             }
 
             InRun = false;
+
+            ReadyString2 = "";
+
+            LogMessageSeperator();
+
+            PBarValue = 0;
         }
 
         private void SerialPortChkWriteReadHandler(CmdDefinition cd, 
             SerialPortChkWriteReadType wrt = SerialPortChkWriteReadType.E4H)
         {
+            _sPort.DiscardInBuffer();
+            _sPort.DiscardOutBuffer();
+            
             string finalCmd = "AA 75 " + wrt.ToString().Substring(0, 2).ToUpper() + " 00 00 00";
-            finalCmd = finalCmd + _chkCmdOc[0].XORData(finalCmd);
+            finalCmd = finalCmd + " " + CmdDefinition.XORData(finalCmd);
 
+            switch (wrt)
+            {
+                default:
+                    LogMessageError("未知的检定命令.");
+                    break;
+                case SerialPortChkWriteReadType.E0H:
+                    if(_displayedEnterChk == false)
+                        LogMessageTitle("进入检定状态.");
+                    else
+                        LogMessageTitle("保持检定状态.");
+                    break;
+                case SerialPortChkWriteReadType.E1H:
+                    LogMessageTitle("进入里程误差测量.");
+                    break;
+                case SerialPortChkWriteReadType.E2H:
+                    LogMessageTitle("进入脉冲系数误差测量.");
+                    break;
+                case SerialPortChkWriteReadType.E3H:
+                    LogMessageTitle("进入实时时间误差测量.");
+                    break;
+                case SerialPortChkWriteReadType.E4H:
+                    LogMessageTitle("返回正常工作状态.");
+                    break;
+            }
+
+            LogMessageTitle("");
+ 
             #region Send
 
             ReadyString2 = "发送(" + cd.CmdContent + "):" + finalCmd + "...";
@@ -2301,6 +2606,11 @@ namespace Bumblebee
             Dispatcher.Invoke((ThreadStart)delegate
             {
                 #region
+
+                while (fldocSend.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                {
+                    fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
+                }
 
                 Run rch = new Run(finalCmd);
                 Paragraph pch = new Paragraph(rch);
@@ -2316,18 +2626,28 @@ namespace Bumblebee
             }, null);
 
             PBarValue = 0;
-            _timerPBar.Change(0, 100);
+            _timerPBar.Change(0, 100 * CHK_CMD_INTERVAL / int.Parse(TimeOut));
 
             byte[] ba = new byte[lenSend];
             for (int i = 0; i < lenSend; i++)
             {
-                ba[i] = byte.Parse(sa[i], NumberStyles.HexNumber);
+                try
+                {
+                    ba[i] = byte.Parse(sa[i], NumberStyles.HexNumber);
+                }
+                catch (Exception)
+                {
+                    ba[i] = (byte)0;
+                }
             }
             _sPort.Write(ba, 0, lenSend);
 
             #endregion
 
-            Thread.Sleep(int.Parse(TimeOut));
+            Thread.Sleep(CHK_CMD_INTERVAL);
+
+            //_sPort.DiscardInBuffer();
+            //_sPort.DiscardOutBuffer();
 
             _timerPBar.Change(Timeout.Infinite, 100);
             PBarValue = 0;
@@ -2337,7 +2657,7 @@ namespace Bumblebee
             ReadyString2 = "读取响应...";
 
             PBarValue = 0;
-            _timerPBar.Change(0, 100);
+            _timerPBar.Change(0, 100 * CHK_CMD_INTERVAL / int.Parse(TimeOut));
 
             byte[] bytes = new byte[1024];
             int lenRecv = _sPort.Read(bytes, 0, 1024);
@@ -2353,6 +2673,11 @@ namespace Bumblebee
             {
                 #region
 
+                while (fldocRecv.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                {
+                    fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+                }
+                
                 Run rch = new Run(sRecv);
                 Paragraph pch = new Paragraph(rch);
                 fldocRecv.Blocks.Add(pch);
@@ -2366,58 +2691,235 @@ namespace Bumblebee
                 #endregion
             }, null);
 
-            if (lenRecv == 7)
-            {
-                string sToXor = sRecv.Substring(0, lenSRecv - 3);
-                string sFromXor = cd.XORData(sToXor);
-                string sXor = sRecv.Substring(lenSRecv - 2, 2);
-                if (string.Compare(sFromXor, sXor, true) != 0)
-                {
-                    LogMessageError("命令(" + cd.CmdContent + ")的响应的校验错误.");
+            #region Parse
 
-                    CheckCmdState = "执行错误.";
-                }
-                else
+            string[] saRecv = sRecv.Split(new string[] { "55 7A " }, StringSplitOptions.RemoveEmptyEntries);
+            if (saRecv == null || saRecv.Length < 1)
+            {
+                LogMessageError("响应的格式错误.");
+
+                CheckCmdState = "执行错误.";
+            }
+            else
+            {
+                foreach (string sRecvi in saRecv)
                 {
-                    string header0 = string.Format("{0:X2}", baRecev[0]);
-                    string header1 = string.Format("{0:X2}", baRecev[1]);
-                    string header2 = string.Format("{0:X2}", baRecev[2]);
-                    if (string.Compare(header0, "55", true) != 0 || string.Compare(header1, "7A", true) != 0)
+                    byte[] baRecvi = CmdDefinition.HexStringToBytes("55 7A " + sRecvi.Trim());
+                    string sRecviNew = "55 7A " + sRecvi.Trim();
+                    int lenSRecviNew = sRecviNew.Length;
+
+                    string sToXor = sRecviNew.Substring(0, lenSRecviNew - 3);
+                    string sFromXor = CmdDefinition.XORData(sToXor);
+                    string sXor = sRecviNew.Substring(lenSRecviNew - 2, 2);
+                    if (string.Compare(sFromXor, sXor, true) != 0)
                     {
-                        LogMessageError("命令(" + cd.CmdContent + ")的响应的起始字头错误:" + header0 + " " + header1);
+                        LogMessageError("响应的校验错误.");
 
                         CheckCmdState = "执行错误.";
                     }
                     else
                     {
-                        if (string.Compare(header2, "FA", true) == 0)
+                        #region
+
+                        string header0 = string.Format("{0:X2}", baRecvi[0]);
+                        string header1 = string.Format("{0:X2}", baRecvi[1]);
+                        string header2 = string.Format("{0:X2}", baRecvi[2]);
+                        if (string.Compare(header0, "55", true) != 0 || string.Compare(header1, "7A", true) != 0)
                         {
-                            LogMessageError("采集数据命令(" + cd.CmdContent + ")的命令帧接收错误.");
+                            LogMessageError("响应的起始字头错误:" + header0 + " " + header1);
 
                             CheckCmdState = "执行错误.";
-                        }
-                        else if (string.Compare(header2, "FB", true) == 0)
-                        {
-                            LogMessageError("设置参数命令(" + cd.CmdContent + ")的命令帧接收错误.");
-
-                            CheckCmdState = "执行错误.";
-                        }
-                        else if (string.Compare(header2, sa[2], true) != 0)
-                        {
-                            LogMessageError("响应与命令(" + cd.CmdContent + ")的命令字不匹配:" + header2);
-
-                            cd.CmdState = "执行错误.";
-                        }
-                        else if (baRecev[3] != 0 || baRecev[4] != 0)
-                        {
-                            LogMessageError("命令(" + cd.CmdContent + ")的响应的数据块长度指示不为0:" + (baRecev[3] * 256 + baRecev[4]).ToString());
                         }
                         else
                         {
+                            if (string.Compare(header2, "FA", true) == 0 || string.Compare(header2, "FB", true) == 0)
+                            {
+                                LogMessageError("命令帧接收错误.");
+
+                                CheckCmdState = "执行错误.";
+                            }
+                            else
+                            {
+                                int iHigh = (int)baRecvi[3];
+                                int iLow = (int)baRecvi[4];
+                                int dataLen = iHigh * 256 + iLow;
+
+                                if (baRecvi.Length != 6 + dataLen + 1)
+                                {
+                                    LogMessageError("响应的数据块长度不匹配.");
+
+                                    CheckCmdState = "执行错误.";
+                                }
+                                else
+                                {
+                                    byte[] baData = new byte[dataLen];
+                                    for (int i = 0; i < dataLen; i++)
+                                        baData[i] = baRecvi[6 + i];
+
+                                    switch (header2)
+                                    {
+                                        default:
+                                            LogMessageError("未知的记录仪应答.");
+                                            CheckCmdState = "错误应答.";
+                                            break;
+                                        case "E0":
+                                            if (_displayedEnterChk == false)
+                                            {
+                                                LogMessage("进入检定状态:记录仪正确应答.");
+                                                _displayedEnterChk = true;
+                                                CheckCmdState = "进入检定.";
+                                            }
+                                            else
+                                            {
+                                                LogMessage("保持检定状态:记录仪正确应答.");
+                                                CheckCmdState = "保持检定.";
+                                            }
+                                            break;
+                                        case "E1":
+                                            #region
+                                            {
+                                                string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
+                                                string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
+                                                string number = "20" + baData[23].ToString("X") + "-" + baData[24].ToString("X") + "-" + baData[25].ToString("X");
+                                                number = number.PadRight(27);
+                                                long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
+                                                string productflow = flow.ToString().PadRight(27);
+                                                //LogMessage("+------------------------------------------------+");
+                                                //LogMessage("|               记录仪唯一性编号                 |");
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("| 生产厂CCC认证代码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", ccc));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|      认证产品型号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", model));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|    记录仪生产时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
+                                                LogMessage("+-------------------+----------------------------+");
+
+                                                int intHigh = (int)baData[35];
+                                                int intLow = (int)baData[36];
+                                                int intLen = intHigh * 256 + intLow;
+                                                string sValue = intLen.ToString().PadRight(27);
+                                                LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                                LogMessage("+-------------------+----------------------------+");
+
+                                                intHigh = (int)baData[37];
+                                                intLow = (int)baData[38];
+                                                intLen = intHigh * 256 + intLow;
+                                                sValue = (intLen.ToString() + " (注:单位 0.1km/h)").PadRight(27 - 3);
+                                                LogMessage("|          当前速度 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                                LogMessage("+-------------------+----------------------------+");
+
+
+                                                int intHighHigh = (int)baData[39];
+                                                intHigh = (int)baData[40];
+                                                intLow = (int)baData[41];
+                                                int intLowLow = (int)baData[42];
+                                                long longLen = intHighHigh;
+                                                longLen = longLen * 256 + intHigh;
+                                                longLen = longLen * 256 + intLow;
+                                                longLen = longLen * 256 + intLowLow;
+                                                sValue = (longLen.ToString() + " (注:单位 米)").PadRight(27 - 4);
+                                                LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                                LogMessage("+-------------------+----------------------------+");
+
+                                                Encoding gb = Encoding.GetEncoding("GB2312");
+                                                string d0 = D0;
+                                                if ((baData[6] & 0x1) == 0x1)
+                                                    d0 = "(有操作) " + d0;
+                                                else
+                                                    d0 = "(无操作) " + d0;
+                                                d0 = d0.PadRight(27 - GetChineseNumber(d0) + 3);
+                                                string d1 = D1;
+                                                if ((baData[6] & 0x2) == 0x2)
+                                                    d1 = "(有操作) " + d1;
+                                                else
+                                                    d1 = "(无操作) " + d1;
+                                                d1 = d1.PadRight(27 - GetChineseNumber(d1) + 3);
+                                                string d2 = D2;
+                                                if ((baData[6] & 0x4) == 0x4)
+                                                    d2 = "(有操作) " + d2;
+                                                else
+                                                    d2 = "(无操作) " + d2;
+                                                d2 = d2.PadRight(27 - GetChineseNumber(d2) + 3);
+                                                string d3 = "近光";
+                                                if ((baData[6] & 0x8) == 0x8)
+                                                    d3 = "(有操作) " + d3;
+                                                else
+                                                    d3 = "(无操作) " + d3;
+                                                d3 = d3.PadRight(27 - GetChineseNumber(d3) + 3);
+                                                string d4 = "远光";
+                                                if ((baData[6] & 0x10) == 0x10)
+                                                    d4 = "(有操作) " + d4;
+                                                else
+                                                    d4 = "(无操作) " + d4;
+                                                d4 = d4.PadRight(27 - GetChineseNumber(d4) + 3);
+                                                string d5 = "右转向";
+                                                if ((baData[6] & 0x20) == 0x20)
+                                                    d5 = "(有操作) " + d5;
+                                                else
+                                                    d5 = "(无操作) " + d5;
+                                                d5 = d5.PadRight(27 - GetChineseNumber(d5) + 3);
+                                                string d6 = "左转向";
+                                                if ((baData[6] & 0x40) == 0x40)
+                                                    d6 = "(有操作) " + d6;
+                                                else
+                                                    d6 = "(无操作) " + d6;
+                                                d6 = d6.PadRight(27 - GetChineseNumber(d6) + 3);
+                                                string d7 = "制动";
+                                                if ((baData[6] & 0x80) == 0x80)
+                                                    d7 = "(有操作) " + d7;
+                                                else
+                                                    d7 = "(无操作) " + d7;
+                                                d7 = d7.PadRight(27 - GetChineseNumber(d7) + 3);
+                                                //LogMessage("|                     状态信号                   |");
+                                                //LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D7 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D6 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D5 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D4 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D3 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D2 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D1 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
+                                                LogMessage("+-------------------+----------------------------+");
+                                                LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
+                                                LogMessage("+-------------------+----------------------------+");
+                                            }
+                                            #endregion
+                                            CheckCmdState = "里程误差.";
+                                            break;
+                                        case "E2":
+                                            LogMessage("进入脉冲系数误差测量:记录仪正确应答.");
+                                            CheckCmdState = "脉冲系数.";
+                                            break;
+                                        case "E3":
+                                            LogMessage("进入实时时间误差测量:记录仪正确应答.");
+                                            CheckCmdState = "实时时间.";
+                                            break;
+                                        case "E4":
+                                            LogMessage("返回正常工作状态:记录仪正确应答.");
+                                            CheckCmdState = "检定返回.";
+                                            break;
+                                    }
+
+                                }
+                            }
                         }
+
+                        #endregion
                     }
+
+                    LogMessage("");
                 }
             }
+
+            #endregion
 
             #endregion
         }
@@ -2442,16 +2944,24 @@ namespace Bumblebee
                 _cmdsList.Add(cdi);
             }
 
-            foreach (CmdDefinition cdi in _chkCmdOc)
-            {
-            }
+            //foreach (CmdDefinition cdi in _chkCmdOc)
+            //{
+            //}
 
             foreach (CmdDefinition cdi in _extGetCmdOc)
             {
+                if (cdi.CmdSelected == false)
+                    continue;
+
+                _cmdsList.Add(cdi);
             }
 
             foreach (CmdDefinition cdi in _extSetCmdOc)
             {
+                if (cdi.CmdSelected == false)
+                    continue;
+
+                _cmdsList.Add(cdi);
             }
 
             #endregion
@@ -2481,6 +2991,9 @@ namespace Bumblebee
 
                     string cmd = cmda[0];
 
+                    _sPort.DiscardInBuffer();
+                    _sPort.DiscardOutBuffer();
+
                     #region Send
 
                     ReadyString2 = "发送(" + cdi.CmdContent + "):" + cmd + "...";
@@ -2492,6 +3005,11 @@ namespace Bumblebee
                     {
                         #region
 
+                        while (fldocSend.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                        {
+                            fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
+                        }
+                        
                         Run rch = new Run(cmd);
                         Paragraph pch = new Paragraph(rch);
                         fldocSend.Blocks.Add(pch);
@@ -2511,13 +3029,20 @@ namespace Bumblebee
                     byte[] ba = new byte[lenSend];
                     for (int i = 0; i < lenSend; i++)
                     {
-                        ba[i] = byte.Parse(sa[i], NumberStyles.HexNumber);
+                        try
+                        {
+                            ba[i] = byte.Parse(sa[i], NumberStyles.HexNumber);
+                        }
+                        catch (Exception)
+                        {
+                            ba[i] = (byte)0;
+                        }
                     }
                     _sPort.Write(ba, 0, lenSend);
 
                     #endregion
 
-                    Thread.Sleep(int.Parse(TimeOut));
+                    Thread.Sleep(int.Parse(WriteReadInterval));
 
                     _timerPBar.Change(Timeout.Infinite, 100);
                     PBarValue = 0;
@@ -2542,6 +3067,11 @@ namespace Bumblebee
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
                         #region
+                      
+                        while (fldocRecv.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                        {
+                            fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+                        }
 
                         Run rch = new Run(sRecv);
                         Paragraph pch = new Paragraph(rch);
@@ -2559,7 +3089,7 @@ namespace Bumblebee
                     if (lenRecv >= 5)
                     {
                         string sToXor = sRecv.Substring(0, lenSRecv - 3);
-                        string sFromXor = cdi.XORData(sToXor);
+                        string sFromXor = CmdDefinition.XORData(sToXor);
                         string sXor = sRecv.Substring(lenSRecv - 2, 2);
                         if (string.Compare(sFromXor, sXor, true) != 0)
                         {
@@ -2872,6 +3402,24 @@ namespace Bumblebee
                                                 break;
                                             case "C4":
                                                 break;
+                                            case "20":
+                                                #region
+                                                {
+                                                    if (dataLen != 1)
+                                                        LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
+                                                    string number = baData[0].ToString().PadRight(27);
+                                                    LogMessage("+-------------------+----------------------------+");
+                                                    LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                    LogMessage("+-------------------+----------------------------+");
+                                                }
+                                                #endregion
+                                                break;
+                                            case "21":
+                                                break;
+                                            case "D0":
+                                                break;
+                                            case "D1":
+                                                break;
                                         }
 
                                         #endregion
@@ -2885,14 +3433,17 @@ namespace Bumblebee
                     else
                     {
                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的格式错误.");
+                        
+                        cdi.CmdState = "执行错误.";
                     }
 
                     #endregion
 
-                    Thread.Sleep(int.Parse(TimeOut));
-
                     if (_cmdsList.Count > 1 && cdi != _cmdsList[_cmdsList.Count - 1])
+                    {
+                        Thread.Sleep(int.Parse(CmdInterval));
                         LogMessage("");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -2913,6 +3464,8 @@ namespace Bumblebee
                 LogMessageSeperator();
 
             InRun = false;
+
+            PBarValue = 0;
         }
 
         private int GetChineseNumber(string src)
@@ -3059,7 +3612,9 @@ namespace Bumblebee
             set
             {
                 _cmdState = value;
-                if (_cmdState.IndexOf("错误") >= 0 || _cmdState.IndexOf("异常") >= 0)
+                if (_cmdState.IndexOf("错误") >= 0 ||
+                    _cmdState.IndexOf("出错") >= 0 ||
+                    _cmdState.IndexOf("异常") >= 0)
                     CmdStateForeground = Brushes.Red;
                 else
                     CmdStateForeground = Brushes.Black;
@@ -3401,6 +3956,180 @@ namespace Bumblebee
 
         #endregion
 
+        #region Ext Set Cmd
+
+        private int _d7State = 1;
+        public int D7State
+        {
+            get
+            {
+                return _d7State;
+            }
+            set
+            {
+                _d7State = value;
+                if (_d7State != 1 && _d7State != 0 && _d7State != 3)
+                    _d7State = 3;
+                NotifyPropertyChanged("D7State");
+            }
+        }
+
+        private int _d6State = 1;
+        public int D6State
+        {
+            get
+            {
+                return _d6State;
+            }
+            set
+            {
+                _d6State = value;
+                if (_d7State != 1 && _d6State != 0 && _d6State != 3)
+                    _d6State = 3;
+                NotifyPropertyChanged("D6State");
+            }
+        }
+
+        private int _d5State = 1;
+        public int D5State
+        {
+            get
+            {
+                return _d5State;
+            }
+            set
+            {
+                _d5State = value;
+                if (_d5State != 1 && _d5State != 0 && _d5State != 3)
+                    _d5State = 3;
+                NotifyPropertyChanged("D5State");
+            }
+        }
+
+        private int _d4State = 1;
+        public int D4State
+        {
+            get
+            {
+                return _d4State;
+            }
+            set
+            {
+                _d4State = value;
+                if (_d4State != 1 && _d4State != 0 && _d4State != 3)
+                    _d4State = 3;
+                NotifyPropertyChanged("D4State");
+            }
+        }
+
+        private int _d3State = 1;
+        public int D3State
+        {
+            get
+            {
+                return _d3State;
+            }
+            set
+            {
+                _d3State = value;
+                if (_d3State != 1 && _d3State != 0 && _d3State != 3)
+                    _d3State = 3;
+                NotifyPropertyChanged("D3State");
+            }
+        }
+
+        private int _d2State = 1;
+        public int D2State
+        {
+            get
+            {
+                return _d2State;
+            }
+            set
+            {
+                _d2State = value;
+                if (_d2State != 1 && _d2State != 0 && _d2State != 3)
+                    _d2State = 3;
+                NotifyPropertyChanged("D2State");
+            }
+        }
+
+        private int _d1State = 1;
+        public int D1State
+        {
+            get
+            {
+                return _d1State;
+            }
+            set
+            {
+                _d1State = value;
+                if (_d1State != 1 && _d1State != 0 && _d1State != 3)
+                    _d1State = 3;
+                NotifyPropertyChanged("D1State");
+            }
+        }
+
+        private int _d0State = 1;
+        public int D0State
+        {
+            get
+            {
+                return _d0State;
+            }
+            set
+            {
+                _d0State = value;
+                if (_d0State != 1 && _d0State != 0 && _d0State != 3)
+                    _d0State = 3;
+                NotifyPropertyChanged("D0State");
+            }
+        }
+
+        private int _singlePulseCnt = 8;
+        public int SinglePulseCnt
+        {
+            get
+            {
+                return _singlePulseCnt;
+            }
+            set
+            {
+                _singlePulseCnt = value;
+                if (_singlePulseCnt < 1)
+                    _singlePulseCnt = 1;
+                if (_singlePulseCnt >255)
+                    _singlePulseCnt =255;
+                NotifyPropertyChanged("SinglePulseCnt");
+            }
+        }
+
+        #endregion
+
+        public static byte[] HexStringToBytes(string src)
+        {
+            if (src == null || src.Length < 1)
+                return new byte[] { };
+
+            string[] sa = src.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            if (sa == null || sa.Length < 1)
+                return new byte[] { };
+
+            byte[] ba = new byte[sa.Length];
+            for (int i = 0; i < sa.Length; i++)
+            {
+                try
+                {
+                    ba[i] = byte.Parse(sa[i], NumberStyles.HexNumber);
+                }
+                catch (Exception)
+                {
+                    ba[i] = (byte)0;
+                }
+            }
+            return ba;
+        }
+
         /// <summary>
         /// Format : XX XX XX XX XX or XXXXXXXXXX
         /// Must be Hex and with " " when hasBlank is true
@@ -3409,7 +4138,7 @@ namespace Bumblebee
         /// <param name="src"></param>
         /// <param name="hasBlank">Default is true</param>
         /// <returns></returns>
-        public string XORData(string src, bool hasBlank = true)
+        public static string XORData(string src, bool hasBlank = true)
         {
             if (src == null || src.Length < 1)
                 return "";
@@ -3429,12 +4158,21 @@ namespace Bumblebee
             int value = 0;
             for (int i = 0; i < len; i++)
             {
-                value = value ^ int.Parse(srca[i], NumberStyles.HexNumber);
+                int intVal = 0;
+                try
+                {
+                    intVal = int.Parse(srca[i], NumberStyles.HexNumber);
+                }
+                catch (Exception)
+                {
+                    intVal = 0;
+                }
+                value = value ^ intVal;
             }
             return String.Format("{0:X2}", value);
         }
 
-        public string CmdBytesToString(byte[] ba, bool addBlank = false)
+        public static string CmdBytesToString(byte[] ba, bool addBlank = false)
         {
             if (ba == null || ba.Length < 1)
                 return "";
@@ -3455,7 +4193,7 @@ namespace Bumblebee
             return s.Trim();
         }
 
-        public byte[] PadBytes(byte[] src, int len)
+        public static byte[] PadBytes(byte[] src, int len)
         {
             if (src == null)
                 src = new byte[] { };
@@ -3477,7 +4215,7 @@ namespace Bumblebee
         /// </summary>
         /// <param name="src"></param>
         /// <returns></returns>
-        public string InsertBlank(string src)
+        public static string InsertBlank(string src)
         {
             if (src == null || src.Length < 1)
                 return "";
@@ -3666,7 +4404,7 @@ namespace Bumblebee
                                                 byte[] da5 = PadBytes(gb.GetBytes("右转向"), 10);
                                                 byte[] da6 = PadBytes(gb.GetBytes("左转向"), 10);
                                                 byte[] da7 = PadBytes(gb.GetBytes("制动"), 10);
-                                                string finalData = CmdBytesToString(PadBytes(ba0, 10)) + CmdBytesToString(PadBytes(ba1, 10)) + CmdBytesToString(PadBytes(ba2, 10)) + 
+                                                string finalData = CmdBytesToString(PadBytes(ba0, 10)) + CmdBytesToString(PadBytes(ba1, 10)) + CmdBytesToString(PadBytes(ba2, 10)) +
                                                     CmdBytesToString(da3) + CmdBytesToString(da4) + CmdBytesToString(da5) + CmdBytesToString(da6) + CmdBytesToString(da7);
                                                 string finalDataLen = String.Format("{0:X4}", finalData.Length / 2);
                                                 string finalCmd = "AA7584" + finalDataLen + "00" + finalData;
@@ -3760,6 +4498,22 @@ namespace Bumblebee
                         }
                     }
                     #endregion
+                case "20H":
+                    return new string[] { "AA 75 20 00 00 00 FF" };
+                case "21H":
+                    return new string[] { "AA 75 21 00 00 00 FE" };
+                case "D0H":
+                    cmd = "AA 75 D0 00 08 00 " + String.Format("{0:X2}", D0State) + " " +
+                        String.Format("{0:X2}", D1State) + " " + String.Format("{0:X2}", D2State) + " " +
+                        String.Format("{0:X2}", D3State) + " " + String.Format("{0:X2}", D4State) + " " +
+                        String.Format("{0:X2}", D5State) + " " + String.Format("{0:X2}", D6State) + " " +
+                        String.Format("{0:X2}", D7State);
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
+                case "D1H":
+                    cmd = "AA 75 D1 00 01 00 " + String.Format("{0:X2}", SinglePulseCnt);
+                    cmd = cmd + " " + XORData(cmd);
+                    return new string[] { cmd };
             }
         }
     }

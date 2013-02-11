@@ -39,17 +39,23 @@ namespace Bumblebee.ExtSetCmd
             set
             {
                 _pulseCount = value;
+                if (_pulseCount < 1)
+                    _pulseCount = 1;
+                if (_pulseCount > 255)
+                    _pulseCount = 255;
                 NotifyPropertyChanged("PulseCount");
             }
         }
 
         #endregion
 
-        public SinglePulseCount()
+        public SinglePulseCount(int pulseCount = 8)
         {
             InitializeComponent();
 
             DataContext = this;
+
+            PulseCount = pulseCount;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)

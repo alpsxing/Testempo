@@ -37,50 +37,42 @@
                 Click="OK_Button_Click"/>
         <Button Grid.Row="10" Grid.Column="1" Margin="25,3,0,1" Width="75" Content="取消" IsCancel="True" 
                 Click="Cancel_Button_Click"/>
-        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D7,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD7">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>
         </ComboBox>
-        <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D6,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD6">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>
         </ComboBox>
-        <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D5,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD5">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>
         </ComboBox>
-        <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD4">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>
         </ComboBox>
-        <ComboBox Grid.Row="5" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="5" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD3">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>
         </ComboBox>
-        <ComboBox Grid.Row="6" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="6" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD2">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>
         </ComboBox>
-        <ComboBox Grid.Row="7" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="7" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD1">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>
         </ComboBox>
-        <ComboBox Grid.Row="8" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0"
-                  SelectedItem="{Binding Path=D0,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox Grid.Row="8" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD0">
             <ComboBoxItem Content="高有效"/>
             <ComboBoxItem Content="低有效"/>
             <ComboBoxItem Content="未启用"/>

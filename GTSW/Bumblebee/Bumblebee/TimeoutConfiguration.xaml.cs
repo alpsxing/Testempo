@@ -43,9 +43,37 @@ namespace Bumblebee
             }
         }
 
+        private int _cmdInterval = 1000;
+        public int CmdInterval
+        {
+            get
+            {
+                return _cmdInterval;
+            }
+            set
+            {
+                _cmdInterval = value;
+                NotifyPropertyChanged("CmdInterval");
+            }
+        }
+
+        private int _writeReadInterval = 1000;
+        public int WriteReadInterval
+        {
+            get
+            {
+                return _writeReadInterval;
+            }
+            set
+            {
+                _writeReadInterval = value;
+                NotifyPropertyChanged("WriteReadInterval");
+            }
+        }
+
         #endregion
 
-        public TimeoutConfiguration(string timeout)
+        public TimeoutConfiguration(string timeout, string cmdIntvl, string wrIntvl)
         {
             InitializeComponent();
 
@@ -63,6 +91,34 @@ namespace Bumblebee
                 if (value > 120000)
                     value = 120000;
                 TimeOut = value;
+            }
+
+            value = -1;
+            if (int.TryParse(cmdIntvl, out value) == false)
+            {
+                CmdInterval = 1000;
+            }
+            else
+            {
+                if (value < 1000)
+                    value = 1000;
+                if (value > 10000)
+                    value = 10000;
+                CmdInterval = value;
+            }
+
+            value = -1;
+            if (int.TryParse(wrIntvl, out value) == false)
+            {
+                WriteReadInterval = 1000;
+            }
+            else
+            {
+                if (value < 1000)
+                    value = 1000;
+                if (value > 10000)
+                    value = 10000;
+                WriteReadInterval = value;
             }
         }
 
