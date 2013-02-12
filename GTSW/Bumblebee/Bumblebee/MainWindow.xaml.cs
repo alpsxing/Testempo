@@ -65,7 +65,7 @@ namespace Bumblebee
             E4H
         }
 
-        public const int MAX_DISPLAY_LINE_COUNT = 500;
+        public const int MAX_DISPLAY_LINE_COUNT = 2000;
         public const int CHK_CMD_INTERVAL = 500;
 
         #region Variables
@@ -3097,6 +3097,66 @@ namespace Bumblebee
                     string sRecv = BytesToHexString(baRecev);
                     int lenSRecv = sRecv.Length;
 
+                    switch (sa[2].ToUpper())
+                    {
+                        default:
+                            break;
+                        case "08":
+                        case "09":
+                        case "10":
+                        case "11":
+                        case "12":
+                        case "13":
+                        case "14":
+                            {
+                                int readTimeout = _sPort.ReadTimeout;
+                                bool getException = false;
+                                while (!getException)
+                                {
+                                    try
+                                    {
+                                        byte[] bytes2 = new byte[1024];
+                                        _sPort.ReadTimeout = 1000;
+                                        int lenRecv2 = _sPort.Read(bytes2, 0, 1024);
+                                        byte[] baRecev2 = new byte[lenRecv2];
+                                        for (int i = 0; i < lenRecv2; i++)
+                                        {
+                                            baRecev2[i] = bytes2[i];
+                                        }
+                                        string sRecv2 = BytesToHexString(baRecev2);
+                                        int lenSRecv2 = sRecv2.Length;
+
+                                        byte[] newBytes = new byte[lenRecv + lenRecv2];
+                                        for (int i = 0; i < lenRecv; i++)
+                                        {
+                                            newBytes[i] = bytes[i];
+                                        }
+                                        for (int i = 0; i < lenRecv2; i++)
+                                        {
+                                            newBytes[lenRecv + i] = bytes2[i];
+                                        }
+
+                                        bytes = newBytes;
+                                        lenRecv = bytes.Length;
+                                        baRecev = new byte[lenRecv];
+                                        for (int i = 0; i < lenRecv; i++)
+                                        {
+                                            baRecev[i] = bytes[i];
+                                        }
+                                        sRecv = BytesToHexString(baRecev);
+                                        lenSRecv = sRecv.Length;
+                                        _sPort.ReadTimeout = readTimeout;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        getException = true;
+                                    }
+                                }
+                                _sPort.ReadTimeout = readTimeout;
+                            }
+                            break;
+                    }
+
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
                         #region
@@ -3129,6 +3189,8 @@ namespace Bumblebee
                             LogMessageError("命令(" + cdi.CmdContent + ")的响应的校验错误.");
 
                             cdi.CmdState = "执行错误.";
+
+                            isContinued = false;
                         }
                         else
                         {
@@ -3140,6 +3202,8 @@ namespace Bumblebee
                                 LogMessageError("命令(" + cdi.CmdContent + ")的响应的起始字头错误:" + header0 + " " + header1);
 
                                 cdi.CmdState = "执行错误.";
+
+                                isContinued = false;
                             }
                             else
                             {
@@ -3148,18 +3212,24 @@ namespace Bumblebee
                                     LogMessageError("采集数据命令(" + cdi.CmdContent + ")的命令帧接收错误.");
 
                                     cdi.CmdState = "执行错误.";
+
+                                    isContinued = false;
                                 }
                                 else if (string.Compare(header2, "FB", true) == 0)
                                 {
                                     LogMessageError("设置参数命令(" + cdi.CmdContent + ")的命令帧接收错误.");
 
                                     cdi.CmdState = "执行错误.";
+
+                                    isContinued = false;
                                 }
                                 else if (string.Compare(header2, sa[2], true) != 0)
                                 {
                                     LogMessageError("响应与命令(" + cdi.CmdContent + ")的命令字不匹配:" + header2);
 
                                     cdi.CmdState = "执行错误.";
+
+                                    isContinued = false;
                                 }
                                 else
                                 {
@@ -3427,23 +3497,65 @@ namespace Bumblebee
 
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)126));
                                                     int dataRemain = dataLen % 126;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                                    if (isContinued == false)
+                                                    {
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                    }
+                                                    DateTime blockStartDateTime = cdi.StopDateTime.Subtract(new TimeSpan(0, blockCount - 1, 0));
+                                                    string number3 = blockStartDateTime.Year.ToString("") + "-" +
+                                                        blockStartDateTime.Month.ToString("") + "-" +
+                                                        blockStartDateTime.Day.ToString("") + " " +
+                                                        blockStartDateTime.Hour.ToString("") + ":" +
+                                                        blockStartDateTime.Minute.ToString("") + ":" +
+                                                        blockStartDateTime.Second.ToString("");
+                                                    number3 = number3.PadRight(27);
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@ |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@", number3));
+                                                    LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
-                                                        LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
+
+                                                    if (blockCount > 0)
+                                                    {
+                                                        DateTime lastDateTime = cdi.StopDateTime.Subtract(new TimeSpan(0, blockCount, 0));
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        {
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        }
+                                                        else
+                                                            isContinued = false;
+                                                    }
+                                                    else
+                                                        isContinued = false;
                                                 }
                                                 #endregion
                                                 break;
@@ -3467,16 +3579,16 @@ namespace Bumblebee
 
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)666));
                                                     int dataRemain = dataLen % 666;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                                    if (isContinued == false)
+                                                    {
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                     LogMessage("+-------------------+----------------------------+");
                                                     if (dataRemain != 0)
                                                     {
@@ -3484,6 +3596,40 @@ namespace Bumblebee
                                                         LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
+
+                                                    if (blockCount > 0)
+                                                    {
+                                                        DateTime lastDateTime = cdi.StopDateTime.Subtract(new TimeSpan(blockCount, 0, 0));
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        {
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        }
+                                                        else
+                                                            isContinued = false;
+                                                    }
+                                                    else
+                                                        isContinued = false;
                                                 }
                                                 #endregion
                                                 break;
@@ -3507,19 +3653,16 @@ namespace Bumblebee
 
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)234));
                                                     int dataRemain = dataLen % 234;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-------------------+----------------------------+");
-                                                        LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+");
-                                                        LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                     LogMessage("+-------------------+----------------------------+");
                                                     DateTime lastDateTime = DateTime.Now;
                                                     for (int iblock = 0; iblock < blockCount; iblock++)
@@ -3539,7 +3682,7 @@ namespace Bumblebee
                                                             ((int)Math.Floor((double)baData[234 * iblock + 4] / 16.0)) * 10 + baData[234 * iblock + 4] % 16,
                                                             ((int)Math.Floor((double)baData[234 * iblock + 5] / 16.0)) * 10 + baData[234 * iblock + 5] % 16);
                                                         lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 20));
-                                                        LogMessage("|        数据块时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", numberblock));
+                                                        LogMessage("|          记录时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", numberblock));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
                                                     if (dataRemain != 0)
@@ -3550,28 +3693,33 @@ namespace Bumblebee
                                                     }
                                                     if (blockCount > 0)
                                                     {
-                                                        isContinued = true;
-                                                        string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                                                        saNew[12] = lastDateTime.Year.ToString();
-                                                        saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
-                                                        saNew[13] = lastDateTime.Month.ToString();
-                                                        saNew[13] = saNew[13].PadLeft(2, '0');
-                                                        saNew[14] = lastDateTime.Day.ToString();
-                                                        saNew[14] = saNew[14].PadLeft(2, '0');
-                                                        saNew[15] = lastDateTime.Hour.ToString();
-                                                        saNew[15] = saNew[15].PadLeft(2, '0');
-                                                        saNew[16] = lastDateTime.Minute.ToString();
-                                                        saNew[16] = saNew[16].PadLeft(2, '0');
-                                                        saNew[17] = lastDateTime.Second.ToString();
-                                                        saNew[17] = saNew[17].PadLeft(2, '0');
-                                                        newCmdContinue = "";
-                                                        foreach (string saNewi in saNew)
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
                                                         {
-                                                            newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
-                                                        newCmdContinue = newCmdContinue.Trim();
-                                                        newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
-                                                        newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        else
+                                                            isContinued = false;
                                                     }
                                                     else
                                                         isContinued = false;
@@ -3598,23 +3746,76 @@ namespace Bumblebee
 
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)50));
                                                     int dataRemain = dataLen % 50;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                                    if (isContinued == false)
+                                                    {
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                     LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    DateTime lastDateTime = DateTime.Now;
+                                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                                    {
+                                                        string numberblock = "20" + baData[50 * iblock + 18].ToString("X") + "-" +
+                                                            baData[50 * iblock + 19].ToString("X") + "-" +
+                                                            baData[50 * iblock + 20].ToString("X") + " " +
+                                                            baData[50 * iblock + 21].ToString("X") + ":" +
+                                                            baData[50 * iblock + 22].ToString("X") + ":" +
+                                                            baData[50 * iblock + 23].ToString("X");
+                                                        numberblock = numberblock.PadRight(27);
+                                                        lastDateTime = new DateTime(
+                                                            ((int)Math.Floor((double)baData[50 * iblock + 18] / 16.0)) * 10 + baData[50 * iblock + 18] % 16 + 2000,
+                                                            ((int)Math.Floor((double)baData[50 * iblock + 19] / 16.0)) * 10 + baData[50 * iblock + 19] % 16,
+                                                            ((int)Math.Floor((double)baData[50 * iblock + 20] / 16.0)) * 10 + baData[50 * iblock + 20] % 16,
+                                                            ((int)Math.Floor((double)baData[50 * iblock + 21] / 16.0)) * 10 + baData[50 * iblock + 21] % 16,
+                                                            ((int)Math.Floor((double)baData[50 * iblock + 22] / 16.0)) * 10 + baData[50 * iblock + 22] % 16,
+                                                            ((int)Math.Floor((double)baData[50 * iblock + 23] / 16.0)) * 10 + baData[50 * iblock + 23] % 16);
+                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                        LogMessage("|      记录开始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", numberblock));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
                                                         LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
+                                                    if (blockCount > 0)
+                                                    {
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        {
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        }
+                                                        else
+                                                            isContinued = false;
+                                                    }
+                                                    else
+                                                        isContinued = false;
                                                 }
                                                 #endregion
                                                 break;
@@ -3638,23 +3839,76 @@ namespace Bumblebee
 
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)25));
                                                     int dataRemain = dataLen % 25;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                                    if (isContinued == false)
+                                                    {
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                     LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    DateTime lastDateTime = DateTime.Now;
+                                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                                    {
+                                                        string numberblock = "20" + baData[25 * iblock + 0].ToString("X") + "-" +
+                                                            baData[25 * iblock + 1].ToString("X") + "-" +
+                                                            baData[25 * iblock + 2].ToString("X") + " " +
+                                                            baData[25 * iblock + 3].ToString("X") + ":" +
+                                                            baData[25 * iblock + 4].ToString("X") + ":" +
+                                                            baData[25 * iblock + 5].ToString("X");
+                                                        numberblock = numberblock.PadRight(27);
+                                                        lastDateTime = new DateTime(
+                                                            ((int)Math.Floor((double)baData[25 * iblock + 0] / 16.0)) * 10 + baData[25 * iblock + 0] % 16 + 2000,
+                                                            ((int)Math.Floor((double)baData[25 * iblock + 1] / 16.0)) * 10 + baData[25 * iblock + 1] % 16,
+                                                            ((int)Math.Floor((double)baData[25 * iblock + 2] / 16.0)) * 10 + baData[25 * iblock + 2] % 16,
+                                                            ((int)Math.Floor((double)baData[25 * iblock + 3] / 16.0)) * 10 + baData[25 * iblock + 3] % 16,
+                                                            ((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
+                                                            ((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
+                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                        LogMessage("|          记录时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", numberblock));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
                                                         LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
+                                                    if (blockCount > 0)
+                                                    {
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        {
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        }
+                                                        else
+                                                            isContinued = false;
+                                                    }
+                                                    else
+                                                        isContinued = false;
                                                 }
                                                 #endregion
                                                 break;
@@ -3675,26 +3929,79 @@ namespace Bumblebee
                                                         cdi.StopDateTime.Minute.ToString("") + ":" +
                                                         cdi.StopDateTime.Second.ToString("");
                                                     number2 = number2.PadRight(27);
-
+                                                    
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
                                                     int dataRemain = dataLen % 7;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                                    if (isContinued == false)
+                                                    {
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                     LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    DateTime lastDateTime = DateTime.Now;
+                                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                                    {
+                                                        string numberblock = "20" + baData[7 * iblock + 0].ToString("X") + "-" +
+                                                            baData[7 * iblock + 1].ToString("X") + "-" +
+                                                            baData[7 * iblock + 2].ToString("X") + " " +
+                                                            baData[7 * iblock + 3].ToString("X") + ":" +
+                                                            baData[7 * iblock + 4].ToString("X") + ":" +
+                                                            baData[7 * iblock + 5].ToString("X");
+                                                        numberblock = numberblock.PadRight(27);
+                                                        lastDateTime = new DateTime(
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
+                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                        LogMessage("|          记录时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", numberblock));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
                                                         LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
+                                                    if (blockCount > 0)
+                                                    {
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        {
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        }
+                                                        else
+                                                            isContinued = false;
+                                                    }
+                                                    else
+                                                        isContinued = false;
                                                 }
                                                 #endregion
                                                 break;
@@ -3718,23 +4025,76 @@ namespace Bumblebee
 
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
                                                     int dataRemain = dataLen % 7;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                                    if (isContinued == false)
+                                                    {
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                     LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    DateTime lastDateTime = DateTime.Now;
+                                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                                    {
+                                                        string numberblock = "20" + baData[7 * iblock + 0].ToString("X") + "-" +
+                                                            baData[7 * iblock + 1].ToString("X") + "-" +
+                                                            baData[7 * iblock + 2].ToString("X") + " " +
+                                                            baData[7 * iblock + 3].ToString("X") + ":" +
+                                                            baData[7 * iblock + 4].ToString("X") + ":" +
+                                                            baData[7 * iblock + 5].ToString("X");
+                                                        numberblock = numberblock.PadRight(27);
+                                                        lastDateTime = new DateTime(
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
+                                                            ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
+                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                        LogMessage("|          记录时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", numberblock));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
                                                         LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
+                                                    if (blockCount > 0)
+                                                    {
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        {
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        }
+                                                        else
+                                                            isContinued = false;
+                                                    }
+                                                    else
+                                                        isContinued = false;
                                                 }
                                                 #endregion
                                                 break;
@@ -3758,23 +4118,76 @@ namespace Bumblebee
 
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)133));
                                                     int dataRemain = dataLen % 133;
-                                                    string sValue1 = dataLen.ToString().PadRight(27);
-                                                    string sValue2 = blockCount.ToString().PadRight(27);
+                                                    string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                                    if (isContinued == false)
+                                                    {
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                     LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          数据总数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        数据块个数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue2));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    DateTime lastDateTime = DateTime.Now;
+                                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                                    {
+                                                        string numberblock = "20" + baData[133 * iblock + 1].ToString("X") + "-" +
+                                                            baData[133 * iblock + 2].ToString("X") + "-" +
+                                                            baData[133 * iblock + 3].ToString("X") + " " +
+                                                            baData[133 * iblock + 4].ToString("X") + ":" +
+                                                            baData[133 * iblock + 5].ToString("X") + ":" +
+                                                            baData[133 * iblock + 6].ToString("X");
+                                                        numberblock = numberblock.PadRight(27);
+                                                        lastDateTime = new DateTime(
+                                                            ((int)Math.Floor((double)baData[133 * iblock + 1] / 16.0)) * 10 + baData[133 * iblock + 1] % 16 + 2000,
+                                                            ((int)Math.Floor((double)baData[133 * iblock + 2] / 16.0)) * 10 + baData[133 * iblock + 2] % 16,
+                                                            ((int)Math.Floor((double)baData[133 * iblock + 3] / 16.0)) * 10 + baData[133 * iblock + 3] % 16,
+                                                            ((int)Math.Floor((double)baData[133 * iblock + 4] / 16.0)) * 10 + baData[133 * iblock + 4] % 16,
+                                                            ((int)Math.Floor((double)baData[133 * iblock + 5] / 16.0)) * 10 + baData[133 * iblock + 5] % 16,
+                                                            ((int)Math.Floor((double)baData[133 * iblock + 6] / 16.0)) * 10 + baData[133 * iblock + 6] % 16);
+                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                        LogMessage("|          记录时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", numberblock));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
                                                         LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                                         LogMessage("+-------------------+----------------------------+");
                                                     }
+                                                    if (blockCount > 0)
+                                                    {
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        {
+                                                            isContinued = true;
+                                                            string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                                                            saNew[12] = lastDateTime.Year.ToString();
+                                                            saNew[12] = saNew[12].Substring(saNew[12].Length - 2, 2);
+                                                            saNew[13] = lastDateTime.Month.ToString();
+                                                            saNew[13] = saNew[13].PadLeft(2, '0');
+                                                            saNew[14] = lastDateTime.Day.ToString();
+                                                            saNew[14] = saNew[14].PadLeft(2, '0');
+                                                            saNew[15] = lastDateTime.Hour.ToString();
+                                                            saNew[15] = saNew[15].PadLeft(2, '0');
+                                                            saNew[16] = lastDateTime.Minute.ToString();
+                                                            saNew[16] = saNew[16].PadLeft(2, '0');
+                                                            saNew[17] = lastDateTime.Second.ToString();
+                                                            saNew[17] = saNew[17].PadLeft(2, '0');
+                                                            newCmdContinue = "";
+                                                            foreach (string saNewi in saNew)
+                                                            {
+                                                                newCmdContinue = newCmdContinue + " " + saNewi;
+                                                            }
+                                                            newCmdContinue = newCmdContinue.Trim();
+                                                            newCmdContinue = newCmdContinue.Substring(0, newCmdContinue.Length - 3);
+                                                            newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
+                                                        }
+                                                        else
+                                                            isContinued = false;
+                                                    }
+                                                    else
+                                                        isContinued = false;
                                                 }
                                                 #endregion
                                                 break;
@@ -3823,6 +4236,8 @@ namespace Bumblebee
                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的格式错误.");
 
                         cdi.CmdState = "执行错误.";
+
+                        isContinued = false;
                     }
 
                     #endregion
@@ -3841,6 +4256,8 @@ namespace Bumblebee
                     LogMessage("");
 
                     cdi.CmdState = "执行异常.";
+
+                    isContinued = false;
                 }
 
                 _timerPBar.Change(Timeout.Infinite, 100);
