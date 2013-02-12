@@ -86,9 +86,10 @@ namespace Bumblebee
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
         {
+            UserName = (string)((ComboBoxItem)cboxLoginName.SelectedItem).Content;
             if (string.Compare(UserName, "admin", true) == 0 ||
-                string.Compare(UserName, "user", true) == 0 ||
-                string.Compare(UserName, "super", true) == 0)
+                string.Compare(UserName, "user", true) == 0)// ||
+                //string.Compare(UserName, "super", true) == 0)
             {
                 if (string.IsNullOrWhiteSpace(pwboxPassword.Password))
                 {
@@ -133,24 +134,25 @@ namespace Bumblebee
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(UserName))
-                txtUserName.Focus();
-            else
-                pwboxPassword.Focus();
+            //if (string.IsNullOrWhiteSpace(UserName))
+            //    txtUserName.Focus();
+            //else
+            pwboxPassword.Focus();
 
-            if (UserName.Length < 1 || pwboxPassword.Password.Length < 1)
+            //if (UserName.Length < 1 || pwboxPassword.Password.Length < 1)
+            if (pwboxPassword.Password.Length < 1)
                 OKEnabled = false;
             else
                 OKEnabled = true;
         }
 
-        private void UserName_TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (UserName.Length < 1 || pwboxPassword.Password.Length < 1)
-                OKEnabled = false;
-            else
-                OKEnabled = true;
-        }
+        //private void UserName_TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    if (UserName.Length < 1 || pwboxPassword.Password.Length < 1)
+        //        OKEnabled = false;
+        //    else
+        //        OKEnabled = true;
+        //}
 
         private void Password_PasswordChanged(object sender, RoutedEventArgs e)
         {

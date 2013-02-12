@@ -19,10 +19,15 @@
         </Grid.ColumnDefinitions>
         <Label Content="用户名" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Right" VerticalAlignment="Center" />
         <Label Content="密码" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Name="txtUserName"
+        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" SelectedIndex="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                  HorizontalAlignment="Left" VerticalAlignment="Center" Name="cboxLoginName">
+            <ComboBoxItem Content="admin"/>
+            <ComboBoxItem Content="user"/>
+        </ComboBox>
+        <!--TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Name="txtUserName"
                  VerticalAlignment="Center" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                  Text="{Binding Path=UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                 TextChanged="UserName_TextBox_TextChanged"/>
+                 TextChanged="UserName_TextBox_TextChanged"/-->
         <PasswordBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                      Name="pwboxPassword" PasswordChar="*" PasswordChanged="Password_PasswordChanged"/>
