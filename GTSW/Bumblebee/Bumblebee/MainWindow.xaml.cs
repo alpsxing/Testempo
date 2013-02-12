@@ -3097,6 +3097,8 @@ namespace Bumblebee
                     string sRecv = BytesToHexString(baRecev);
                     int lenSRecv = sRecv.Length;
 
+                    #region Long Data
+
                     switch (sa[2].ToUpper())
                     {
                         default:
@@ -3156,6 +3158,8 @@ namespace Bumblebee
                             }
                             break;
                     }
+
+                    #endregion
 
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
@@ -3507,12 +3511,12 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
                                                     DateTime blockStartDateTime = cdi.StopDateTime.Subtract(new TimeSpan(0, blockCount - 1, 0));
-                                                    string number3 = blockStartDateTime.Year.ToString("") + "-" +
-                                                        blockStartDateTime.Month.ToString("") + "-" +
-                                                        blockStartDateTime.Day.ToString("") + " " +
-                                                        blockStartDateTime.Hour.ToString("") + ":" +
-                                                        blockStartDateTime.Minute.ToString("") + ":" +
-                                                        blockStartDateTime.Second.ToString("");
+                                                    string number3 = "20" + String.Format("{0:X2}",sa[12]) + "-" +
+                                                        String.Format("{0:X2}", sa[13]) + "-" +
+                                                        String.Format("{0:X2}", sa[14]) + " " +
+                                                        String.Format("{0:X2}", sa[15]) + ":" +
+                                                        String.Format("{0:X2}", sa[16]) + ":" +
+                                                        String.Format("{0:X2}", sa[17]);
                                                     number3 = number3.PadRight(27);
                                                     LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@ |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@", number3));
                                                     LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3525,7 +3529,9 @@ namespace Bumblebee
 
                                                     if (blockCount > 0)
                                                     {
-                                                        DateTime lastDateTime = cdi.StopDateTime.Subtract(new TimeSpan(0, blockCount, 0));
+                                                        DateTime lastDateTime = new DateTime(2000 + int.Parse(sa[12]), int.Parse(sa[13]), int.Parse(sa[14]),
+                                                            int.Parse(sa[15]), int.Parse(sa[16]), int.Parse(sa[17]));
+                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, blockCount, 0));
                                                         if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
                                                         {
                                                             isContinued = true;
@@ -3582,24 +3588,35 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
-                                                        LogMessage("+-------------------+----------------------------+");
-                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                        LogMessage("+-------------------+----------------------------+");
-                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                        LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                        LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
-                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    DateTime blockStartDateTime = cdi.StopDateTime.Subtract(new TimeSpan(0, blockCount - 1, 0));
+                                                    string number3 = "20" + String.Format("{0:X2}", sa[12]) + "-" +
+                                                        String.Format("{0:X2}", sa[13]) + "-" +
+                                                        String.Format("{0:X2}", sa[14]) + " " +
+                                                        String.Format("{0:X2}", sa[15]) + ":" +
+                                                        String.Format("{0:X2}", sa[16]) + ":" +
+                                                        String.Format("{0:X2}", sa[17]);
+                                                    number3 = number3.PadRight(27);
+                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@ |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@", number3));
+                                                    LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
-                                                        LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
 
                                                     if (blockCount > 0)
                                                     {
-                                                        DateTime lastDateTime = cdi.StopDateTime.Subtract(new TimeSpan(blockCount, 0, 0));
+                                                        //DateTime lastDateTime = cdi.StopDateTime.Subtract(new TimeSpan(blockCount, 0, 0));
+                                                        DateTime lastDateTime = new DateTime(2000 + int.Parse(sa[12]), int.Parse(sa[13]), int.Parse(sa[14]),
+                                                            int.Parse(sa[15]), int.Parse(sa[16]), int.Parse(sa[17]));
+                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(blockCount, 0, 0));
                                                         if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
                                                         {
                                                             isContinued = true;
