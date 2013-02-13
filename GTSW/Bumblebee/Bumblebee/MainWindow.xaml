@@ -131,10 +131,26 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0" Margin="0,0,3,0">
-                <DockPanel DockPanel.Dock="Bottom" Height="35" Margin="5"
-                              IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
-                    <Grid DockPanel.Dock="Left" Width="25"/>
-                    <Button DockPanel.Dock="Left" Margin="0,2,0,2" Click="Start_Button_Click">
+                <DockPanel DockPanel.Dock="Bottom" Height="35" Margin="5">
+                    <Button DockPanel.Dock="Right" Margin="0,2,0,2" Click="Stop_Button_Click"
+                            IsEnabled="{Binding Path=InRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                        <!--Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource Bools2BoolOrConverter}">
+                                <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                                <Binding Path="InChkCmd" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
+                            </MultiBinding>
+                        </Button.IsEnabled-->
+                        <Button.Content>
+                            <DockPanel>
+                                <Image DockPanel.Dock="Left" Source="resources/stop.ico" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/>
+                                <Label Content="停止" Width="35"
+                                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            </DockPanel>
+                        </Button.Content>
+                    </Button>
+                    <!--Grid DockPanel.Dock="Left" Width="25"/-->
+                    <Button DockPanel.Dock="Left" Margin="0,2,0,2" Click="Start_Button_Click"
+                            IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                         <!--Button.IsEnabled>
                             <MultiBinding Converter="{StaticResource Bools2BoolOrConverter}">
                                 <Binding Path="NotInRun" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
@@ -151,7 +167,8 @@
                     </Button>
                     <Grid DockPanel.Dock="Left" Width="25"/>
                     <CheckBox Content="是否生成统计报表" DockPanel.Dock="Left"
-                              HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                              HorizontalAlignment="Left" VerticalAlignment="Center"
+                              IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                     <Grid/>
                 </DockPanel>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" 

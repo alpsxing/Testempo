@@ -240,6 +240,7 @@
     <Resource Include="Resources\refreshserialport.ico" />
     <Resource Include="Resources\app.ico" />
     <Resource Include="Resources\login.ico" />
+    <Resource Include="Resources\stop.ico" />
     <Content Include="Resources\stop.png" />
     <Resource Include="Resources\timeoutconfig.ico" />
   </ItemGroup>
