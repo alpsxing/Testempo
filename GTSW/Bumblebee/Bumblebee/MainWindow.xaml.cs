@@ -25,8 +25,40 @@ using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
 
+using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.text.api;
+using iTextSharp.text.error_messages;
+using iTextSharp.text.exceptions;
+using iTextSharp.text.factories;
+using iTextSharp.text.html;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.io;
+using iTextSharp.text.log;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.codec;
+using iTextSharp.text.pdf.codec.wmf;
+using iTextSharp.text.pdf.collection;
+using iTextSharp.text.pdf.crypto;
+using iTextSharp.text.pdf.draw;
+using iTextSharp.text.pdf.events;
+using iTextSharp.text.pdf.fonts;
+using iTextSharp.text.pdf.fonts.cmaps;
+using iTextSharp.text.pdf.hyphenation;
+using iTextSharp.text.pdf.interfaces;
+using iTextSharp.text.pdf.intern;
+using iTextSharp.text.pdf.languages;
+using iTextSharp.text.pdf.parser;
+using iTextSharp.text.pdf.qrcode;
+using iTextSharp.text.pdf.richmedia;
+using iTextSharp.text.pdf.security;
+using iTextSharp.text.pdf.spatial;
+using iTextSharp.text.pdf.spatial.units;
+
 using Bumblebee.SetCmd;
 using Bumblebee.ExtSetCmd;
+
+using WinParagraph = System.Windows.Documents.Paragraph;
 
 namespace Bumblebee
 {
@@ -1663,7 +1695,7 @@ namespace Bumblebee
                             }
                             
                             Run rch = new Run(di.Item1);
-                            Paragraph pch = new Paragraph(rch);
+                            WinParagraph pch = new WinParagraph(rch);
                             switch (di.Item2)
                             {
                                 default:
@@ -2659,10 +2691,10 @@ namespace Bumblebee
                 }
 
                 Run rch = new Run(finalCmd);
-                Paragraph pch = new Paragraph(rch);
+                WinParagraph pch = new WinParagraph(rch);
                 fldocSend.Blocks.Add(pch);
                 Run rch1 = new Run("");
-                Paragraph pch1 = new Paragraph(rch1);
+                WinParagraph pch1 = new WinParagraph(rch1);
                 fldocSend.Blocks.Add(pch1);
                 rtxtSend.ScrollToEnd();
 
@@ -2725,10 +2757,10 @@ namespace Bumblebee
                 }
                 
                 Run rch = new Run(sRecv);
-                Paragraph pch = new Paragraph(rch);
+                WinParagraph pch = new WinParagraph(rch);
                 fldocRecv.Blocks.Add(pch);
                 Run rch1 = new Run("");
-                Paragraph pch1 = new Paragraph(rch1);
+                WinParagraph pch1 = new WinParagraph(rch1);
                 fldocRecv.Blocks.Add(pch1);
                 rtxtRecv.ScrollToEnd();
 
@@ -3084,10 +3116,10 @@ namespace Bumblebee
                         }
 
                         Run rch = new Run(cmd);
-                        Paragraph pch = new Paragraph(rch);
+                        WinParagraph pch = new WinParagraph(rch);
                         fldocSend.Blocks.Add(pch);
                         Run rch1 = new Run("");
-                        Paragraph pch1 = new Paragraph(rch1);
+                        WinParagraph pch1 = new WinParagraph(rch1);
                         fldocSend.Blocks.Add(pch1);
                         rtxtSend.ScrollToEnd();
 
@@ -3211,10 +3243,10 @@ namespace Bumblebee
                         }
 
                         Run rch = new Run(sRecv);
-                        Paragraph pch = new Paragraph(rch);
+                        WinParagraph pch = new WinParagraph(rch);
                         fldocRecv.Blocks.Add(pch);
                         Run rch1 = new Run("");
-                        Paragraph pch1 = new Paragraph(rch1);
+                        WinParagraph pch1 = new WinParagraph(rch1);
                         fldocRecv.Blocks.Add(pch1);
                         rtxtRecv.ScrollToEnd();
 
