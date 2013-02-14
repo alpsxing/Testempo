@@ -2378,8 +2378,8 @@ namespace Bumblebee
                     StartBit = "1";
                     StopBit = _stopBits[0];
                     TimeOut = "1000";
-                    WriteReadInterval = "100";
-                    CmdInterval = "100";
+                    WriteReadInterval = "1000";
+                    CmdInterval = "1000";
                     TimeOut = "1000";
                     ServerIP = "127.0.0.1";
                     ServerPort = "8678";
@@ -2416,8 +2416,8 @@ namespace Bumblebee
                 StartBit = "1";
                 StopBit = _stopBits[0];
                 TimeOut = "1000";
-                WriteReadInterval = "100";
-                CmdInterval = "100";
+                WriteReadInterval = "1000";
+                CmdInterval = "1000";
                 ServerIP = "127.0.0.1";
                 ServerPort = "8678";
 
@@ -3645,7 +3645,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3731,7 +3731,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3818,7 +3818,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3920,7 +3920,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3948,6 +3948,50 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[50 * iblock + 22] / 16.0)) * 10 + baData[50 * iblock + 22] % 16,
                                                                 ((int)Math.Floor((double)baData[50 * iblock + 23] / 16.0)) * 10 + baData[50 * iblock + 23] % 16);
                                                             lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                            string numberblockStop = "20" + baData[50 * iblock + 14].ToString("X") + "-" +
+                                                                baData[50 * iblock + 25].ToString("X") + "-" +
+                                                                baData[50 * iblock + 26].ToString("X") + " " +
+                                                                baData[50 * iblock + 27].ToString("X") + ":" +
+                                                                baData[50 * iblock + 28].ToString("X") + ":" +
+                                                                baData[50 * iblock + 29].ToString("X");
+                                                            numberblock = numberblock.PadRight(27);
+                                                            byte[] baNumber = new byte[18];
+                                                            for (int idxBa = 0; idxBa < 18; idxBa++)
+                                                            {
+                                                                baNumber[idxBa] = baData[50 * iblock + idxBa];
+                                                            }
+                                                            string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+                                                            byte[] baJingDu = new byte[4];
+                                                            baJingDu[0] = baData[50 * iblock + 0];
+                                                            baJingDu[1] = baData[50 * iblock + 1];
+                                                            baJingDu[2] = baData[50 * iblock + 2];
+                                                            baJingDu[3] = baData[50 * iblock + 3];
+                                                            float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                            string sJingDu = "";
+                                                            if (jingDu >= 0)
+                                                                sJingDu = "E";
+                                                            else
+                                                                sJingDu = "W";
+                                                            byte[] baWeiDu = new byte[4];
+                                                            baWeiDu[0] = baData[50 * iblock + 4];
+                                                            baWeiDu[1] = baData[50 * iblock + 5];
+                                                            baWeiDu[2] = baData[50 * iblock + 6];
+                                                            baWeiDu[3] = baData[50 * iblock + 7];
+                                                            float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                            string sWeiDu = "";
+                                                            if (weiDu >= 0)
+                                                                sWeiDu = "E";
+                                                            else
+                                                                sWeiDu = "W";
+                                                            _cmd11HRespOc.Add(new Cmd11HResponse()
+                                                            {
+                                                                Index = (_cmd11HRespOc.Count + 1).ToString(),
+                                                                Number = number,
+                                                                RecordStartDateTime = numberblock,
+                                                                RecordStopDateTime = numberblockStop,
+                                                                StartPosition = "",
+                                                                StopPosition = "",
+                                                            });
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3995,6 +4039,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create11HReport();
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -4022,7 +4075,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4050,6 +4103,34 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
                                                             lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                            byte[] baNumber = new byte[18];
+                                                            for (int idxBa = 0; idxBa < 18; idxBa++)
+                                                            {
+                                                                baNumber[idxBa] = baData[25 * iblock + 6 + idxBa];
+                                                            }
+                                                            string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+                                                            string oper = "";
+                                                            switch (baData[25 * iblock + 24].ToString("X").Trim().ToUpper())
+                                                            {
+                                                                default:
+                                                                    oper = "未知操作";
+                                                                    break;
+                                                                case "1":
+                                                                case "01":
+                                                                    oper = "登录";
+                                                                    break;
+                                                                case "2":
+                                                                case "02":
+                                                                    oper = "退出";
+                                                                    break;
+                                                            }
+                                                            _cmd12HRespOc.Add(new Cmd12HResponse()
+                                                            {
+                                                                Index = (_cmd12HRespOc.Count + 1).ToString(),
+                                                                RecordDateTime = numberblock.Trim(),
+                                                                Number = number,
+                                                                Description = oper
+                                                            });
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4097,6 +4178,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create12HReport();
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -4124,7 +4214,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4152,6 +4242,27 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
                                                             lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                            string oper = "";
+                                                            switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
+                                                            {
+                                                                default:
+                                                                    oper = "未知状态";
+                                                                    break;
+                                                                case "1":
+                                                                case "01":
+                                                                    oper = "通电";
+                                                                    break;
+                                                                case "2":
+                                                                case "02":
+                                                                    oper = "断电";
+                                                                    break;
+                                                            }
+                                                            _cmd13HRespOc.Add(new Cmd13HResponse()
+                                                            {
+                                                                Index = (_cmd13HRespOc.Count + 1).ToString(),
+                                                                RecordDateTime = numberblock.Trim(),
+                                                                Description = oper
+                                                            });
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4199,6 +4310,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create13HReport();
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -4226,7 +4346,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4368,7 +4488,7 @@ namespace Bumblebee
                                                     if (isContinued == false)
                                                     {
                                                         LogMessage("+-----------------------------------------------------------------------------+");
-                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
+                                                        LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4536,7 +4656,98 @@ namespace Bumblebee
             PBarValue = 0;
         }
 
-        private void Create14HReport()
+        private void Create12HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = true;
+            }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\12H.pdf", FileMode.Create));
+                document.Open();
+
+                #region
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
+
+                PdfPTable table = new PdfPTable(4);
+
+                table.SpacingBefore = 25f;
+
+                table.TotalWidth = document.Right - document.Left;
+                float[] widths = { 75f, 150f, 150f, 75f };
+                table.SetWidths(widths);
+                table.LockedWidth = true;
+
+                PdfPCell cell;
+                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("机动车驾驶证号码", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+
+                foreach (Cmd12HResponse cri in _cmd12HRespOc)
+                {
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.Number, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                }
+
+                document.Add(table);
+
+                #endregion
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.");
+
+                System.Diagnostics.Process.Start(CurrentDirectory + @"\12H.pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
+        }
+
+        private void Create13HReport()
         {
             Dispatcher.Invoke((ThreadStart)delegate
                 {
@@ -4545,36 +4756,121 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\14H.pdf", FileMode.Create));
+                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\13H.pdf", FileMode.Create));
                 document.Open();
+
+                #region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                //document.NewPage();
-
-                #region
-
-                //document.Add(new PdfParagraph("Hello World!"));
+                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
 
                 PdfPTable table = new PdfPTable(3);
+
+                table.SpacingBefore = 25f;
 
                 table.TotalWidth = document.Right - document.Left;
                 float[] widths = { 75f, 150f, 150f };
                 table.SetWidths(widths);
-                table.LockedWidth = true;                //必须锁定宽度，否则修改无效
+                table.LockedWidth = true;
 
                 PdfPCell cell;
-                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+
+                foreach (Cmd13HResponse cri in _cmd13HRespOc)
+                {
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                }
+
+                document.Add(table);
+
+                #endregion
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.");
+
+                System.Diagnostics.Process.Start(CurrentDirectory + @"\13H.pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
+        }
+
+        private void Create14HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = true;
+            }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\14H.pdf", FileMode.Create));
+                document.Open();
+
+                #region
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
+
+                PdfPTable table = new PdfPTable(3);
+
+                table.SpacingBefore = 25f;
+
+                table.TotalWidth = document.Right - document.Left;
+                float[] widths = { 75f, 150f, 150f };
+                table.SetWidths(widths);
+                table.LockedWidth = true;
+
+                PdfPCell cell;
+                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
@@ -4595,9 +4891,9 @@ namespace Bumblebee
                     table.AddCell(cell);
                 }
 
-                #endregion
-
                 document.Add(table);
+
+                #endregion
 
                 document.Close();
 
@@ -5680,14 +5976,27 @@ namespace Bumblebee
 
     public class Cmd13HResponse
     {
+        public string Index { get; set; }
+        public string RecordDateTime { get; set; }
+        public string Description { get; set; }
     }
 
     public class Cmd12HResponse
     {
+        public string Index { get; set; }
+        public string RecordDateTime { get; set; }
+        public string Number { get; set; }
+        public string Description { get; set; }
     }
 
     public class Cmd11HResponse
     {
+        public string Index { get; set; }
+        public string Number { get; set; }
+        public string RecordStartDateTime { get; set; }
+        public string RecordStopDateTime { get; set; }
+        public string StartPosition { get; set; }
+        public string StopPosition { get; set; }
     }
 
     public class Cmd10HResponse
