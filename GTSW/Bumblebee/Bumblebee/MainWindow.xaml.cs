@@ -165,6 +165,15 @@ namespace Bumblebee
 
         private bool _started = false;
 
+        private ObservableCollection<Cmd15HResponse> _cmd15HRespOc = new ObservableCollection<Cmd15HResponse>();
+        private ObservableCollection<Cmd14HResponse> _cmd14HRespOc = new ObservableCollection<Cmd14HResponse>();
+        private ObservableCollection<Cmd13HResponse> _cmd13HRespOc = new ObservableCollection<Cmd13HResponse>();
+        private ObservableCollection<Cmd12HResponse> _cmd12HRespOc = new ObservableCollection<Cmd12HResponse>();
+        private ObservableCollection<Cmd11HResponse> _cmd11HRespOc = new ObservableCollection<Cmd11HResponse>();
+        private ObservableCollection<Cmd10HResponse> _cmd10HRespOc = new ObservableCollection<Cmd10HResponse>();
+        private ObservableCollection<Cmd09HResponse> _cmd09HRespOc = new ObservableCollection<Cmd09HResponse>();
+        private ObservableCollection<Cmd08HResponse> _cmd08HRespOc = new ObservableCollection<Cmd08HResponse>();
+
         #endregion
 
         #region Properties
@@ -2502,6 +2511,15 @@ namespace Bumblebee
                 return;
             }
 
+            _cmd15HRespOc.Clear();
+            _cmd14HRespOc.Clear();
+            _cmd13HRespOc.Clear();
+            _cmd12HRespOc.Clear();
+            _cmd11HRespOc.Clear();
+            _cmd10HRespOc.Clear();
+            _cmd09HRespOc.Clear();
+            _cmd08HRespOc.Clear();
+
             _started = true;
 
             InRun = true;
@@ -3078,6 +3096,7 @@ namespace Bumblebee
                         if (cmda == null || cmda.Length < 1 || cmda.Length > 2)
                         {
                             LogMessageError("命令(" + cdi.CmdContent + ")格式错误.");
+                            LogMessage("");
                             cdi.CmdState = "参数错误.";
                             continue;
                         }
@@ -3085,6 +3104,7 @@ namespace Bumblebee
                         {
                             LogMessageError("命令(" + cdi.CmdContent + ")错误:" + cmda[1]);
                             cdi.CmdState = "参数错误.";
+                            LogMessage("");
                             continue;
                         }
 
@@ -3576,6 +3596,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3660,6 +3682,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3745,6 +3769,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3845,6 +3871,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3945,6 +3973,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4045,6 +4075,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4145,6 +4177,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4172,6 +4206,29 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
                                                             lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                            string oper = "";
+                                                            switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
+                                                            {
+                                                                default:
+                                                                    break;
+                                                                case "82":
+                                                                    break;
+                                                                case "83":
+                                                                    break;
+                                                                case "84":
+                                                                    break;
+                                                                case "C2":
+                                                                    break;
+                                                                case "C3":
+                                                                    break;
+                                                                case "C4":
+                                                                    break;
+                                                            }
+                                                            _cmd14HRespOc.Add(new Cmd14HResponse()
+                                                            {
+                                                                Index = (_cmd14HRespOc.Count + 1).ToString(),
+                                                                RecordDateTime = numberblock.Trim(),
+                                                            });
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -4245,6 +4302,8 @@ namespace Bumblebee
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
                                                     if (isContinued == false)
                                                     {
+                                                        LogMessage("+-----------------------------------------------------------------------------+");
+                                                        LogMessage("|      此处只显示捕获的数据信息,详细内容请见报表.                             |");
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                         LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -5460,6 +5519,41 @@ namespace Bumblebee
                     return new string[] { cmd };
             }
         }
+    }
+
+    public class Cmd15HResponse
+    {
+    }
+
+    public class Cmd14HResponse
+    {
+        public string Index { get; set; }
+        public string RecordDateTime { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class Cmd13HResponse
+    {
+    }
+
+    public class Cmd12HResponse
+    {
+    }
+
+    public class Cmd11HResponse
+    {
+    }
+
+    public class Cmd10HResponse
+    {
+    }
+
+    public class Cmd09HResponse
+    {
+    }
+
+    public class Cmd08HResponse
+    {
     }
 
     public class Bools2BoolConverter : IMultiValueConverter
