@@ -3846,6 +3846,12 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[234 * iblock + 4] / 16.0)) * 10 + baData[234 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[234 * iblock + 5] / 16.0)) * 10 + baData[234 * iblock + 5] % 16);
                                                             lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 20));
+                                                            byte[] baNumber = new byte[18];
+                                                            for (int idxBa = 0; idxBa < 18; idxBa++)
+                                                            {
+                                                                baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
+                                                            }
+                                                            string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3893,6 +3899,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create10HReport();
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3961,36 +3976,81 @@ namespace Bumblebee
                                                                 baNumber[idxBa] = baData[50 * iblock + idxBa];
                                                             }
                                                             string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+                                                            
+                                                            #region
+                                                            
                                                             byte[] baJingDu = new byte[4];
-                                                            baJingDu[0] = baData[50 * iblock + 0];
-                                                            baJingDu[1] = baData[50 * iblock + 1];
-                                                            baJingDu[2] = baData[50 * iblock + 2];
-                                                            baJingDu[3] = baData[50 * iblock + 3];
+                                                            baJingDu[0] = baData[50 * iblock + 30];
+                                                            baJingDu[1] = baData[50 * iblock + 31];
+                                                            baJingDu[2] = baData[50 * iblock + 32];
+                                                            baJingDu[3] = baData[50 * iblock + 33];
                                                             float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
                                                             string sJingDu = "";
                                                             if (jingDu >= 0)
-                                                                sJingDu = "E";
+                                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
                                                             else
-                                                                sJingDu = "W";
+                                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
                                                             byte[] baWeiDu = new byte[4];
-                                                            baWeiDu[0] = baData[50 * iblock + 4];
-                                                            baWeiDu[1] = baData[50 * iblock + 5];
-                                                            baWeiDu[2] = baData[50 * iblock + 6];
-                                                            baWeiDu[3] = baData[50 * iblock + 7];
+                                                            baWeiDu[0] = baData[50 * iblock + 34];
+                                                            baWeiDu[1] = baData[50 * iblock + 35];
+                                                            baWeiDu[2] = baData[50 * iblock + 36];
+                                                            baWeiDu[3] = baData[50 * iblock + 37];
                                                             float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
                                                             string sWeiDu = "";
                                                             if (weiDu >= 0)
-                                                                sWeiDu = "E";
+                                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
                                                             else
-                                                                sWeiDu = "W";
+                                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                                            byte[] baHeight = new byte[2];
+                                                            baHeight[0] = baData[50 * iblock + 38];
+                                                            baHeight[1] = baData[50 * iblock + 39];
+                                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                                            string sHeight = iHeight.ToString();
+                                                            
+                                                            #endregion
+
+                                                            #region
+
+                                                            byte[] baJingDu1 = new byte[4];
+                                                            baJingDu1[0] = baData[50 * iblock + 40];
+                                                            baJingDu1[1] = baData[50 * iblock + 41];
+                                                            baJingDu1[2] = baData[50 * iblock + 42];
+                                                            baJingDu1[3] = baData[50 * iblock + 43];
+                                                            float jingDu1 = System.BitConverter.ToSingle(baJingDu1, 0);
+                                                            string sJingDu1 = "";
+                                                            if (jingDu1 >= 0)
+                                                                sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
+                                                            else
+                                                                sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
+                                                            byte[] baWeiDu1 = new byte[4];
+                                                            baWeiDu1[0] = baData[50 * iblock + 44];
+                                                            baWeiDu1[1] = baData[50 * iblock + 45];
+                                                            baWeiDu1[2] = baData[50 * iblock + 46];
+                                                            baWeiDu1[3] = baData[50 * iblock + 47];
+                                                            float weiDu1 = System.BitConverter.ToSingle(baWeiDu1, 0);
+                                                            string sWeiDu1 = "";
+                                                            if (weiDu1 >= 0)
+                                                                sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
+                                                            else
+                                                                sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
+                                                            byte[] baHeight1 = new byte[2];
+                                                            baHeight1[0] = baData[50 * iblock + 48];
+                                                            baHeight1[1] = baData[50 * iblock + 49];
+                                                            int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
+                                                            string sHeight1 = iHeight1.ToString();
+
+                                                            #endregion
+
                                                             _cmd11HRespOc.Add(new Cmd11HResponse()
                                                             {
                                                                 Index = (_cmd11HRespOc.Count + 1).ToString(),
                                                                 Number = number,
                                                                 RecordStartDateTime = numberblock,
                                                                 RecordStopDateTime = numberblockStop,
-                                                                StartPosition = "",
-                                                                StopPosition = "",
+                                                                StartPosition = sJingDu + "/" + sWeiDu,
+                                                                StopPosition = sJingDu1 + "/" + sWeiDu1,
+                                                                StartHeight = sHeight,
+                                                                StopHeight = sHeight1
                                                             });
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
@@ -4654,6 +4714,132 @@ namespace Bumblebee
             InRun = false;
 
             PBarValue = 0;
+        }
+
+        private string ConvertJingWeiDuToString(float fVal)
+        {
+            float fValNew = fVal * 10000.0f;
+            fValNew = Math.Abs(fValNew);
+
+            int iValDu = (int)Math.Floor(Math.Floor(fValNew) / 60.0);
+
+            float fValFen = (float)Math.Floor(fValNew - (iValDu * 60));
+            int iValFen = (int)fValFen;
+
+            float fValMiao = (float)(fValNew - Math.Floor(fValNew));
+            fValMiao = (float)Math.Ceiling(fValMiao * 60.0f);
+            int iValMiao = (int)fValMiao;
+
+            return string.Format("{0:D}", iValDu) + "°"+ string.Format("{0:D}", iValFen) + "′" + string.Format("{0:D}", iValMiao) + "″"; 
+        }
+
+        private void Create11HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = true;
+            }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\11H.pdf", FileMode.Create));
+                document.Open();
+
+                #region
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
+
+                int index = 0;
+
+                foreach (Cmd11HResponse cri in _cmd11HRespOc)
+                {
+                    PdfPTable table = new PdfPTable(5);
+
+                    if (index == 0)
+                        table.SpacingBefore = 25f;
+                    else
+                        table.SpacingBefore = 5f;
+
+                    table.TotalWidth = document.Right - document.Left;
+                    float[] widths = { 50f, 100f, 100f, 150f, 150f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    cell = new PdfPCell(new Phrase("驾驶证号码:" + cri.Number, new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 5;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("超时开始时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("超时结束时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("超时开始位置", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("超时结束位置", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.RecordStartDateTime.Replace(" ","\n").Trim(), new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.RecordStopDateTime.Replace(" ", "\n").Trim(), new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.StartPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.StopPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+
+                    document.Add(table);
+                }
+
+                #endregion
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.");
+
+                System.Diagnostics.Process.Start(CurrentDirectory + @"\11H.pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
         }
 
         private void Create12HReport()
@@ -5997,10 +6183,14 @@ namespace Bumblebee
         public string RecordStopDateTime { get; set; }
         public string StartPosition { get; set; }
         public string StopPosition { get; set; }
+        public string StartHeight { get; set; }
+        public string StopHeight { get; set; }
     }
 
     public class Cmd10HResponse
     {
+        public string Index { get; set; }
+        public string Number { get; set; }
     }
 
     public class Cmd09HResponse
