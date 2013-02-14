@@ -121,7 +121,7 @@
             <ProgressBar Value="{Binding Path=PBarValue,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                          Minimum="{Binding Path=PBarMinimum,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                          Maximum="{Binding Path=PBarMaximum,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
-                         Width="200" Height="15"/>
+                         Width="200" Height="15" Name="pbarMain"/>
             <Label Content="{Binding Path=ReadyString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,-5,0,0"/>
             <Label Content="{Binding Path=ReadyString2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,-5,0,0"/>
         </StatusBar>
@@ -168,7 +168,8 @@
                     <Grid DockPanel.Dock="Left" Width="25"/>
                     <CheckBox Content="是否生成统计报表" DockPanel.Dock="Left"
                               HorizontalAlignment="Left" VerticalAlignment="Center"
-                              IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                              IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                              IsChecked="{Binding Path=NeedReport,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                     <Grid/>
                 </DockPanel>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" 

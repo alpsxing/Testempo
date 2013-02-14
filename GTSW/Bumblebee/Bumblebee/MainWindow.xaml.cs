@@ -59,6 +59,7 @@ using Bumblebee.SetCmd;
 using Bumblebee.ExtSetCmd;
 
 using WinParagraph = System.Windows.Documents.Paragraph;
+using PdfParagraph = iTextSharp.text.Paragraph;
 
 namespace Bumblebee
 {
@@ -165,6 +166,8 @@ namespace Bumblebee
 
         private bool _started = false;
 
+        private AutoResetEvent _createPdfEvent = new AutoResetEvent(false);
+
         private ObservableCollection<Cmd15HResponse> _cmd15HRespOc = new ObservableCollection<Cmd15HResponse>();
         private ObservableCollection<Cmd14HResponse> _cmd14HRespOc = new ObservableCollection<Cmd14HResponse>();
         private ObservableCollection<Cmd13HResponse> _cmd13HRespOc = new ObservableCollection<Cmd13HResponse>();
@@ -177,6 +180,34 @@ namespace Bumblebee
         #endregion
 
         #region Properties
+
+        private bool _needReport = false;
+        public bool NeedReport
+        {
+            get
+            {
+                return _needReport;
+            }
+            set
+            {
+                _needReport = value;
+                NotifyPropertyChanged("NeedReport");
+            }
+        }
+
+        private string _curDir = "";
+        public string CurrentDirectory
+        {
+            get
+            {
+                return _curDir;
+            }
+            set
+            {
+                _curDir = value;
+                NotifyPropertyChanged("CurrentDirectory");
+            }
+        }
 
         public bool InChkCmd
         {
@@ -2511,6 +2542,23 @@ namespace Bumblebee
                 return;
             }
 
+            #region
+
+            DateTime dt = DateTime.Now;
+            CurrentDirectory = System.Environment.CurrentDirectory;
+            if (NeedReport)
+            {
+                string sdt = string.Format("{0}_{1}_{2}_{3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
+                try
+                {
+                    Directory.CreateDirectory(CurrentDirectory + @"\" + sdt);
+                    CurrentDirectory = CurrentDirectory + @"\" + sdt;
+                }
+                catch (Exception) { }
+            }
+
+            #endregion
+
             _cmd15HRespOc.Clear();
             _cmd14HRespOc.Clear();
             _cmd13HRespOc.Clear();
@@ -4210,24 +4258,32 @@ namespace Bumblebee
                                                             switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
                                                             {
                                                                 default:
+                                                                    oper = "未知操作";
                                                                     break;
                                                                 case "82":
+                                                                    oper = "修改车辆信息";
                                                                     break;
                                                                 case "83":
+                                                                    oper = "修改初次安装日期";
                                                                     break;
                                                                 case "84":
+                                                                    oper = "修改状态量配置信息";
                                                                     break;
                                                                 case "C2":
+                                                                    oper = "修改记录仪时间";
                                                                     break;
                                                                 case "C3":
+                                                                    oper = "修改脉冲系数";
                                                                     break;
                                                                 case "C4":
+                                                                    oper = "修改初始里程";
                                                                     break;
                                                             }
                                                             _cmd14HRespOc.Add(new Cmd14HResponse()
                                                             {
                                                                 Index = (_cmd14HRespOc.Count + 1).ToString(),
                                                                 RecordDateTime = numberblock.Trim(),
+                                                                Description = oper
                                                             });
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
@@ -4276,6 +4332,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                            {
+                                                                Create14HReport();
+                                                            });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -4469,6 +4534,87 @@ namespace Bumblebee
             InRun = false;
 
             PBarValue = 0;
+        }
+
+        private void Create14HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+                {
+                    pbarMain.IsIndeterminate = true;
+                }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\14H.pdf", FileMode.Create));
+                document.Open();
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                //document.NewPage();
+
+                #region
+
+                //document.Add(new PdfParagraph("Hello World!"));
+
+                PdfPTable table = new PdfPTable(3);
+
+                table.TotalWidth = document.Right - document.Left;
+                float[] widths = { 75f, 150f, 150f };
+                table.SetWidths(widths);
+                table.LockedWidth = true;                //必须锁定宽度，否则修改无效
+
+                PdfPCell cell;
+                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE)));
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                table.AddCell(cell);
+
+                foreach (Cmd14HResponse cri in _cmd14HRespOc)
+                {
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                }
+
+                #endregion
+
+                document.Add(table);
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.");
+
+                System.Diagnostics.Process.Start(CurrentDirectory + @"\14H.pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
         }
 
         private int GetChineseNumber(string src)

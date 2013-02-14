@@ -108,6 +108,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CreatePdf\CreatePdf.xaml.cs">
+      <DependentUpon>CreatePdf.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExtSetCmd\SinglePulseCount.xaml.cs">
       <DependentUpon>SinglePulseCount.xaml</DependentUpon>
     </Compile>
@@ -147,6 +150,10 @@
     <Compile Include="TimeoutConfiguration.xaml.cs">
       <DependentUpon>TimeoutConfiguration.xaml</DependentUpon>
     </Compile>
+    <Page Include="CreatePdf\CreatePdf.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ExtSetCmd\SinglePulseCount.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
