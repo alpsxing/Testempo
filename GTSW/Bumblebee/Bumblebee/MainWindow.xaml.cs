@@ -153,7 +153,7 @@ namespace Bumblebee
         private CancellationTokenSource _ctsDisplay = null;
         private Task _displayLogTask = null;
         private object _logLock = new object();
-        private Queue<Tuple<string, LogType, bool>> _logQueue = new Queue<Tuple<string, LogType, bool>>();
+        private Queue<Tuple<string, LogType, bool, string>> _logQueue = new Queue<Tuple<string, LogType, bool, string>>();
 
         private XmlDocument _xd = new XmlDocument();
 
@@ -1695,7 +1695,12 @@ namespace Bumblebee
             LogMessage(msg, LogType.Error);
         }
 
-        private void LogMessage(string msg, LogType lt = LogType.Common, bool bold = false)
+        private void LogMessageLink(string link)
+        {
+            LogMessage(link, LogType.Information, false, link);
+        }
+
+        private void LogMessage(string msg, LogType lt = LogType.Common, bool bold = false, string link = null)
         {
             //lock (_logLock)
             {
@@ -1705,7 +1710,7 @@ namespace Bumblebee
                     return;
                 }
 
-                _logQueue.Enqueue(new Tuple<string, LogType, bool>(msg, lt, bold));
+                _logQueue.Enqueue(new Tuple<string, LogType, bool, string>(msg, lt, bold, link));
             }
         }
 
@@ -1723,7 +1728,7 @@ namespace Bumblebee
 
                     if (_logQueue.Count > 0)
                     {
-                        Tuple<string, LogType, bool> di = _logQueue.Dequeue();
+                        Tuple<string, LogType, bool,string> di = _logQueue.Dequeue();
 
                         Dispatcher.BeginInvoke((ThreadStart)delegate
                         {
@@ -1749,6 +1754,15 @@ namespace Bumblebee
                                     pch.Foreground = Brushes.Red;
                                     break;
                             }
+                            if (string.IsNullOrWhiteSpace(di.Item4) == false)
+                            {
+                                pch.Foreground = Brushes.Green;
+                                //pch.TextDecorations.Add(new TextDecoration());
+                                pch.MouseEnter += new MouseEventHandler(ReportHyperLink_MouseEnter);
+                                pch.MouseLeave += new MouseEventHandler(ReportHyperLink_MouseLeave);
+                                pch.MouseDown += new MouseButtonEventHandler(ReportHyperLink_MouseDown);
+                                rch.FontStyle = FontStyles.Italic;
+                            }
                             if (di.Item3 == true)
                                 pch.FontWeight = FontWeights.Bold;
                             else
@@ -1763,6 +1777,27 @@ namespace Bumblebee
 
                 Thread.Sleep(10);
             }
+        }
+
+        private void ReportHyperLink_MouseLeave(object sender, MouseEventArgs e)
+        {
+            WinParagraph par = sender as WinParagraph;
+            par.Cursor = Cursors.UpArrow;
+        }
+
+        private void ReportHyperLink_MouseEnter(object sender, MouseEventArgs e)
+        {
+            WinParagraph par = sender as WinParagraph;
+            par.Cursor = Cursors.Hand;
+        }
+
+        private void ReportHyperLink_MouseDown(object sender, MouseEventArgs e)
+        {
+            WinParagraph par = sender as WinParagraph;
+            string str = ((Run)(par.Inlines.FirstInline)).Text;
+            //int idx = str.LastIndexOf("\\");
+            //System.Diagnostics.Process.Start(str.Substring(0, idx));
+            System.Diagnostics.Process.Start(str);
         }
 
         #endregion
@@ -3652,29 +3687,59 @@ namespace Bumblebee
                                                         LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
-                                                    DateTime blockStartDateTime = cdi.StopDateTime.Subtract(new TimeSpan(0, blockCount - 1, 0));
-                                                    string number3 = "20" + String.Format("{0:X2}",sa[12]) + "-" +
-                                                        String.Format("{0:X2}", sa[13]) + "-" +
-                                                        String.Format("{0:X2}", sa[14]) + " " +
-                                                        String.Format("{0:X2}", sa[15]) + ":" +
-                                                        String.Format("{0:X2}", sa[16]) + ":" +
-                                                        String.Format("{0:X2}", sa[17]);
-                                                    number3 = number3.PadRight(27);
-                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", number3));
-                                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                                    if (dataRemain != 0)
-                                                    {
-                                                        string sValue3 = dataRemain.ToString().PadRight(27);
-                                                        LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
-                                                    }
-
+                                                    DateTime lastDateTime = DateTime.Now;
                                                     if (blockCount > 0)
                                                     {
-                                                        DateTime lastDateTime = new DateTime(2000 + int.Parse(sa[12]), int.Parse(sa[13]), int.Parse(sa[14]),
-                                                            int.Parse(sa[15]), int.Parse(sa[16]), int.Parse(sa[17]));
-                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, blockCount, 0));
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        string numberblock = "";
+                                                        for (int iblock = 0; iblock < blockCount; iblock++)
+                                                        {
+                                                            numberblock = "20" + baData[126 * iblock + 0].ToString("X") + "-" +
+                                                                baData[126 * iblock + 1].ToString("X") + "-" +
+                                                                baData[126 * iblock + 2].ToString("X") + " " +
+                                                                baData[126 * iblock + 3].ToString("X") + ":" +
+                                                                baData[126 * iblock + 4].ToString("X") + ":" +
+                                                                baData[126 * iblock + 5].ToString("X");
+                                                            numberblock = numberblock.PadRight(27);
+                                                            lastDateTime = new DateTime(
+                                                                ((int)Math.Floor((double)baData[126 * iblock + 0] / 16.0)) * 10 + baData[126 * iblock + 0] % 16 + 2000,
+                                                                ((int)Math.Floor((double)baData[126 * iblock + 1] / 16.0)) * 10 + baData[126 * iblock + 1] % 16,
+                                                                ((int)Math.Floor((double)baData[126 * iblock + 2] / 16.0)) * 10 + baData[126 * iblock + 2] % 16,
+                                                                ((int)Math.Floor((double)baData[126 * iblock + 3] / 16.0)) * 10 + baData[126 * iblock + 3] % 16,
+                                                                ((int)Math.Floor((double)baData[126 * iblock + 4] / 16.0)) * 10 + baData[126 * iblock + 4] % 16,
+                                                                ((int)Math.Floor((double)baData[126 * iblock + 5] / 16.0)) * 10 + baData[126 * iblock + 5] % 16);
+                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+                                                            ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+                                                            for (int iSec = 0; iSec < 60; iSec++)
+                                                            {
+                                                                int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
+                                                                if (speed == 0xFF)
+                                                                    speed = 0;
+                                                                byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
+
+                                                                records.Add(new Tuple<int, byte>(speed, state));
+                                                            }
+                                                            _cmd08HRespOc.Add(new Cmd08HResponse()
+                                                            {
+                                                                Index = (_cmd08HRespOc.Count + 1).ToString(),
+                                                                StartDateTime = numberblock,
+                                                                Records = records
+                                                            });
+                                                        }
+
+                                                        LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                    }
+                                                    else
+                                                    {
+                                                        LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                    }
+                                                    if (blockCount > 0)
+                                                    {
+                                                        //DateTime lastDateTime = new DateTime(2000 + int.Parse(sa[12]), int.Parse(sa[13]), int.Parse(sa[14]),
+                                                        //    int.Parse(sa[15]), int.Parse(sa[16]), int.Parse(sa[17]));
+                                                        //lastDateTime = lastDateTime.Subtract(new TimeSpan(0, blockCount, 0));
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -3700,7 +3765,11 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
@@ -3767,7 +3836,9 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[666 * iblock + 3] / 16.0)) * 10 + baData[666 * iblock + 3] % 16,
                                                                 ((int)Math.Floor((double)baData[666 * iblock + 4] / 16.0)) * 10 + baData[666 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[666 * iblock + 5] / 16.0)) * 10 + baData[666 * iblock + 5] % 16);
-                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(1, 0, 0));
+                                                            int min = lastDateTime.Minute;
+                                                            int sec = lastDateTime.Second;
+                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(1, - 59 + min, - 59 + sec));
                                                             ObservableCollection<Tuple<string, string, string, int>> records = new ObservableCollection<Tuple<string, string, string, int>>();
                                                             for (int iMin = 0; iMin < 60; iMin++)
                                                             {
@@ -3854,7 +3925,6 @@ namespace Bumblebee
                                                         LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
-
                                                     if (blockCount > 0)
                                                     {
                                                         //lastDateTime = new DateTime(2000 + int.Parse(sa[12]), int.Parse(sa[13]), int.Parse(sa[14]),
@@ -4744,6 +4814,8 @@ namespace Bumblebee
                                                         string numberblock = "";
                                                         for (int iblock = 0; iblock < blockCount; iblock++)
                                                         {
+                                                            byte state = baData[133 * iblock + 0];
+
                                                             numberblock = "20" + baData[133 * iblock + 1].ToString("X") + "-" +
                                                                 baData[133 * iblock + 2].ToString("X") + "-" +
                                                                 baData[133 * iblock + 3].ToString("X") + " " +
@@ -4758,8 +4830,36 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[133 * iblock + 4] / 16.0)) * 10 + baData[133 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[133 * iblock + 5] / 16.0)) * 10 + baData[133 * iblock + 5] % 16,
                                                                 ((int)Math.Floor((double)baData[133 * iblock + 6] / 16.0)) * 10 + baData[133 * iblock + 6] % 16);
-                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+                                                            string numberblock2 = "20" + baData[133 * iblock + 7].ToString("X") + "-" +
+                                                                baData[133 * iblock + 8].ToString("X") + "-" +
+                                                                baData[133 * iblock + 9].ToString("X") + " " +
+                                                                baData[133 * iblock + 10].ToString("X") + ":" +
+                                                                baData[133 * iblock + 11].ToString("X") + ":" +
+                                                                baData[133 * iblock + 12].ToString("X");
+                                                            numberblock2 = numberblock.PadRight(27);
+                                                            ObservableCollection<Tuple<int, int>> records = new ObservableCollection<Tuple<int, int>>();
+                                                            for (int iSec = 0; iSec < 60; iSec++)
+                                                            {
+                                                                int speed = baData[133 * iblock + iSec * 2 + 13 + 0];
+                                                                if (speed == 0xFF)
+                                                                    speed = 0;
+                                                                int refSpeed = baData[133 * iblock + iSec * 2 + 13 + 1];
+                                                                if (refSpeed == 0xFF)
+                                                                    refSpeed = 0;
+
+                                                                records.Add(new Tuple<int, int>(speed, refSpeed));
+                                                            }
+                                                            _cmd15HRespOc.Add(new Cmd15HResponse()
+                                                            {
+                                                                Index = (_cmd15HRespOc.Count + 1).ToString(),
+                                                                State = state,
+                                                                StartDateTime = numberblock,
+                                                                StopDateTime = numberblock2,
+                                                                Records = records
+                                                            });
                                                         }
+
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
@@ -4810,6 +4910,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create15HReport();
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -4920,6 +5029,119 @@ namespace Bumblebee
             return string.Format("{0:D}", iValDu) + "°"+ string.Format("{0:D}", iValFen) + "′" + string.Format("{0:D}", iValMiao) + "″"; 
         }
 
+        private void Create08HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = true;
+            }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\08H.pdf", FileMode.Create));
+                document.Open();
+
+                #region
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("--- 行驶速度记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
+
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd08HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
+
+                int index = 0;
+
+                foreach (Cmd08HResponse cri in _cmd08HRespOc)
+                {
+                    PdfPTable table = new PdfPTable(11);
+
+                    if (index == 0)
+                        table.SpacingBefore = 25f;
+                    else
+                        table.SpacingBefore = 5f;
+
+                    table.TotalWidth = document.Right - document.Left;
+                    float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    cell = new PdfPCell(new Phrase("开始时间:" + cri.StartDateTime, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 5;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("注:XX/YY(XX为速度,单位km/h;YY为状态信号,\"1\"为有效)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 6;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    ObservableCollection<Tuple<int, byte>> records = cri.Records;
+                    for (int i = 0; i < 6; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+
+                        for (int j = 0; j < 10; j++)
+                        {
+                            int speed = records[i * 10 + j].Item1;
+                            byte state = records[i * 10 + j].Item2;
+
+                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + string.Format("{0:X2}", state), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                            cell.VerticalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cell);
+                        }
+                    }
+
+                    document.Add(table);
+                }
+
+                #endregion
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\08H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
+
+                //System.Diagnostics.Process.Start(CurrentDirectory + @"\08H.pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
+        }
+
         private void Create09HReport()
         {
             Dispatcher.Invoke((ThreadStart)delegate
@@ -4941,6 +5163,10 @@ namespace Bumblebee
                 PdfParagraph par = new PdfParagraph("--- 位置信息记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd09HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
 
                 int index = 0;
 
@@ -5009,9 +5235,10 @@ namespace Bumblebee
 
                 document.Close();
 
-                LogMessageInformation("成功创建报表.");
-
-                System.Diagnostics.Process.Start(CurrentDirectory + @"\09H.pdf");
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\09H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
@@ -5046,6 +5273,10 @@ namespace Bumblebee
                 PdfParagraph par = new PdfParagraph("--- 事故疑点记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd10HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
 
                 int index = 0;
 
@@ -5124,9 +5355,10 @@ namespace Bumblebee
 
                 document.Close();
 
-                LogMessageInformation("成功创建报表.");
-
-                System.Diagnostics.Process.Start(CurrentDirectory + @"\10H.pdf");
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\10H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
@@ -5161,6 +5393,10 @@ namespace Bumblebee
                 PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd11HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
 
                 int index = 0;
 
@@ -5233,9 +5469,10 @@ namespace Bumblebee
 
                 document.Close();
 
-                LogMessageInformation("成功创建报表.");
-
-                System.Diagnostics.Process.Start(CurrentDirectory + @"\11H.pdf");
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\11H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
@@ -5270,6 +5507,10 @@ namespace Bumblebee
                 PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd12HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
 
                 PdfPTable table = new PdfPTable(4);
 
@@ -5324,9 +5565,10 @@ namespace Bumblebee
 
                 document.Close();
 
-                LogMessageInformation("成功创建报表.");
-
-                System.Diagnostics.Process.Start(CurrentDirectory + @"\12H.pdf");
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\12H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
@@ -5361,6 +5603,10 @@ namespace Bumblebee
                 PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd13HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
 
                 PdfPTable table = new PdfPTable(3);
 
@@ -5407,9 +5653,10 @@ namespace Bumblebee
 
                 document.Close();
 
-                LogMessageInformation("成功创建报表.");
-
-                System.Diagnostics.Process.Start(CurrentDirectory + @"\13H.pdf");
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\13H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
@@ -5444,6 +5691,10 @@ namespace Bumblebee
                 PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd14HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
 
                 PdfPTable table = new PdfPTable(3);
 
@@ -5490,9 +5741,146 @@ namespace Bumblebee
 
                 document.Close();
 
-                LogMessageInformation("成功创建报表.");
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\04H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
+        }
 
-                System.Diagnostics.Process.Start(CurrentDirectory + @"\14H.pdf");
+        private void Create15HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = true;
+            }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\15H.pdf", FileMode.Create));
+                document.Open();
+
+                #region
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("--- 速度状态日志 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
+
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd08HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                par1.Alignment = Element.ALIGN_CENTER;
+                par1.SpacingBefore = 5f;
+                document.Add(par1);
+
+                int index = 0;
+
+                foreach (Cmd15HResponse cri in _cmd15HRespOc)
+                {
+                    PdfPTable table = new PdfPTable(11);
+
+                    if (index == 0)
+                        table.SpacingBefore = 25f;
+                    else
+                        table.SpacingBefore = 5f;
+
+                    table.TotalWidth = document.Right - document.Left;
+                    float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    string state = "";
+                    switch (cri.State)
+                    {
+                        default:
+                            state = "未知 - " + string.Format("{0:X2}",cri.State);
+                            break;
+                        case 1:
+                            state = "正常 - " + string.Format("{0:X2}", cri.State);
+                            break;
+                        case 2:
+                            state = "异常 - " + string.Format("{0:X2}", cri.State);
+                            break;
+                    }
+                    cell = new PdfPCell(new Phrase("速度状态:" + state, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 5;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("注:XX/YY(XX为记录速度,单位km/h;YY为参考速度,单位km/h)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 6;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("判定开始时间:" + cri.StartDateTime, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 5;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("判定结束时间:" + cri.StopDateTime, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 6;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    ObservableCollection<Tuple<int, int>> records = cri.Records;
+                    for (int i = 0; i < 6; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+
+                        for (int j = 0; j < 10; j++)
+                        {
+                            int speed = records[i * 10 + j].Item1;
+                            int refSpeed = records[i * 10 + j].Item2;
+
+                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + refSpeed.ToString(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                            cell.VerticalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cell);
+                        }
+                    }
+
+                    document.Add(table);
+                }
+
+                #endregion
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                LogMessageLink(CurrentDirectory + @"\15H.pdf");
+                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                LogMessageLink(CurrentDirectory);
+
+                //System.Diagnostics.Process.Start(CurrentDirectory + @"\08H.pdf");
             }
             catch (Exception ex)
             {
@@ -6558,6 +6946,11 @@ namespace Bumblebee
 
     public class Cmd15HResponse
     {
+        public string Index { get; set; }
+        public int State { get; set; }
+        public string StartDateTime { get; set; }
+        public string StopDateTime { get; set; }
+        public ObservableCollection<Tuple<int, int>> Records { get; set; }
     }
 
     public class Cmd14HResponse
@@ -6613,6 +7006,9 @@ namespace Bumblebee
 
     public class Cmd08HResponse
     {
+        public string Index { get; set; }
+        public string StartDateTime { get; set; }
+        public ObservableCollection<Tuple<int, byte>> Records { get; set; }
     }
 
     public class Bools2BoolConverter : IMultiValueConverter
