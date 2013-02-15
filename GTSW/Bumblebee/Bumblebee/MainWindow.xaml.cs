@@ -3442,13 +3442,16 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 2)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string year = baData[0].ToString("X").PadRight(27);
-                                                    string number = baData[1].ToString().PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|              年号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", year));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string year = baData[0].ToString("X").PadRight(27);
+                                                        string number = baData[1].ToString().PadRight(27);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|              年号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", year));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3457,10 +3460,13 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 18)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string number = Encoding.UTF8.GetString(baData).PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string number = Encoding.UTF8.GetString(baData).PadRight(27);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3469,12 +3475,15 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 6)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
-                                                    number = number.PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        number = number.PadRight(27);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3483,33 +3492,36 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 20)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string number1 = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
-                                                    number1 = number1.PadRight(27);
-                                                    string number2 = "20" + baData[6].ToString("X") + "-" + baData[7].ToString("X") + "-" + baData[8].ToString("X") + " " +
-                                                        baData[9].ToString("X") + ":" + baData[10].ToString("X") + ":" + baData[11].ToString("X");
-                                                    number2 = number2.PadRight(27);
-                                                    string distance1 = baData[12].ToString("X") + baData[13].ToString("X") + baData[14].ToString("X") + baData[15].ToString("X");
-                                                    while (distance1.StartsWith("0"))
-                                                        distance1 = distance1.Substring(1);
-                                                    if (string.IsNullOrWhiteSpace(distance1))
-                                                        distance1 = "0";
-                                                    distance1 = (distance1 + "0 (单位:0.1千米)").PadRight(27 - 4);
-                                                    string distance2 = baData[16].ToString("X") + baData[17].ToString("X") + baData[18].ToString("X") + baData[19].ToString("X");
-                                                    while (distance2.StartsWith("0"))
-                                                        distance2 = distance2.Substring(1);
-                                                    if (string.IsNullOrWhiteSpace(distance2))
-                                                        distance2 = "0";
-                                                    distance2 = (distance2 + " (单位:0.1千米)").PadRight(27 - 4); // Why not "0 (单位:0.1千米)"
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          安装时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          初始里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string number1 = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        number1 = number1.PadRight(27);
+                                                        string number2 = "20" + baData[6].ToString("X") + "-" + baData[7].ToString("X") + "-" + baData[8].ToString("X") + " " +
+                                                            baData[9].ToString("X") + ":" + baData[10].ToString("X") + ":" + baData[11].ToString("X");
+                                                        number2 = number2.PadRight(27);
+                                                        string distance1 = baData[12].ToString("X") + baData[13].ToString("X") + baData[14].ToString("X") + baData[15].ToString("X");
+                                                        while (distance1.StartsWith("0"))
+                                                            distance1 = distance1.Substring(1);
+                                                        if (string.IsNullOrWhiteSpace(distance1))
+                                                            distance1 = "0";
+                                                        distance1 = (distance1 + "0 (单位:0.1千米)").PadRight(27 - 4);
+                                                        string distance2 = baData[16].ToString("X") + baData[17].ToString("X") + baData[18].ToString("X") + baData[19].ToString("X");
+                                                        while (distance2.StartsWith("0"))
+                                                            distance2 = distance2.Substring(1);
+                                                        if (string.IsNullOrWhiteSpace(distance2))
+                                                            distance2 = "0";
+                                                        distance2 = (distance2 + " (单位:0.1千米)").PadRight(27 - 4); // Why not "0 (单位:0.1千米)"
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          安装时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          初始里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3518,18 +3530,21 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 8)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
-                                                    number = number.PadRight(27);
-                                                    int intHigh = (int)baData[6];
-                                                    int intLow = (int)baData[7];
-                                                    int intLen = intHigh * 256 + intLow;
-                                                    string sValue = intLen.ToString().PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        number = number.PadRight(27);
+                                                        int intHigh = (int)baData[6];
+                                                        int intLow = (int)baData[7];
+                                                        int intLen = intHigh * 256 + intLow;
+                                                        string sValue = intLen.ToString().PadRight(27);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3538,19 +3553,22 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 41)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string id = Encoding.UTF8.GetString(baData, 0, 17).PadRight(27);
-                                                    Encoding gb = Encoding.GetEncoding("GB2312");
-                                                    string number = gb.GetString(baData, 17, 12).Trim('\0');
-                                                    number = number.PadRight(27 - GetChineseNumber(number) + 1);
-                                                    string category = gb.GetString(baData, 29, 12).Trim('\0');
-                                                    category = category.PadRight(27 - GetChineseNumber(category));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|        车辆识别码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", id));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          车辆号牌 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string id = Encoding.UTF8.GetString(baData, 0, 17).PadRight(27);
+                                                        Encoding gb = Encoding.GetEncoding("GB2312");
+                                                        string number = gb.GetString(baData, 17, 12).Trim('\0');
+                                                        number = number.PadRight(27 - GetChineseNumber(number) + 1);
+                                                        string category = gb.GetString(baData, 29, 12).Trim('\0');
+                                                        category = category.PadRight(27 - GetChineseNumber(category));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|        车辆识别码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", id));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          车辆号牌 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3559,77 +3577,80 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 87)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
-                                                    number = number.PadRight(27);
-                                                    Encoding gb = Encoding.GetEncoding("GB2312");
-                                                    string d0 = gb.GetString(baData, 7, 10).Trim('\0');
-                                                    if ((baData[6] & 0x1) == 0x1)
-                                                        d0 = "(有操作) " + d0;
                                                     else
-                                                        d0 = "(无操作) " + d0;
-                                                    d0 = d0.PadRight(27 - GetChineseNumber(d0) + 3);
-                                                    string d1 = gb.GetString(baData, 17, 10).Trim('\0');
-                                                    if ((baData[6] & 0x2) == 0x2)
-                                                        d1 = "(有操作) " + d1;
-                                                    else
-                                                        d1 = "(无操作) " + d1;
-                                                    d1 = d1.PadRight(27 - GetChineseNumber(d1) + 3);
-                                                    string d2 = gb.GetString(baData, 27, 10).Trim('\0');
-                                                    if ((baData[6] & 0x4) == 0x4)
-                                                        d2 = "(有操作) " + d2;
-                                                    else
-                                                        d2 = "(无操作) " + d2;
-                                                    d2 = d2.PadRight(27 - GetChineseNumber(d2) + 3);
-                                                    string d3 = gb.GetString(baData, 37, 10).Trim('\0');
-                                                    if ((baData[6] & 0x8) == 0x8)
-                                                        d3 = "(有操作) " + d3;
-                                                    else
-                                                        d3 = "(无操作) " + d3;
-                                                    d3 = d3.PadRight(27 - GetChineseNumber(d3) + 3);
-                                                    string d4 = gb.GetString(baData, 47, 10).Trim('\0');
-                                                    if ((baData[6] & 0x10) == 0x10)
-                                                        d4 = "(有操作) " + d4;
-                                                    else
-                                                        d4 = "(无操作) " + d4;
-                                                    d4 = d4.PadRight(27 - GetChineseNumber(d4) + 3);
-                                                    string d5 = gb.GetString(baData, 57, 10).Trim('\0');
-                                                    if ((baData[6] & 0x20) == 0x20)
-                                                        d5 = "(有操作) " + d5;
-                                                    else
-                                                        d5 = "(无操作) " + d5;
-                                                    d5 = d5.PadRight(27 - GetChineseNumber(d5) + 3);
-                                                    string d6 = gb.GetString(baData, 67, 10).Trim('\0');
-                                                    if ((baData[6] & 0x40) == 0x40)
-                                                        d6 = "(有操作) " + d6;
-                                                    else
-                                                        d6 = "(无操作) " + d6;
-                                                    d6 = d6.PadRight(27 - GetChineseNumber(d6) + 3);
-                                                    string d7 = gb.GetString(baData, 77, 10).Trim('\0');
-                                                    if ((baData[6] & 0x80) == 0x80)
-                                                        d7 = "(有操作) " + d7;
-                                                    else
-                                                        d7 = "(无操作) " + d7;
-                                                    d7 = d7.PadRight(27 - GetChineseNumber(d7) + 3);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D7 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D6 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D5 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D4 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D3 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D2 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D1 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    {
+                                                        string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        number = number.PadRight(27);
+                                                        Encoding gb = Encoding.GetEncoding("GB2312");
+                                                        string d0 = gb.GetString(baData, 7, 10).Trim('\0');
+                                                        if ((baData[6] & 0x1) == 0x1)
+                                                            d0 = "(有操作) " + d0;
+                                                        else
+                                                            d0 = "(无操作) " + d0;
+                                                        d0 = d0.PadRight(27 - GetChineseNumber(d0) + 3);
+                                                        string d1 = gb.GetString(baData, 17, 10).Trim('\0');
+                                                        if ((baData[6] & 0x2) == 0x2)
+                                                            d1 = "(有操作) " + d1;
+                                                        else
+                                                            d1 = "(无操作) " + d1;
+                                                        d1 = d1.PadRight(27 - GetChineseNumber(d1) + 3);
+                                                        string d2 = gb.GetString(baData, 27, 10).Trim('\0');
+                                                        if ((baData[6] & 0x4) == 0x4)
+                                                            d2 = "(有操作) " + d2;
+                                                        else
+                                                            d2 = "(无操作) " + d2;
+                                                        d2 = d2.PadRight(27 - GetChineseNumber(d2) + 3);
+                                                        string d3 = gb.GetString(baData, 37, 10).Trim('\0');
+                                                        if ((baData[6] & 0x8) == 0x8)
+                                                            d3 = "(有操作) " + d3;
+                                                        else
+                                                            d3 = "(无操作) " + d3;
+                                                        d3 = d3.PadRight(27 - GetChineseNumber(d3) + 3);
+                                                        string d4 = gb.GetString(baData, 47, 10).Trim('\0');
+                                                        if ((baData[6] & 0x10) == 0x10)
+                                                            d4 = "(有操作) " + d4;
+                                                        else
+                                                            d4 = "(无操作) " + d4;
+                                                        d4 = d4.PadRight(27 - GetChineseNumber(d4) + 3);
+                                                        string d5 = gb.GetString(baData, 57, 10).Trim('\0');
+                                                        if ((baData[6] & 0x20) == 0x20)
+                                                            d5 = "(有操作) " + d5;
+                                                        else
+                                                            d5 = "(无操作) " + d5;
+                                                        d5 = d5.PadRight(27 - GetChineseNumber(d5) + 3);
+                                                        string d6 = gb.GetString(baData, 67, 10).Trim('\0');
+                                                        if ((baData[6] & 0x40) == 0x40)
+                                                            d6 = "(有操作) " + d6;
+                                                        else
+                                                            d6 = "(无操作) " + d6;
+                                                        d6 = d6.PadRight(27 - GetChineseNumber(d6) + 3);
+                                                        string d7 = gb.GetString(baData, 77, 10).Trim('\0');
+                                                        if ((baData[6] & 0x80) == 0x80)
+                                                            d7 = "(有操作) " + d7;
+                                                        else
+                                                            d7 = "(无操作) " + d7;
+                                                        d7 = d7.PadRight(27 - GetChineseNumber(d7) + 3);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D7 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D6 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D5 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D4 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D3 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D2 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D1 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3638,21 +3659,24 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 35)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
-                                                    string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
-                                                    string number = "20" + baData[23].ToString("X") + "-" + baData[24].ToString("X") + "-" + baData[25].ToString("X");
-                                                    number = number.PadRight(27);
-                                                    long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
-                                                    string productflow = flow.ToString().PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("| 生产厂CCC认证代码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", ccc));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|      认证产品型号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", model));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|    记录仪生产时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
+                                                        string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
+                                                        string number = "20" + baData[23].ToString("X") + "-" + baData[24].ToString("X") + "-" + baData[25].ToString("X");
+                                                        number = number.PadRight(27);
+                                                        long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
+                                                        string productflow = flow.ToString().PadRight(27);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("| 生产厂CCC认证代码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", ccc));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|      认证产品型号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", model));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|    记录仪生产时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -4939,14 +4963,197 @@ namespace Bumblebee
                                                 {
                                                     if (dataLen != 1)
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
-                                                    string number = baData[0].ToString().PadRight(27);
-                                                    LogMessage("+-------------------+----------------------------+");
-                                                    LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                                    LogMessage("+-------------------+----------------------------+");
+                                                    else
+                                                    {
+                                                        string number = baData[0].ToString().PadRight(27);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
                                             case "21":
+                                                #region
+                                                {
+                                                    if (dataLen != 8 && dataLen != 14)
+                                                        LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
+                                                    else
+                                                    {
+                                                        int intPad = 0;
+                                                        if (dataLen == 14)
+                                                            intPad = 6;
+                                                        string number = "";
+                                                        if (dataLen == 14)
+                                                        {
+                                                            number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                                               baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                            number = number.PadRight(27);
+                                                        }
+                                                        string d2Disp = "D2(" + D2 + ")";
+                                                        d2Disp.PadLeft(18 - D2.Length);
+                                                        string d1Disp = "D2(" + D1 + ")";
+                                                        d1Disp.PadLeft(18 - D1.Length);
+                                                        string d0Disp = "D2(" + D0 + ")";
+                                                        d0Disp.PadLeft(18 - D0.Length);
+                                                        string d0 = "";
+                                                        switch ((int)baData[0 + intPad])
+                                                        {
+                                                            default:
+                                                                d0 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d0 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d0 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d0 = "未启用";
+                                                                break;
+                                                        }
+                                                        d0 = d0.PadLeft(27 - d0.Length);
+                                                        string d1 = "";
+                                                        switch ((int)baData[1 + intPad])
+                                                        {
+                                                            default:
+                                                                d1 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d1 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d1 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d1 = "未启用";
+                                                                break;
+                                                        }
+                                                        d1 = d1.PadLeft(27 - d1.Length);
+                                                        string d2 = "";
+                                                        switch ((int)baData[2 + intPad])
+                                                        {
+                                                            default:
+                                                                d2 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d2 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d2 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d2 = "未启用";
+                                                                break;
+                                                        }
+                                                        d2 = d2.PadLeft(27 - d2.Length);
+                                                        string d3 = "";
+                                                        switch ((int)baData[3 + intPad])
+                                                        {
+                                                            default:
+                                                                d3 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d3 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d3 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d3 = "未启用";
+                                                                break;
+                                                        }
+                                                        d3 = d3.PadLeft(27 - d3.Length);
+                                                        string d4 = "";
+                                                        switch ((int)baData[4 + intPad])
+                                                        {
+                                                            default:
+                                                                d4 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d4 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d4 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d4 = "未启用";
+                                                                break;
+                                                        }
+                                                        d4 = d4.PadLeft(27 - d4.Length);
+                                                        string d5 = "";
+                                                        switch ((int)baData[5 + intPad])
+                                                        {
+                                                            default:
+                                                                d5 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d5 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d5 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d5 = "未启用";
+                                                                break;
+                                                        }
+                                                        d5 = d5.PadLeft(27 - d5.Length);
+                                                        string d6 = "";
+                                                        switch ((int)baData[6 + intPad])
+                                                        {
+                                                            default:
+                                                                d6 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d6 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d6 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d6 = "未启用";
+                                                                break;
+                                                        }
+                                                        d6 = d6.PadLeft(27 - d6.Length);
+                                                        string d7 = "";
+                                                        switch ((int)baData[7 + intPad])
+                                                        {
+                                                            default:
+                                                                d7 = "未知状态";
+                                                                break;
+                                                            case 0:
+                                                                d7 = "低有效";
+                                                                break;
+                                                            case 1:
+                                                                d7 = "高有效";
+                                                                break;
+                                                            case 3:
+                                                                d7 = "未启用";
+                                                                break;
+                                                        }
+                                                        d7 = d7.PadLeft(27 - d7.Length);
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          D7(制动) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|        D6(左转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|        D5(右转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          D4(远光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|          D3(近光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d2Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d1Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                        LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d0Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
+                                                        LogMessage("+-------------------+----------------------------+");
+                                                    }
+                                                }
+                                                #endregion
                                                 break;
                                             case "D0":
                                                 break;
