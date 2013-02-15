@@ -24,6 +24,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
+using Microsoft.Win32;
 
 using iTextSharp;
 using iTextSharp.text;
@@ -3295,6 +3296,7 @@ namespace Bumblebee
                         case "12":
                         case "13":
                         case "14":
+                        case "15":
                             {
                                 int readTimeout = _sPort.ReadTimeout;
                                 bool getException = false;
@@ -3439,8 +3441,6 @@ namespace Bumblebee
                                             baData[i] = baRecev[6 + i];
 
                                         #region Display Result
-
-                                        //LogMessageTitle(cdi.CmdContent.Substring(6));
 
                                         switch (sa[2].ToUpper())
                                         {
@@ -3794,7 +3794,7 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                         LogMessage("+-------------------+----------------------------+");
-                                                        
+
                                                         if (NeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
@@ -3878,7 +3878,7 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
                                                         LogMessage("+-------------------+----------------------------+");
-                                                        
+
                                                         if (NeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
@@ -4432,7 +4432,7 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[666 * iblock + 5] / 16.0)) * 10 + baData[666 * iblock + 5] % 16);
                                                             int min = lastDateTime.Minute;
                                                             int sec = lastDateTime.Second;
-                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(1, - 59 + min, - 59 + sec));
+                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(1, -59 + min, -59 + sec));
                                                             ObservableCollection<Tuple<string, string, string, int>> records = new ObservableCollection<Tuple<string, string, string, int>>();
                                                             for (int iMin = 0; iMin < 60; iMin++)
                                                             {
@@ -4499,7 +4499,7 @@ namespace Bumblebee
                                                             }
                                                             _cmd09HRespOc.Add(new Cmd09HResponse()
                                                             {
-                                                                Index=(_cmd09HRespOc.Count + 1).ToString(),
+                                                                Index = (_cmd09HRespOc.Count + 1).ToString(),
                                                                 StartDateTime = numberblock,
                                                                 Records = records
                                                             });
@@ -4628,18 +4628,18 @@ namespace Bumblebee
                                                                 baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
                                                             }
                                                             string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-                                                            ObservableCollection<Tuple<int,bool>> records = new ObservableCollection<Tuple<int,bool>>();
-                                                            for(int iRec = 0;iRec< 100;iRec++)
+                                                            ObservableCollection<Tuple<int, bool>> records = new ObservableCollection<Tuple<int, bool>>();
+                                                            for (int iRec = 0; iRec < 100; iRec++)
                                                             {
                                                                 int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
                                                                 if (speed == 0xFF)
                                                                     speed = 0;
-                                                                bool state = (((int)baData[234 * iblock + 24 + iRec * 2 + 1] & 1) == 1)? true:false;
-                                                                records.Add(new Tuple<int,bool>(speed, state));
+                                                                bool state = (((int)baData[234 * iblock + 24 + iRec * 2 + 1] & 1) == 1) ? true : false;
+                                                                records.Add(new Tuple<int, bool>(speed, state));
                                                             }
-                                                                                                                   
+
                                                             #region
-                                                            
+
                                                             byte[] baJingDu = new byte[4];
                                                             baJingDu[0] = baData[234 * iblock + 224 + 0];
                                                             baJingDu[1] = baData[234 * iblock + 224 + 1];
@@ -4667,7 +4667,7 @@ namespace Bumblebee
                                                             baHeight[1] = baData[234 * iblock + 224 + 9];
                                                             int iHeight = System.BitConverter.ToInt16(baHeight, 0);
                                                             string sHeight = iHeight.ToString();
-                                                            
+
                                                             #endregion
 
                                                             _cmd10HRespOc.Add(new Cmd10HResponse()
@@ -4784,7 +4784,7 @@ namespace Bumblebee
                                                                 baData[50 * iblock + 20].ToString("X") + " " +
                                                                 baData[50 * iblock + 21].ToString("X") + ":" +
                                                                 baData[50 * iblock + 22].ToString("X") + ":" +
-                                                                baData[50 * iblock + 23].ToString("X"); 
+                                                                baData[50 * iblock + 23].ToString("X");
                                                             numberblock = numberblock.PadRight(27);
                                                             lastDateTime = new DateTime(
                                                                 ((int)Math.Floor((double)baData[50 * iblock + 18] / 16.0)) * 10 + baData[50 * iblock + 18] % 16 + 2000,
@@ -4807,9 +4807,9 @@ namespace Bumblebee
                                                                 baNumber[idxBa] = baData[50 * iblock + idxBa];
                                                             }
                                                             string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-                                                            
+
                                                             #region
-                                                            
+
                                                             byte[] baJingDu = new byte[4];
                                                             baJingDu[0] = baData[50 * iblock + 30];
                                                             baJingDu[1] = baData[50 * iblock + 31];
@@ -4837,7 +4837,7 @@ namespace Bumblebee
                                                             baHeight[1] = baData[50 * iblock + 39];
                                                             int iHeight = System.BitConverter.ToInt16(baHeight, 0);
                                                             string sHeight = iHeight.ToString();
-                                                            
+
                                                             #endregion
 
                                                             #region
@@ -5106,7 +5106,7 @@ namespace Bumblebee
                                                         cdi.StopDateTime.Minute.ToString("") + ":" +
                                                         cdi.StopDateTime.Second.ToString("");
                                                     number2 = number2.PadRight(27);
-                                                    
+
                                                     int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
                                                     int dataRemain = dataLen % 7;
                                                     string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
@@ -5363,9 +5363,9 @@ namespace Bumblebee
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
-                                                            {
-                                                                Create14HReport();
-                                                            });
+                                                        {
+                                                            Create14HReport();
+                                                        });
                                                         _createPdfEvent.WaitOne();
                                                     }
                                                 }
@@ -5517,16 +5517,22 @@ namespace Bumblebee
                                                 #endregion
                                                 break;
                                             case "82":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                             case "83":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                             case "84":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                             case "C2":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                             case "C3":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                             case "C4":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                             case "20":
                                                 #region
@@ -5900,8 +5906,10 @@ namespace Bumblebee
                                                 #endregion
                                                 break;
                                             case "D0":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                             case "D1":
+                                                LogMessageInformation("成功执行.");
                                                 break;
                                         }
 
@@ -5963,6 +5971,2175 @@ namespace Bumblebee
             PBarValue = 0;
 
             CloseReport();
+        }
+
+        private void OpenUSBVDR_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Multiselect = false;
+            dlg.Filter = "VDR file (*.VDR)|*.VDR";
+            dlg.InitialDirectory = System.Environment.CurrentDirectory;
+            dlg.Title = "Select a VDR file";
+            bool? b = dlg.ShowDialog();
+            if (b != true)
+                return;
+
+            InRun = true;
+
+            Task.Factory.StartNew(() =>
+                {
+                    ParseVDRData(dlg.SafeFileName);
+                });
+        }
+
+        private void ParseVDRData(string fileName)
+        {
+            try
+            {
+                FileInfo fi = new FileInfo(fileName);
+                int len = (int)fi.Length;
+                if (len < 3)
+                {
+                    LogMessageError("VDR文件长度为0.");
+                    return;
+                }
+                BinaryReader br = new BinaryReader(File.OpenRead(fileName));
+                byte[] ba = null;
+                ba = br.ReadBytes(len);
+
+                int intXor = ba[0];
+                for (int i = 1; i < len - 1; i++)
+                    intXor = intXor ^ ba[i];
+                if (intXor != ba[len - 1])
+                {
+                    LogMessageError("VDR文件校验结果不正确.");
+                    return;
+                }
+                DateTime dt = DateTime.Now;
+                CurrentDirectory = System.Environment.CurrentDirectory;
+                if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(CurrentDirectory + @"\Reports");
+                        CurrentDirectory = CurrentDirectory + @"\Reports";
+                    }
+                    catch (Exception)
+                    {
+                        CurrentDirectory = System.Environment.CurrentDirectory;
+                    }
+                }
+                _docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
+
+                if(NeedReport == true)
+                    CreateReport();
+
+                int position = 0;
+                byte[] baCount = new byte[2];
+                baCount[0] = ba[0];
+                baCount[1] = ba[1];
+                position = 2;
+                int iCount = System.BitConverter.ToInt16(baCount, 0);
+                for (int i = 0; i < iCount; i++)
+                {
+                    byte bType = ba[position];
+                    byte[] baTitle = new byte[18];
+                    for (int j = 0; j < 18; j++)
+                    {
+                        baTitle[j] = ba[position + 1 + j];
+                    }
+                    byte[] baBlockLen = new byte[4];
+                    baBlockLen[0] = ba[position + 1 + 18 + 0];
+                    baBlockLen[1] = ba[position + 1 + 18 + 1];
+                    baBlockLen[2] = ba[position + 1 + 18 + 2];
+                    baBlockLen[3] = ba[position + 1 + 18 + 3];
+                    int dataLen = System.BitConverter.ToInt32(baBlockLen, 0);
+
+                    byte[] baData = new byte[dataLen];
+                    for (int j = 0; j < dataLen; j++)
+                    {
+                        baData[j] = ba[position + 1 + 18 + 4 + j];
+                    }
+                    string header = string.Format("{0:X2}", bType);
+                    Encoding gb = Encoding.GetEncoding("GB2312");
+                    string title = gb.GetString(baTitle);
+                    if (title == null)
+                        title = "";
+                    title = title.Trim().Trim(new char[] { '\0'});
+                    string cdiCmdContent = header + ":" + title;
+
+                    LogMessageTitle(cdiCmdContent);
+
+                    #region Display Result
+
+                    switch (header)
+                    {
+                        default:
+                            LogMessageError("命令类型(" + cdiCmdContent + ")未知.");
+                            break;
+                        case "00":
+                            #region
+                            {
+                                if (dataLen != 2)
+                                    LogMessageError("命令(" + header + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string year = baData[0].ToString("X").PadRight(27);
+                                    string number = baData[1].ToString().PadRight(27);
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|              年号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", year));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("年号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("修改单号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "01":
+                            #region
+                            {
+                                if (dataLen != 18)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string number = Encoding.UTF8.GetString(baData).PadRight(27);
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("驾证号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "02":
+                            #region
+                            {
+                                if (dataLen != 6)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                    number = number.PadRight(27);
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "03":
+                            #region
+                            {
+                                if (dataLen != 20)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string number1 = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                    number1 = number1.PadRight(27);
+                                    string number2 = "20" + baData[6].ToString("X") + "-" + baData[7].ToString("X") + "-" + baData[8].ToString("X") + " " +
+                                        baData[9].ToString("X") + ":" + baData[10].ToString("X") + ":" + baData[11].ToString("X");
+                                    number2 = number2.PadRight(27);
+                                    string distance1 = baData[12].ToString("X") + baData[13].ToString("X") + baData[14].ToString("X") + baData[15].ToString("X");
+                                    while (distance1.StartsWith("0"))
+                                        distance1 = distance1.Substring(1);
+                                    if (string.IsNullOrWhiteSpace(distance1))
+                                        distance1 = "0";
+                                    distance1 = (distance1 + "0 (单位:0.1千米)").PadRight(27 - 4);
+                                    string distance2 = baData[16].ToString("X") + baData[17].ToString("X") + baData[18].ToString("X") + baData[19].ToString("X");
+                                    while (distance2.StartsWith("0"))
+                                        distance2 = distance2.Substring(1);
+                                    if (string.IsNullOrWhiteSpace(distance2))
+                                        distance2 = "0";
+                                    distance2 = (distance2 + " (单位:0.1千米)").PadRight(27 - 4); // Why not "0 (单位:0.1千米)"
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          安装时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          初始里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance1));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("安装时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("初始里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("累计里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "04":
+                            #region
+                            {
+                                if (dataLen != 8)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                    number = number.PadRight(27);
+                                    int intHigh = (int)baData[6];
+                                    int intLow = (int)baData[7];
+                                    int intLen = intHigh * 256 + intLow;
+                                    string sValue = intLen.ToString().PadRight(27);
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("脉冲系数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "05":
+                            #region
+                            {
+                                if (dataLen != 41)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string id = Encoding.UTF8.GetString(baData, 0, 17).PadRight(27);
+                                    //Encoding gb = Encoding.GetEncoding("GB2312");
+                                    string number = gb.GetString(baData, 17, 12).Trim('\0');
+                                    number = number.PadRight(27 - GetChineseNumber(number) + 1);
+                                    string category = gb.GetString(baData, 29, 12).Trim('\0');
+                                    category = category.PadRight(27 - GetChineseNumber(category));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|        车辆识别码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", id));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          车辆号牌 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("车辆识别码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("车辆号牌", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("号牌分类", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "06":
+                            #region
+                            {
+                                if (dataLen != 87)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                        baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                    number = number.PadRight(27);
+                                    //Encoding gb = Encoding.GetEncoding("GB2312");
+                                    string d0 = gb.GetString(baData, 7, 10).Trim('\0');
+                                    if ((baData[6] & 0x1) == 0x1)
+                                        d0 = "(有操作) " + d0;
+                                    else
+                                        d0 = "(无操作) " + d0;
+                                    d0 = d0.PadRight(27 - GetChineseNumber(d0) + 3);
+                                    string d1 = gb.GetString(baData, 17, 10).Trim('\0');
+                                    if ((baData[6] & 0x2) == 0x2)
+                                        d1 = "(有操作) " + d1;
+                                    else
+                                        d1 = "(无操作) " + d1;
+                                    d1 = d1.PadRight(27 - GetChineseNumber(d1) + 3);
+                                    string d2 = gb.GetString(baData, 27, 10).Trim('\0');
+                                    if ((baData[6] & 0x4) == 0x4)
+                                        d2 = "(有操作) " + d2;
+                                    else
+                                        d2 = "(无操作) " + d2;
+                                    d2 = d2.PadRight(27 - GetChineseNumber(d2) + 3);
+                                    string d3 = gb.GetString(baData, 37, 10).Trim('\0');
+                                    if ((baData[6] & 0x8) == 0x8)
+                                        d3 = "(有操作) " + d3;
+                                    else
+                                        d3 = "(无操作) " + d3;
+                                    d3 = d3.PadRight(27 - GetChineseNumber(d3) + 3);
+                                    string d4 = gb.GetString(baData, 47, 10).Trim('\0');
+                                    if ((baData[6] & 0x10) == 0x10)
+                                        d4 = "(有操作) " + d4;
+                                    else
+                                        d4 = "(无操作) " + d4;
+                                    d4 = d4.PadRight(27 - GetChineseNumber(d4) + 3);
+                                    string d5 = gb.GetString(baData, 57, 10).Trim('\0');
+                                    if ((baData[6] & 0x20) == 0x20)
+                                        d5 = "(有操作) " + d5;
+                                    else
+                                        d5 = "(无操作) " + d5;
+                                    d5 = d5.PadRight(27 - GetChineseNumber(d5) + 3);
+                                    string d6 = gb.GetString(baData, 67, 10).Trim('\0');
+                                    if ((baData[6] & 0x40) == 0x40)
+                                        d6 = "(有操作) " + d6;
+                                    else
+                                        d6 = "(无操作) " + d6;
+                                    d6 = d6.PadRight(27 - GetChineseNumber(d6) + 3);
+                                    string d7 = gb.GetString(baData, 77, 10).Trim('\0');
+                                    if ((baData[6] & 0x80) == 0x80)
+                                        d7 = "(有操作) " + d7;
+                                    else
+                                        d7 = "(无操作) " + d7;
+                                    d7 = d7.PadRight(27 - GetChineseNumber(d7) + 3);
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D7 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D6 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D5 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D4 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D3 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D2 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D1 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D2", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D1", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D0", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "07":
+                            #region
+                            {
+                                if (dataLen != 35)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
+                                    string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
+                                    string number = "20" + baData[23].ToString("X") + "-" + baData[24].ToString("X") + "-" + baData[25].ToString("X");
+                                    number = number.PadRight(27);
+                                    long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
+                                    string productflow = flow.ToString().PadRight(27);
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("| 生产厂CCC认证代码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", ccc));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|      认证产品型号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", model));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|    记录仪生产时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("生产厂CCC认证代码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("认证产品型号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("记录仪生产时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("产品生产流水号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "08":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)126));
+                                int dataRemain = dataLen % 126;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        numberblock = "20" + baData[126 * iblock + 0].ToString("X") + "-" +
+                                            baData[126 * iblock + 1].ToString("X") + "-" +
+                                            baData[126 * iblock + 2].ToString("X") + " " +
+                                            baData[126 * iblock + 3].ToString("X") + ":" +
+                                            baData[126 * iblock + 4].ToString("X") + ":" +
+                                            baData[126 * iblock + 5].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[126 * iblock + 0] / 16.0)) * 10 + baData[126 * iblock + 0] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[126 * iblock + 1] / 16.0)) * 10 + baData[126 * iblock + 1] % 16,
+                                            ((int)Math.Floor((double)baData[126 * iblock + 2] / 16.0)) * 10 + baData[126 * iblock + 2] % 16,
+                                            ((int)Math.Floor((double)baData[126 * iblock + 3] / 16.0)) * 10 + baData[126 * iblock + 3] % 16,
+                                            ((int)Math.Floor((double)baData[126 * iblock + 4] / 16.0)) * 10 + baData[126 * iblock + 4] % 16,
+                                            ((int)Math.Floor((double)baData[126 * iblock + 5] / 16.0)) * 10 + baData[126 * iblock + 5] % 16);
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+                                        ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+                                        for (int iSec = 0; iSec < 60; iSec++)
+                                        {
+                                            int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
+                                            if (speed == 0xFF)
+                                                speed = 0;
+                                            byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
+
+                                            records.Add(new Tuple<int, byte>(speed, state));
+                                        }
+                                        _cmd08HRespOc.Add(new Cmd08HResponse()
+                                        {
+                                            Index = (_cmd08HRespOc.Count + 1).ToString(),
+                                            StartDateTime = numberblock,
+                                            Records = records
+                                        });
+                                    }
+
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create08HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "09":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)666));
+                                int dataRemain = dataLen % 666;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        numberblock = "20" + baData[666 * iblock + 0].ToString("X") + "-" +
+                                            baData[666 * iblock + 1].ToString("X") + "-" +
+                                            baData[666 * iblock + 2].ToString("X") + " " +
+                                            baData[666 * iblock + 3].ToString("X") + ":" +
+                                            baData[666 * iblock + 4].ToString("X") + ":" +
+                                            baData[666 * iblock + 5].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[666 * iblock + 0] / 16.0)) * 10 + baData[666 * iblock + 0] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[666 * iblock + 1] / 16.0)) * 10 + baData[666 * iblock + 1] % 16,
+                                            ((int)Math.Floor((double)baData[666 * iblock + 2] / 16.0)) * 10 + baData[666 * iblock + 2] % 16,
+                                            ((int)Math.Floor((double)baData[666 * iblock + 3] / 16.0)) * 10 + baData[666 * iblock + 3] % 16,
+                                            ((int)Math.Floor((double)baData[666 * iblock + 4] / 16.0)) * 10 + baData[666 * iblock + 4] % 16,
+                                            ((int)Math.Floor((double)baData[666 * iblock + 5] / 16.0)) * 10 + baData[666 * iblock + 5] % 16);
+                                        int min = lastDateTime.Minute;
+                                        int sec = lastDateTime.Second;
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(1, -59 + min, -59 + sec));
+                                        ObservableCollection<Tuple<string, string, string, int>> records = new ObservableCollection<Tuple<string, string, string, int>>();
+                                        for (int iMin = 0; iMin < 60; iMin++)
+                                        {
+                                            #region
+
+                                            byte[] baJingDu = new byte[4];
+                                            baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 0];
+                                            baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 1];
+                                            baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 2];
+                                            baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 3];
+                                            string sJingDu = "";
+                                            if (baData[666 * iblock + iMin * 11 + 6 + 0] == 0xFF ||
+                                                baData[666 * iblock + iMin * 11 + 6 + 1] == 0xFF ||
+                                                baData[666 * iblock + iMin * 11 + 6 + 2] == 0xFF ||
+                                                baData[666 * iblock + iMin * 11 + 6 + 3] == 0xFF)
+                                                sJingDu = "无效";
+                                            else
+                                            {
+                                                float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                if (jingDu >= 0)
+                                                    sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                                else
+                                                    sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                            }
+                                            byte[] baWeiDu = new byte[4];
+                                            baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 4];
+                                            baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 5];
+                                            baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 6];
+                                            baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 7];
+                                            string sWeiDu = "";
+                                            if (baData[666 * iblock + iMin * 11 + 6 + 4] == 0xFF ||
+                                                baData[666 * iblock + iMin * 11 + 6 + 5] == 0xFF ||
+                                                baData[666 * iblock + iMin * 11 + 6 + 6] == 0xFF ||
+                                                baData[666 * iblock + iMin * 11 + 6 + 7] == 0xFF)
+                                                sWeiDu = "无效";
+                                            else
+                                            {
+                                                float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                if (weiDu >= 0)
+                                                    sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                                else
+                                                    sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                            }
+                                            byte[] baHeight = new byte[2];
+                                            baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 8];
+                                            baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 9];
+                                            string sHeight = "";
+                                            if (baData[666 * iblock + iMin * 11 + 6 + 8] == 0xFF ||
+                                                baData[666 * iblock + iMin * 11 + 6 + 9] == 0xFF)
+                                                sHeight = "无效";
+                                            else
+                                            {
+                                                int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                                sHeight = iHeight.ToString();
+                                            }
+
+                                            #endregion
+
+                                            int speed = baData[666 * iblock + iMin * 11 + 6 + 10];
+                                            if (speed == 0xFF)
+                                                speed = 0;
+
+                                            records.Add(new Tuple<string, string, string, int>(sJingDu, sWeiDu, sHeight, speed));
+                                        }
+                                        _cmd09HRespOc.Add(new Cmd09HResponse()
+                                        {
+                                            Index = (_cmd09HRespOc.Count + 1).ToString(),
+                                            StartDateTime = numberblock,
+                                            Records = records
+                                        });
+                                    }
+
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (dataRemain != 0)
+                                {
+                                    string sValue3 = dataRemain.ToString().PadRight(27);
+                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create09HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "10":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)234));
+                                int dataRemain = dataLen % 234;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        numberblock = "20" + baData[234 * iblock + 0].ToString("X") + "-" +
+                                            baData[234 * iblock + 1].ToString("X") + "-" +
+                                            baData[234 * iblock + 2].ToString("X") + " " +
+                                            baData[234 * iblock + 3].ToString("X") + ":" +
+                                            baData[234 * iblock + 4].ToString("X") + ":" +
+                                            baData[234 * iblock + 5].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[234 * iblock + 0] / 16.0)) * 10 + baData[234 * iblock + 0] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[234 * iblock + 1] / 16.0)) * 10 + baData[234 * iblock + 1] % 16,
+                                            ((int)Math.Floor((double)baData[234 * iblock + 2] / 16.0)) * 10 + baData[234 * iblock + 2] % 16,
+                                            ((int)Math.Floor((double)baData[234 * iblock + 3] / 16.0)) * 10 + baData[234 * iblock + 3] % 16,
+                                            ((int)Math.Floor((double)baData[234 * iblock + 4] / 16.0)) * 10 + baData[234 * iblock + 4] % 16,
+                                            ((int)Math.Floor((double)baData[234 * iblock + 5] / 16.0)) * 10 + baData[234 * iblock + 5] % 16);
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 20));
+                                        byte[] baNumber = new byte[18];
+                                        for (int idxBa = 0; idxBa < 18; idxBa++)
+                                        {
+                                            baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
+                                        }
+                                        string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+                                        ObservableCollection<Tuple<int, bool>> records = new ObservableCollection<Tuple<int, bool>>();
+                                        for (int iRec = 0; iRec < 100; iRec++)
+                                        {
+                                            int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
+                                            if (speed == 0xFF)
+                                                speed = 0;
+                                            bool state = (((int)baData[234 * iblock + 24 + iRec * 2 + 1] & 1) == 1) ? true : false;
+                                            records.Add(new Tuple<int, bool>(speed, state));
+                                        }
+
+                                        #region
+
+                                        byte[] baJingDu = new byte[4];
+                                        baJingDu[0] = baData[234 * iblock + 224 + 0];
+                                        baJingDu[1] = baData[234 * iblock + 224 + 1];
+                                        baJingDu[2] = baData[234 * iblock + 224 + 2];
+                                        baJingDu[3] = baData[234 * iblock + 224 + 3];
+                                        float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                        string sJingDu = "";
+                                        if (jingDu >= 0)
+                                            sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                        else
+                                            sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                        byte[] baWeiDu = new byte[4];
+                                        baWeiDu[0] = baData[234 * iblock + 224 + 4];
+                                        baWeiDu[1] = baData[234 * iblock + 224 + 5];
+                                        baWeiDu[2] = baData[234 * iblock + 224 + 6];
+                                        baWeiDu[3] = baData[234 * iblock + 224 + 7];
+                                        float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                        string sWeiDu = "";
+                                        if (weiDu >= 0)
+                                            sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                        else
+                                            sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                        byte[] baHeight = new byte[2];
+                                        baHeight[0] = baData[234 * iblock + 224 + 8];
+                                        baHeight[1] = baData[234 * iblock + 224 + 9];
+                                        int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                        string sHeight = iHeight.ToString();
+
+                                        #endregion
+
+                                        _cmd10HRespOc.Add(new Cmd10HResponse()
+                                        {
+                                            Index = (_cmd10HRespOc.Count + 1).ToString(),
+                                            StopDateTime = numberblock,
+                                            Number = number,
+                                            Records = records,
+                                            Position = sJingDu + "/" + sWeiDu,
+                                            Height = sHeight
+                                        });
+                                    }
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (dataRemain != 0)
+                                {
+                                    string sValue3 = dataRemain.ToString().PadRight(27);
+                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create10HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "11":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)50));
+                                int dataRemain = dataLen % 50;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        numberblock = "20" + baData[50 * iblock + 18].ToString("X") + "-" +
+                                            baData[50 * iblock + 19].ToString("X") + "-" +
+                                            baData[50 * iblock + 20].ToString("X") + " " +
+                                            baData[50 * iblock + 21].ToString("X") + ":" +
+                                            baData[50 * iblock + 22].ToString("X") + ":" +
+                                            baData[50 * iblock + 23].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[50 * iblock + 18] / 16.0)) * 10 + baData[50 * iblock + 18] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[50 * iblock + 19] / 16.0)) * 10 + baData[50 * iblock + 19] % 16,
+                                            ((int)Math.Floor((double)baData[50 * iblock + 20] / 16.0)) * 10 + baData[50 * iblock + 20] % 16,
+                                            ((int)Math.Floor((double)baData[50 * iblock + 21] / 16.0)) * 10 + baData[50 * iblock + 21] % 16,
+                                            ((int)Math.Floor((double)baData[50 * iblock + 22] / 16.0)) * 10 + baData[50 * iblock + 22] % 16,
+                                            ((int)Math.Floor((double)baData[50 * iblock + 23] / 16.0)) * 10 + baData[50 * iblock + 23] % 16);
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                        string numberblockStop = "20" + baData[50 * iblock + 14].ToString("X") + "-" +
+                                            baData[50 * iblock + 25].ToString("X") + "-" +
+                                            baData[50 * iblock + 26].ToString("X") + " " +
+                                            baData[50 * iblock + 27].ToString("X") + ":" +
+                                            baData[50 * iblock + 28].ToString("X") + ":" +
+                                            baData[50 * iblock + 29].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        byte[] baNumber = new byte[18];
+                                        for (int idxBa = 0; idxBa < 18; idxBa++)
+                                        {
+                                            baNumber[idxBa] = baData[50 * iblock + idxBa];
+                                        }
+                                        string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+
+                                        #region
+
+                                        byte[] baJingDu = new byte[4];
+                                        baJingDu[0] = baData[50 * iblock + 30];
+                                        baJingDu[1] = baData[50 * iblock + 31];
+                                        baJingDu[2] = baData[50 * iblock + 32];
+                                        baJingDu[3] = baData[50 * iblock + 33];
+                                        float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                        string sJingDu = "";
+                                        if (jingDu >= 0)
+                                            sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                        else
+                                            sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                        byte[] baWeiDu = new byte[4];
+                                        baWeiDu[0] = baData[50 * iblock + 34];
+                                        baWeiDu[1] = baData[50 * iblock + 35];
+                                        baWeiDu[2] = baData[50 * iblock + 36];
+                                        baWeiDu[3] = baData[50 * iblock + 37];
+                                        float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                        string sWeiDu = "";
+                                        if (weiDu >= 0)
+                                            sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                        else
+                                            sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                        byte[] baHeight = new byte[2];
+                                        baHeight[0] = baData[50 * iblock + 38];
+                                        baHeight[1] = baData[50 * iblock + 39];
+                                        int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                        string sHeight = iHeight.ToString();
+
+                                        #endregion
+
+                                        #region
+
+                                        byte[] baJingDu1 = new byte[4];
+                                        baJingDu1[0] = baData[50 * iblock + 40];
+                                        baJingDu1[1] = baData[50 * iblock + 41];
+                                        baJingDu1[2] = baData[50 * iblock + 42];
+                                        baJingDu1[3] = baData[50 * iblock + 43];
+                                        float jingDu1 = System.BitConverter.ToSingle(baJingDu1, 0);
+                                        string sJingDu1 = "";
+                                        if (jingDu1 >= 0)
+                                            sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
+                                        else
+                                            sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
+                                        byte[] baWeiDu1 = new byte[4];
+                                        baWeiDu1[0] = baData[50 * iblock + 44];
+                                        baWeiDu1[1] = baData[50 * iblock + 45];
+                                        baWeiDu1[2] = baData[50 * iblock + 46];
+                                        baWeiDu1[3] = baData[50 * iblock + 47];
+                                        float weiDu1 = System.BitConverter.ToSingle(baWeiDu1, 0);
+                                        string sWeiDu1 = "";
+                                        if (weiDu1 >= 0)
+                                            sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
+                                        else
+                                            sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
+                                        byte[] baHeight1 = new byte[2];
+                                        baHeight1[0] = baData[50 * iblock + 48];
+                                        baHeight1[1] = baData[50 * iblock + 49];
+                                        int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
+                                        string sHeight1 = iHeight1.ToString();
+
+                                        #endregion
+
+                                        _cmd11HRespOc.Add(new Cmd11HResponse()
+                                        {
+                                            Index = (_cmd11HRespOc.Count + 1).ToString(),
+                                            Number = number,
+                                            RecordStartDateTime = numberblock,
+                                            RecordStopDateTime = numberblockStop,
+                                            StartPosition = sJingDu + "/" + sWeiDu,
+                                            StopPosition = sJingDu1 + "/" + sWeiDu1,
+                                            StartHeight = sHeight,
+                                            StopHeight = sHeight1
+                                        });
+                                    }
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (dataRemain != 0)
+                                {
+                                    string sValue3 = dataRemain.ToString().PadRight(27);
+                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create11HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "12":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)25));
+                                int dataRemain = dataLen % 25;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        numberblock = "20" + baData[25 * iblock + 0].ToString("X") + "-" +
+                                             baData[25 * iblock + 1].ToString("X") + "-" +
+                                             baData[25 * iblock + 2].ToString("X") + " " +
+                                             baData[25 * iblock + 3].ToString("X") + ":" +
+                                             baData[25 * iblock + 4].ToString("X") + ":" +
+                                             baData[25 * iblock + 5].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[25 * iblock + 0] / 16.0)) * 10 + baData[25 * iblock + 0] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[25 * iblock + 1] / 16.0)) * 10 + baData[25 * iblock + 1] % 16,
+                                            ((int)Math.Floor((double)baData[25 * iblock + 2] / 16.0)) * 10 + baData[25 * iblock + 2] % 16,
+                                            ((int)Math.Floor((double)baData[25 * iblock + 3] / 16.0)) * 10 + baData[25 * iblock + 3] % 16,
+                                            ((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
+                                            ((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                        byte[] baNumber = new byte[18];
+                                        for (int idxBa = 0; idxBa < 18; idxBa++)
+                                        {
+                                            baNumber[idxBa] = baData[25 * iblock + 6 + idxBa];
+                                        }
+                                        string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+                                        string oper = "";
+                                        switch (baData[25 * iblock + 24].ToString("X").Trim().ToUpper())
+                                        {
+                                            default:
+                                                oper = "未知操作";
+                                                break;
+                                            case "1":
+                                            case "01":
+                                                oper = "登录";
+                                                break;
+                                            case "2":
+                                            case "02":
+                                                oper = "退出";
+                                                break;
+                                        }
+                                        _cmd12HRespOc.Add(new Cmd12HResponse()
+                                        {
+                                            Index = (_cmd12HRespOc.Count + 1).ToString(),
+                                            RecordDateTime = numberblock.Trim(),
+                                            Number = number,
+                                            Description = oper
+                                        });
+                                    }
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (dataRemain != 0)
+                                {
+                                    string sValue3 = dataRemain.ToString().PadRight(27);
+                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create12HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "13":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
+                                int dataRemain = dataLen % 7;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        numberblock = "20" + baData[7 * iblock + 0].ToString("X") + "-" +
+                                            baData[7 * iblock + 1].ToString("X") + "-" +
+                                            baData[7 * iblock + 2].ToString("X") + " " +
+                                            baData[7 * iblock + 3].ToString("X") + ":" +
+                                            baData[7 * iblock + 4].ToString("X") + ":" +
+                                            baData[7 * iblock + 5].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                        string oper = "";
+                                        switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
+                                        {
+                                            default:
+                                                oper = "未知状态";
+                                                break;
+                                            case "1":
+                                            case "01":
+                                                oper = "通电";
+                                                break;
+                                            case "2":
+                                            case "02":
+                                                oper = "断电";
+                                                break;
+                                        }
+                                        _cmd13HRespOc.Add(new Cmd13HResponse()
+                                        {
+                                            Index = (_cmd13HRespOc.Count + 1).ToString(),
+                                            RecordDateTime = numberblock.Trim(),
+                                            Description = oper
+                                        });
+                                    }
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (dataRemain != 0)
+                                {
+                                    string sValue3 = dataRemain.ToString().PadRight(27);
+                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create13HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "14":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
+                                int dataRemain = dataLen % 7;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        numberblock = "20" + baData[7 * iblock + 0].ToString("X") + "-" +
+                                            baData[7 * iblock + 1].ToString("X") + "-" +
+                                            baData[7 * iblock + 2].ToString("X") + " " +
+                                            baData[7 * iblock + 3].ToString("X") + ":" +
+                                            baData[7 * iblock + 4].ToString("X") + ":" +
+                                            baData[7 * iblock + 5].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
+                                            ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                        string oper = "";
+                                        switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
+                                        {
+                                            default:
+                                                oper = "未知操作";
+                                                break;
+                                            case "82":
+                                                oper = "修改车辆信息";
+                                                break;
+                                            case "83":
+                                                oper = "修改初次安装日期";
+                                                break;
+                                            case "84":
+                                                oper = "修改状态量配置信息";
+                                                break;
+                                            case "C2":
+                                                oper = "修改记录仪时间";
+                                                break;
+                                            case "C3":
+                                                oper = "修改脉冲系数";
+                                                break;
+                                            case "C4":
+                                                oper = "修改初始里程";
+                                                break;
+                                        }
+                                        _cmd14HRespOc.Add(new Cmd14HResponse()
+                                        {
+                                            Index = (_cmd14HRespOc.Count + 1).ToString(),
+                                            RecordDateTime = numberblock.Trim(),
+                                            Description = oper
+                                        });
+                                    }
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (dataRemain != 0)
+                                {
+                                    string sValue3 = dataRemain.ToString().PadRight(27);
+                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create14HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "15":
+                            #region
+                            {
+                                int blockCount = (int)(Math.Floor((double)dataLen / (double)133));
+                                int dataRemain = dataLen % 133;
+                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+                                //if (isContinued == false)
+                                {
+                                    LogMessage("+-----------------------------------------------------------------------------+");
+                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                DateTime lastDateTime = DateTime.Now;
+                                if (blockCount > 0)
+                                {
+                                    string numberblock = "";
+                                    for (int iblock = 0; iblock < blockCount; iblock++)
+                                    {
+                                        byte state = baData[133 * iblock + 0];
+
+                                        numberblock = "20" + baData[133 * iblock + 1].ToString("X") + "-" +
+                                            baData[133 * iblock + 2].ToString("X") + "-" +
+                                            baData[133 * iblock + 3].ToString("X") + " " +
+                                            baData[133 * iblock + 4].ToString("X") + ":" +
+                                            baData[133 * iblock + 5].ToString("X") + ":" +
+                                            baData[133 * iblock + 6].ToString("X");
+                                        numberblock = numberblock.PadRight(27);
+                                        lastDateTime = new DateTime(
+                                            ((int)Math.Floor((double)baData[133 * iblock + 1] / 16.0)) * 10 + baData[133 * iblock + 1] % 16 + 2000,
+                                            ((int)Math.Floor((double)baData[133 * iblock + 2] / 16.0)) * 10 + baData[133 * iblock + 2] % 16,
+                                            ((int)Math.Floor((double)baData[133 * iblock + 3] / 16.0)) * 10 + baData[133 * iblock + 3] % 16,
+                                            ((int)Math.Floor((double)baData[133 * iblock + 4] / 16.0)) * 10 + baData[133 * iblock + 4] % 16,
+                                            ((int)Math.Floor((double)baData[133 * iblock + 5] / 16.0)) * 10 + baData[133 * iblock + 5] % 16,
+                                            ((int)Math.Floor((double)baData[133 * iblock + 6] / 16.0)) * 10 + baData[133 * iblock + 6] % 16);
+                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+                                        string numberblock2 = "20" + baData[133 * iblock + 7].ToString("X") + "-" +
+                                            baData[133 * iblock + 8].ToString("X") + "-" +
+                                            baData[133 * iblock + 9].ToString("X") + " " +
+                                            baData[133 * iblock + 10].ToString("X") + ":" +
+                                            baData[133 * iblock + 11].ToString("X") + ":" +
+                                            baData[133 * iblock + 12].ToString("X");
+                                        numberblock2 = numberblock.PadRight(27);
+                                        ObservableCollection<Tuple<int, int>> records = new ObservableCollection<Tuple<int, int>>();
+                                        for (int iSec = 0; iSec < 60; iSec++)
+                                        {
+                                            int speed = baData[133 * iblock + iSec * 2 + 13 + 0];
+                                            if (speed == 0xFF)
+                                                speed = 0;
+                                            int refSpeed = baData[133 * iblock + iSec * 2 + 13 + 1];
+                                            if (refSpeed == 0xFF)
+                                                refSpeed = 0;
+
+                                            records.Add(new Tuple<int, int>(speed, refSpeed));
+                                        }
+                                        _cmd15HRespOc.Add(new Cmd15HResponse()
+                                        {
+                                            Index = (_cmd15HRespOc.Count + 1).ToString(),
+                                            State = state,
+                                            StartDateTime = numberblock,
+                                            StopDateTime = numberblock2,
+                                            Records = records
+                                        });
+                                    }
+
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                else
+                                {
+                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (dataRemain != 0)
+                                {
+                                    string sValue3 = dataRemain.ToString().PadRight(27);
+                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                }
+                                if (NeedReport == true && _pdfDocument != null)
+                                {
+                                    _createPdfEvent.Reset();
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        Create15HReport();
+                                    });
+                                    _createPdfEvent.WaitOne();
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "82":
+                            LogMessageInformation("成功执行.");
+                            break;
+                        case "83":
+                            LogMessageInformation("成功执行.");
+                            break;
+                        case "84":
+                            LogMessageInformation("成功执行.");
+                            break;
+                        case "C2":
+                            LogMessageInformation("成功执行.");
+                            break;
+                        case "C3":
+                            LogMessageInformation("成功执行.");
+                            break;
+                        case "C4":
+                            LogMessageInformation("成功执行.");
+                            break;
+                        case "20":
+                            #region
+                            {
+                                if (dataLen != 1)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    string number = baData[0].ToString().PadRight(27);
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                cell = new PdfPCell(new Phrase("传感器单圈脉冲数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "21":
+                            #region
+                            {
+                                if (dataLen != 8 && dataLen != 14)
+                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+                                else
+                                {
+                                    int intPad = 0;
+                                    if (dataLen == 14)
+                                        intPad = 6;
+                                    string number = "";
+                                    if (dataLen == 14)
+                                    {
+                                        number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
+                                           baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                        number = number.PadRight(27);
+                                    }
+                                    string d2Disp = "D2(" + D2 + ")";
+                                    d2Disp.PadLeft(18 - D2.Length);
+                                    string d1Disp = "D2(" + D1 + ")";
+                                    d1Disp.PadLeft(18 - D1.Length);
+                                    string d0Disp = "D2(" + D0 + ")";
+                                    d0Disp.PadLeft(18 - D0.Length);
+                                    string d0 = "";
+                                    switch ((int)baData[0 + intPad])
+                                    {
+                                        default:
+                                            d0 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d0 = "低有效";
+                                            break;
+                                        case 1:
+                                            d0 = "高有效";
+                                            break;
+                                        case 3:
+                                            d0 = "未启用";
+                                            break;
+                                    }
+                                    d0 = d0.PadLeft(27 - d0.Length);
+                                    string d1 = "";
+                                    switch ((int)baData[1 + intPad])
+                                    {
+                                        default:
+                                            d1 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d1 = "低有效";
+                                            break;
+                                        case 1:
+                                            d1 = "高有效";
+                                            break;
+                                        case 3:
+                                            d1 = "未启用";
+                                            break;
+                                    }
+                                    d1 = d1.PadLeft(27 - d1.Length);
+                                    string d2 = "";
+                                    switch ((int)baData[2 + intPad])
+                                    {
+                                        default:
+                                            d2 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d2 = "低有效";
+                                            break;
+                                        case 1:
+                                            d2 = "高有效";
+                                            break;
+                                        case 3:
+                                            d2 = "未启用";
+                                            break;
+                                    }
+                                    d2 = d2.PadLeft(27 - d2.Length);
+                                    string d3 = "";
+                                    switch ((int)baData[3 + intPad])
+                                    {
+                                        default:
+                                            d3 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d3 = "低有效";
+                                            break;
+                                        case 1:
+                                            d3 = "高有效";
+                                            break;
+                                        case 3:
+                                            d3 = "未启用";
+                                            break;
+                                    }
+                                    d3 = d3.PadLeft(27 - d3.Length);
+                                    string d4 = "";
+                                    switch ((int)baData[4 + intPad])
+                                    {
+                                        default:
+                                            d4 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d4 = "低有效";
+                                            break;
+                                        case 1:
+                                            d4 = "高有效";
+                                            break;
+                                        case 3:
+                                            d4 = "未启用";
+                                            break;
+                                    }
+                                    d4 = d4.PadLeft(27 - d4.Length);
+                                    string d5 = "";
+                                    switch ((int)baData[5 + intPad])
+                                    {
+                                        default:
+                                            d5 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d5 = "低有效";
+                                            break;
+                                        case 1:
+                                            d5 = "高有效";
+                                            break;
+                                        case 3:
+                                            d5 = "未启用";
+                                            break;
+                                    }
+                                    d5 = d5.PadLeft(27 - d5.Length);
+                                    string d6 = "";
+                                    switch ((int)baData[6 + intPad])
+                                    {
+                                        default:
+                                            d6 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d6 = "低有效";
+                                            break;
+                                        case 1:
+                                            d6 = "高有效";
+                                            break;
+                                        case 3:
+                                            d6 = "未启用";
+                                            break;
+                                    }
+                                    d6 = d6.PadLeft(27 - d6.Length);
+                                    string d7 = "";
+                                    switch ((int)baData[7 + intPad])
+                                    {
+                                        default:
+                                            d7 = "未知状态";
+                                            break;
+                                        case 0:
+                                            d7 = "低有效";
+                                            break;
+                                        case 1:
+                                            d7 = "高有效";
+                                            break;
+                                        case 3:
+                                            d7 = "未启用";
+                                            break;
+                                    }
+                                    d7 = d7.PadLeft(27 - d7.Length);
+                                    if (dataLen == 14)
+                                    {
+                                        LogMessage("+-------------------+----------------------------+");
+                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                    }
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          D7(制动) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|        D6(左转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|        D5(右转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          D4(远光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|          D3(近光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d2Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d1Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
+                                    LogMessage("+-------------------+----------------------------+");
+                                    LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d0Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
+                                    LogMessage("+-------------------+----------------------------+");
+
+                                    if (NeedReport == true)
+                                    {
+                                        if (_pdfDocument == null)
+                                        {
+                                            LogMessageError("无法创建报表.");
+                                        }
+                                        else
+                                        {
+                                            #region
+
+                                            try
+                                            {
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                par.Alignment = Element.ALIGN_CENTER;
+                                                _pdfDocument.Add(par);
+
+                                                par.SpacingBefore = 25f;
+
+                                                PdfPTable table = new PdfPTable(2);
+
+                                                table.SpacingBefore = 25f;
+
+                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                float[] widths = { 50f, 150f };
+                                                table.SetWidths(widths);
+                                                table.LockedWidth = true;
+
+                                                PdfPCell cell;
+                                                if (dataLen == 14)
+                                                {
+                                                    cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                    table.AddCell(cell);
+                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                    table.AddCell(cell);
+                                                }
+                                                cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d2Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d1Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d0Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                table.AddCell(cell);
+
+                                                _pdfDocument.Add(table);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                LogMessageError("创建报表出错:" + ex.Message);
+                                                _pdfDocument = null;
+                                            }
+
+                                            #endregion
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "D0":
+                            LogMessageInformation("成功执行.");
+                            break;
+                        case "D1":
+                            LogMessageInformation("成功执行.");
+                            break;
+                    }
+
+                    #endregion
+                }
+
+                if(NeedReport)
+                    CloseReport();
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("不能够解析VDR文件:" + ex.Message);
+            }
+            InRun = false;
         }
 
         private string ConvertJingWeiDuToString(float fVal)
@@ -7648,7 +9825,10 @@ namespace Bumblebee
                 {
                     intVal = 0;
                 }
-                value = value ^ intVal;
+                if (i == 0)
+                    value = intVal;
+                else
+                    value = value ^ intVal;
             }
             return String.Format("{0:X2}", value);
         }

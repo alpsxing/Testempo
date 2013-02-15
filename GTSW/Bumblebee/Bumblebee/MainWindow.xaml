@@ -21,7 +21,7 @@
                         <Image Source="/Bumblebee;component/Resources/openfolder.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="打开U盘数据文件(VDR)" 
+                <MenuItem Header="打开U盘数据文件(VDR)" Click="OpenUSBVDR_MenuItem_Click"
                           HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                 <!--MenuItem Header="打开U盘数据报表(PDF)" 
