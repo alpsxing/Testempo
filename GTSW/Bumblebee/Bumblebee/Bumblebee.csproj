@@ -257,6 +257,7 @@
     <Resource Include="Resources\app.ico" />
     <Resource Include="Resources\login.ico" />
     <Resource Include="Resources\stop.ico" />
+    <Resource Include="Resources\openfolder.ico" />
     <Content Include="Resources\stop.png" />
     <Resource Include="Resources\timeoutconfig.ico" />
   </ItemGroup>

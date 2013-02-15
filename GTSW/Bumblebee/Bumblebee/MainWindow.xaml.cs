@@ -177,6 +177,9 @@ namespace Bumblebee
         private ObservableCollection<Cmd09HResponse> _cmd09HRespOc = new ObservableCollection<Cmd09HResponse>();
         private ObservableCollection<Cmd08HResponse> _cmd08HRespOc = new ObservableCollection<Cmd08HResponse>();
 
+        private Document _pdfDocument = null;
+        private string _docTitleDateTime = "";
+
         #endregion
 
         #region Properties
@@ -2583,13 +2586,20 @@ namespace Bumblebee
             CurrentDirectory = System.Environment.CurrentDirectory;
             if (NeedReport)
             {
-                string sdt = string.Format("{0}_{1}_{2}_{3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
-                try
+                if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
                 {
-                    Directory.CreateDirectory(CurrentDirectory + @"\" + sdt);
-                    CurrentDirectory = CurrentDirectory + @"\" + sdt;
+                    try
+                    {
+                        Directory.CreateDirectory(CurrentDirectory + @"\Reports");
+                        CurrentDirectory = CurrentDirectory + @"\Reports";
+                    }
+                    catch (Exception)
+                    {
+                        CurrentDirectory = System.Environment.CurrentDirectory;
+                    }
                 }
-                catch (Exception) { }
+                _docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
+                CreateReport();
             }
 
             #endregion
@@ -3451,6 +3461,66 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("年号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("修改单号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3466,6 +3536,58 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("驾证号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3483,6 +3605,58 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3521,6 +3695,82 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("安装时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("初始里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("累计里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3544,6 +3794,66 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                         LogMessage("+-------------------+----------------------------+");
+                                                        
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("脉冲系数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3568,6 +3878,74 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
                                                         LogMessage("+-------------------+----------------------------+");
+                                                        
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("车辆识别码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("车辆号牌", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("号牌分类", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3650,6 +4028,122 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D2", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D1", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D0", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3676,6 +4170,82 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("生产厂CCC认证代码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("认证产品型号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("记录仪生产时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("产品生产流水号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -3797,7 +4367,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -3988,7 +4558,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -4160,7 +4730,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -4364,7 +4934,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -4507,7 +5077,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -4643,7 +5213,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -4789,7 +5359,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -4934,7 +5504,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true)
+                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -4969,6 +5539,58 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    cell = new PdfPCell(new Phrase("传感器单圈脉冲数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -5132,8 +5754,11 @@ namespace Bumblebee
                                                                 break;
                                                         }
                                                         d7 = d7.PadLeft(27 - d7.Length);
-                                                        LogMessage("+-------------------+----------------------------+");
-                                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        if (dataLen == 14)
+                                                        {
+                                                            LogMessage("+-------------------+----------------------------+");
+                                                            LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+                                                        }
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          D7(制动) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
                                                         LogMessage("+-------------------+----------------------------+");
@@ -5151,6 +5776,125 @@ namespace Bumblebee
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d0Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
                                                         LogMessage("+-------------------+----------------------------+");
+
+                                                        if (NeedReport == true)
+                                                        {
+                                                            if (_pdfDocument == null)
+                                                            {
+                                                                LogMessageError("无法创建报表.");
+                                                            }
+                                                            else
+                                                            {
+                                                                #region
+
+                                                                try
+                                                                {
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                                                                    PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    par.Alignment = Element.ALIGN_CENTER;
+                                                                    _pdfDocument.Add(par);
+
+                                                                    par.SpacingBefore = 25f;
+
+                                                                    PdfPTable table = new PdfPTable(2);
+
+                                                                    table.SpacingBefore = 25f;
+
+                                                                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                                                                    float[] widths = { 50f, 150f };
+                                                                    table.SetWidths(widths);
+                                                                    table.LockedWidth = true;
+
+                                                                    PdfPCell cell;
+                                                                    if (dataLen == 14)
+                                                                    {
+                                                                        cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                        table.AddCell(cell);
+                                                                        cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                        table.AddCell(cell);
+                                                                    }
+                                                                    cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d2Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d1Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d0Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+                                                                    cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                                                                    table.AddCell(cell);
+
+                                                                    _pdfDocument.Add(table);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    LogMessageError("创建报表出错:" + ex.Message);
+                                                                    _pdfDocument = null;
+                                                                }
+
+                                                                #endregion
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 #endregion
@@ -5217,6 +5961,8 @@ namespace Bumblebee
             InRun = false;
 
             PBarValue = 0;
+
+            CloseReport();
         }
 
         private string ConvertJingWeiDuToString(float fVal)
@@ -5245,9 +5991,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\08H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\08H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5256,12 +6002,14 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 行驶速度记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
 
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd08HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 int index = 0;
 
@@ -5274,7 +6022,7 @@ namespace Bumblebee
                     else
                         table.SpacingBefore = 5f;
 
-                    table.TotalWidth = document.Right - document.Left;
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
                     table.SetWidths(widths);
                     table.LockedWidth = true;
@@ -5323,23 +6071,25 @@ namespace Bumblebee
                         }
                     }
 
-                    document.Add(table);
+                    _pdfDocument.Add(table);
                 }
 
                 #endregion
 
-                document.Close();
+                //_pdfDocument.Close();
 
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\08H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //LogMessageInformation("成功创建报表."); 
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\08H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
 
-                //System.Diagnostics.Process.Start(CurrentDirectory + @"\08H.pdf");
+                ////System.Diagnostics.Process.Start(CurrentDirectory + @"\08H.pdf");
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -5358,9 +6108,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\09H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\09H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5369,11 +6119,14 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 位置信息记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
+                
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd09HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 int index = 0;
 
@@ -5386,7 +6139,7 @@ namespace Bumblebee
                     else
                         table.SpacingBefore = 5f;
 
-                    table.TotalWidth = document.Right - document.Left;
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
                     table.SetWidths(widths);
                     table.LockedWidth = true;
@@ -5435,21 +6188,23 @@ namespace Bumblebee
                         }
                     }
 
-                    document.Add(table);
+                    _pdfDocument.Add(table);
                 }
 
                 #endregion
 
-                document.Close();
-
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\09H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //_pdfDocument.Close();
+                
+                //LogMessageInformation("成功创建报表.");
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\09H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -5468,9 +6223,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\10H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\10H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5479,11 +6234,14 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 事故疑点记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
+                
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd10HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 int index = 0;
 
@@ -5496,7 +6254,7 @@ namespace Bumblebee
                     else
                         table.SpacingBefore = 5f;
 
-                    table.TotalWidth = document.Right - document.Left;
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
                     table.SetWidths(widths);
                     table.LockedWidth = true;
@@ -5555,21 +6313,23 @@ namespace Bumblebee
                         }
                     }
 
-                    document.Add(table);
+                    _pdfDocument.Add(table);
                 }
 
                 #endregion
 
-                document.Close();
+                //_pdfDocument.Close();
 
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\10H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //LogMessageInformation("成功创建报表.");
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\10H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -5588,9 +6348,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\11H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\11H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5599,11 +6359,14 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
+                
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd11HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 int index = 0;
 
@@ -5616,7 +6379,7 @@ namespace Bumblebee
                     else
                         table.SpacingBefore = 5f;
 
-                    table.TotalWidth = document.Right - document.Left;
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 100f, 100f, 150f, 150f };
                     table.SetWidths(widths);
                     table.LockedWidth = true;
@@ -5669,21 +6432,23 @@ namespace Bumblebee
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
 
-                    document.Add(table);
+                    _pdfDocument.Add(table);
                 }
 
                 #endregion
 
-                document.Close();
+                //_pdfDocument.Close();
 
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\11H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //LogMessageInformation("成功创建报表.");
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\11H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -5702,9 +6467,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\12H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\12H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5713,17 +6478,20 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
+                
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd12HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 PdfPTable table = new PdfPTable(4);
 
                 table.SpacingBefore = 25f;
 
-                table.TotalWidth = document.Right - document.Left;
+                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                 float[] widths = { 75f, 150f, 150f, 75f };
                 table.SetWidths(widths);
                 table.LockedWidth = true;
@@ -5766,20 +6534,22 @@ namespace Bumblebee
                     table.AddCell(cell);
                 }
 
-                document.Add(table);
+                _pdfDocument.Add(table);
 
                 #endregion
 
-                document.Close();
+                //_pdfDocument.Close();
 
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\12H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //LogMessageInformation("成功创建报表.");
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\12H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -5798,9 +6568,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\13H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\13H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5809,17 +6579,20 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
+                
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd13HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 PdfPTable table = new PdfPTable(3);
 
                 table.SpacingBefore = 25f;
 
-                table.TotalWidth = document.Right - document.Left;
+                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                 float[] widths = { 75f, 150f, 150f };
                 table.SetWidths(widths);
                 table.LockedWidth = true;
@@ -5854,20 +6627,22 @@ namespace Bumblebee
                     table.AddCell(cell);
                 }
 
-                document.Add(table);
+                _pdfDocument.Add(table);
 
                 #endregion
 
-                document.Close();
+                //_pdfDocument.Close();
 
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\13H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //LogMessageInformation("成功创建报表.");
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\13H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -5886,9 +6661,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\14H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\14H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5897,17 +6672,20 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
+                
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd14HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 PdfPTable table = new PdfPTable(3);
 
                 table.SpacingBefore = 25f;
 
-                table.TotalWidth = document.Right - document.Left;
+                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                 float[] widths = { 75f, 150f, 150f };
                 table.SetWidths(widths);
                 table.LockedWidth = true;
@@ -5942,20 +6720,22 @@ namespace Bumblebee
                     table.AddCell(cell);
                 }
 
-                document.Add(table);
+                _pdfDocument.Add(table);
 
                 #endregion
 
-                document.Close();
+                //_pdfDocument.Close();
 
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\04H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //LogMessageInformation("成功创建报表.");
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\04H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -5974,9 +6754,9 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\15H.pdf", FileMode.Create));
-                document.Open();
+                //Document document = new Document(PageSize.A4);
+                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\15H.pdf", FileMode.Create));
+                //_pdfDocument.Open();
 
                 #region
 
@@ -5985,12 +6765,14 @@ namespace Bumblebee
 
                 PdfParagraph par = new PdfParagraph("--- 速度状态日志 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
-                document.Add(par);
+                _pdfDocument.Add(par);
+
+                par.SpacingBefore = 25f;
 
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd08HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-                document.Add(par1);
+                _pdfDocument.Add(par1);
 
                 int index = 0;
 
@@ -6003,7 +6785,7 @@ namespace Bumblebee
                     else
                         table.SpacingBefore = 5f;
 
-                    table.TotalWidth = document.Right - document.Left;
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
                     table.SetWidths(widths);
                     table.LockedWidth = true;
@@ -6075,23 +6857,25 @@ namespace Bumblebee
                         }
                     }
 
-                    document.Add(table);
+                    _pdfDocument.Add(table);
                 }
 
                 #endregion
 
-                document.Close();
+                //_pdfDocument.Close();
 
-                LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                LogMessageLink(CurrentDirectory + @"\15H.pdf");
-                LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                LogMessageLink(CurrentDirectory);
+                //LogMessageInformation("成功创建报表.");
+                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
+                ////LogMessageLink(CurrentDirectory + @"\15H.pdf");
+                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
+                ////LogMessageLink(CurrentDirectory);
 
                 //System.Diagnostics.Process.Start(CurrentDirectory + @"\08H.pdf");
             }
             catch (Exception ex)
             {
                 LogMessageError("创建报表出错:" + ex.Message);
+                _pdfDocument = null;
             }
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -6099,6 +6883,50 @@ namespace Bumblebee
             }, null);
             ReadyString2 = "";
             _createPdfEvent.Set();
+        }
+
+        private void CreateReport()
+        {
+            try
+            {
+                _pdfDocument = new Document(PageSize.A4);
+                PdfWriter.GetInstance(_pdfDocument, new FileStream(CurrentDirectory + @"\Report_" + _docTitleDateTime +".pdf", FileMode.Create));
+                _pdfDocument.Open();
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("+++++++++ 信息采集报表 +++++++++ ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLACK));
+                par.Alignment = Element.ALIGN_CENTER;
+                _pdfDocument.Add(par);
+            }
+            catch (Exception ex)
+            {
+                LogMessageInformation("无法创建报表:" + ex.Message);
+                _pdfDocument = null;
+            }
+        }
+
+        private void CloseReport()
+        {
+            try
+            {
+                _pdfDocument.Close();
+                _pdfDocument = null;
+                bool needOpen = false;
+                Dispatcher.Invoke((ThreadStart)delegate
+                {
+                    if (MessageBox.Show(this, "需要现在打开报表吗?", "打开报表", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        needOpen = true;
+                }, null);
+                if(needOpen== true)
+                    System.Diagnostics.Process.Start(CurrentDirectory + @"\Report_" + _docTitleDateTime + ".pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageInformation("无法创建报表:" + ex.Message);
+                _pdfDocument = null;
+            }
         }
 
         private int GetChineseNumber(string src)
@@ -6138,6 +6966,26 @@ namespace Bumblebee
         private void ClearSendingNumber_Button_Click(object sender, RoutedEventArgs e)
         {
             SendingByteNumber = 0;
+        }
+
+        private void OpenPdfReportFolder_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentDirectory = System.Environment.CurrentDirectory;
+            if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
+            {
+                try
+                {
+                    Directory.CreateDirectory(CurrentDirectory + @"\Reports");
+                    CurrentDirectory = CurrentDirectory + @"\Reports";
+                }
+                catch (Exception)
+                {
+                    CurrentDirectory = System.Environment.CurrentDirectory;
+                }
+            }
+            else
+                CurrentDirectory = CurrentDirectory + @"\Reports";
+            System.Diagnostics.Process.Start(CurrentDirectory);
         }
     }
 
