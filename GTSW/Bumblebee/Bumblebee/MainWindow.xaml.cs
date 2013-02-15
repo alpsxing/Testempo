@@ -3704,6 +3704,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create08HReport();
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3738,16 +3747,107 @@ namespace Bumblebee
                                                         LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
-                                                    DateTime blockStartDateTime = cdi.StopDateTime.Subtract(new TimeSpan(0, blockCount - 1, 0));
-                                                    string number3 = "20" + String.Format("{0:X2}", sa[12]) + "-" +
-                                                        String.Format("{0:X2}", sa[13]) + "-" +
-                                                        String.Format("{0:X2}", sa[14]) + " " +
-                                                        String.Format("{0:X2}", sa[15]) + ":" +
-                                                        String.Format("{0:X2}", sa[16]) + ":" +
-                                                        String.Format("{0:X2}", sa[17]);
-                                                    number3 = number3.PadRight(27);
-                                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", number3));
-                                                    LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                    DateTime lastDateTime = DateTime.Now;
+                                                    if (blockCount > 0)
+                                                    {
+                                                        string numberblock = "";
+                                                        for (int iblock = 0; iblock < blockCount; iblock++)
+                                                        {
+                                                            numberblock = "20" + baData[666 * iblock + 0].ToString("X") + "-" +
+                                                                baData[666 * iblock + 1].ToString("X") + "-" +
+                                                                baData[666 * iblock + 2].ToString("X") + " " +
+                                                                baData[666 * iblock + 3].ToString("X") + ":" +
+                                                                baData[666 * iblock + 4].ToString("X") + ":" +
+                                                                baData[666 * iblock + 5].ToString("X");
+                                                            numberblock = numberblock.PadRight(27);
+                                                            lastDateTime = new DateTime(
+                                                                ((int)Math.Floor((double)baData[666 * iblock + 0] / 16.0)) * 10 + baData[666 * iblock + 0] % 16 + 2000,
+                                                                ((int)Math.Floor((double)baData[666 * iblock + 1] / 16.0)) * 10 + baData[666 * iblock + 1] % 16,
+                                                                ((int)Math.Floor((double)baData[666 * iblock + 2] / 16.0)) * 10 + baData[666 * iblock + 2] % 16,
+                                                                ((int)Math.Floor((double)baData[666 * iblock + 3] / 16.0)) * 10 + baData[666 * iblock + 3] % 16,
+                                                                ((int)Math.Floor((double)baData[666 * iblock + 4] / 16.0)) * 10 + baData[666 * iblock + 4] % 16,
+                                                                ((int)Math.Floor((double)baData[666 * iblock + 5] / 16.0)) * 10 + baData[666 * iblock + 5] % 16);
+                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(1, 0, 0));
+                                                            ObservableCollection<Tuple<string, string, string, int>> records = new ObservableCollection<Tuple<string, string, string, int>>();
+                                                            for (int iMin = 0; iMin < 60; iMin++)
+                                                            {
+                                                                #region
+
+                                                                byte[] baJingDu = new byte[4];
+                                                                baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 0];
+                                                                baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 1];
+                                                                baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 2];
+                                                                baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 3];
+                                                                string sJingDu = "";
+                                                                if (baData[666 * iblock + iMin * 11 + 6 + 0] == 0xFF ||
+                                                                    baData[666 * iblock + iMin * 11 + 6 + 1] == 0xFF ||
+                                                                    baData[666 * iblock + iMin * 11 + 6 + 2] == 0xFF ||
+                                                                    baData[666 * iblock + iMin * 11 + 6 + 3] == 0xFF)
+                                                                    sJingDu = "无效";
+                                                                else
+                                                                {
+                                                                    float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                                    if (jingDu >= 0)
+                                                                        sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                                                    else
+                                                                        sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                                                }
+                                                                byte[] baWeiDu = new byte[4];
+                                                                baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 4];
+                                                                baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 5];
+                                                                baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 6];
+                                                                baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 7];
+                                                                string sWeiDu = "";
+                                                                if (baData[666 * iblock + iMin * 11 + 6 + 4] == 0xFF ||
+                                                                    baData[666 * iblock + iMin * 11 + 6 + 5] == 0xFF ||
+                                                                    baData[666 * iblock + iMin * 11 + 6 + 6] == 0xFF ||
+                                                                    baData[666 * iblock + iMin * 11 + 6 + 7] == 0xFF)
+                                                                    sWeiDu = "无效";
+                                                                else
+                                                                {
+                                                                    float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                                    if (weiDu >= 0)
+                                                                        sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                                                    else
+                                                                        sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                                                }
+                                                                byte[] baHeight = new byte[2];
+                                                                baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 8];
+                                                                baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 9];
+                                                                string sHeight = "";
+                                                                if (baData[666 * iblock + iMin * 11 + 6 + 8] == 0xFF ||
+                                                                    baData[666 * iblock + iMin * 11 + 6 + 9] == 0xFF)
+                                                                    sHeight = "无效";
+                                                                else
+                                                                {
+                                                                    int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                                                    sHeight = iHeight.ToString();
+                                                                }
+
+                                                                #endregion
+
+                                                                int speed = baData[666 * iblock + iMin * 11 + 6 + 10];
+                                                                if (speed == 0xFF)
+                                                                    speed = 0;
+
+                                                                records.Add(new Tuple<string, string, string, int>(sJingDu, sWeiDu, sHeight, speed));
+                                                            }
+                                                            _cmd09HRespOc.Add(new Cmd09HResponse()
+                                                            {
+                                                                Index=(_cmd09HRespOc.Count + 1).ToString(),
+                                                                StartDateTime = numberblock,
+                                                                Records = records
+                                                            });
+                                                        }
+
+                                                        LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                    }
+                                                    else
+                                                    {
+                                                        LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+                                                        LogMessage("+-------------------+----------------------------+----------------------------+");
+                                                    }
                                                     if (dataRemain != 0)
                                                     {
                                                         string sValue3 = dataRemain.ToString().PadRight(27);
@@ -3757,11 +3857,10 @@ namespace Bumblebee
 
                                                     if (blockCount > 0)
                                                     {
-                                                        //DateTime lastDateTime = cdi.StopDateTime.Subtract(new TimeSpan(blockCount, 0, 0));
-                                                        DateTime lastDateTime = new DateTime(2000 + int.Parse(sa[12]), int.Parse(sa[13]), int.Parse(sa[14]),
-                                                            int.Parse(sa[15]), int.Parse(sa[16]), int.Parse(sa[17]));
-                                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(blockCount, 0, 0));
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        //lastDateTime = new DateTime(2000 + int.Parse(sa[12]), int.Parse(sa[13]), int.Parse(sa[14]),
+                                                        //    int.Parse(sa[15]), int.Parse(sa[16]), int.Parse(sa[17]));
+                                                        //lastDateTime = lastDateTime.Subtract(new TimeSpan(blockCount, 0, 0));
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -3787,10 +3886,23 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
+                                                    if (isContinued == false && NeedReport == true)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create09HReport();
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -3852,6 +3964,57 @@ namespace Bumblebee
                                                                 baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
                                                             }
                                                             string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+                                                            ObservableCollection<Tuple<int,bool>> records = new ObservableCollection<Tuple<int,bool>>();
+                                                            for(int iRec = 0;iRec< 100;iRec++)
+                                                            {
+                                                                int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
+                                                                if (speed == 0xFF)
+                                                                    speed = 0;
+                                                                bool state = (((int)baData[234 * iblock + 24 + iRec * 2 + 1] & 1) == 1)? true:false;
+                                                                records.Add(new Tuple<int,bool>(speed, state));
+                                                            }
+                                                                                                                   
+                                                            #region
+                                                            
+                                                            byte[] baJingDu = new byte[4];
+                                                            baJingDu[0] = baData[234 * iblock + 224 + 0];
+                                                            baJingDu[1] = baData[234 * iblock + 224 + 1];
+                                                            baJingDu[2] = baData[234 * iblock + 224 + 2];
+                                                            baJingDu[3] = baData[234 * iblock + 224 + 3];
+                                                            float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                            string sJingDu = "";
+                                                            if (jingDu >= 0)
+                                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                                            else
+                                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                                            byte[] baWeiDu = new byte[4];
+                                                            baWeiDu[0] = baData[234 * iblock + 224 + 4];
+                                                            baWeiDu[1] = baData[234 * iblock + 224 + 5];
+                                                            baWeiDu[2] = baData[234 * iblock + 224 + 6];
+                                                            baWeiDu[3] = baData[234 * iblock + 224 + 7];
+                                                            float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                            string sWeiDu = "";
+                                                            if (weiDu >= 0)
+                                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                                            else
+                                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                                            byte[] baHeight = new byte[2];
+                                                            baHeight[0] = baData[234 * iblock + 224 + 8];
+                                                            baHeight[1] = baData[234 * iblock + 224 + 9];
+                                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                                            string sHeight = iHeight.ToString();
+                                                            
+                                                            #endregion
+
+                                                            _cmd10HRespOc.Add(new Cmd10HResponse()
+                                                            {
+                                                                Index = (_cmd10HRespOc.Count + 1).ToString(),
+                                                                StopDateTime = numberblock,
+                                                                Number = number,
+                                                                Records = records,
+                                                                Position = sJingDu + "/" + sWeiDu,
+                                                                Height = sHeight
+                                                            });
                                                         }
                                                         LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
@@ -3869,7 +4032,7 @@ namespace Bumblebee
                                                     }
                                                     if (blockCount > 0)
                                                     {
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -3895,7 +4058,11 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
@@ -4069,7 +4236,7 @@ namespace Bumblebee
                                                     }
                                                     if (blockCount > 0)
                                                     {
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -4095,7 +4262,11 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
@@ -4208,7 +4379,7 @@ namespace Bumblebee
                                                     }
                                                     if (blockCount > 0)
                                                     {
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -4234,7 +4405,11 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
@@ -4340,7 +4515,7 @@ namespace Bumblebee
                                                     }
                                                     if (blockCount > 0)
                                                     {
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -4366,7 +4541,11 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
@@ -4482,7 +4661,7 @@ namespace Bumblebee
                                                     }
                                                     if (blockCount > 0)
                                                     {
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -4508,7 +4687,11 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
@@ -4593,7 +4776,7 @@ namespace Bumblebee
                                                     }
                                                     if (blockCount > 0)
                                                     {
-                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds > 0.0)
+                                                        if (lastDateTime.Subtract(cdi.StartDateTime).TotalSeconds >= 0.0)
                                                         {
                                                             isContinued = true;
                                                             string[] saNew = newCmdContinue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -4619,7 +4802,11 @@ namespace Bumblebee
                                                             newCmdContinue = newCmdContinue + " " + CmdDefinition.XORData(newCmdContinue);
                                                         }
                                                         else
+                                                        {
+                                                            LogMessage("| 数据总数/数据块数 | 0/0                        |                            |");
+                                                            LogMessage("+-------------------+----------------------------+----------------------------+");
                                                             isContinued = false;
+                                                        }
                                                     }
                                                     else
                                                         isContinued = false;
@@ -4733,6 +4920,226 @@ namespace Bumblebee
             return string.Format("{0:D}", iValDu) + "°"+ string.Format("{0:D}", iValFen) + "′" + string.Format("{0:D}", iValMiao) + "″"; 
         }
 
+        private void Create09HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = true;
+            }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\09H.pdf", FileMode.Create));
+                document.Open();
+
+                #region
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("--- 位置信息记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
+
+                int index = 0;
+
+                foreach (Cmd09HResponse cri in _cmd09HRespOc)
+                {
+                    PdfPTable table = new PdfPTable(11);
+
+                    if (index == 0)
+                        table.SpacingBefore = 25f;
+                    else
+                        table.SpacingBefore = 5f;
+
+                    table.TotalWidth = document.Right - document.Left;
+                    float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    cell = new PdfPCell(new Phrase("开始时间:" + cri.StartDateTime, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 5;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("注:XX/YY/ZZ/KK(XX经度;YY纬度;ZZ高度,单位m;KK速度,单位km/h)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 6;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    ObservableCollection<Tuple<string,string,string,int>> records = cri.Records;
+                    for (int i = 0; i < 6; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+
+                        for (int j = 0; j < 10; j++)
+                        {
+                            int speed = records[i * 10 + j].Item4;
+
+                            cell = new PdfPCell(new Phrase(records[i * 10 + j].Item1 + "/\n" + records[i * 10 + j].Item2 + "/\n" + 
+                            records[i * 10 + j].Item3 + "/\n" + speed.ToString(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                            cell.VerticalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cell);
+                        }
+                    }
+
+                    document.Add(table);
+                }
+
+                #endregion
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.");
+
+                System.Diagnostics.Process.Start(CurrentDirectory + @"\09H.pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
+        }
+
+        private void Create10HReport()
+        {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = true;
+            }, null);
+            ReadyString2 = "创建报表中...";
+            try
+            {
+                Document document = new Document(PageSize.A4);
+                PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\10H.pdf", FileMode.Create));
+                document.Open();
+
+                #region
+
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+                PdfParagraph par = new PdfParagraph("--- 事故疑点记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                par.Alignment = Element.ALIGN_CENTER;
+                document.Add(par);
+
+                int index = 0;
+
+                foreach (Cmd10HResponse cri in _cmd10HRespOc)
+                {
+                    PdfPTable table = new PdfPTable(11);
+
+                    if (index == 0)
+                        table.SpacingBefore = 25f;
+                    else
+                        table.SpacingBefore = 5f;
+
+                    table.TotalWidth = document.Right - document.Left;
+                    float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    cell = new PdfPCell(new Phrase("停车时间:" + cri.StopDateTime, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 5;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("注:XX/ YY (XX为速度,单位km/h;YY为状态信号,\"1\"为有效)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 6;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("驾驶证号码:" + cri.Number, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 5;
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Phrase("位置信息:" + cri.Position + " " + cri.Height + "米", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    cell.Colspan = 6;
+                    table.AddCell(cell);
+
+                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cell);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    ObservableCollection<Tuple<int, bool>> records = cri.Records;
+                    for (int i = 0; i < 10; i++)
+                    {
+                        cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+
+                        for (int j = 0; j < 10; j++)
+                        {
+                            int speed = records[i * 10 + j].Item1;
+                            bool state = records[i * 10 + j].Item2;
+
+                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + ((state == true) ? "1" : "0"), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                            cell.VerticalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cell);
+                        }
+                    }
+
+                    document.Add(table);
+                }
+
+                #endregion
+
+                document.Close();
+
+                LogMessageInformation("成功创建报表.");
+
+                System.Diagnostics.Process.Start(CurrentDirectory + @"\10H.pdf");
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("创建报表出错:" + ex.Message);
+            }
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                pbarMain.IsIndeterminate = false;
+            }, null);
+            ReadyString2 = "";
+            _createPdfEvent.Set();
+        }
+
         private void Create11HReport()
         {
             Dispatcher.Invoke((ThreadStart)delegate
@@ -4742,7 +5149,7 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                Document document = new Document(PageSize.A4);
                 PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\11H.pdf", FileMode.Create));
                 document.Open();
 
@@ -4751,7 +5158,7 @@ namespace Bumblebee
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
 
@@ -4772,49 +5179,49 @@ namespace Bumblebee
                     table.LockedWidth = true;
 
                     PdfPCell cell;
-                    cell = new PdfPCell(new Phrase("驾驶证号码:" + cri.Number, new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("驾驶证号码:" + cri.Number, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 5;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("超时开始时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("超时开始时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("超时结束时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("超时结束时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("超时开始位置", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("超时开始位置", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("超时结束位置", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("超时结束位置", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
 
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordStartDateTime.Replace(" ","\n").Trim(), new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.RecordStartDateTime.Replace(" ","\n").Trim(), new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordStopDateTime.Replace(" ", "\n").Trim(), new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.RecordStopDateTime.Replace(" ", "\n").Trim(), new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.StartPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.StartPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.StopPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.StopPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -4851,7 +5258,7 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                Document document = new Document(PageSize.A4);
                 PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\12H.pdf", FileMode.Create));
                 document.Open();
 
@@ -4860,7 +5267,7 @@ namespace Bumblebee
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
 
@@ -4874,38 +5281,38 @@ namespace Bumblebee
                 table.LockedWidth = true;
 
                 PdfPCell cell;
-                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("机动车驾驶证号码", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("机动车驾驶证号码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
 
                 foreach (Cmd12HResponse cri in _cmd12HRespOc)
                 {
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Number, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Number, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -4942,7 +5349,7 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                Document document = new Document(PageSize.A4);
                 PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\13H.pdf", FileMode.Create));
                 document.Open();
 
@@ -4951,7 +5358,7 @@ namespace Bumblebee
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
 
@@ -4965,30 +5372,30 @@ namespace Bumblebee
                 table.LockedWidth = true;
 
                 PdfPCell cell;
-                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
 
                 foreach (Cmd13HResponse cri in _cmd13HRespOc)
                 {
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -5025,7 +5432,7 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+                Document document = new Document(PageSize.A4);
                 PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\14H.pdf", FileMode.Create));
                 document.Open();
 
@@ -5034,7 +5441,7 @@ namespace Bumblebee
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 document.Add(par);
 
@@ -5048,30 +5455,30 @@ namespace Bumblebee
                 table.LockedWidth = true;
 
                 PdfPCell cell;
-                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 12, Font.BOLD)));//, BaseColor.BLUE)));
+                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                 table.AddCell(cell);
 
                 foreach (Cmd14HResponse cri in _cmd14HRespOc)
                 {
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -6191,10 +6598,17 @@ namespace Bumblebee
     {
         public string Index { get; set; }
         public string Number { get; set; }
+        public string StopDateTime {get;set;}
+        public ObservableCollection<Tuple<int, bool>> Records { get; set; }
+        public string Position { get; set; }
+        public string Height { get; set; }
     }
 
     public class Cmd09HResponse
     {
+        public string Index { get; set; }
+        public string StartDateTime { get; set; }
+        public ObservableCollection<Tuple<string, string, string, int>> Records { get; set; }
     }
 
     public class Cmd08HResponse
