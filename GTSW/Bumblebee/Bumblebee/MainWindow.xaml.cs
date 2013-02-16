@@ -6140,7 +6140,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6209,7 +6209,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6280,7 +6280,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6396,7 +6396,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6481,7 +6481,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6575,7 +6575,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6775,7 +6775,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6879,7 +6879,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -7874,7 +7874,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -8180,7 +8180,7 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
-                                                table.SpacingAfter = 35f;
+                                                table.SpacingAfter = 60f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -8262,6 +8262,10 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd08HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if (_cmd08HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
                 int index = 0;
@@ -8326,7 +8330,7 @@ namespace Bumblebee
                     }
 
                     if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 35f;
+                        table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
                 }
@@ -8383,6 +8387,10 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd09HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if (_cmd09HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
                 int index = 0;
@@ -8447,7 +8455,7 @@ namespace Bumblebee
                     }
 
                     if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 35f;
+                        table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
                 }
@@ -8502,6 +8510,10 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd10HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if (_cmd10HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
                 int index = 0;
@@ -8576,7 +8588,7 @@ namespace Bumblebee
                     }
 
                     if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 35f;
+                        table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
                 }
@@ -8631,6 +8643,10 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd11HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if (_cmd11HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
                 int index = 0;
@@ -8699,7 +8715,7 @@ namespace Bumblebee
                     table.AddCell(cell);
 
                     if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 35f;
+                        table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
                 }
@@ -8754,58 +8770,65 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd12HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if (_cmd12HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
-                PdfPTable table = new PdfPTable(4);
-
-                table.SpacingBefore = 25f;
-
-                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                float[] widths = { 75f, 150f, 150f, 75f };
-                table.SetWidths(widths);
-                table.LockedWidth = true;
-
-                PdfPCell cell;
-                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("机动车驾驶证号码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-
-                foreach (Cmd12HResponse cri in _cmd12HRespOc)
+                if (_cmd12HRespOc.Count > 0)
                 {
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                    PdfPTable table = new PdfPTable(4);
+
+                    table.SpacingBefore = 25f;
+
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                    float[] widths = { 75f, 150f, 150f, 75f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Number, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase("机动车驾驶证号码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
+
+                    foreach (Cmd12HResponse cri in _cmd12HRespOc)
+                    {
+                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                        cell = new PdfPCell(new Phrase(cri.Number, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    table.SpacingAfter = 60f;
+
+                    _pdfDocument.Add(table);
                 }
-
-                table.SpacingAfter = 35f;
-
-                _pdfDocument.Add(table);
 
                 #endregion
 
@@ -8857,50 +8880,57 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd13HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if (_cmd13HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
-                PdfPTable table = new PdfPTable(3);
-
-                table.SpacingBefore = 25f;
-
-                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                float[] widths = { 75f, 150f, 150f };
-                table.SetWidths(widths);
-                table.LockedWidth = true;
-
-                PdfPCell cell;
-                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-
-                foreach (Cmd13HResponse cri in _cmd13HRespOc)
+                if (_cmd13HRespOc.Count > 0)
                 {
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                    PdfPTable table = new PdfPTable(3);
+
+                    table.SpacingBefore = 25f;
+
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                    float[] widths = { 75f, 150f, 150f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
+
+                    foreach (Cmd13HResponse cri in _cmd13HRespOc)
+                    {
+                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    table.SpacingAfter = 60f;
+
+                    _pdfDocument.Add(table);
                 }
-
-                table.SpacingAfter = 35f;
-
-                _pdfDocument.Add(table);
 
                 #endregion
 
@@ -8952,50 +8982,57 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd14HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if (_cmd14HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
-                PdfPTable table = new PdfPTable(3);
-
-                table.SpacingBefore = 25f;
-
-                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                float[] widths = { 75f, 150f, 150f };
-                table.SetWidths(widths);
-                table.LockedWidth = true;
-
-                PdfPCell cell;
-                cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                table.AddCell(cell);
-
-                foreach (Cmd14HResponse cri in _cmd14HRespOc)
+                if (_cmd14HRespOc.Count > 0)
                 {
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                    PdfPTable table = new PdfPTable(3);
+
+                    table.SpacingBefore = 25f;
+
+                    table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                    float[] widths = { 75f, 150f, 150f };
+                    table.SetWidths(widths);
+                    table.LockedWidth = true;
+
+                    PdfPCell cell;
+                    cell = new PdfPCell(new Phrase("序号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase("事件发生时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase("事件类型", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
+
+                    foreach (Cmd14HResponse cri in _cmd14HRespOc)
+                    {
+                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    table.SpacingAfter = 60f;
+
+                    _pdfDocument.Add(table);
                 }
-
-                table.SpacingAfter = 35f;
-
-                _pdfDocument.Add(table);
 
                 #endregion
 
@@ -9044,9 +9081,13 @@ namespace Bumblebee
 
                 par.SpacingBefore = 25f;
 
-                PdfParagraph par1 = new PdfParagraph("(" + _cmd08HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
+                PdfParagraph par1 = new PdfParagraph("(" + _cmd15HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
+
+                if(_cmd15HRespOc.Count < 1)
+                    par1.SpacingAfter = 35f;
+
                 _pdfDocument.Add(par1);
 
                 int index = 0;
@@ -9134,7 +9175,7 @@ namespace Bumblebee
                     }
 
                     if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 35f;
+                        table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
                 }
