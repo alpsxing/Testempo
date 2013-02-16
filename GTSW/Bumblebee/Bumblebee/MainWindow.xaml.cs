@@ -557,7 +557,7 @@ namespace Bumblebee
             }
         }
 
-        private string _timeout = "1000";
+        private string _timeout = "20000";
         public string TimeOut
         {
             get
@@ -3474,7 +3474,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -3549,7 +3549,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -3618,7 +3618,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -3708,7 +3708,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -3807,7 +3807,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -3891,7 +3891,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -4041,7 +4041,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -4183,7 +4183,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -5558,7 +5558,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -5795,7 +5795,7 @@ namespace Bumblebee
 
                                                                 try
                                                                 {
-                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                                    string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                                     PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6104,7 +6104,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6139,6 +6139,8 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
+
+                                                table.SpacingAfter = 35f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6179,7 +6181,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6206,6 +6208,8 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
+
+                                                table.SpacingAfter = 35f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6248,7 +6252,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6275,6 +6279,8 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
+
+                                                table.SpacingAfter = 35f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6338,7 +6344,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6390,6 +6396,8 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
+                                                table.SpacingAfter = 35f;
+
                                                 _pdfDocument.Add(table);
                                             }
                                             catch (Exception ex)
@@ -6437,7 +6445,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6472,6 +6480,8 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
+
+                                                table.SpacingAfter = 35f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6521,7 +6531,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6564,6 +6574,8 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
+
+                                                table.SpacingAfter = 35f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6671,7 +6683,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6763,6 +6775,8 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
+                                                table.SpacingAfter = 35f;
+
                                                 _pdfDocument.Add(table);
                                             }
                                             catch (Exception ex)
@@ -6813,7 +6827,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -6864,6 +6878,8 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
+
+                                                table.SpacingAfter = 35f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -6943,14 +6959,21 @@ namespace Bumblebee
                                     LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create08HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create08HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7080,14 +7103,21 @@ namespace Bumblebee
                                     LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create09HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create09HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7201,14 +7231,21 @@ namespace Bumblebee
                                     LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create10HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create10HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7354,14 +7391,21 @@ namespace Bumblebee
                                     LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create11HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create11HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7446,14 +7490,21 @@ namespace Bumblebee
                                     LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create12HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create12HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7531,14 +7582,21 @@ namespace Bumblebee
                                     LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create13HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create13HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7626,14 +7684,21 @@ namespace Bumblebee
                                     LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create14HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create14HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7720,14 +7785,21 @@ namespace Bumblebee
                                     LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
                                     LogMessage("+-------------------+----------------------------+----------------------------+");
                                 }
-                                if (NeedReport == true && _pdfDocument != null)
+                                if (NeedReport == true)
                                 {
-                                    _createPdfEvent.Reset();
-                                    Task.Factory.StartNew(() =>
+                                    if (_pdfDocument == null)
                                     {
-                                        Create15HReport();
-                                    });
-                                    _createPdfEvent.WaitOne();
+                                        LogMessageError("无法创建报表.");
+                                    }
+                                    else
+                                    {
+                                        _createPdfEvent.Reset();
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Create15HReport();
+                                        });
+                                        _createPdfEvent.WaitOne();
+                                    }
                                 }
                             }
                             #endregion
@@ -7774,7 +7846,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -7801,6 +7873,8 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
+
+                                                table.SpacingAfter = 35f;
 
                                                 _pdfDocument.Add(table);
                                             }
@@ -8011,7 +8085,7 @@ namespace Bumblebee
 
                                             try
                                             {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                                                 PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8106,6 +8180,8 @@ namespace Bumblebee
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
 
+                                                table.SpacingAfter = 35f;
+
                                                 _pdfDocument.Add(table);
                                             }
                                             catch (Exception ex)
@@ -8174,7 +8250,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 行驶速度记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8198,6 +8274,7 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 5f;
+                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -8248,6 +8325,9 @@ namespace Bumblebee
                         }
                     }
 
+                    if (index == _cmd15HRespOc.Count)
+                        table.SpacingAfter = 35f;
+
                     _pdfDocument.Add(table);
                 }
 
@@ -8291,7 +8371,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 位置信息记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8315,6 +8395,7 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 5f;
+                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -8365,6 +8446,9 @@ namespace Bumblebee
                         }
                     }
 
+                    if (index == _cmd15HRespOc.Count)
+                        table.SpacingAfter = 35f;
+
                     _pdfDocument.Add(table);
                 }
 
@@ -8406,7 +8490,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 事故疑点记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8430,6 +8514,7 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 5f;
+                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -8490,6 +8575,9 @@ namespace Bumblebee
                         }
                     }
 
+                    if (index == _cmd15HRespOc.Count)
+                        table.SpacingAfter = 35f;
+
                     _pdfDocument.Add(table);
                 }
 
@@ -8531,7 +8619,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8555,6 +8643,7 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 5f;
+                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 100f, 100f, 150f, 150f };
@@ -8609,6 +8698,9 @@ namespace Bumblebee
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
 
+                    if (index == _cmd15HRespOc.Count)
+                        table.SpacingAfter = 35f;
+
                     _pdfDocument.Add(table);
                 }
 
@@ -8650,7 +8742,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8711,6 +8803,8 @@ namespace Bumblebee
                     table.AddCell(cell);
                 }
 
+                table.SpacingAfter = 35f;
+
                 _pdfDocument.Add(table);
 
                 #endregion
@@ -8751,7 +8845,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8804,6 +8898,8 @@ namespace Bumblebee
                     table.AddCell(cell);
                 }
 
+                table.SpacingAfter = 35f;
+
                 _pdfDocument.Add(table);
 
                 #endregion
@@ -8844,7 +8940,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8897,6 +8993,8 @@ namespace Bumblebee
                     table.AddCell(cell);
                 }
 
+                table.SpacingAfter = 35f;
+
                 _pdfDocument.Add(table);
 
                 #endregion
@@ -8937,7 +9035,7 @@ namespace Bumblebee
 
                 #region
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("--- 速度状态日志 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
@@ -8961,6 +9059,7 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 5f;
+                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -9034,6 +9133,9 @@ namespace Bumblebee
                         }
                     }
 
+                    if (index == _cmd15HRespOc.Count)
+                        table.SpacingAfter = 35f;
+
                     _pdfDocument.Add(table);
                 }
 
@@ -9070,11 +9172,12 @@ namespace Bumblebee
                 PdfWriter.GetInstance(_pdfDocument, new FileStream(CurrentDirectory + @"\Report_" + _docTitleDateTime +".pdf", FileMode.Create));
                 _pdfDocument.Open();
 
-                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\SIMHEI.TTF";
+                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
                 PdfParagraph par = new PdfParagraph("+++++++++ 信息采集报表 +++++++++ ", new Font(baseFont, 18, Font.BOLD, BaseColor.BLACK));
                 par.Alignment = Element.ALIGN_CENTER;
+                par.SpacingAfter = 25f;
                 _pdfDocument.Add(par);
             }
             catch (Exception ex)
