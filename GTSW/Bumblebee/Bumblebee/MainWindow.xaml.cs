@@ -5988,7 +5988,7 @@ namespace Bumblebee
 
             Task.Factory.StartNew(() =>
                 {
-                    ParseVDRData(dlg.SafeFileName);
+                    ParseVDRData(dlg.FileName);
                 });
         }
 
@@ -6039,7 +6039,7 @@ namespace Bumblebee
                 baCount[0] = ba[0];
                 baCount[1] = ba[1];
                 position = 2;
-                int iCount = System.BitConverter.ToInt16(baCount, 0);
+                int iCount = baCount[0] * 256 + baCount[1];// System.BitConverter.ToInt16(baCount, 0);
                 for (int i = 0; i < iCount; i++)
                 {
                     byte bType = ba[position];
@@ -6053,7 +6053,11 @@ namespace Bumblebee
                     baBlockLen[1] = ba[position + 1 + 18 + 1];
                     baBlockLen[2] = ba[position + 1 + 18 + 2];
                     baBlockLen[3] = ba[position + 1 + 18 + 3];
-                    int dataLen = System.BitConverter.ToInt32(baBlockLen, 0);
+                    int dataLen = baBlockLen[0] * 256 * 256 * 256 +
+                        baBlockLen[1] * 256 * 256 +
+                        baBlockLen[2] * 256 +
+                        baBlockLen[3];
+                        //System.BitConverter.ToInt32(baBlockLen, 0);
 
                     byte[] baData = new byte[dataLen];
                     for (int j = 0; j < dataLen; j++)
@@ -8206,6 +8210,11 @@ namespace Bumblebee
                     }
 
                     #endregion
+
+                    position = position + dataLen + 23;
+
+                    if(i < iCount)
+                        LogMessage("");
                 }
 
                 if(NeedReport)
@@ -8215,6 +8224,9 @@ namespace Bumblebee
             {
                 LogMessageError("不能够解析VDR文件:" + ex.Message);
             }
+
+            LogMessageSeperator();
+
             InRun = false;
         }
 
@@ -8277,7 +8289,7 @@ namespace Bumblebee
                     if (index == 0)
                         table.SpacingBefore = 25f;
                     else
-                        table.SpacingBefore = 5f;
+                        table.SpacingBefore = 15f;
                     index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
@@ -8402,7 +8414,7 @@ namespace Bumblebee
                     if (index == 0)
                         table.SpacingBefore = 25f;
                     else
-                        table.SpacingBefore = 5f;
+                        table.SpacingBefore = 15f;
                     index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
@@ -8525,7 +8537,7 @@ namespace Bumblebee
                     if (index == 0)
                         table.SpacingBefore = 25f;
                     else
-                        table.SpacingBefore = 5f;
+                        table.SpacingBefore = 15f;
                     index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
@@ -8658,7 +8670,7 @@ namespace Bumblebee
                     if (index == 0)
                         table.SpacingBefore = 25f;
                     else
-                        table.SpacingBefore = 5f;
+                        table.SpacingBefore = 15f;
                     index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
@@ -9099,7 +9111,7 @@ namespace Bumblebee
                     if (index == 0)
                         table.SpacingBefore = 25f;
                     else
-                        table.SpacingBefore = 5f;
+                        table.SpacingBefore = 15f;
                     index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
