@@ -491,13 +491,13 @@
             <TabControl Grid.Column="1">
                 <TabItem Header="操作日志">
                     <DockPanel>
-                        <DockPanel DockPanel.Dock="Top" Height="40"
+                        <DockPanel DockPanel.Dock="Top" Height="35"
                                             IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                             <Button DockPanel.Dock="Left" Margin="0,2,0,2" Click="ClearLog_Button_Click">
                                 <Button.Content>
                                     <DockPanel>
                                         <!-- DockPanel.Dock="Left" Source="resources/trash.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/-->
-                                        <Label Content="清除日志" Width="70"
+                                        <Label Content="清除日志" Width="70" Margin="0,-3,0,0"
                                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                                     </DockPanel>
                                 </Button.Content>
@@ -528,7 +528,7 @@
                         </Grid.RowDefinitions>
                         <GroupBox Grid.Row="0" Margin="0,0,3,0" Header="计算机数据接收显示区" BorderBrush="#FF8390A1">
                             <DockPanel>
-                                <DockPanel DockPanel.Dock="Bottom" Height="40"
+                                <DockPanel DockPanel.Dock="Bottom" Height="35"
                                             IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                                     <Button Content="清零" DockPanel.Dock="Left" Margin="3" Width="60" Click="ClearReceivingNumber_Button_Click"/>
                                     <Label Content="{Binding Path=ReceivingByteNumberString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
@@ -537,7 +537,7 @@
                                         <Button.Content>
                                             <DockPanel>
                                                 <!--Image DockPanel.Dock="Left" Source="resources/trash.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/-->
-                                                <Label Content="清空接受区" Width="85"
+                                                <Label Content="清空接收区" Width="85" Margin="0,-3,0,0"
                                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                                             </DockPanel>
                                         </Button.Content>
@@ -573,7 +573,7 @@
                                         <Button.Content>
                                             <DockPanel>
                                                 <!--Image DockPanel.Dock="Left" Source="resources/trash.png" Height="25" Style="{StaticResource ImageEnableDisableStyle}"/-->
-                                                <Label Content="清空发送区" Width="85"
+                                                <Label Content="清空发送区" Width="85" Margin="0,-3,0,0"
                                                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                                             </DockPanel>
                                         </Button.Content>

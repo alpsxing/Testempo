@@ -33,9 +33,9 @@
                Content="{Binding Path=D1Label,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="8" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" 
                Content="{Binding Path=D0Label,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="10" Grid.Column="1" Margin="-185,3,-50,1" Width="75" Content="确认" IsDefault="True"
+        <Button Grid.Row="10" Grid.Column="1" Margin="-185,3,-50,1" Width="75" Content="确认" IsDefault="True" Height="27"
                 Click="OK_Button_Click"/>
-        <Button Grid.Row="10" Grid.Column="1" Margin="25,3,0,1" Width="75" Content="取消" IsCancel="True" 
+        <Button Grid.Row="10" Grid.Column="1" Margin="25,3,0,1" Width="75" Content="取消" IsCancel="True"  Height="27"
                 Click="Cancel_Button_Click"/>
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" SelectedIndex="0" Name="cboxD7" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
             <ComboBoxItem Content="高有效"/>

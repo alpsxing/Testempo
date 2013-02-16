@@ -21,9 +21,9 @@
                Content="初始里程 :"/>
         <Label Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
                Content="注 : 单位0.1千米"/>
-        <Button Grid.Row="3" Grid.Column="1" Margin="110,3,-50,1" Width="75" Content="确认" IsDefault="True"
+        <Button Grid.Row="3" Grid.Column="1" Margin="95,3,-50,1" Width="75" Height="27" Content="确认" IsDefault="True"
                 Click="OK_Button_Click"/>
-        <Button Grid.Row="3" Grid.Column="22" Margin="50,3,0,1" Width="75" Content="取消" IsCancel="True" 
+        <Button Grid.Row="3" Grid.Column="22" Margin="50,3,0,1" Width="75" Height="27" Content="取消" IsCancel="True" 
                 Click="Cancel_Button_Click"/>
         <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="1"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"

@@ -42,7 +42,7 @@
         <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="6" Margin="0,0,-30,0" Minimum="1000" Maximum="10000"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
                              Value="{Binding Path=CmdInterval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="8" Grid.Column="2" Margin="-80,2,10,2" Width="75" Content="确认" Click="OK_Button_Click"/>
-        <Button Grid.Row="8" Grid.Column="3" Margin="-45,2,2,2" Width="75" Content="取消" IsCancel="True" IsDefault="True" Click="Cancel_Button_Click"/>
+        <Button Grid.Row="8" Grid.Column="2" Margin="-80,2,10,2" Width="75" Content="确认" Click="OK_Button_Click" Height="27"/>
+        <Button Grid.Row="8" Grid.Column="3" Margin="-45,2,2,2" Width="75" Content="取消" IsCancel="True" Height="27" IsDefault="True" Click="Cancel_Button_Click"/>
     </Grid>
 </Window>

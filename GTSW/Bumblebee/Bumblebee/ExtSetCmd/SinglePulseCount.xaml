@@ -18,9 +18,9 @@
         </Grid.ColumnDefinitions>
         <Label Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" 
                Content="单圈脉冲数 :"/>
-        <Button Grid.Row="3" Grid.Column="1" Margin="-90,3,0,1" Width="75" Content="确认" IsDefault="True"
+        <Button Grid.Row="3" Grid.Column="1" Margin="-90,3,0,1" Width="75" Content="确认" IsDefault="True" Height="27"
                 Click="OK_Button_Click"/>
-        <Button Grid.Row="3" Grid.Column="1" Margin="65,3,0,1" Width="75" Content="取消" IsCancel="True" 
+        <Button Grid.Row="3" Grid.Column="1" Margin="65,3,0,1" Width="75" Content="取消" IsCancel="True"  Height="27"
                 Click="Cancel_Button_Click"/>
         <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="1"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"

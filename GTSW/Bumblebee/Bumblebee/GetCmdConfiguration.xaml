@@ -27,11 +27,11 @@
                Content="结束时间 :" Foreground="{Binding Path=DateTimeForeground,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="单位数据块 :"/>
         <Label Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Content="{Binding Path=UnitDataRange,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="5" Grid.Column="2" Margin="0,3,0,1" Width="75" Content="确认"
+        <Button Grid.Row="5" Grid.Column="2" Margin="0,3,0,1" Width="75" Content="确认" Height="27"
                 IsEnabled="{Binding Path=OKEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                 IsDefault="{Binding Path=OKDefault,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                 Click="OK_Button_Click"/>
-        <Button Grid.Row="5" Grid.Column="3" Margin="0,3,0,1" Width="75" Content="取消" IsCancel="True" 
+        <Button Grid.Row="5" Grid.Column="3" Margin="0,3,0,1" Width="75" Content="取消" IsCancel="True"  Height="27"
                 IsDefault="{Binding Path=CancelDefault,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                 Click="Cancel_Button_Click"/>
         <xctk:DateTimePicker Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Name="dtpickerStart"

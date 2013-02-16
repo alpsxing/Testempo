@@ -22,7 +22,7 @@
                HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
         <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=Label2Content,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-        <Button Grid.Row="3" Grid.Column="1" Content="确认" Width="80" Height="28" IsCancel="True" IsDefault="True" 
+        <Button Grid.Row="3" Grid.Column="1" Content="确认" Width="80" Height="27" IsCancel="True" IsDefault="True" 
                 HorizontalAlignment="Right" VerticalAlignment="Center" Click="OK_Button_Click"/>  
     </Grid>
 </Window>

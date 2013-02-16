@@ -20,7 +20,7 @@
         <Image Grid.Row="0" Grid.RowSpan="6" Grid.Column="0" Source="resources/loginlogo.jpg"/>
         <Label Content="用户名" Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Right" VerticalAlignment="Center" />
         <Label Content="密码" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="1" Grid.Column="3" SelectedIndex="0" 
+        <ComboBox Grid.Row="1" Grid.Column="3" SelectedIndex="0" Height="27"
                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Name="cboxLoginName">
             <ComboBoxItem Content="admin"/>
             <ComboBoxItem Content="user"/>
@@ -32,10 +32,10 @@
         <PasswordBox Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                      Name="pwboxPassword" PasswordChar="*" PasswordChanged="Password_PasswordChanged"/>
-        <Button Grid.Row="4" Grid.Column="1" Margin="0,3,-40,1" Width="75" Content="确认" Click="OK_Button_Click"
+        <Button Grid.Row="4" Grid.Column="1" Margin="0,3,-40,1" Width="75" Content="确认" Click="OK_Button_Click" Height="27"
                 IsEnabled="{Binding Path=OKEnabled,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                 IsDefault="{Binding Path=OKDefault,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="4" Grid.Column="2" Margin="0,3,-35,1" Width="75" Content="取消" IsCancel="True" 
+        <Button Grid.Row="4" Grid.Column="2" Margin="0,3,-35,1" Width="75" Content="取消" IsCancel="True" Height="27"
                 IsDefault="{Binding Path=CancelDefault,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Click="Cancel_Button_Click"/>
     </Grid>
 </Window>

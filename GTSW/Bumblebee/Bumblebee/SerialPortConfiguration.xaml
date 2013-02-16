@@ -26,8 +26,8 @@
         <Label Grid.Row="4" Grid.Column="0" Margin="0,1,0,1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="数据位"/>
         <Label Grid.Row="5" Grid.Column="0" Margin="0,1,0,1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="起始位"/>
         <Label Grid.Row="6" Grid.Column="0" Margin="0,1,0,1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="停止位"/>
-        <Button Grid.Row="8" Grid.Column="0" Margin="0,2,-20,2" Width="75" Content="确认" Name="btnOK" Click="OK_Button_Click"/>
-        <Button Grid.Row="8" Grid.Column="1" Margin="10,2,0,2" Width="75" Content="取消" IsCancel="True" IsDefault="True" Click="Cancel_Button_Click"/>
+        <Button Grid.Row="8" Grid.Column="0" Margin="0,2,-20,2" Width="75" Height="27" Content="确认" Name="btnOK" Click="OK_Button_Click"/>
+        <Button Grid.Row="8" Grid.Column="1" Margin="10,2,0,2" Width="75" Height="27" Content="取消" IsCancel="True" IsDefault="True" Click="Cancel_Button_Click"/>
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" Name="cboxSerialPort" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
         <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,2,2,2" Name="cboxBaud" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
         <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,2,2,2" Name="cboxParity" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
