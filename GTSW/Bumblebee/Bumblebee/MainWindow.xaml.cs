@@ -1555,15 +1555,15 @@ namespace Bumblebee
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Process[] ps = Process.GetProcesses();
-            foreach (Process pi in ps)
-            {
-                if (string.Compare(pi.ProcessName, Assembly.GetExecutingAssembly().GetName().Name, true) == 0)
-                {
-                    MessageBox.Show("\"GB/T 19056-2013数据分析软件\"已经在运行中.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    System.Environment.Exit(0);
-                }
-            }
+            //Process[] ps = Process.GetProcesses();
+            //foreach (Process pi in ps)
+            //{
+            //    if (string.Compare(pi.ProcessName, Assembly.GetExecutingAssembly().GetName().Name, true) == 0)
+            //    {
+            //        MessageBox.Show("\"GB/T 19056-2013数据分析软件\"已经在运行中.", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            //        System.Environment.Exit(0);
+            //    }
+            //}
 
             LoadConfig();
 
