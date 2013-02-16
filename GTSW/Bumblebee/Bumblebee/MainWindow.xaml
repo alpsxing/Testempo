@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:bb="clr-namespace:Bumblebee"
         Title="GB/T 19056-2013数据分析软件" Width="800" Height="600" WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded" Icon="/Bumblebee;component/Resources/app.ico">
+        Loaded="Window_Loaded" Icon="/Bumblebee;component/Resources/loginlogo_small.jpg">
     <Window.Resources>
         <bb:Bools2BoolConverter x:Key="Bools2BoolConverter"/>
         <bb:Bools2BoolOrConverter x:Key="Bools2BoolOrConverter"/>
@@ -23,7 +23,11 @@
                 </MenuItem>
                 <MenuItem Header="打开U盘数据文件(VDR)" Click="OpenUSBVDR_MenuItem_Click"
                           HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="/Bumblebee;component/Resources/usbfile.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <!--MenuItem Header="打开U盘数据报表(PDF)" 
                           HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/-->
@@ -75,13 +79,30 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="帮助">
-                <MenuItem Header="版本信息" 
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                <MenuItem Header="关于..." Click="Version_MenuItem_Click"
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+                    <MenuItem.Icon>
+                        <Image Source="/Bumblebee;component/Resources/about.ico" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="帮助文档" 
                           HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
             </MenuItem>
         </Menu>
         <ToolBar DockPanel.Dock="Top" Height="35">
+            <Button Margin="-1" Click="OpenPdfReportFolder_MenuItem_Click"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/openfolder.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Margin="-1" Click="OpenUSBVDR_MenuItem_Click"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/usbfile.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
             <Button Margin="-1" Click="RefreshSerialPort_MenuItem_Click"
                     IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                 <Button.Content>
@@ -115,6 +136,12 @@
                 </Button.Content>
             </Button>
             <Separator/>
+            <Button Margin="-1" Click="Version_MenuItem_Click">
+                <Button.Content>
+                    <Image Source="resources/about.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Separator/>
             <Button Margin="-1" Click="Window_Exit">
                 <Button.Content>
                     <Image Source="resources/exit.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
@@ -129,12 +156,12 @@
             <Label Content="{Binding Path=ReadyString,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,-5,0,0"/>
             <Label Content="{Binding Path=ReadyString2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,-5,0,0"/>
         </StatusBar>
-        <Grid>
+        <Grid Background="#FFE1E1E2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="380" MinWidth="50"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <DockPanel Grid.Column="0" Margin="0,0,3,0">
+            <DockPanel Grid.Column="0" Margin="0,0,3,0" Background="#FFDBE5EF">
                 <DockPanel DockPanel.Dock="Bottom" Height="35" Margin="5">
                     <Button DockPanel.Dock="Right" Margin="0,2,0,2" Click="Stop_Button_Click"
                             IsEnabled="{Binding Path=InRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
@@ -191,7 +218,7 @@
                                     <ListView Name="lvGetCmd" SelectionMode="Single" ItemsSource="{Binding}"
                                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                BorderThickness="0">
+                                                BorderThickness="0" Background="#FFC0C9D4">
                                         <ListView.View>
                                             <GridView x:Name="gvGetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
                                                 <GridViewColumn Width="200">
@@ -240,7 +267,7 @@
                                     <ListView Name="lvSetCmd" SelectionMode="Single" ItemsSource="{Binding}"
                                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                            BorderThickness="0">
+                                            BorderThickness="0" Background="#FFC0C9D4">
                                         <ListView.View>
                                             <GridView x:Name="gvSetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
                                                 <GridViewColumn Width="200">
@@ -301,7 +328,7 @@
                                             <ListView Name="lvChkCmd" SelectionMode="Single" ItemsSource="{Binding}"
                                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                       ScrollViewer.VerticalScrollBarVisibility="Auto"                                                  
-                                                      BorderThickness="0">
+                                                      BorderThickness="0" Background="#FFC0C9D4">
                                                 <ListView.View>
                                                     <GridView x:Name="gvChkCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
                                                         <GridViewColumn Width="225">
@@ -332,7 +359,7 @@
                                         <Binding Path="ExtGetCmdEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
                                     </MultiBinding>
                                 </Border.IsEnabled>
-                                <ListView Name="lvExtGetCmd" SelectionMode="Single" ItemsSource="{Binding}" BorderThickness="0"
+                                <ListView Name="lvExtGetCmd" SelectionMode="Single" ItemsSource="{Binding}" BorderThickness="0" Background="#FFC0C9D4"
                                           ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                     <ListView.View>
                                         <GridView x:Name="gvExtGetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
@@ -376,7 +403,7 @@
                                         <Binding Path="ExtSetCmdEnabled" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
                                     </MultiBinding>
                                 </Border.IsEnabled>
-                                <ListView Name="lvExtSetCmd" SelectionMode="Single" ItemsSource="{Binding}" BorderThickness="0"
+                                <ListView Name="lvExtSetCmd" SelectionMode="Single" ItemsSource="{Binding}" BorderThickness="0" Background="#FFC0C9D4"
                                           ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                     <ListView.View>
                                         <GridView x:Name="gvExtSetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
@@ -436,7 +463,7 @@
                             <Grid/>
                         </DockPanel>
                         <RichTextBox Margin="0,0,3,0" Name="rtxtLog" IsReadOnly="True" FontSize="13" FontFamily="SimSun"
-                                     VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                                     VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Background="#FFFFFFFF">
                             <RichTextBox.Resources>
                                 <Style TargetType="{x:Type Paragraph}">
                                     <Setter Property="Margin" Value="0"/>
@@ -454,7 +481,7 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <GroupBox Grid.Row="0" Margin="0,0,3,0" Header="计算机数据接收显示区">
+                        <GroupBox Grid.Row="0" Margin="0,0,3,0" Header="计算机数据接收显示区" BorderBrush="#FF8390A1">
                             <DockPanel>
                                 <DockPanel DockPanel.Dock="Bottom" Height="35"
                                             IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
@@ -476,7 +503,7 @@
                                     <Grid/>
                                 </DockPanel>
                                 <RichTextBox Margin="0,0,3,0" Name="rtxtRecv" IsReadOnly="True" FontSize="13" FontFamily="SimSun"
-                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Background="#FFFFFFFF">
                                     <RichTextBox.Resources>
                                         <Style TargetType="{x:Type Paragraph}">
                                             <Setter Property="Margin" Value="0"/>
@@ -490,7 +517,7 @@
                         </GroupBox>
                         <GridSplitter Grid.Row="0" Height="3"
                                       HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
-                        <GroupBox Grid.Row="1" Header="计算机数据发送显示区">
+                        <GroupBox Grid.Row="1" Header="计算机数据发送显示区" BorderBrush="#FF8390A1">
                             <DockPanel>
                                 <DockPanel DockPanel.Dock="Bottom" Height="35"
                                             IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
@@ -512,7 +539,7 @@
                                     <Grid/>
                                 </DockPanel>
                                 <RichTextBox Margin="0,0,3,0" Name="rtxtSend" IsReadOnly="True" FontSize="13" FontFamily="SimSun"
-                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                                             VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Background="#FFFFFFFF">
                                     <RichTextBox.Resources>
                                         <Style TargetType="{x:Type Paragraph}">
                                             <Setter Property="Margin" Value="0"/>

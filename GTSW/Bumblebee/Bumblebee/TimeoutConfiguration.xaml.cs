@@ -29,7 +29,7 @@ namespace Bumblebee
 
         #region Properties
 
-        private int _timeout = 1000;
+        private int _timeout = 20000;
         public int TimeOut
         {
             get
@@ -82,14 +82,14 @@ namespace Bumblebee
             int value = -1;
             if (int.TryParse(timeout, out value) == false)
             {
-                TimeOut = 1000;
+                TimeOut = 20000;
             }
             else
             {
                 if (value < 1000)
-                    value = 1000;
+                    value = 20000;
                 if (value > 120000)
-                    value = 120000;
+                    value = 20000;
                 TimeOut = value;
             }
 

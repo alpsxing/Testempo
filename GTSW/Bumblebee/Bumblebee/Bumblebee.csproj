@@ -108,6 +108,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CreatePdf\CreatePdf.xaml.cs">
       <DependentUpon>CreatePdf.xaml</DependentUpon>
     </Compile>
@@ -150,6 +153,10 @@
     <Compile Include="TimeoutConfiguration.xaml.cs">
       <DependentUpon>TimeoutConfiguration.xaml</DependentUpon>
     </Compile>
+    <Page Include="About.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CreatePdf\CreatePdf.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -247,6 +254,7 @@
     <Resource Include="Resources\trash.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\usbfile.png" />
     <Resource Include="Resources\disconnect.ico" />
     <Resource Include="Resources\exit.ico" />
     <Resource Include="Resources\pause.png" />
@@ -258,6 +266,9 @@
     <Resource Include="Resources\login.ico" />
     <Resource Include="Resources\stop.ico" />
     <Resource Include="Resources\openfolder.ico" />
+    <Resource Include="Resources\loginlogo.jpg" />
+    <Resource Include="Resources\about.ico" />
+    <Resource Include="Resources\loginlogo_small.jpg" />
     <Content Include="Resources\stop.png" />
     <Resource Include="Resources\timeoutconfig.ico" />
   </ItemGroup>

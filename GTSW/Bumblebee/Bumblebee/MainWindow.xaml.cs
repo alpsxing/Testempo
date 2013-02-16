@@ -1878,7 +1878,7 @@ namespace Bumblebee
                         DataBit = _dataBits[0];
                         StartBit = "1";
                         StopBit = _stopBits[0];
-                        TimeOut = "1000";
+                        TimeOut = "20000";
                         ServerIP = "127.0.0.1";
                         ServerPort = "8678";
                     }
@@ -2185,20 +2185,20 @@ namespace Bumblebee
                                             int timeout = -1;
                                             if (int.TryParse(TimeOut, out timeout) == false)
                                             {
-                                                LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:1000ms.");
-                                                TimeOut = "1000";
+                                                LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:20000ms.");
+                                                TimeOut = "20000";
                                             }
                                             else
                                             {
                                                 if (timeout < 1000)
                                                 {
-                                                    LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:1000ms.");
-                                                    TimeOut = "1000";
+                                                    LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:20000ms.");
+                                                    TimeOut = "20000";
                                                 }
                                                 else if (timeout > 120000)
                                                 {
-                                                    LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:120000ms.");
-                                                    TimeOut = "120000";
+                                                    LogMessageError("配置文件中串口超时时间(" + TimeOut + ")不正确,使用默认串口超时时间:20000ms.");
+                                                    TimeOut = "20000";
                                                 }
                                                 else
                                                 {
@@ -2211,8 +2211,8 @@ namespace Bumblebee
                                     {
                                         LogMessageError("配置文件缺少串口超时时间项.");
 
-                                        LogMessageError("使用默认串口超时时间:1000ms.");
-                                        TimeOut = "1000";
+                                        LogMessageError("使用默认串口超时时间:20000ms.");
+                                        TimeOut = "20000";
                                     }
                                     xni.InnerText = TimeOut;
 
@@ -2245,8 +2245,8 @@ namespace Bumblebee
                                                 }
                                                 else if (timeout > 10000)
                                                 {
-                                                    LogMessageError("配置文件中串口命令间隔时间(" + CmdInterval + ")不正确,使用默认串口命令间隔时间:10000ms.");
-                                                    CmdInterval = "10000";
+                                                    LogMessageError("配置文件中串口命令间隔时间(" + CmdInterval + ")不正确,使用默认串口命令间隔时间:1000ms.");
+                                                    CmdInterval = "1000";
                                                 }
                                                 else
                                                 {
@@ -2291,10 +2291,10 @@ namespace Bumblebee
                                                     LogMessageError("配置文件中串口读写间隔时间(" + WriteReadInterval + ")不正确,使用默认串口读写间隔时间:1000ms.");
                                                     WriteReadInterval = "1000";
                                                 }
-                                                else if (timeout > 10000)
+                                                else if (timeout > 120000)
                                                 {
-                                                    LogMessageError("配置文件中串口读写间隔时间(" + WriteReadInterval + ")不正确,使用默认串口读写间隔时间:10000ms.");
-                                                    WriteReadInterval = "10000";
+                                                    LogMessageError("配置文件中串口读写间隔时间(" + WriteReadInterval + ")不正确,使用默认串口读写间隔时间:1000ms.");
+                                                    WriteReadInterval = "1000";
                                                 }
                                                 else
                                                 {
@@ -2416,7 +2416,7 @@ namespace Bumblebee
                     DataBit = _dataBits[0];
                     StartBit = "1";
                     StopBit = _stopBits[0];
-                    TimeOut = "1000";
+                    TimeOut = "20000";
                     WriteReadInterval = "1000";
                     CmdInterval = "1000";
                     TimeOut = "1000";
@@ -2454,7 +2454,7 @@ namespace Bumblebee
                 DataBit = _dataBits[0];
                 StartBit = "1";
                 StopBit = _stopBits[0];
-                TimeOut = "1000";
+                TimeOut = "20000";
                 WriteReadInterval = "1000";
                 CmdInterval = "1000";
                 ServerIP = "127.0.0.1";
@@ -2496,7 +2496,9 @@ namespace Bumblebee
                 sw.WriteLine("    <data>" + _dataBits[0] + "</data>");
                 sw.WriteLine("    <start>1</start>");
                 sw.WriteLine("    <stop>" + _stopBits[0] + "</stop>");
-                sw.WriteLine("    <timeout>1000</timeout>");
+                sw.WriteLine("    <timeout>20000</timeout>");
+                sw.WriteLine("    <cmdintvl>1000</cmdintvl>");
+                sw.WriteLine("    <wrintvl>1000</wrintvl>");
                 sw.WriteLine("    <serverip>127.0.0.1</serverip>");
                 sw.WriteLine("    <serverport>8678</serverport>");
                 sw.WriteLine("</bumblebee>");
@@ -9319,6 +9321,12 @@ namespace Bumblebee
             else
                 CurrentDirectory = CurrentDirectory + @"\Reports";
             System.Diagnostics.Process.Start(CurrentDirectory);
+        }
+
+        private void Version_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            About ab = new About("GB/T 19056-2013数据分析软件", "版权 @ 讯业互联", "版本 2013 - 1.0");
+            ab.ShowDialog();
         }
     }
 
