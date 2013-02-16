@@ -181,6 +181,9 @@ namespace Bumblebee
         private Document _pdfDocument = null;
         private string _docTitleDateTime = "";
 
+        private Task _parseVDRTask = null;
+        private bool _inParseVDR = false;
+
         #endregion
 
         #region Properties
@@ -1575,6 +1578,7 @@ namespace Bumblebee
 
             AlreadyEnterCheck = false;
 
+            //bdExtGetCmd.Background = new SolidColorBrush(Color.FromArgb(255, 192, 201, 212));
         }
 
         private void PBarTimerCallBackHandler(object obj)
@@ -2547,20 +2551,27 @@ namespace Bumblebee
             }
             _started = false;
 
-            if (MessageBox.Show("停止操作可能需要" + TimeOut + "毫秒.\n请确认停止操作.", "停止", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("停止操作可能需要" + TimeOut + "毫秒或者更多时间.\n请确认停止操作.", "停止", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             _cts.Cancel();
 
             try
             {
-                if (InChkCmd == true)
+                if (_inParseVDR == true)
                 {
-                    _serialPortChkTask.Wait(int.Parse(TimeOut));
+                    _parseVDRTask.Wait(int.Parse(TimeOut));
                 }
                 else
                 {
-                    _serialPortTask.Wait(int.Parse(TimeOut));
+                    if (InChkCmd == true)
+                    {
+                        _serialPortChkTask.Wait(int.Parse(TimeOut));
+                    }
+                    else
+                    {
+                        _serialPortTask.Wait(int.Parse(TimeOut));
+                    }
                 }
             }
             catch (AggregateException aex)
@@ -5988,14 +5999,19 @@ namespace Bumblebee
 
             InRun = true;
 
-            Task.Factory.StartNew(() =>
-                {
-                    ParseVDRData(dlg.FileName);
-                });
+            _cts = new CancellationTokenSource();
+
+            _inParseVDR = true;
+
+            _started = true;
+
+            _parseVDRTask = Task.Factory.StartNew(new Action<object>(ParseVDRData), dlg.FileName, _cts.Token);
         }
 
-        private void ParseVDRData(string fileName)
+        private void ParseVDRData(object objFileName)
         {
+            string fileName = (string)objFileName;
+
             try
             {
                 FileInfo fi = new FileInfo(fileName);
@@ -6044,6 +6060,9 @@ namespace Bumblebee
                 int iCount = baCount[0] * 256 + baCount[1];// System.BitConverter.ToInt16(baCount, 0);
                 for (int i = 0; i < iCount; i++)
                 {
+                    if (_cts.Token.IsCancellationRequested == true)
+                        break;
+
                     byte bType = ba[position];
                     byte[] baTitle = new byte[18];
                     for (int j = 0; j < 18; j++)
@@ -8229,6 +8248,8 @@ namespace Bumblebee
 
             LogMessageSeperator();
 
+            _inParseVDR = false;
+
             InRun = false;
         }
 
@@ -9223,6 +9244,8 @@ namespace Bumblebee
         {
             try
             {
+                ReadyString2 = "打开新的报表文件...";
+
                 _pdfDocument = new Document(PageSize.A4);
                 PdfWriter.GetInstance(_pdfDocument, new FileStream(CurrentDirectory + @"\Report_" + _docTitleDateTime +".pdf", FileMode.Create));
                 _pdfDocument.Open();
@@ -9234,11 +9257,15 @@ namespace Bumblebee
                 par.Alignment = Element.ALIGN_CENTER;
                 par.SpacingAfter = 25f;
                 _pdfDocument.Add(par);
+
+                ReadyString2 = "成功打开新的报表文件.";
             }
             catch (Exception ex)
             {
                 LogMessageInformation("无法创建报表:" + ex.Message);
                 _pdfDocument = null;
+
+                ReadyString2 = "";
             }
         }
 
@@ -9328,6 +9355,11 @@ namespace Bumblebee
             About ab = new About("GB/T 19056-2013数据分析软件", "版权 @ 讯业互联", "版本 2013 - 1.0");
             ab.ShowDialog();
         }
+
+        //private void ExtGetCmd_Border_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        //{
+        //    bdExtGetCmd.Background = new SolidColorBrush(Color.FromArgb(255, 192, 201, 212));
+        //}
     }
 
     public abstract class NotifiedClass : INotifyPropertyChanged

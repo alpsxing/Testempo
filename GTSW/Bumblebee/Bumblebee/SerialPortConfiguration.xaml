@@ -1,8 +1,8 @@
 ﻿<Window x:Class="Bumblebee.SerialPortConfiguration"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="设置串口参数" Height="270" Width="200" WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize" Loaded="Window_Loaded" Icon="/Bumblebee;component/Resources/serialportconfig.ico">
+        Title="设置串口参数" Height="300" Width="200" WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize" Loaded="Window_Loaded" Icon="/Bumblebee;component/Resources/serialportconfig.ico" FontFamily="Microsoft YaHei" FontSize="14">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
@@ -28,13 +28,13 @@
         <Label Grid.Row="6" Grid.Column="0" Margin="0,1,0,1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="停止位"/>
         <Button Grid.Row="8" Grid.Column="0" Margin="0,2,-20,2" Width="75" Content="确认" Name="btnOK" Click="OK_Button_Click"/>
         <Button Grid.Row="8" Grid.Column="1" Margin="10,2,0,2" Width="75" Content="取消" IsCancel="True" IsDefault="True" Click="Cancel_Button_Click"/>
-        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" Name="cboxSerialPort"/>
-        <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,2,2,2" Name="cboxBaud"/>
-        <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,2,2,2" Name="cboxParity"/>
-        <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,2,2,2" Name="cboxDataBit"/>
-        <ComboBox Grid.Row="5" Grid.Column="1" Margin="0,2,2,2" Name="cboxStartBit" SelectedIndex="0">
+        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2,2,2" Name="cboxSerialPort" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+        <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,2,2,2" Name="cboxBaud" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+        <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,2,2,2" Name="cboxParity" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+        <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,2,2,2" Name="cboxDataBit" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+        <ComboBox Grid.Row="5" Grid.Column="1" Margin="0,2,2,2" Name="cboxStartBit" SelectedIndex="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
             <ComboBoxItem Content="1"/>
         </ComboBox>
-        <ComboBox Grid.Row="6" Grid.Column="1" Margin="0,2,2,2" Name="cboxStopBit"/>
+        <ComboBox Grid.Row="6" Grid.Column="1" Margin="0,2,2,2" Name="cboxStopBit" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
     </Grid>
 </Window>

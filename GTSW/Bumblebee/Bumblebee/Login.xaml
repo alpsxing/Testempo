@@ -1,8 +1,8 @@
 ﻿<Window x:Class="Bumblebee.Login"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="系统登录" Height="150" Width="300" WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize" Loaded="Window_Loaded" Icon="/Bumblebee;component/Resources/loginlogo_small.jpg">
+        Title="系统登录" Height="170" Width="300" WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize" Loaded="Window_Loaded" Icon="/Bumblebee;component/Resources/loginlogo_small.jpg" FontFamily="Microsoft YaHei" FontSize="14">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5"/>
@@ -20,9 +20,8 @@
         <Image Grid.Row="0" Grid.RowSpan="6" Grid.Column="0" Source="resources/loginlogo.jpg"/>
         <Label Content="用户名" Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Right" VerticalAlignment="Center" />
         <Label Content="密码" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="1" Grid.Column="3" Width="112" Height="25"  SelectedIndex="0" 
-                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                  HorizontalAlignment="Left" VerticalAlignment="Center" Name="cboxLoginName">
+        <ComboBox Grid.Row="1" Grid.Column="3" SelectedIndex="0" 
+                  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Name="cboxLoginName">
             <ComboBoxItem Content="admin"/>
             <ComboBoxItem Content="user"/>
         </ComboBox>
