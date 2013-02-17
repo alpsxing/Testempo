@@ -71,9 +71,23 @@ namespace Bumblebee
             }
         }
 
+        private int _chkInterval = 400;
+        public int ChkInterval
+        {
+            get
+            {
+                return _chkInterval;
+            }
+            set
+            {
+                _chkInterval = value;
+                NotifyPropertyChanged("ChkInterval");
+            }
+        }
+
         #endregion
 
-        public TimeoutConfiguration(string timeout, string cmdIntvl, string wrIntvl)
+        public TimeoutConfiguration(string timeout, string cmdIntvl, string wrIntvl, string chkIntvl)
         {
             InitializeComponent();
 
@@ -119,6 +133,20 @@ namespace Bumblebee
                 if (value > 10000)
                     value = 10000;
                 WriteReadInterval = value;
+            }
+
+            value = -1;
+            if (int.TryParse(chkIntvl, out value) == false)
+            {
+                ChkInterval = 400;
+            }
+            else
+            {
+                if (value < 100)
+                    value = 100;
+                if (value > 10000)
+                    value = 10000;
+                ChkInterval = value;
             }
         }
 

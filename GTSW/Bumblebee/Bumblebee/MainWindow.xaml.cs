@@ -100,7 +100,7 @@ namespace Bumblebee
         }
 
         public const int MAX_DISPLAY_LINE_COUNT = 2000;
-        public const int CHK_CMD_INTERVAL = 500;
+        //public const int CHK_CMD_INTERVAL = 500;
 
         #region Variables
 
@@ -615,6 +615,20 @@ namespace Bumblebee
             {
                 _writeReadInterval = value;
                 NotifyPropertyChanged("WriteReadInterval");
+            }
+        }
+
+        private string _chkInterval = "400";
+        public string ChkInterval
+        {
+            get
+            {
+                return _chkInterval;
+            }
+            set
+            {
+                _chkInterval = value;
+                NotifyPropertyChanged("ChkInterval");
             }
         }
 
@@ -1303,13 +1317,14 @@ namespace Bumblebee
 
         private void ConfigTimeout_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            TimeoutConfiguration tc = new TimeoutConfiguration(TimeOut, CmdInterval, WriteReadInterval);
+            TimeoutConfiguration tc = new TimeoutConfiguration(TimeOut, CmdInterval, WriteReadInterval, ChkInterval);
             bool? b = tc.ShowDialog();
             if (b == true)
             {
                 TimeOut = tc.TimeOut.ToString();
                 CmdInterval = tc.CmdInterval.ToString();
                 WriteReadInterval = tc.WriteReadInterval.ToString();
+                ChkInterval = tc.ChkInterval.ToString();
                 SaveConfig();
 
                 DisconnectSerialPort(true);
@@ -1827,6 +1842,7 @@ namespace Bumblebee
                 sw.WriteLine("    <timeout>" + TimeOut + "</timeout>");
                 sw.WriteLine("    <cmdintvl>" + CmdInterval + "</cmdintvl>");
                 sw.WriteLine("    <wrintvl>" + WriteReadInterval + "</wrintvl>");
+                sw.WriteLine("    <chkintvl>" + ChkInterval + "</chkintvl>");
                 sw.WriteLine("    <serverip>" + ServerIP + "</serverip>");
                 sw.WriteLine("    <serverport>" + ServerPort + "</serverport>");
                 sw.WriteLine("</bumblebee>");
@@ -1850,6 +1866,7 @@ namespace Bumblebee
             LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
             LogMessageInformation("当前串口命令间隔时间:" + CmdInterval + "ms.");
             LogMessageInformation("当前串口读写间隔时间:" + WriteReadInterval + "ms.");
+            LogMessageInformation("当前串口检定间隔时间:" + ChkInterval + "ms.");
             LogMessageInformation("当前服务器IP:" + ServerIP + ".");
             LogMessageInformation("当前服务器端口:" + ServerPort + ".");
 
@@ -2286,7 +2303,7 @@ namespace Bumblebee
                                             if (int.TryParse(WriteReadInterval, out timeout) == false)
                                             {
                                                 LogMessageError("配置文件中串口读写间隔时间(" + WriteReadInterval + ")不正确,使用默认串口读写间隔时间:1000ms.");
-                                                TimeOut = "1000";
+                                                WriteReadInterval = "1000";
                                             }
                                             else
                                             {
@@ -2315,6 +2332,54 @@ namespace Bumblebee
                                         WriteReadInterval = "1000";
                                     }
                                     xni.InnerText = WriteReadInterval;
+
+                                    #endregion
+                                    break;
+                                case "CHKINTVL":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        WriteReadInterval = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(ChkInterval))
+                                        {
+                                            LogMessageError("配置文件中串口检定间隔时间项为空.");
+                                        }
+                                        else
+                                        {
+                                            int timeout = -1;
+                                            if (int.TryParse(ChkInterval, out timeout) == false)
+                                            {
+                                                LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:400ms.");
+                                                ChkInterval = "400";
+                                            }
+                                            else
+                                            {
+                                                if (timeout < 100)
+                                                {
+                                                    LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:400ms.");
+                                                    ChkInterval = "400";
+                                                }
+                                                else if (timeout > 10000)
+                                                {
+                                                    LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:400ms.");
+                                                    ChkInterval = "400";
+                                                }
+                                                else
+                                                {
+                                                    LogMessageInformation("当前串口检定间隔时间:" + ChkInterval + "ms.");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少串口检定间隔时间项.");
+
+                                        LogMessageError("使用默认串口检定间隔时间:400ms.");
+                                        ChkInterval = "400";
+                                    }
+                                    xni.InnerText = ChkInterval;
 
                                     #endregion
                                     break;
@@ -2423,6 +2488,7 @@ namespace Bumblebee
                     TimeOut = "20000";
                     WriteReadInterval = "1000";
                     CmdInterval = "1000";
+                    ChkInterval = "400";
                     TimeOut = "1000";
                     ServerIP = "127.0.0.1";
                     ServerPort = "8678";
@@ -2436,6 +2502,7 @@ namespace Bumblebee
                     LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
                     LogMessageInformation("当前串口命令间隔时间:" + CmdInterval + "ms.");
                     LogMessageInformation("当前串口读写间隔时间:" + WriteReadInterval + "ms.");
+                    LogMessageInformation("当前串口检定间隔时间:" + ChkInterval + "ms.");
                     LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                     LogMessageInformation("当前服务器端口:" + ServerPort + ".");
                 }
@@ -2473,6 +2540,7 @@ namespace Bumblebee
                 LogMessageInformation("当前串口超时时间:" + TimeOut + "ms.");
                 LogMessageInformation("当前串口命令间隔时间:" + CmdInterval + "ms.");
                 LogMessageInformation("当前串口读写间隔时间:" + WriteReadInterval + "ms.");
+                LogMessageInformation("当前串口检定间隔时间:" + ChkInterval + "ms.");
                 LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                 LogMessageInformation("当前服务器端口:" + ServerPort + ".");
             }
@@ -2728,7 +2796,7 @@ namespace Bumblebee
                         //Thread.Sleep(CHK_CMD_INTERVAL);
                     }
 
-                    Thread.Sleep(CHK_CMD_INTERVAL);
+                    Thread.Sleep(int.Parse(ChkInterval));
                 }
 
                 //_sPort.DiscardInBuffer();
@@ -2847,7 +2915,7 @@ namespace Bumblebee
 
             #endregion
 
-            Thread.Sleep(CHK_CMD_INTERVAL);
+            Thread.Sleep(int.Parse(ChkInterval));
 
             //_sPort.DiscardInBuffer();
             //_sPort.DiscardOutBuffer();
