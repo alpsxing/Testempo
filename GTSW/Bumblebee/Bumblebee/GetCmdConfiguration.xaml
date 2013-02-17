@@ -4,7 +4,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="采集指令配置" Height="200" Width="360" 
         xmlns:shared="http://schemas.actiprosoftware.com/winfx/xaml/shared"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" FontFamily="Microsoft YaHei" FontSize="14">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" FontFamily="Microsoft YaHei" FontSize="14" Icon="/Bumblebee;component/Resources/config.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5"/>

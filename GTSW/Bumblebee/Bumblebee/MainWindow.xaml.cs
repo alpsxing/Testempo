@@ -618,7 +618,7 @@ namespace Bumblebee
             }
         }
 
-        private string _chkInterval = "400";
+        private string _chkInterval = "250";
         public string ChkInterval
         {
             get
@@ -2350,20 +2350,20 @@ namespace Bumblebee
                                             int timeout = -1;
                                             if (int.TryParse(ChkInterval, out timeout) == false)
                                             {
-                                                LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:400ms.");
-                                                ChkInterval = "400";
+                                                LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:250ms.");
+                                                ChkInterval = "250";
                                             }
                                             else
                                             {
                                                 if (timeout < 100)
                                                 {
-                                                    LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:400ms.");
-                                                    ChkInterval = "400";
+                                                    LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:250ms.");
+                                                    ChkInterval = "250";
                                                 }
                                                 else if (timeout > 10000)
                                                 {
-                                                    LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:400ms.");
-                                                    ChkInterval = "400";
+                                                    LogMessageError("配置文件中串口检定间隔时间(" + ChkInterval + ")不正确,使用默认串口检定间隔时间:250ms.");
+                                                    ChkInterval = "250";
                                                 }
                                                 else
                                                 {
@@ -2376,8 +2376,8 @@ namespace Bumblebee
                                     {
                                         LogMessageError("配置文件缺少串口检定间隔时间项.");
 
-                                        LogMessageError("使用默认串口检定间隔时间:400ms.");
-                                        ChkInterval = "400";
+                                        LogMessageError("使用默认串口检定间隔时间:250ms.");
+                                        ChkInterval = "250";
                                     }
                                     xni.InnerText = ChkInterval;
 
@@ -2488,7 +2488,7 @@ namespace Bumblebee
                     TimeOut = "20000";
                     WriteReadInterval = "1000";
                     CmdInterval = "1000";
-                    ChkInterval = "400";
+                    ChkInterval = "250";
                     TimeOut = "1000";
                     ServerIP = "127.0.0.1";
                     ServerPort = "8678";
@@ -2528,6 +2528,7 @@ namespace Bumblebee
                 TimeOut = "20000";
                 WriteReadInterval = "1000";
                 CmdInterval = "1000";
+                ChkInterval = "250";
                 ServerIP = "127.0.0.1";
                 ServerPort = "8678";
 

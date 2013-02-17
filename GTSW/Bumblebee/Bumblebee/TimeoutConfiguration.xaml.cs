@@ -71,7 +71,7 @@ namespace Bumblebee
             }
         }
 
-        private int _chkInterval = 400;
+        private int _chkInterval = 250;
         public int ChkInterval
         {
             get
@@ -138,7 +138,7 @@ namespace Bumblebee
             value = -1;
             if (int.TryParse(chkIntvl, out value) == false)
             {
-                ChkInterval = 400;
+                ChkInterval = 250;
             }
             else
             {

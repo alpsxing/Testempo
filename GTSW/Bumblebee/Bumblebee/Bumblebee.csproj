@@ -269,6 +269,7 @@
     <Resource Include="Resources\loginlogo.jpg" />
     <Resource Include="Resources\about.ico" />
     <Resource Include="Resources\loginlogo_small.jpg" />
+    <Resource Include="Resources\config.ico" />
     <Content Include="Resources\stop.png" />
     <Resource Include="Resources\timeoutconfig.ico" />
   </ItemGroup>

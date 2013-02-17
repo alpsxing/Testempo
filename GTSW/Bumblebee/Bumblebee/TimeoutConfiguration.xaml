@@ -55,7 +55,7 @@
         <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="6" Margin="0,0,-30,0" Minimum="1000" Maximum="10000"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
                              Value="{Binding Path=CmdInterval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="7" Margin="0,0,-30,0" Minimum="1000" Maximum="10000"
+        <xctk:IntegerUpDown  Grid.Column="1" Grid.Row="7" Margin="0,0,-30,0" Minimum="100" Maximum="10000"
                              HorizontalAlignment="Stretch" VerticalAlignment="Center"
                              Value="{Binding Path=ChkInterval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         <Button Grid.Row="14" Grid.Column="2" Margin="-80,0,10,0" Width="75" Content="确认" Click="OK_Button_Click" Height="27"/>
