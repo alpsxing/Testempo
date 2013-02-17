@@ -180,6 +180,7 @@ namespace Bumblebee
 
         private Document _pdfDocument = null;
         private PdfWriter _writer = null;
+        private PdfContentByte _content = null;
         private string _docTitleDateTime = "";
 
         private Task _parseVDRTask = null;
@@ -8609,6 +8610,16 @@ namespace Bumblebee
 
                     #endregion
 
+                    //_content.SetLineWidth(5f);
+                    //_content.MoveTo(0, 0);
+                    //_content.LineTo(100, 200);
+                    //_content.Stroke();
+
+                    //_content.SetLineWidth(15f);
+                    //_content.MoveTo(0, 0);
+                    //_content.LineTo(100, 300);
+                    //_content.Stroke();
+
                     //#region Speed Table
 
                     //PdfPTable speedTable = new PdfPTable(62);
@@ -8808,16 +8819,6 @@ namespace Bumblebee
                 }
 
                 #endregion
-
-                //_pdfDocument.Close();
-
-                //LogMessageInformation("成功创建报表."); 
-                ////LogMessageInformation("成功创建报表.点击下面链接打开该报表:");
-                ////LogMessageLink(CurrentDirectory + @"\08H.pdf");
-                ////LogMessageInformation("或点击下面链接打开该报表所在文件夹:");
-                ////LogMessageLink(CurrentDirectory);
-
-                ////System.Diagnostics.Process.Start(CurrentDirectory + @"\08H.pdf");
             }
             catch (Exception ex)
             {
@@ -9705,6 +9706,7 @@ namespace Bumblebee
                 _pdfDocument = new Document(PageSize.A4);
                 _writer = PdfWriter.GetInstance(_pdfDocument, new FileStream(CurrentDirectory + @"\Report_" + _docTitleDateTime + ".pdf", FileMode.Create));
                 _pdfDocument.Open();
+                _content = _writer.DirectContent;
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
