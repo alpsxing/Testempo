@@ -193,7 +193,7 @@ namespace Bumblebee
         {
             get
             {
-                return _needReport;
+                return _needReport || _inParseVDR;
             }
             set
             {
@@ -3580,7 +3580,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3588,7 +3588,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3655,7 +3655,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3724,7 +3724,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3814,7 +3814,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3822,7 +3822,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3830,7 +3830,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3838,7 +3838,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3913,7 +3913,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3921,7 +3921,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -3997,7 +3997,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4005,7 +4005,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4013,7 +4013,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4147,7 +4147,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4155,7 +4155,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4163,7 +4163,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4171,7 +4171,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4179,7 +4179,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4187,7 +4187,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4195,7 +4195,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4203,7 +4203,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4211,7 +4211,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4289,7 +4289,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4297,7 +4297,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4305,7 +4305,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4313,7 +4313,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -4522,49 +4522,42 @@ namespace Bumblebee
                                                                 #region
 
                                                                 byte[] baJingDu = new byte[4];
-                                                                baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 0];
-                                                                baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 1];
-                                                                baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 2];
-                                                                baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 3];
+                                                                baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 0];
+                                                                baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 1];
+                                                                baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 2];
+                                                                baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 3];
                                                                 string sJingDu = "";
-                                                                if (baData[666 * iblock + iMin * 11 + 6 + 0] == 0xFF ||
-                                                                    baData[666 * iblock + iMin * 11 + 6 + 1] == 0xFF ||
-                                                                    baData[666 * iblock + iMin * 11 + 6 + 2] == 0xFF ||
-                                                                    baData[666 * iblock + iMin * 11 + 6 + 3] == 0xFF)
+                                                                if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
                                                                     sJingDu = "无效";
                                                                 else
                                                                 {
-                                                                    float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                                    int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
                                                                     if (jingDu >= 0)
                                                                         sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
                                                                     else
                                                                         sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
                                                                 }
                                                                 byte[] baWeiDu = new byte[4];
-                                                                baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 4];
-                                                                baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 5];
-                                                                baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 6];
-                                                                baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 7];
+                                                                baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 4];
+                                                                baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 5];
+                                                                baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 6];
+                                                                baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 7];
                                                                 string sWeiDu = "";
-                                                                if (baData[666 * iblock + iMin * 11 + 6 + 4] == 0xFF ||
-                                                                    baData[666 * iblock + iMin * 11 + 6 + 5] == 0xFF ||
-                                                                    baData[666 * iblock + iMin * 11 + 6 + 6] == 0xFF ||
-                                                                    baData[666 * iblock + iMin * 11 + 6 + 7] == 0xFF)
+                                                                if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
                                                                     sWeiDu = "无效";
                                                                 else
                                                                 {
-                                                                    float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                                    int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
                                                                     if (weiDu >= 0)
                                                                         sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
                                                                     else
                                                                         sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
                                                                 }
                                                                 byte[] baHeight = new byte[2];
-                                                                baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 8];
-                                                                baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 9];
+                                                                baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 8];
+                                                                baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 9];
                                                                 string sHeight = "";
-                                                                if (baData[666 * iblock + iMin * 11 + 6 + 8] == 0xFF ||
-                                                                    baData[666 * iblock + iMin * 11 + 6 + 9] == 0xFF)
+                                                                if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
                                                                     sHeight = "无效";
                                                                 else
                                                                 {
@@ -4724,32 +4717,48 @@ namespace Bumblebee
                                                             #region
 
                                                             byte[] baJingDu = new byte[4];
-                                                            baJingDu[0] = baData[234 * iblock + 224 + 0];
-                                                            baJingDu[1] = baData[234 * iblock + 224 + 1];
-                                                            baJingDu[2] = baData[234 * iblock + 224 + 2];
-                                                            baJingDu[3] = baData[234 * iblock + 224 + 3];
-                                                            float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                            baJingDu[3] = baData[234 * iblock + 224 + 0];
+                                                            baJingDu[2] = baData[234 * iblock + 224 + 1];
+                                                            baJingDu[1] = baData[234 * iblock + 224 + 2];
+                                                            baJingDu[0] = baData[234 * iblock + 224 + 3];
                                                             string sJingDu = "";
-                                                            if (jingDu >= 0)
-                                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                                            if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
+                                                                sJingDu = "无效";
                                                             else
-                                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                                            {
+                                                                int jingDu = System.BitConverter.ToInt32(baJingDu, 0); 
+                                                                if (jingDu >= 0)
+                                                                    sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                                                else
+                                                                    sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                                            }
                                                             byte[] baWeiDu = new byte[4];
-                                                            baWeiDu[0] = baData[234 * iblock + 224 + 4];
-                                                            baWeiDu[1] = baData[234 * iblock + 224 + 5];
-                                                            baWeiDu[2] = baData[234 * iblock + 224 + 6];
-                                                            baWeiDu[3] = baData[234 * iblock + 224 + 7];
-                                                            float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                            baWeiDu[3] = baData[234 * iblock + 224 + 4];
+                                                            baWeiDu[2] = baData[234 * iblock + 224 + 5];
+                                                            baWeiDu[1] = baData[234 * iblock + 224 + 6];
+                                                            baWeiDu[0] = baData[234 * iblock + 224 + 7];
                                                             string sWeiDu = "";
-                                                            if (weiDu >= 0)
-                                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                                            if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
+                                                                sJingDu = "无效";
                                                             else
-                                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                                            {
+                                                                int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
+                                                                if (weiDu >= 0)
+                                                                    sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                                                else
+                                                                    sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                                            }
                                                             byte[] baHeight = new byte[2];
-                                                            baHeight[0] = baData[234 * iblock + 224 + 8];
-                                                            baHeight[1] = baData[234 * iblock + 224 + 9];
-                                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
-                                                            string sHeight = iHeight.ToString();
+                                                            baHeight[1] = baData[234 * iblock + 224 + 8];
+                                                            baHeight[0] = baData[234 * iblock + 224 + 9];
+                                                            string sHeight = "";
+                                                            if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
+                                                                sHeight = "无效";
+                                                            else
+                                                            {
+                                                                int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                                                sHeight = iHeight.ToString();
+                                                            }
 
                                                             #endregion
 
@@ -4894,64 +4903,96 @@ namespace Bumblebee
                                                             #region
 
                                                             byte[] baJingDu = new byte[4];
-                                                            baJingDu[0] = baData[50 * iblock + 30];
-                                                            baJingDu[1] = baData[50 * iblock + 31];
-                                                            baJingDu[2] = baData[50 * iblock + 32];
-                                                            baJingDu[3] = baData[50 * iblock + 33];
-                                                            float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                            baJingDu[3] = baData[50 * iblock + 30];
+                                                            baJingDu[2] = baData[50 * iblock + 31];
+                                                            baJingDu[1] = baData[50 * iblock + 32];
+                                                            baJingDu[0] = baData[50 * iblock + 33];
                                                             string sJingDu = "";
-                                                            if (jingDu >= 0)
-                                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                                            if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
+                                                                sJingDu = "无效";
                                                             else
-                                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                                            {
+                                                                int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
+                                                                if (jingDu >= 0)
+                                                                    sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                                                else
+                                                                    sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                                            }
                                                             byte[] baWeiDu = new byte[4];
-                                                            baWeiDu[0] = baData[50 * iblock + 34];
-                                                            baWeiDu[1] = baData[50 * iblock + 35];
-                                                            baWeiDu[2] = baData[50 * iblock + 36];
-                                                            baWeiDu[3] = baData[50 * iblock + 37];
-                                                            float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                            baWeiDu[3] = baData[50 * iblock + 34];
+                                                            baWeiDu[2] = baData[50 * iblock + 35];
+                                                            baWeiDu[1] = baData[50 * iblock + 36];
+                                                            baWeiDu[0] = baData[50 * iblock + 37];
                                                             string sWeiDu = "";
-                                                            if (weiDu >= 0)
-                                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                                            if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
+                                                                sWeiDu = "无效";
                                                             else
-                                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                                            {
+                                                                int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
+                                                                if (weiDu >= 0)
+                                                                    sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                                                else
+                                                                    sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                                            }
                                                             byte[] baHeight = new byte[2];
-                                                            baHeight[0] = baData[50 * iblock + 38];
-                                                            baHeight[1] = baData[50 * iblock + 39];
-                                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
-                                                            string sHeight = iHeight.ToString();
+                                                            baHeight[1] = baData[50 * iblock + 38];
+                                                            baHeight[0] = baData[50 * iblock + 39];
+                                                            string sHeight = "";
+                                                            if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
+                                                                sHeight = "无效";
+                                                            else
+                                                            {
+                                                                int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                                                sHeight = iHeight.ToString();
+                                                            }
 
                                                             #endregion
 
                                                             #region
 
                                                             byte[] baJingDu1 = new byte[4];
-                                                            baJingDu1[0] = baData[50 * iblock + 40];
-                                                            baJingDu1[1] = baData[50 * iblock + 41];
-                                                            baJingDu1[2] = baData[50 * iblock + 42];
-                                                            baJingDu1[3] = baData[50 * iblock + 43];
-                                                            float jingDu1 = System.BitConverter.ToSingle(baJingDu1, 0);
+                                                            baJingDu1[3] = baData[50 * iblock + 40];
+                                                            baJingDu1[2] = baData[50 * iblock + 41];
+                                                            baJingDu1[1] = baData[50 * iblock + 42];
+                                                            baJingDu1[0] = baData[50 * iblock + 43];
                                                             string sJingDu1 = "";
-                                                            if (jingDu1 >= 0)
-                                                                sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
+                                                            if (baJingDu1[0] == 0xFF || baJingDu1[1] == 0xFF || baJingDu1[2] == 0xFF || baJingDu1[3] == 0xFF)
+                                                                sJingDu1 = "无效";
                                                             else
-                                                                sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
+                                                            {
+                                                                int jingDu1 = System.BitConverter.ToInt32(baJingDu1, 0);
+                                                                if (jingDu1 >= 0)
+                                                                    sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
+                                                                else
+                                                                    sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
+                                                            }
                                                             byte[] baWeiDu1 = new byte[4];
-                                                            baWeiDu1[0] = baData[50 * iblock + 44];
-                                                            baWeiDu1[1] = baData[50 * iblock + 45];
-                                                            baWeiDu1[2] = baData[50 * iblock + 46];
-                                                            baWeiDu1[3] = baData[50 * iblock + 47];
-                                                            float weiDu1 = System.BitConverter.ToSingle(baWeiDu1, 0);
+                                                            baWeiDu1[3] = baData[50 * iblock + 44];
+                                                            baWeiDu1[2] = baData[50 * iblock + 45];
+                                                            baWeiDu1[1] = baData[50 * iblock + 46];
+                                                            baWeiDu1[0] = baData[50 * iblock + 47];
                                                             string sWeiDu1 = "";
-                                                            if (weiDu1 >= 0)
-                                                                sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
+                                                            if (baWeiDu1[0] == 0xFF || baWeiDu1[1] == 0xFF || baWeiDu1[2] == 0xFF || baWeiDu1[3] == 0xFF)
+                                                                sWeiDu1 = "无效";
                                                             else
-                                                                sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
+                                                            {
+                                                                int weiDu1 = System.BitConverter.ToInt32(baWeiDu1, 0);
+                                                                if (weiDu1 >= 0)
+                                                                    sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
+                                                                else
+                                                                    sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
+                                                            }
                                                             byte[] baHeight1 = new byte[2];
-                                                            baHeight1[0] = baData[50 * iblock + 48];
-                                                            baHeight1[1] = baData[50 * iblock + 49];
-                                                            int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
-                                                            string sHeight1 = iHeight1.ToString();
+                                                            baHeight1[1] = baData[50 * iblock + 48];
+                                                            baHeight1[0] = baData[50 * iblock + 49];
+                                                            string sHeight1 = "";
+                                                            if (baHeight1[0] == 0xFF || baHeight1[1] == 0xFF)
+                                                                sHeight1 = "无效";
+                                                            else
+                                                            {
+                                                                int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
+                                                                sHeight1 = iHeight1.ToString();
+                                                            }
 
                                                             #endregion
 
@@ -5664,7 +5705,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5903,7 +5944,7 @@ namespace Bumblebee
                                                                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                         table.AddCell(cell);
-                                                                        cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                        cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                         table.AddCell(cell);
@@ -5912,7 +5953,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5920,7 +5961,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5928,7 +5969,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5936,7 +5977,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5944,7 +5985,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5952,7 +5993,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5960,7 +6001,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -5968,7 +6009,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -6223,7 +6264,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6231,7 +6272,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6300,7 +6341,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6371,7 +6412,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6463,7 +6504,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6471,7 +6512,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6479,7 +6520,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6487,7 +6528,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6564,7 +6605,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6572,7 +6613,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6650,7 +6691,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6658,7 +6699,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6666,7 +6707,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6802,7 +6843,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6810,7 +6851,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6818,7 +6859,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6826,7 +6867,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6834,7 +6875,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6842,7 +6883,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6850,7 +6891,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6858,7 +6899,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6866,7 +6907,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6946,7 +6987,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6954,7 +6995,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6962,7 +7003,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -6970,7 +7011,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -7119,49 +7160,42 @@ namespace Bumblebee
                                             #region
 
                                             byte[] baJingDu = new byte[4];
-                                            baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 0];
-                                            baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 1];
-                                            baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 2];
-                                            baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 3];
+                                            baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 0];
+                                            baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 1];
+                                            baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 2];
+                                            baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 3];
                                             string sJingDu = "";
-                                            if (baData[666 * iblock + iMin * 11 + 6 + 0] == 0xFF ||
-                                                baData[666 * iblock + iMin * 11 + 6 + 1] == 0xFF ||
-                                                baData[666 * iblock + iMin * 11 + 6 + 2] == 0xFF ||
-                                                baData[666 * iblock + iMin * 11 + 6 + 3] == 0xFF)
+                                            if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
                                                 sJingDu = "无效";
                                             else
                                             {
-                                                float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                                int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
                                                 if (jingDu >= 0)
                                                     sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
                                                 else
                                                     sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
                                             }
                                             byte[] baWeiDu = new byte[4];
-                                            baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 4];
-                                            baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 5];
-                                            baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 6];
-                                            baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 7];
+                                            baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 4];
+                                            baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 5];
+                                            baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 6];
+                                            baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 7];
                                             string sWeiDu = "";
-                                            if (baData[666 * iblock + iMin * 11 + 6 + 4] == 0xFF ||
-                                                baData[666 * iblock + iMin * 11 + 6 + 5] == 0xFF ||
-                                                baData[666 * iblock + iMin * 11 + 6 + 6] == 0xFF ||
-                                                baData[666 * iblock + iMin * 11 + 6 + 7] == 0xFF)
+                                            if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
                                                 sWeiDu = "无效";
                                             else
                                             {
-                                                float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                                int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
                                                 if (weiDu >= 0)
                                                     sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
                                                 else
                                                     sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
                                             }
                                             byte[] baHeight = new byte[2];
-                                            baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 8];
-                                            baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 9];
+                                            baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 8];
+                                            baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 9];
                                             string sHeight = "";
-                                            if (baData[666 * iblock + iMin * 11 + 6 + 8] == 0xFF ||
-                                                baData[666 * iblock + iMin * 11 + 6 + 9] == 0xFF)
+                                            if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
                                                 sHeight = "无效";
                                             else
                                             {
@@ -7274,32 +7308,48 @@ namespace Bumblebee
                                         #region
 
                                         byte[] baJingDu = new byte[4];
-                                        baJingDu[0] = baData[234 * iblock + 224 + 0];
-                                        baJingDu[1] = baData[234 * iblock + 224 + 1];
-                                        baJingDu[2] = baData[234 * iblock + 224 + 2];
-                                        baJingDu[3] = baData[234 * iblock + 224 + 3];
-                                        float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                        baJingDu[3] = baData[234 * iblock + 224 + 0];
+                                        baJingDu[2] = baData[234 * iblock + 224 + 1];
+                                        baJingDu[1] = baData[234 * iblock + 224 + 2];
+                                        baJingDu[0] = baData[234 * iblock + 224 + 3];
                                         string sJingDu = "";
-                                        if (jingDu >= 0)
-                                            sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                        if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
+                                            sJingDu = "无效";
                                         else
-                                            sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                        {
+                                            int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
+                                            if (jingDu >= 0)
+                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                            else
+                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                        }
                                         byte[] baWeiDu = new byte[4];
-                                        baWeiDu[0] = baData[234 * iblock + 224 + 4];
-                                        baWeiDu[1] = baData[234 * iblock + 224 + 5];
-                                        baWeiDu[2] = baData[234 * iblock + 224 + 6];
-                                        baWeiDu[3] = baData[234 * iblock + 224 + 7];
-                                        float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                        baWeiDu[3] = baData[234 * iblock + 224 + 4];
+                                        baWeiDu[2] = baData[234 * iblock + 224 + 5];
+                                        baWeiDu[1] = baData[234 * iblock + 224 + 6];
+                                        baWeiDu[0] = baData[234 * iblock + 224 + 7];
                                         string sWeiDu = "";
-                                        if (weiDu >= 0)
-                                            sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                        if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
+                                            sWeiDu = "无效";
                                         else
-                                            sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                        {
+                                            int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
+                                            if (weiDu >= 0)
+                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                            else
+                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                        }
                                         byte[] baHeight = new byte[2];
-                                        baHeight[0] = baData[234 * iblock + 224 + 8];
-                                        baHeight[1] = baData[234 * iblock + 224 + 9];
-                                        int iHeight = System.BitConverter.ToInt16(baHeight, 0);
-                                        string sHeight = iHeight.ToString();
+                                        baHeight[1] = baData[234 * iblock + 224 + 8];
+                                        baHeight[0] = baData[234 * iblock + 224 + 9];
+                                        string sHeight = "";
+                                        if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
+                                            sHeight = "无效";
+                                        else
+                                        {
+                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                            sHeight = iHeight.ToString();
+                                        }
 
                                         #endregion
 
@@ -7400,64 +7450,96 @@ namespace Bumblebee
                                         #region
 
                                         byte[] baJingDu = new byte[4];
-                                        baJingDu[0] = baData[50 * iblock + 30];
-                                        baJingDu[1] = baData[50 * iblock + 31];
-                                        baJingDu[2] = baData[50 * iblock + 32];
-                                        baJingDu[3] = baData[50 * iblock + 33];
-                                        float jingDu = System.BitConverter.ToSingle(baJingDu, 0);
+                                        baJingDu[3] = baData[50 * iblock + 30];
+                                        baJingDu[2] = baData[50 * iblock + 31];
+                                        baJingDu[1] = baData[50 * iblock + 32];
+                                        baJingDu[0] = baData[50 * iblock + 33];
                                         string sJingDu = "";
-                                        if (jingDu >= 0)
-                                            sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                        if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
+                                            sJingDu = "无效";
                                         else
-                                            sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                        {
+                                            int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
+                                            if (jingDu >= 0)
+                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+                                            else
+                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+                                        }
                                         byte[] baWeiDu = new byte[4];
-                                        baWeiDu[0] = baData[50 * iblock + 34];
-                                        baWeiDu[1] = baData[50 * iblock + 35];
-                                        baWeiDu[2] = baData[50 * iblock + 36];
-                                        baWeiDu[3] = baData[50 * iblock + 37];
-                                        float weiDu = System.BitConverter.ToSingle(baWeiDu, 0);
+                                        baWeiDu[3] = baData[50 * iblock + 34];
+                                        baWeiDu[2] = baData[50 * iblock + 35];
+                                        baWeiDu[1] = baData[50 * iblock + 36];
+                                        baWeiDu[0] = baData[50 * iblock + 37];
                                         string sWeiDu = "";
-                                        if (weiDu >= 0)
-                                            sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                        if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
+                                            sWeiDu = "无效";
                                         else
-                                            sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                        {
+                                            int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
+                                            if (weiDu >= 0)
+                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+                                            else
+                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+                                        }
                                         byte[] baHeight = new byte[2];
-                                        baHeight[0] = baData[50 * iblock + 38];
-                                        baHeight[1] = baData[50 * iblock + 39];
-                                        int iHeight = System.BitConverter.ToInt16(baHeight, 0);
-                                        string sHeight = iHeight.ToString();
+                                        baHeight[1] = baData[50 * iblock + 38];
+                                        baHeight[0] = baData[50 * iblock + 39];
+                                        string sHeight = "";
+                                        if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
+                                            sHeight = "无效";
+                                        else
+                                        {
+                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+                                            sHeight = iHeight.ToString();
+                                        }
 
                                         #endregion
 
                                         #region
 
                                         byte[] baJingDu1 = new byte[4];
-                                        baJingDu1[0] = baData[50 * iblock + 40];
-                                        baJingDu1[1] = baData[50 * iblock + 41];
-                                        baJingDu1[2] = baData[50 * iblock + 42];
-                                        baJingDu1[3] = baData[50 * iblock + 43];
-                                        float jingDu1 = System.BitConverter.ToSingle(baJingDu1, 0);
+                                        baJingDu1[3] = baData[50 * iblock + 40];
+                                        baJingDu1[2] = baData[50 * iblock + 41];
+                                        baJingDu1[1] = baData[50 * iblock + 42];
+                                        baJingDu1[0] = baData[50 * iblock + 43];
                                         string sJingDu1 = "";
-                                        if (jingDu1 >= 0)
-                                            sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
+                                        if (baJingDu1[0] == 0xFF || baJingDu1[1] == 0xFF || baJingDu1[2] == 0xFF || baJingDu1[3] == 0xFF)
+                                            sJingDu1 = "无效";
                                         else
-                                            sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
+                                        {
+                                            int jingDu1 = System.BitConverter.ToInt32(baJingDu1, 0);
+                                            if (jingDu1 >= 0)
+                                                sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
+                                            else
+                                                sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
+                                        }
                                         byte[] baWeiDu1 = new byte[4];
-                                        baWeiDu1[0] = baData[50 * iblock + 44];
-                                        baWeiDu1[1] = baData[50 * iblock + 45];
-                                        baWeiDu1[2] = baData[50 * iblock + 46];
-                                        baWeiDu1[3] = baData[50 * iblock + 47];
-                                        float weiDu1 = System.BitConverter.ToSingle(baWeiDu1, 0);
+                                        baWeiDu1[3] = baData[50 * iblock + 44];
+                                        baWeiDu1[2] = baData[50 * iblock + 45];
+                                        baWeiDu1[1] = baData[50 * iblock + 46];
+                                        baWeiDu1[0] = baData[50 * iblock + 47];
                                         string sWeiDu1 = "";
-                                        if (weiDu1 >= 0)
-                                            sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
+                                        if (baWeiDu1[0] == 0xFF || baWeiDu1[1] == 0xFF || baWeiDu1[2] == 0xFF || baWeiDu1[3] == 0xFF)
+                                            sWeiDu1 = "无效";
                                         else
-                                            sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
+                                        {
+                                            int weiDu1 = System.BitConverter.ToInt32(baWeiDu1, 0);
+                                            if (weiDu1 >= 0)
+                                                sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
+                                            else
+                                                sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
+                                        }
                                         byte[] baHeight1 = new byte[2];
-                                        baHeight1[0] = baData[50 * iblock + 48];
-                                        baHeight1[1] = baData[50 * iblock + 49];
-                                        int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
-                                        string sHeight1 = iHeight1.ToString();
+                                        baHeight1[1] = baData[50 * iblock + 48];
+                                        baHeight1[0] = baData[50 * iblock + 49];
+                                        string sHeight1 = "";
+                                        if (baHeight1[0] == 0xFF || baHeight1[1] == 0xFF)
+                                            sHeight1 = "无效";
+                                        else
+                                        {
+                                            int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
+                                            sHeight1 = iHeight1.ToString();
+                                        }
 
                                         #endregion
 
@@ -7965,7 +8047,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8206,7 +8288,7 @@ namespace Bumblebee
                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                     table.AddCell(cell);
-                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                     table.AddCell(cell);
@@ -8215,7 +8297,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8223,7 +8305,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8231,7 +8313,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8239,7 +8321,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8247,7 +8329,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8255,7 +8337,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8263,7 +8345,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8271,7 +8353,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8324,9 +8406,9 @@ namespace Bumblebee
             InRun = false;
         }
 
-        private string ConvertJingWeiDuToString(float fVal)
+        private string ConvertJingWeiDuToString(int iVal)
         {
-            float fValNew = fVal * 10000.0f;
+            float fValNew = iVal * 0.0001f;
             fValNew = Math.Abs(fValNew);
 
             int iValDu = (int)Math.Floor(Math.Floor(fValNew) / 60.0);
@@ -8335,7 +8417,7 @@ namespace Bumblebee
             int iValFen = (int)fValFen;
 
             float fValMiao = (float)(fValNew - Math.Floor(fValNew));
-            fValMiao = (float)Math.Ceiling(fValMiao * 60.0f);
+            fValMiao = (float)Math.Floor(fValMiao * 60.0f);
             int iValMiao = (int)fValMiao;
 
             return string.Format("{0:D}", iValDu) + "°"+ string.Format("{0:D}", iValFen) + "′" + string.Format("{0:D}", iValMiao) + "″"; 
@@ -8397,7 +8479,7 @@ namespace Bumblebee
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 5;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("注:XX/YY(XX为速度,单位km/h;YY为状态信号,\"1\"为有效)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("注:XX/YY(XX为速度,单位km/h;YY为状态信号,\"1\"为有效)", new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 6;
@@ -8428,7 +8510,7 @@ namespace Bumblebee
                             int speed = records[i * 10 + j].Item1;
                             byte state = records[i * 10 + j].Item2;
 
-                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + string.Format("{0:X2}", state), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + string.Format("{0:X2}", state), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                             cell.HorizontalAlignment = Element.ALIGN_CENTER;
                             cell.VerticalAlignment = Element.ALIGN_CENTER;
                             table.AddCell(cell);
@@ -8522,7 +8604,7 @@ namespace Bumblebee
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 5;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("注:XX/YY/ZZ/KK(XX经度;YY纬度;ZZ高度,单位m;KK速度,单位km/h)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("注:XX/YY/ZZ/KK(XX经度;YY纬度;ZZ高度,单位m;KK速度,单位km/h)", new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 6;
@@ -8553,7 +8635,7 @@ namespace Bumblebee
                             int speed = records[i * 10 + j].Item4;
 
                             cell = new PdfPCell(new Phrase(records[i * 10 + j].Item1 + "/\n" + records[i * 10 + j].Item2 + "/\n" + 
-                            records[i * 10 + j].Item3 + "/\n" + speed.ToString(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            records[i * 10 + j].Item3 + "/\n" + speed.ToString(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                             cell.HorizontalAlignment = Element.ALIGN_CENTER;
                             cell.VerticalAlignment = Element.ALIGN_CENTER;
                             table.AddCell(cell);
@@ -8645,7 +8727,7 @@ namespace Bumblebee
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 5;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("注:XX/ YY (XX为速度,单位km/h;YY为状态信号,\"1\"为有效)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("注:XX/ YY (XX为速度,单位km/h;YY为状态信号,\"1\"为有效)", new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 6;
@@ -8686,7 +8768,7 @@ namespace Bumblebee
                             int speed = records[i * 10 + j].Item1;
                             bool state = records[i * 10 + j].Item2;
 
-                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + ((state == true) ? "1" : "0"), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + ((state == true) ? "1" : "0"), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                             cell.HorizontalAlignment = Element.ALIGN_CENTER;
                             cell.VerticalAlignment = Element.ALIGN_CENTER;
                             table.AddCell(cell);
@@ -8799,23 +8881,23 @@ namespace Bumblebee
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
 
-                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordStartDateTime.Replace(" ","\n").Trim(), new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase(cri.RecordStartDateTime.Replace(" ","\n").Trim(), new Font(baseFont, 9)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.RecordStopDateTime.Replace(" ", "\n").Trim(), new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase(cri.RecordStopDateTime.Replace(" ", "\n").Trim(), new Font(baseFont, 9)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.StartPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase(cri.StartPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 9)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.StopPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 7)));
+                    cell = new PdfPCell(new Phrase(cri.StopPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 9)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -8913,19 +8995,19 @@ namespace Bumblebee
 
                     foreach (Cmd12HResponse cri in _cmd12HRespOc)
                     {
-                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
-                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
-                        cell = new PdfPCell(new Phrase(cri.Number, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.Number, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
-                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
@@ -9019,15 +9101,15 @@ namespace Bumblebee
 
                     foreach (Cmd13HResponse cri in _cmd13HRespOc)
                     {
-                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
-                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
-                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
@@ -9121,15 +9203,15 @@ namespace Bumblebee
 
                     foreach (Cmd14HResponse cri in _cmd14HRespOc)
                     {
-                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.Index, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
-                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.RecordDateTime, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
-                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 7)));
+                        cell = new PdfPCell(new Phrase(cri.Description, new Font(baseFont, 9)));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         cell.VerticalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);
@@ -9232,7 +9314,7 @@ namespace Bumblebee
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 5;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase("注:XX/YY(XX为记录速度,单位km/h;YY为参考速度,单位km/h)", new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("注:XX/YY(XX为记录速度,单位km/h;YY为参考速度,单位km/h)", new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     cell.Colspan = 6;
@@ -9273,7 +9355,7 @@ namespace Bumblebee
                             int speed = records[i * 10 + j].Item1;
                             int refSpeed = records[i * 10 + j].Item2;
 
-                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + refSpeed.ToString(), new Font(baseFont, 7, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + refSpeed.ToString(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                             cell.HorizontalAlignment = Element.ALIGN_CENTER;
                             cell.VerticalAlignment = Element.ALIGN_CENTER;
                             table.AddCell(cell);
