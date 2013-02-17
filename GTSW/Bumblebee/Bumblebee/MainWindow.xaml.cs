@@ -2340,7 +2340,7 @@ namespace Bumblebee
 
                                     if (xni.InnerText != null)
                                     {
-                                        WriteReadInterval = xni.InnerText;
+                                        ChkInterval = xni.InnerText;
                                         if (string.IsNullOrWhiteSpace(ChkInterval))
                                         {
                                             LogMessageError("配置文件中串口检定间隔时间项为空.");
@@ -2572,6 +2572,7 @@ namespace Bumblebee
                 sw.WriteLine("    <timeout>20000</timeout>");
                 sw.WriteLine("    <cmdintvl>1000</cmdintvl>");
                 sw.WriteLine("    <wrintvl>1000</wrintvl>");
+                sw.WriteLine("    <chkintvl>2500</chkintvl>");
                 sw.WriteLine("    <serverip>127.0.0.1</serverip>");
                 sw.WriteLine("    <serverport>8678</serverport>");
                 sw.WriteLine("</bumblebee>");
@@ -6052,7 +6053,8 @@ namespace Bumblebee
 
             PBarValue = 0;
 
-            CloseReport();
+            if(NeedReport == true)
+                CloseReport();
         }
 
         private void OpenUSBVDR_MenuItem_Click(object sender, RoutedEventArgs e)

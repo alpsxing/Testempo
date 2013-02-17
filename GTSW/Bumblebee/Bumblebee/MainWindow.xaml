@@ -257,9 +257,10 @@
                                         <Button Content="取消选择" Width="70" Click="GetCmdUnselectAll_Button_Click"/>
                                     </StackPanel>
                                     <ListView Name="lvGetCmd" SelectionMode="Single" ItemsSource="{Binding}"
-                                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                BorderThickness="0" Background="#FFC0C9D4">
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              BorderThickness="0" Background="#FFC0C9D4"
+                                              Style="{StaticResource DisabledListViewStyle}">
                                         <ListView.View>
                                             <GridView x:Name="gvGetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
                                                 <GridViewColumn Width="220">
@@ -306,9 +307,10 @@
                                         <Button Content="取消选择" Width="70" Click="SetCmdUnselectAll_Button_Click"/>
                                     </StackPanel>
                                     <ListView Name="lvSetCmd" SelectionMode="Single" ItemsSource="{Binding}"
-                                            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                            ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                            BorderThickness="0" Background="#FFC0C9D4">
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              BorderThickness="0" Background="#FFC0C9D4"
+                                              Style="{StaticResource DisabledListViewStyle}">
                                         <ListView.View>
                                             <GridView x:Name="gvSetCmd" ColumnHeaderContainerStyle="{StaticResource styleLVHeaderCmd}">
                                                 <GridViewColumn Width="220">
