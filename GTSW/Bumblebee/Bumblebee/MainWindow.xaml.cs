@@ -179,6 +179,7 @@ namespace Bumblebee
         private ObservableCollection<Cmd08HResponse> _cmd08HRespOc = new ObservableCollection<Cmd08HResponse>();
 
         private Document _pdfDocument = null;
+        private PdfWriter _writer = null;
         private string _docTitleDateTime = "";
 
         private Task _parseVDRTask = null;
@@ -8432,10 +8433,6 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                //Document document = new Document(PageSize.A4);
-                //PdfWriter.GetInstance(document, new FileStream(CurrentDirectory + @"\08H.pdf", FileMode.Create));
-                //_pdfDocument.Open();
-
                 #region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
@@ -8460,20 +8457,306 @@ namespace Bumblebee
 
                 foreach (Cmd08HResponse cri in _cmd08HRespOc)
                 {
-                    PdfPTable table = new PdfPTable(11);
+                    if (_cts.Token.IsCancellationRequested == true)
+                        break;
 
-                    if (index == 0)
-                        table.SpacingBefore = 25f;
-                    else
-                        table.SpacingBefore = 15f;
-                    index++;
+                    //if (index > 10)
+                    //    break;
+
+                    ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd08HRespOc.Count.ToString() + ")记录中...";
+
+                    ObservableCollection<Tuple<int, byte>> records = cri.Records;
+                    PdfPCell cell;
+
+                    #region State Table
+
+                    PdfPTable stateTable = new PdfPTable(62);
+                    stateTable.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                    float[] stateWidths = new float[62];
+                    for (int i = 0; i < 62; i++)
+                    {
+                        if (i == 61 || i ==0)
+                            stateWidths[i] = 100f;
+                        else
+                            stateWidths[i] = 10f;
+                    }
+                    stateTable.SetWidths(stateWidths);
+                    stateTable.LockedWidth = true;
+
+                    stateTable.SpacingBefore = 30f;
+                    stateTable.SpacingAfter = 10f;
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        for (int j = 0; j < 62; j++)
+                        {
+                            if (j == 0)
+                            {
+                                cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.WHITE)));
+                                cell.BackgroundColor = BaseColor.WHITE;
+                                cell.BorderColor = BaseColor.WHITE;
+                            }
+                            else if (j == 61)
+                            {
+                                string cellText = "";
+                                switch (i)
+                                {
+                                    default:
+                                        break;
+                                    case 0:
+                                        cellText = D0;
+                                        break;
+                                    case 1:
+                                        cellText = D1;
+                                        break;
+                                    case 2:
+                                        cellText = D2;
+                                        break;
+                                    case 3:
+                                        cellText = "近光";
+                                        break;
+                                    case 4:
+                                        cellText = "远光";
+                                        break;
+                                    case 5:
+                                        cellText = "右转向";
+                                        break;
+                                    case 6:
+                                        cellText = "左转向";
+                                        break;
+                                    case 7:
+                                        cellText = "制动";
+                                        break;
+                                }
+                                cell = new PdfPCell(new Phrase(cellText, new Font(baseFont, 9, Font.NORMAL, BaseColor.BLACK)));
+                                cell.BackgroundColor = BaseColor.WHITE;
+                                cell.BorderColor = BaseColor.WHITE;
+                            }
+                            else
+                            {
+                                cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
+                                Tuple<int, byte> rec = records[j - 1];
+                                if (rec.Item2 == 0xFF)
+                                {
+                                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                                    cell.BorderColor = BaseColor.WHITE;
+                                    cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                                }
+                                else
+                                {
+                                    int cmp = 1 << i;
+                                    if ((cmp & rec.Item2) != 0)
+                                    {
+                                        switch (i)
+                                        {
+                                            default:
+                                                break;
+                                            case 0:
+                                                cell.BackgroundColor = BaseColor.BLACK;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.BLACK;
+                                                break;
+                                            case 1:
+                                                cell.BackgroundColor = BaseColor.ORANGE;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.ORANGE;
+                                                break;
+                                            case 2:
+                                                cell.BackgroundColor = BaseColor.YELLOW;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.YELLOW;
+                                                break;
+                                            case 3:
+                                                cell.BackgroundColor = BaseColor.GREEN;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.GREEN;
+                                                break;
+                                            case 4:
+                                                cell.BackgroundColor = BaseColor.BLUE;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.BLUE;
+                                                break;
+                                            case 5:
+                                                cell.BackgroundColor = BaseColor.CYAN;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.CYAN;
+                                                break;
+                                            case 6:
+                                                cell.BackgroundColor = BaseColor.PINK;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.PINK;
+                                                break;
+                                            case 7:
+                                                cell.BackgroundColor = BaseColor.MAGENTA;
+                                                cell.BorderColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.MAGENTA;
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                                        cell.BorderColor = BaseColor.WHITE;
+                                        cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                                    }
+                                }
+                            }
+                            stateTable.AddCell(cell);
+                        }
+                    }
+
+                    _pdfDocument.Add(stateTable);
+
+                    #endregion
+
+                    //#region Speed Table
+
+                    //PdfPTable speedTable = new PdfPTable(62);
+                    //speedTable.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                    //float[] speedWidths = new float[62];
+                    //for (int i = 0; i < 62; i++)
+                    //{
+                    //    if (i == 61 || i == 0)
+                    //        speedWidths[i] = 100f;
+                    //    else
+                    //        speedWidths[i] = 10f;
+                    //}
+                    //speedTable.SetWidths(speedWidths);
+                    //speedTable.LockedWidth = true;
+
+                    //speedTable.SpacingBefore = 30f;
+                    //speedTable.SpacingAfter = 10f;
+
+                    //for (int i = 0; i < 8; i++)
+                    //{
+                    //    for (int j = 0; j < 62; j++)
+                    //    {
+                    //        if (j == 0)
+                    //        {
+                    //            cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.WHITE)));
+                    //            cell.BackgroundColor = BaseColor.WHITE;
+                    //            cell.BorderColor = BaseColor.WHITE;
+                    //        }
+                    //        else if (j == 61)
+                    //        {
+                    //            string cellText = "";
+                    //            switch (i)
+                    //            {
+                    //                default:
+                    //                    break;
+                    //                case 0:
+                    //                    cellText = D0;
+                    //                    break;
+                    //                case 1:
+                    //                    cellText = D1;
+                    //                    break;
+                    //                case 2:
+                    //                    cellText = D2;
+                    //                    break;
+                    //                case 3:
+                    //                    cellText = "近光";
+                    //                    break;
+                    //                case 4:
+                    //                    cellText = "远光";
+                    //                    break;
+                    //                case 5:
+                    //                    cellText = "右转向";
+                    //                    break;
+                    //                case 6:
+                    //                    cellText = "左转向";
+                    //                    break;
+                    //                case 7:
+                    //                    cellText = "制动";
+                    //                    break;
+                    //            }
+                    //            cell = new PdfPCell(new Phrase(cellText, new Font(baseFont, 1, Font.NORMAL, BaseColor.BLACK)));
+                    //            cell.BackgroundColor = BaseColor.WHITE;
+                    //            cell.BorderColor = BaseColor.WHITE;
+                    //        }
+                    //        else
+                    //        {
+                    //            cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
+                    //            Tuple<int, byte> rec = records[j - 1];
+                    //            if (rec.Item2 == 0xFF)
+                    //            {
+                    //                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    //                cell.BorderColor = BaseColor.WHITE;
+                    //                cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                    //            }
+                    //            else
+                    //            {
+                    //                int cmp = 1 << i;
+                    //                if ((cmp & rec.Item2) != 0)
+                    //                {
+                    //                    switch (i)
+                    //                    {
+                    //                        default:
+                    //                            break;
+                    //                        case 0:
+                    //                            cell.BackgroundColor = BaseColor.BLACK;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.BLACK;
+                    //                            break;
+                    //                        case 1:
+                    //                            cell.BackgroundColor = BaseColor.ORANGE;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.ORANGE;
+                    //                            break;
+                    //                        case 2:
+                    //                            cell.BackgroundColor = BaseColor.YELLOW;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.YELLOW;
+                    //                            break;
+                    //                        case 3:
+                    //                            cell.BackgroundColor = BaseColor.GREEN;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.GREEN;
+                    //                            break;
+                    //                        case 4:
+                    //                            cell.BackgroundColor = BaseColor.BLUE;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.BLUE;
+                    //                            break;
+                    //                        case 5:
+                    //                            cell.BackgroundColor = BaseColor.CYAN;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.CYAN;
+                    //                            break;
+                    //                        case 6:
+                    //                            cell.BackgroundColor = BaseColor.PINK;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.PINK;
+                    //                            break;
+                    //                        case 7:
+                    //                            cell.BackgroundColor = BaseColor.MAGENTA;
+                    //                            cell.BorderColor = BaseColor.WHITE;
+                    //                            cell.Phrase.Font.Color = BaseColor.MAGENTA;
+                    //                            break;
+                    //                    }
+                    //                }
+                    //                else
+                    //                {
+                    //                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    //                    cell.BorderColor = BaseColor.WHITE;
+                    //                    cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                    //                }
+                    //            }
+                    //        }
+                    //        speedTable.AddCell(cell);
+                    //    }
+                    //}
+
+                    //_pdfDocument.Add(speedTable);
+
+                    //#endregion
+
+                    PdfPTable table = new PdfPTable(11);
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
                     table.SetWidths(widths);
                     table.LockedWidth = true;
 
-                    PdfPCell cell;
                     cell = new PdfPCell(new Phrase("开始时间:" + cri.StartDateTime, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
@@ -8497,7 +8780,6 @@ namespace Bumblebee
                         table.AddCell(cell);
                     }
 
-                    ObservableCollection<Tuple<int, byte>> records = cri.Records;
                     for (int i = 0; i < 6; i++)
                     {
                         cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
@@ -8521,6 +8803,8 @@ namespace Bumblebee
                         table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
+                
+                    index++;
                 }
 
                 #endregion
@@ -8838,6 +9122,8 @@ namespace Bumblebee
                 _pdfDocument.Add(par1);
 
                 int index = 0;
+
+                //PdfContentByte canvas = ();
 
                 foreach (Cmd11HResponse cri in _cmd11HRespOc)
                 {
@@ -9399,8 +9685,25 @@ namespace Bumblebee
             {
                 ReadyString2 = "打开新的报表文件...";
 
+                CurrentDirectory = System.Environment.CurrentDirectory;
+                if (NeedReport)
+                {
+                    if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(CurrentDirectory + @"\Reports");
+                            CurrentDirectory = CurrentDirectory + @"\Reports";
+                        }
+                        catch (Exception)
+                        {
+                            CurrentDirectory = System.Environment.CurrentDirectory;
+                        }
+                    }
+                }
+
                 _pdfDocument = new Document(PageSize.A4);
-                PdfWriter.GetInstance(_pdfDocument, new FileStream(CurrentDirectory + @"\Report_" + _docTitleDateTime +".pdf", FileMode.Create));
+                _writer = PdfWriter.GetInstance(_pdfDocument, new FileStream(CurrentDirectory + @"\Report_" + _docTitleDateTime + ".pdf", FileMode.Create));
                 _pdfDocument.Open();
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
