@@ -26,15 +26,6 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Win32;
 
-using System.Windows.Controls.DataVisualization;
-using System.Windows.Controls.DataVisualization.Charting;
-using System.Windows.Controls.DataVisualization.Charting.Primitives;
-using System.Windows.Controls.DataVisualization.Design;
-using System.Windows.Controls.DataVisualization.Expression;
-using System.Windows.Controls.DataVisualization.Expression.Design;
-using System.Windows.Controls.DataVisualization.VisualStudio;
-using System.Windows.Controls.DataVisualization.VisualStudio.Design;
-
 using iTextSharp;
 using iTextSharp.text;
 using iTextSharp.text.api;
@@ -4748,14 +4739,14 @@ namespace Bumblebee
                                                                 baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
                                                             }
                                                             string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-                                                            ObservableCollection<Tuple<int, bool>> records = new ObservableCollection<Tuple<int, bool>>();
+                                                            ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
                                                             for (int iRec = 0; iRec < 100; iRec++)
                                                             {
                                                                 int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
                                                                 if (speed == 0xFF)
                                                                     speed = 0;
-                                                                bool state = (((int)baData[234 * iblock + 24 + iRec * 2 + 1] & 1) == 1) ? true : false;
-                                                                records.Add(new Tuple<int, bool>(speed, state));
+                                                                byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
+                                                                records.Add(new Tuple<int, byte>(speed, state));
                                                             }
 
                                                             #region
@@ -7341,14 +7332,14 @@ namespace Bumblebee
                                             baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
                                         }
                                         string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-                                        ObservableCollection<Tuple<int, bool>> records = new ObservableCollection<Tuple<int, bool>>();
+                                        ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
                                         for (int iRec = 0; iRec < 100; iRec++)
                                         {
                                             int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
                                             if (speed == 0xFF)
                                                 speed = 0;
-                                            bool state = (((int)baData[234 * iblock + 24 + iRec * 2 + 1] & 1) == 1) ? true : false;
-                                            records.Add(new Tuple<int, bool>(speed, state));
+                                            byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
+                                            records.Add(new Tuple<int, byte>(speed, state));
                                         }
 
                                         #region
@@ -8505,9 +8496,6 @@ namespace Bumblebee
                     if (_cts.Token.IsCancellationRequested == true)
                         break;
 
-                    //if (index > 1)
-                    //    break;
-
                     ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd08HRespOc.Count.ToString() + ")记录中...";
 
                     ObservableCollection<Tuple<int, byte>> records = cri.Records;
@@ -8520,7 +8508,9 @@ namespace Bumblebee
                     float[] stateWidths = new float[62];
                     for (int i = 0; i < 62; i++)
                     {
-                        if (i == 61 || i == 0)
+                        if (i == 0)
+                            stateWidths[i] = 60f;
+                        else if (i == 61)
                             stateWidths[i] = 100f;
                         else
                             stateWidths[i] = 10f;
@@ -8673,9 +8663,7 @@ namespace Bumblebee
                         else
                             cell.Colspan = 5;
                         stateTable.AddCell(cell);
-                    }
-       
- 
+                    }  
 
                     _pdfDocument.Add(stateTable);
 
@@ -8708,24 +8696,27 @@ namespace Bumblebee
 
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
-                        RenderTargetBitmap rtb = new RenderTargetBitmap(420, 150, 96, 96, PixelFormats.Pbgra32);
+                        RenderTargetBitmap rtb = new RenderTargetBitmap(660, 150, 96, 96, PixelFormats.Pbgra32);
 
                         SpeedChartUC uc = new SpeedChartUC(minBottom, maxTop, records);
-                        uc.Arrange(new Rect(new Size(420, 150)));
+                        uc.Arrange(new Rect(new Size(660, 150)));
                         rtb.Render(uc);
 
                         PngBitmapEncoder png = new PngBitmapEncoder();
                         png.Frames.Add(BitmapFrame.Create(rtb));
-                        using (Stream fs = File.Create(CurrentDirectory + @"\test" + index.ToString() + ".png"))
+                        using (Stream fs = File.Create(CurrentDirectory + @"\embedded.png"))
                         {
                             png.Save(fs);
                         }
 
-                        PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\test" + index.ToString() + ".png");
+                        PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
+                        speedPng.ScaleAbsolute(455, 115);
                         speedPng.SpacingBefore = 5f;
-                        speedPng.SpacingBefore = 5f;
+                        speedPng.SpacingAfter = 5f;
 
                         _pdfDocument.Add(speedPng);
+
+                        File.Delete(CurrentDirectory + @"\embedded.png");
 
                     }, null);
 
@@ -8958,11 +8949,232 @@ namespace Bumblebee
                     if (_cts.Token.IsCancellationRequested == true)
                         break;
 
-                    //if (index > 10)
-                    //    break;
-
                     ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd10HRespOc.Count.ToString() + ")记录中...";
-                    
+
+                    ObservableCollection<Tuple<int, byte>> records = cri.Records;
+                    PdfPCell cell;
+
+                    #region State Table
+
+                    PdfPTable stateTable = new PdfPTable(102);
+                    stateTable.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+                    float[] stateWidths = new float[102];
+                    for (int i = 0; i < 102; i++)
+                    {
+                        if (i == 0)
+                            stateWidths[i] = 60f;
+                        else if (i == 101)
+                            stateWidths[i] = 100f;
+                        else
+                            stateWidths[i] = 10f;
+                    }
+                    stateTable.SetWidths(stateWidths);
+                    stateTable.LockedWidth = true;
+
+                    stateTable.SpacingBefore = 30f;
+                    stateTable.SpacingAfter = 10f;
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        for (int j = 0; j < 102; j++)
+                        {
+                            if (j == 0)
+                            {
+                                cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.WHITE)));
+                                cell.BackgroundColor = BaseColor.WHITE;
+                                cell.BorderColor = BaseColor.WHITE;
+                            }
+                            else if (j == 101)
+                            {
+                                string cellText = "";
+                                Font newFont;
+                                switch (i)
+                                {
+                                    default:
+                                        cellText = "(无效)";
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.WHITE);
+                                        break;
+                                    case 0:
+                                        cellText = D0;
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.RED);
+                                        break;
+                                    case 1:
+                                        cellText = D1;
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.ORANGE);
+                                        break;
+                                    case 2:
+                                        cellText = D2;
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK);
+                                        break;
+                                    case 3:
+                                        cellText = "近光";
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.GREEN);
+                                        break;
+                                    case 4:
+                                        cellText = "远光";
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.BLUE);
+                                        break;
+                                    case 5:
+                                        cellText = "右转向";
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.CYAN);
+                                        break;
+                                    case 6:
+                                        cellText = "左转向";
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.PINK);
+                                        break;
+                                    case 7:
+                                        cellText = "制动";
+                                        newFont = new Font(baseFont, 9, Font.BOLD, BaseColor.MAGENTA);
+                                        break;
+                                }
+                                cell = new PdfPCell(new Phrase(cellText, newFont));//new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
+                                cell.BorderColor = BaseColor.WHITE;
+                            }
+                            else
+                            {
+                                cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
+                                Tuple<int, byte> rec = records[99 - (j - 1)];
+                                if (rec.Item2 == 0xFF)
+                                {
+                                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                                    cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                                    cell.BorderColor = BaseColor.WHITE;
+                                }
+                                else
+                                {
+                                    int cmp = 1 << i;
+                                    if ((cmp & rec.Item2) != 0)
+                                    {
+                                        switch (i)
+                                        {
+                                            default:
+                                                cell.BackgroundColor = BaseColor.WHITE;
+                                                cell.Phrase.Font.Color = BaseColor.WHITE;
+                                                break;
+                                            case 0:
+                                                cell.BackgroundColor = BaseColor.RED;
+                                                cell.Phrase.Font.Color = BaseColor.RED;
+                                                break;
+                                            case 1:
+                                                cell.BackgroundColor = BaseColor.ORANGE;
+                                                cell.Phrase.Font.Color = BaseColor.ORANGE;
+                                                break;
+                                            case 2:
+                                                cell.BackgroundColor = BaseColor.BLACK;
+                                                cell.Phrase.Font.Color = BaseColor.BLACK;
+                                                break;
+                                            case 3:
+                                                cell.BackgroundColor = BaseColor.GREEN;
+                                                cell.Phrase.Font.Color = BaseColor.GREEN;
+                                                break;
+                                            case 4:
+                                                cell.BackgroundColor = BaseColor.BLUE;
+                                                cell.Phrase.Font.Color = BaseColor.BLUE;
+                                                break;
+                                            case 5:
+                                                cell.BackgroundColor = BaseColor.CYAN;
+                                                cell.Phrase.Font.Color = BaseColor.CYAN;
+                                                break;
+                                            case 6:
+                                                cell.BackgroundColor = BaseColor.PINK;
+                                                cell.Phrase.Font.Color = BaseColor.PINK;
+                                                break;
+                                            case 7:
+                                                cell.BackgroundColor = BaseColor.MAGENTA;
+                                                cell.Phrase.Font.Color = BaseColor.MAGENTA;
+                                                break;
+                                        }
+                                        cell.BorderColor = cell.BackgroundColor;
+                                    }
+                                    else
+                                    {
+                                        cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                                        cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                                        cell.BorderColor = BaseColor.WHITE;
+                                    }
+                                }
+                            }
+                            stateTable.AddCell(cell);
+                        }
+                    }
+                    cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.WHITE)));
+                    cell.BackgroundColor = BaseColor.WHITE;
+                    cell.BorderColor = BaseColor.WHITE;
+                    cell.Phrase.Font.Color = BaseColor.WHITE;
+                    stateTable.AddCell(cell);
+                    for (int i = 0; i <= 100; i = i + 10)
+                    {
+                        cell = new PdfPCell(new Phrase(((int)(Math.Floor(i / 5.0))).ToString() + "秒", new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
+                        cell.BackgroundColor = BaseColor.WHITE;
+                        cell.BorderColor = BaseColor.WHITE;
+                        cell.BorderColorLeft = BaseColor.RED;
+                        cell.BorderColorRight = BaseColor.RED;
+                        //cell.BorderColorTop = BaseColor.WHITE;
+                        //cell.BorderColorBottom = BaseColor.WHITE;
+                        if (i == 100)
+                            cell.Colspan = 1;
+                        else
+                            cell.Colspan = 10;
+                        stateTable.AddCell(cell);
+                    }
+
+                    _pdfDocument.Add(stateTable);
+
+                    #endregion
+
+                    #region Speed Chart
+
+                    int min = -1;
+                    int max = -1;
+                    int idxTi = 0;
+                    foreach (Tuple<int, byte> ti in records)
+                    {
+                        if (idxTi++ == 0)
+                        {
+                            min = ti.Item1;
+                            max = ti.Item1;
+                        }
+                        else
+                        {
+                            if (ti.Item1 > max)
+                                max = ti.Item1;
+                            if (ti.Item1 < min)
+                                min = ti.Item1;
+                        }
+                    }
+                    int minBottom = min - (min % 10);
+                    int maxTop = max - (max % 10) + 10;
+                    if (maxTop - max == 10)
+                        maxTop = max;
+
+                    Dispatcher.Invoke((ThreadStart)delegate
+                    {
+                        RenderTargetBitmap rtb = new RenderTargetBitmap(560, 150, 96, 96, PixelFormats.Pbgra32);
+
+                        SpeedChart20sUC uc = new SpeedChart20sUC(minBottom, maxTop, records);
+                        uc.Arrange(new Rect(new Size(560, 150)));
+                        rtb.Render(uc);
+
+                        PngBitmapEncoder png = new PngBitmapEncoder();
+                        png.Frames.Add(BitmapFrame.Create(rtb));
+                        using (Stream fs = File.Create(CurrentDirectory + @"\embedded.png"))
+                        {
+                            png.Save(fs);
+                        }
+
+                        PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
+                        speedPng.ScaleAbsolute(455, 130);
+                        speedPng.SpacingBefore = 5f;
+                        speedPng.SpacingAfter = 5f;
+
+                        _pdfDocument.Add(speedPng);
+
+                        File.Delete(CurrentDirectory + @"\embedded.png");
+
+                    }, null);
+
+                    #endregion
+         
                     PdfPTable table = new PdfPTable(11);
 
                     if (index == 0)
@@ -8976,7 +9188,6 @@ namespace Bumblebee
                     table.SetWidths(widths);
                     table.LockedWidth = true;
 
-                    PdfPCell cell;
                     cell = new PdfPCell(new Phrase("停车时间:" + cri.StopDateTime, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
@@ -9010,7 +9221,6 @@ namespace Bumblebee
                         table.AddCell(cell);
                     }
 
-                    ObservableCollection<Tuple<int, bool>> records = cri.Records;
                     for (int i = 0; i < 10; i++)
                     {
                         cell = new PdfPCell(new Phrase(i.ToString(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
@@ -9021,9 +9231,9 @@ namespace Bumblebee
                         for (int j = 0; j < 10; j++)
                         {
                             int speed = records[i * 10 + j].Item1;
-                            bool state = records[i * 10 + j].Item2;
+                            byte state = records[i * 10 + j].Item2;
 
-                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + ((state == true) ? "1" : "0"), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+                            cell = new PdfPCell(new Phrase(speed.ToString() + "/" + string.Format("{0:X2}", state), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                             cell.HorizontalAlignment = Element.ALIGN_CENTER;
                             cell.VerticalAlignment = Element.ALIGN_CENTER;
                             table.AddCell(cell);
@@ -9082,15 +9292,10 @@ namespace Bumblebee
 
                 int index = 0;
 
-                //PdfContentByte canvas = ();
-
                 foreach (Cmd11HResponse cri in _cmd11HRespOc)
                 {
                     if (_cts.Token.IsCancellationRequested == true)
                         break;
-
-                    //if (index > 10)
-                    //    break;
 
                     ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd11HRespOc.Count.ToString() + ")记录中...";
                     
@@ -9190,7 +9395,7 @@ namespace Bumblebee
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 驾驶人身份记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
 
@@ -9490,9 +9695,6 @@ namespace Bumblebee
                     if (_cts.Token.IsCancellationRequested == true)
                         break;
 
-                    //if (index > 10)
-                    //    break;
-
                     ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd15HRespOc.Count.ToString() + ")记录中...";
                     
                     PdfPTable table = new PdfPTable(11);
@@ -9516,10 +9718,10 @@ namespace Bumblebee
                             state = "未知 - " + string.Format("{0:X2}",cri.State);
                             break;
                         case 1:
-                            state = "正常 - " + string.Format("{0:X2}", cri.State);
+                            state = "正常";
                             break;
                         case 2:
-                            state = "异常 - " + string.Format("{0:X2}", cri.State);
+                            state = "异常";
                             break;
                     }
                     cell = new PdfPCell(new Phrase("速度状态:" + state, new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
@@ -10799,7 +11001,7 @@ namespace Bumblebee
         public string Index { get; set; }
         public string Number { get; set; }
         public string StopDateTime {get;set;}
-        public ObservableCollection<Tuple<int, bool>> Records { get; set; }
+        public ObservableCollection<Tuple<int, byte>> Records { get; set; }
         public string Position { get; set; }
         public string Height { get; set; }
     }

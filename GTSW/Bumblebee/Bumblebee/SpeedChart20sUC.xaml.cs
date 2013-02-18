@@ -19,7 +19,7 @@ namespace Bumblebee
     /// <summary>
     /// Interaction logic for SpeedChartUC.xaml
     /// </summary>
-    public partial class SpeedChartUC : UserControl, INotifyPropertyChanged
+    public partial class SpeedChart20sUC : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(string propertyName)
@@ -150,13 +150,18 @@ namespace Bumblebee
 
         #endregion
 
-        public SpeedChartUC(int minSpeed, int maxSpeed, ObservableCollection<Tuple<int, byte>> records)
+        public SpeedChart20sUC(int minSpeed, int maxSpeed, ObservableCollection<Tuple<int, byte>> records)
         {
             InitializeComponent();
 
             DataContext = this;
 
-            _records = records;
+            _records = new ObservableCollection<Tuple<int, byte>>();
+            for (int i = records.Count - 1; i >= 0; i--)
+            {
+                _records.Add(records[i]);
+            }
+
 
             double step = (maxSpeed - minSpeed) / 5.0;
             int iStep = (int)(step * 10.0);
@@ -186,7 +191,7 @@ namespace Bumblebee
             PathFigure pf = new PathFigure();
             for (int i = 0; i < _records.Count; i++)
             {
-                double x = (canvasTraces.Width / 60.0) * i;
+                double x = (canvasTraces.Width / 100.0) * i;
                 double y = 0.0;
                 if (MaxSpeed - MinSpeed == 0.0)
                     y = canvasTraces.Height;
@@ -206,40 +211,5 @@ namespace Bumblebee
             PathGeometry pg = new PathGeometry(listPF);
             pathSpeed.Data = pg;
         }
-    }
-
-    [ValueConversion(typeof(Point[]), typeof(Geometry))]
-    public class PointsToPathConverter : IValueConverter
-    {
-        #region IValueConverter Members
-
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            Point[] points = (Point[])value;
-            if (points.Length > 0)
-            {
-                Point start = points[0];
-                List<LineSegment> segments = new List<LineSegment>();
-                for (int i = 1; i < points.Length; i++)
-                {
-                    segments.Add(new LineSegment(points[i], true));
-                }
-                PathFigure figure = new PathFigure(start, segments, false); //true if closed
-                PathGeometry geometry = new PathGeometry();
-                geometry.Figures.Add(figure);
-                return geometry;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
     }
 }
