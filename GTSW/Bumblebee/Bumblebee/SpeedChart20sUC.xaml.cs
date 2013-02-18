@@ -196,7 +196,7 @@ namespace Bumblebee
                 if (MaxSpeed - MinSpeed == 0.0)
                     y = canvasTraces.Height;
                 else
-                    y = canvasTraces.Height * (1.0 - ((double)_records[i].Item1 / (double)(MaxSpeed - MinSpeed)));
+                    y = canvasTraces.Height * (1.0 - (((double)_records[i].Item1 - MinSpeed) / (double)(MaxSpeed - MinSpeed)));
                 Point pt = new Point(x, y);
                 if (i == 0)
                     pf.StartPoint = pt;
