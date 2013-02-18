@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Bumblebee"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="670">
+             d:DesignHeight="150" d:DesignWidth="420">
     <UserControl.Resources>
         <local:PointsToPathConverter x:Key="PointsToPathConverter"/>
     </UserControl.Resources>
     <DockPanel Background="LightGray">
-        <StackPanel Background="White" DockPanel.Dock="Left" Width="70">
+        <StackPanel Background="White" DockPanel.Dock="Left" Width="60">
             <Label Height="25" Name="lblSpeed4" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed4,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
             <Label Height="25" Name="lblSpeed3" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
             <Label Height="25" Name="lblSpeed2" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
@@ -18,62 +18,60 @@
             <Label Height="25" Name="lblSpeed0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
         </StackPanel>
         <StackPanel Background="White" DockPanel.Dock="Bottom" Height="25" Orientation="Horizontal">
-            <Label Width="50" Content="0秒"></Label>
-            <Label Width="50" Content="5秒"></Label>
-            <Label Width="50" Content="10秒"></Label>
-            <Label Width="50" Content="15秒"></Label>
-            <Label Width="50" Content="20秒"></Label>
-            <Label Width="50" Content="25秒"></Label>
-            <Label Width="50" Content="30秒"></Label>
-            <Label Width="50" Content="35秒"></Label>
-            <Label Width="50" Content="40秒"></Label>
-            <Label Width="50" Content="55秒"></Label>
-            <Label Width="50" Content="50秒"></Label>
-            <Label Width="50" Content="55秒"></Label>
+            <Label Width="30" Content="0秒"></Label>
+            <Label Width="30" Content="5"></Label>
+            <Label Width="30" Content="10"></Label>
+            <Label Width="30" Content="15"></Label>
+            <Label Width="30" Content="20"></Label>
+            <Label Width="30" Content="25"></Label>
+            <Label Width="30" Content="30"></Label>
+            <Label Width="30" Content="35"></Label>
+            <Label Width="30" Content="40"></Label>
+            <Label Width="30" Content="55"></Label>
+            <Label Width="30" Content="50"></Label>
+            <Label Width="30" Content="55"></Label>
         </StackPanel>
-        <Canvas Height="125" Width="600" Name="canvasTraces">
+        <Canvas Height="125" Width="360" Name="canvasTraces">
             <Path Stroke="White" StrokeThickness="1">
                 <Path.Data>
                     <PathGeometry>
                         <PathFigure IsClosed="False" StartPoint="0,0">
                             <LineSegment Point="0, 25"/>
-                            <LineSegment Point="600, 25"/>
-                            <LineSegment Point="600, 50"/>
+                            <LineSegment Point="360, 25"/>
+                            <LineSegment Point="360, 50"/>
                             <LineSegment Point="0, 50"/>
                             <LineSegment Point="0, 75"/>
-                            <LineSegment Point="600, 75"/>
-                            <LineSegment Point="600, 100"/>
+                            <LineSegment Point="360, 75"/>
+                            <LineSegment Point="360, 100"/>
                             <LineSegment Point="0, 100"/>
                             <LineSegment Point="0, 125"/>
-                            <LineSegment Point="600, 125"/>
-                            <LineSegment Point="550, 125"/>
-                            <LineSegment Point="550, 0"/>
-                            <LineSegment Point="500, 0"/>
-                            <LineSegment Point="500, 125"/>
-                            <LineSegment Point="450, 125"/>
-                            <LineSegment Point="450, 0"/>
-                            <LineSegment Point="400, 0"/>
-                            <LineSegment Point="400, 125"/>
-                            <LineSegment Point="350, 125"/>
-                            <LineSegment Point="350, 0"/>
+                            <LineSegment Point="360, 125"/>
+                            <LineSegment Point="330, 125"/>
+                            <LineSegment Point="330, 0"/>
                             <LineSegment Point="300, 0"/>
                             <LineSegment Point="300, 125"/>
-                            <LineSegment Point="250, 125"/>
-                            <LineSegment Point="250, 0"/>
-                            <LineSegment Point="250, 0"/>
-                            <LineSegment Point="250, 125"/>
-                            <LineSegment Point="200, 125"/>
-                            <LineSegment Point="200, 0"/>
-                            <LineSegment Point="150, 0"/>
+                            <LineSegment Point="270, 125"/>
+                            <LineSegment Point="270, 0"/>
+                            <LineSegment Point="240, 0"/>
+                            <LineSegment Point="240, 125"/>
+                            <LineSegment Point="210, 125"/>
+                            <LineSegment Point="210, 0"/>
+                            <LineSegment Point="180, 0"/>
+                            <LineSegment Point="180, 125"/>
                             <LineSegment Point="150, 125"/>
-                            <LineSegment Point="100, 125"/>
-                            <LineSegment Point="100, 0"/>
-                            <LineSegment Point="50, 0"/>
-                            <LineSegment Point="50, 125"/>
-                            <LineSegment Point="0, 125"/>
+                            <LineSegment Point="150, 0"/>
+                            <LineSegment Point="120, 0"/>
+                            <LineSegment Point="120, 125"/>
+                            <LineSegment Point="90, 125"/>
+                            <LineSegment Point="90, 0"/>
+                            <LineSegment Point="60, 0"/>
+                            <LineSegment Point="60, 125"/>
+                            <LineSegment Point="30, 125"/>
+                            <LineSegment Point="30, 0"/>
                             <LineSegment Point="0, 0"/>
-                            <LineSegment Point="600, 0"/>
-                            <LineSegment Point="600, 125"/>
+                            <LineSegment Point="0, 0"/>
+                            <LineSegment Point="360, 0"/>
+                            <LineSegment Point="360, 125"/>
                             <LineSegment Point="0, 125"/>
                             <LineSegment Point="0, 0"/>
                         </PathFigure>

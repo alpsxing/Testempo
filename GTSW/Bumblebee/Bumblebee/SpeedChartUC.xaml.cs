@@ -167,10 +167,10 @@ namespace Bumblebee
             Speed2 = (minSpeed + step * 2).ToString();
             Speed3 = (minSpeed + step * 3).ToString();
             Speed4 = maxSpeed.ToString();
-            lblSpeed4.Content = Speed4 + "km/h";
-            lblSpeed3.Content = Speed3 + "km/h";
-            lblSpeed2.Content = Speed2 + "km/h";
-            lblSpeed1.Content = Speed1 + "km/h";
+            lblSpeed4.Content = Speed4;
+            lblSpeed3.Content = Speed3;
+            lblSpeed2.Content = Speed2;
+            lblSpeed1.Content = Speed1;
             lblSpeed0.Content = Speed0 + "km/h";
 
             MaxSpeed = maxSpeed;

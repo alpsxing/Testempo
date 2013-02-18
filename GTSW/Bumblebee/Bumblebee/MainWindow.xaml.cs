@@ -8708,10 +8708,10 @@ namespace Bumblebee
 
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
-                        RenderTargetBitmap rtb = new RenderTargetBitmap(670, 150, 96, 96, PixelFormats.Pbgra32);
+                        RenderTargetBitmap rtb = new RenderTargetBitmap(420, 150, 96, 96, PixelFormats.Pbgra32);
 
                         SpeedChartUC uc = new SpeedChartUC(minBottom, maxTop, records);
-                        uc.Arrange(new Rect(new Size(670, 150)));
+                        uc.Arrange(new Rect(new Size(420, 150)));
                         rtb.Render(uc);
 
                         PngBitmapEncoder png = new PngBitmapEncoder();
