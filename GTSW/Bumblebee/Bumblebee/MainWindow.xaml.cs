@@ -10763,7 +10763,7 @@ namespace Bumblebee
                                                 return new string[] { "", "车辆号牌分类长度错误." };
                                             else
                                             {
-                                                string finalData = CmdBytesToString(PadBytes(ba1, 17)) + CmdBytesToString(PadBytes(ba2, 12)) + CmdBytesToString(PadBytes(ba2, 12));
+                                                string finalData = CmdBytesToString(PadBytes(ba1, 17)) + CmdBytesToString(PadBytes(ba2, 12)) + CmdBytesToString(PadBytes(ba3, 12));
                                                 string finalDataLen = String.Format("{0:X4}", finalData.Length / 2);
                                                 string finalCmd = "AA7582" + finalDataLen + "00" + finalData;
                                                 finalCmd = finalCmd + XORData(finalCmd, false);
