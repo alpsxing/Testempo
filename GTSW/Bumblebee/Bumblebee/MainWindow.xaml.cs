@@ -4424,8 +4424,6 @@ namespace Bumblebee
                                                             for (int iSec = 0; iSec < 60; iSec++)
                                                             {
                                                                 int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
-                                                                if (speed == 0xFF)
-                                                                    speed = 0;
                                                                 byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
 
                                                                 records.Add(new Tuple<int, byte>(speed, state));
@@ -4603,8 +4601,6 @@ namespace Bumblebee
                                                                 #endregion
 
                                                                 int speed = baData[666 * iblock + iMin * 11 + 6 + 10];
-                                                                if (speed == 0xFF)
-                                                                    speed = 0;
 
                                                                 records.Add(new Tuple<string, string, string, int>(sJingDu, sWeiDu, sHeight, speed));
                                                             }
@@ -4743,8 +4739,6 @@ namespace Bumblebee
                                                             for (int iRec = 0; iRec < 100; iRec++)
                                                             {
                                                                 int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
-                                                                if (speed == 0xFF)
-                                                                    speed = 0;
                                                                 byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
                                                                 records.Add(new Tuple<int, byte>(speed, state));
                                                             }
@@ -7076,16 +7070,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)126));
                                 int dataRemain = dataLen % 126;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
@@ -7111,8 +7098,6 @@ namespace Bumblebee
                                         for (int iSec = 0; iSec < 60; iSec++)
                                         {
                                             int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
-                                            if (speed == 0xFF)
-                                                speed = 0;
                                             byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
 
                                             records.Add(new Tuple<int, byte>(speed, state));
@@ -7158,16 +7143,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)666));
                                 int dataRemain = dataLen % 666;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
@@ -7243,8 +7221,6 @@ namespace Bumblebee
                                             #endregion
 
                                             int speed = baData[666 * iblock + iMin * 11 + 6 + 10];
-                                            if (speed == 0xFF)
-                                                speed = 0;
 
                                             records.Add(new Tuple<string, string, string, int>(sJingDu, sWeiDu, sHeight, speed));
                                         }
@@ -7295,16 +7271,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)234));
                                 int dataRemain = dataLen % 234;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
@@ -7336,8 +7305,6 @@ namespace Bumblebee
                                         for (int iRec = 0; iRec < 100; iRec++)
                                         {
                                             int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
-                                            if (speed == 0xFF)
-                                                speed = 0;
                                             byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
                                             records.Add(new Tuple<int, byte>(speed, state));
                                         }
@@ -7439,16 +7406,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)50));
                                 int dataRemain = dataLen % 50;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
@@ -7631,16 +7591,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)25));
                                 int dataRemain = dataLen % 25;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
@@ -7730,16 +7683,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
                                 int dataRemain = dataLen % 7;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
@@ -7822,16 +7768,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
                                 int dataRemain = dataLen % 7;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
@@ -7924,16 +7863,9 @@ namespace Bumblebee
                                 int blockCount = (int)(Math.Floor((double)dataLen / (double)133));
                                 int dataRemain = dataLen % 133;
                                 string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                //if (isContinued == false)
-                                {
-                                    LogMessage("+-----------------------------------------------------------------------------+");
-                                    LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集起始时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                    //LogMessage("|      采集停止时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    //LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
+                                LogMessage("+-----------------------------------------------------------------------------+");
+                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+                                LogMessage("+-------------------+----------------------------+----------------------------+");
                                 DateTime lastDateTime = DateTime.Now;
                                 if (blockCount > 0)
                                 {
