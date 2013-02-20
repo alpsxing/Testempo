@@ -50,6 +50,20 @@ namespace Bumblebee
             }
         }
 
+        private string _speed5 = "";
+        public string Speed5
+        {
+            get
+            {
+                return _speed5;
+            }
+            set
+            {
+                _speed5 = value;
+                NotifyPropertyChanged("Speed5");
+            }
+        }
+
         private string _speed4 = "";
         public string Speed4
         {
@@ -171,7 +185,9 @@ namespace Bumblebee
             Speed1 = (minSpeed + step).ToString();
             Speed2 = (minSpeed + step * 2).ToString();
             Speed3 = (minSpeed + step * 3).ToString();
-            Speed4 = maxSpeed.ToString();
+            Speed4 = (minSpeed + step * 4).ToString();
+            Speed5 = maxSpeed.ToString();
+            lblSpeed5.Content = Speed5 + "km/h";
             lblSpeed4.Content = Speed4 + "km/h";
             lblSpeed3.Content = Speed3 + "km/h";
             lblSpeed2.Content = Speed2 + "km/h";
