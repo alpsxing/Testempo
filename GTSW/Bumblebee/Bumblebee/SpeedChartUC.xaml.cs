@@ -198,8 +198,8 @@ namespace Bumblebee
 
         private void DrawLine()
         {
-            List<PathFigure> _listPathFigure = new List<PathFigure>();
-            PathFigure pf = new PathFigure();
+            PathFigure pf = null;
+            List<PathFigure> listPF = new List<PathFigure>();
             for (int i = 0; i < _records.Count; i++)
             {
                 double x = (canvasTraces.Width / 60.0) * i;
@@ -209,16 +209,30 @@ namespace Bumblebee
                 else
                     y = canvasTraces.Height * (1.0 - (((double)_records[i].Item1 - MinSpeed) / (double)(MaxSpeed - MinSpeed)));
                 Point pt = new Point(x, y);
-                if (i == 0)
+                if (pf == null)
+                {
+                    pf = new PathFigure();
                     pf.StartPoint = pt;
+                }
                 else
                 {
-                    pf.Segments.Add(new LineSegment(pt, true));
+                    if (_records[i].Item1 >= 0xFF)
+                    {
+                        pf.IsClosed = false;
+                        listPF.Add(pf);
+                        pf = null;
+                    }
+                    else
+                    {
+                        pf.Segments.Add(new LineSegment(pt, true));
+                    }
                 }
             }
-            pf.IsClosed = false;
-            List<PathFigure> listPF = new List<PathFigure>();
-            listPF.Add(pf);
+            if (pf != null)
+            {
+                pf.IsClosed = false;
+                listPF.Add(pf);
+            }
             PathGeometry pg = new PathGeometry(listPF);
             pathSpeed.Data = pg;
         }
