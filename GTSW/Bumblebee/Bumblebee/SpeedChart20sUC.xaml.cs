@@ -176,6 +176,19 @@ namespace Bumblebee
                 _records.Add(records[i]);
             }
 
+            if (maxSpeed == minSpeed)
+            {
+                if (minSpeed - 1 >= 0)
+                {
+                    minSpeed = minSpeed - 1;
+                    maxSpeed = maxSpeed + 4;
+                }
+                else
+                {
+                    maxSpeed = maxSpeed + 5;
+                }
+            }
+
             double step = (maxSpeed - minSpeed) / 5.0;
             int iStep = (int)(step * 10.0);
             step = iStep /10;
@@ -222,6 +235,20 @@ namespace Bumblebee
                 {
                     if (_records[i].Item1 == 0xFF)
                     {
+                        int count = pf.Segments.Count;
+                        double x0 = 0.0;
+                        double y0 = 0.0;
+                        if (count == 0)
+                        {
+                            x0 = pf.StartPoint.X + (canvasTraces.Width / 100.0);
+                            y0 = pf.StartPoint.Y;
+                        }
+                        else
+                        {
+                            x0 = ((LineSegment)(pf.Segments[count - 1])).Point.X + (canvasTraces.Width / 100.0);
+                            y0 = ((LineSegment)(pf.Segments[count - 1])).Point.Y;
+                        }
+                        pf.Segments.Add(new LineSegment(new Point(x0, y0), true));
                         pf.IsClosed = false;
                         listPF.Add(pf);
                         pf = null;
@@ -234,6 +261,20 @@ namespace Bumblebee
             }
             if (pf != null)
             {
+                int count = pf.Segments.Count;
+                double x0 = 0.0;
+                double y0 = 0.0;
+                if (count == 0)
+                {
+                    x0 = pf.StartPoint.X + (canvasTraces.Width / 100.0);
+                    y0 = pf.StartPoint.Y;
+                }
+                else
+                {
+                    x0 = ((LineSegment)(pf.Segments[count - 1])).Point.X + (canvasTraces.Width / 100.0);
+                    y0 = ((LineSegment)(pf.Segments[count - 1])).Point.Y;
+                }
+                pf.Segments.Add(new LineSegment(new Point(x0, y0), true));
                 pf.IsClosed = false;
                 listPF.Add(pf);
             }

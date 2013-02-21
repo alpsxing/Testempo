@@ -3088,7 +3088,8 @@ namespace Bumblebee
                                             {
                                                 string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
                                                 string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
-                                                string number = "20" + baData[23].ToString("X") + "-" + baData[24].ToString("X") + "-" + baData[25].ToString("X");
+                                                string number = "20" + string.Format("{0:X2}", baData[23]) + "-" +
+                                                    string.Format("{0:X2}", baData[24]) + "-" + string.Format("{0:X2}", baData[25]);
                                                 number = number.PadRight(27);
                                                 long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
                                                 string productflow = flow.ToString().PadRight(27);
@@ -3717,8 +3718,12 @@ namespace Bumblebee
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
                                                     else
                                                     {
-                                                        string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        string number = "20" + string.Format("{0:X2}",baData[0]) + "-" + 
+                                                            string.Format("{0:X2}",baData[1]) + "-" +
+                                                            string.Format("{0:X2}", baData[2]) + " " +
+                                                            string.Format("{0:X2}", baData[3]) + ":" +
+                                                            string.Format("{0:X4}", baData[4]) + ":" +
+                                                            string.Format("{0:X2}", baData[5]);
                                                         number = number.PadRight(27);
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
@@ -3786,18 +3791,28 @@ namespace Bumblebee
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
                                                     else
                                                     {
-                                                        string number1 = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        string number1 = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+                                                            string.Format("{0:X2}", baData[1]) + "-" +
+                                                            string.Format("{0:X2}", baData[2]) + " " +
+                                                            string.Format("{0:X2}", baData[3]) + ":" +
+                                                            string.Format("{0:X2}", baData[4]) + ":" +
+                                                            string.Format("{0:X2}", baData[5]);
                                                         number1 = number1.PadRight(27);
-                                                        string number2 = "20" + baData[6].ToString("X") + "-" + baData[7].ToString("X") + "-" + baData[8].ToString("X") + " " +
-                                                            baData[9].ToString("X") + ":" + baData[10].ToString("X") + ":" + baData[11].ToString("X");
+                                                        string number2 = "20" + string.Format("{0:X2}", baData[6]) + "-" +
+                                                            string.Format("{0:X2}", baData[7]) + "-" +
+                                                            string.Format("{0:X2}", baData[8]) + " " +
+                                                            string.Format("{0:X2}", baData[9]) + ":" +
+                                                            string.Format("{0:X2}", baData[10]) + ":" +
+                                                            string.Format("{0:X2}", baData[11]);
                                                         number2 = number2.PadRight(27);
                                                         string distance1 = baData[12].ToString("X") + baData[13].ToString("X") + baData[14].ToString("X") + baData[15].ToString("X");
                                                         while (distance1.StartsWith("0"))
                                                             distance1 = distance1.Substring(1);
                                                         if (string.IsNullOrWhiteSpace(distance1))
                                                             distance1 = "0";
-                                                        distance1 = (distance1 + "0 (单位:0.1千米)").PadRight(27 - 4);
+                                                        else
+                                                            distance1 = distance1 + "0";
+                                                        distance1 = (distance1 + " (单位:0.1千米)").PadRight(27 - 4);
                                                         string distance2 = baData[16].ToString("X") + baData[17].ToString("X") + baData[18].ToString("X") + baData[19].ToString("X");
                                                         while (distance2.StartsWith("0"))
                                                             distance2 = distance2.Substring(1);
@@ -3900,8 +3915,12 @@ namespace Bumblebee
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
                                                     else
                                                     {
-                                                        string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+                                                            string.Format("{0:X2}", baData[1]) + "-" +
+                                                            string.Format("{0:X2}", baData[2]) + " " +
+                                                            string.Format("{0:X2}", baData[3]) + ":" +
+                                                            string.Format("{0:X2}", baData[4]) + ":" +
+                                                            string.Format("{0:X2}", baData[5]);
                                                         number = number.PadRight(27);
                                                         int intHigh = (int)baData[6];
                                                         int intLow = (int)baData[7];
@@ -4075,8 +4094,12 @@ namespace Bumblebee
                                                         LogMessageError("命令(" + cdi.CmdContent + ")的响应的数据块长度错误.");
                                                     else
                                                     {
-                                                        string number = "20" + baData[0].ToString("X") + "-" + baData[1].ToString("X") + "-" + baData[2].ToString("X") + " " +
-                                                            baData[3].ToString("X") + ":" + baData[4].ToString("X") + ":" + baData[5].ToString("X");
+                                                        string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+                                                            string.Format("{0:X2}", baData[1]) + "-" +
+                                                            string.Format("{0:X2}", baData[2]) + " " +
+                                                            string.Format("{0:X2}", baData[3]) + ":" +
+                                                            string.Format("{0:X2}", baData[4]) + ":" +
+                                                            string.Format("{0:X2}", baData[5]);
                                                         number = number.PadRight(27);
                                                         Encoding gb = Encoding.GetEncoding("GB2312");
                                                         string d0 = gb.GetString(baData, 7, 10).Trim('\0');
@@ -4275,7 +4298,9 @@ namespace Bumblebee
                                                     {
                                                         string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
                                                         string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
-                                                        string number = "20" + baData[23].ToString("X") + "-" + baData[24].ToString("X") + "-" + baData[25].ToString("X");
+                                                        string number = "20" + string.Format("{0:X2}", baData[23]) + "-" +
+                                                            string.Format("{0:X2}", baData[24]) + "-" +
+                                                            string.Format("{0:X2}", baData[25]);
                                                         number = number.PadRight(27);
                                                         long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
                                                         string productflow = flow.ToString().PadRight(27);
@@ -4405,12 +4430,12 @@ namespace Bumblebee
                                                         string numberblock = "";
                                                         for (int iblock = 0; iblock < blockCount; iblock++)
                                                         {
-                                                            numberblock = "20" + baData[126 * iblock + 0].ToString("X") + "-" +
-                                                                baData[126 * iblock + 1].ToString("X") + "-" +
-                                                                baData[126 * iblock + 2].ToString("X") + " " +
-                                                                baData[126 * iblock + 3].ToString("X") + ":" +
-                                                                baData[126 * iblock + 4].ToString("X") + ":" +
-                                                                baData[126 * iblock + 5].ToString("X");
+                                                            numberblock = "20" + string.Format("{0:X2}", baData[126 * iblock + 0]) + "-" +
+                                                                string.Format("{0:X2}", baData[126 * iblock + 1]) + "-" +
+                                                                string.Format("{0:X2}", baData[126 * iblock + 2]) + " " +
+                                                                string.Format("{0:X2}", baData[126 * iblock + 3]) + ":" +
+                                                                string.Format("{0:X2}", baData[126 * iblock + 4]) + ":" +
+                                                                string.Format("{0:X2}", baData[126 * iblock + 5]);
                                                             numberblock = numberblock.PadRight(27);
                                                             lastDateTime = new DateTime(
                                                                 ((int)Math.Floor((double)baData[126 * iblock + 0] / 16.0)) * 10 + baData[126 * iblock + 0] % 16 + 2000,
@@ -4532,12 +4557,12 @@ namespace Bumblebee
                                                         string numberblock = "";
                                                         for (int iblock = 0; iblock < blockCount; iblock++)
                                                         {
-                                                            numberblock = "20" + baData[666 * iblock + 0].ToString("X") + "-" +
-                                                                baData[666 * iblock + 1].ToString("X") + "-" +
-                                                                baData[666 * iblock + 2].ToString("X") + " " +
-                                                                baData[666 * iblock + 3].ToString("X") + ":" +
-                                                                baData[666 * iblock + 4].ToString("X") + ":" +
-                                                                baData[666 * iblock + 5].ToString("X");
+                                                            numberblock = "20" + string.Format("{0:X2}", baData[666 * iblock + 0]) + "-" +
+                                                                string.Format("{0:X2}", baData[666 * iblock + 1]) + "-" +
+                                                                string.Format("{0:X2}", baData[666 * iblock + 2]) + " " +
+                                                                string.Format("{0:X2}", baData[666 * iblock + 3]) + ":" +
+                                                                string.Format("{0:X2}", baData[666 * iblock + 4]) + ":" +
+                                                                string.Format("{0:X2}", baData[666 * iblock + 5]);
                                                             numberblock = numberblock.PadRight(27);
                                                             lastDateTime = new DateTime(
                                                                 ((int)Math.Floor((double)baData[666 * iblock + 0] / 16.0)) * 10 + baData[666 * iblock + 0] % 16 + 2000,
@@ -4714,12 +4739,12 @@ namespace Bumblebee
                                                         string numberblock = "";
                                                         for (int iblock = 0; iblock < blockCount; iblock++)
                                                         {
-                                                            numberblock = "20" + baData[234 * iblock + 0].ToString("X") + "-" +
-                                                                baData[234 * iblock + 1].ToString("X") + "-" +
-                                                                baData[234 * iblock + 2].ToString("X") + " " +
-                                                                baData[234 * iblock + 3].ToString("X") + ":" +
-                                                                baData[234 * iblock + 4].ToString("X") + ":" +
-                                                                baData[234 * iblock + 5].ToString("X");
+                                                            numberblock = "20" + string.Format("{0:X2}", baData[234 * iblock + 0]) + "-" +
+                                                                string.Format("{0:X2}", baData[234 * iblock + 1]) + "-" +
+                                                                string.Format("{0:X2}", baData[234 * iblock + 2]) + " " +
+                                                                string.Format("{0:X2}", baData[234 * iblock + 3]) + ":" +
+                                                                string.Format("{0:X2}", baData[234 * iblock + 4]) + ":" +
+                                                                string.Format("{0:X2}", baData[234 * iblock + 5]);
                                                             numberblock = numberblock.PadRight(27);
                                                             lastDateTime = new DateTime(
                                                                 ((int)Math.Floor((double)baData[234 * iblock + 0] / 16.0)) * 10 + baData[234 * iblock + 0] % 16 + 2000,
@@ -4900,12 +4925,12 @@ namespace Bumblebee
                                                         string numberblock = "";
                                                         for (int iblock = 0; iblock < blockCount; iblock++)
                                                         {
-                                                            numberblock = "20" + baData[50 * iblock + 18].ToString("X") + "-" +
-                                                                baData[50 * iblock + 19].ToString("X") + "-" +
-                                                                baData[50 * iblock + 20].ToString("X") + " " +
-                                                                baData[50 * iblock + 21].ToString("X") + ":" +
-                                                                baData[50 * iblock + 22].ToString("X") + ":" +
-                                                                baData[50 * iblock + 23].ToString("X");
+                                                            numberblock = "20" + string.Format("{0:X2}", baData[50 * iblock + 18]) + "-" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 19]) + "-" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 20]) + " " +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 21]) + ":" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 22]) + ":" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 23]);
                                                             numberblock = numberblock.PadRight(27);
                                                             lastDateTime = new DateTime(
                                                                 ((int)Math.Floor((double)baData[50 * iblock + 18] / 16.0)) * 10 + baData[50 * iblock + 18] % 16 + 2000,
@@ -4915,12 +4940,12 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[50 * iblock + 22] / 16.0)) * 10 + baData[50 * iblock + 22] % 16,
                                                                 ((int)Math.Floor((double)baData[50 * iblock + 23] / 16.0)) * 10 + baData[50 * iblock + 23] % 16);
                                                             lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
-                                                            string numberblockStop = "20" + baData[50 * iblock + 14].ToString("X") + "-" +
-                                                                baData[50 * iblock + 25].ToString("X") + "-" +
-                                                                baData[50 * iblock + 26].ToString("X") + " " +
-                                                                baData[50 * iblock + 27].ToString("X") + ":" +
-                                                                baData[50 * iblock + 28].ToString("X") + ":" +
-                                                                baData[50 * iblock + 29].ToString("X");
+                                                            string numberblockStop = "20" + string.Format("{0:X2}", baData[50 * iblock + 24]) + "-" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 25]) + "-" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 26]) + " " +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 27]) + ":" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 28]) + ":" +
+                                                                string.Format("{0:X2}", baData[50 * iblock + 29]);
                                                             numberblock = numberblock.PadRight(27);
                                                             byte[] baNumber = new byte[18];
                                                             for (int idxBa = 0; idxBa < 18; idxBa++)
