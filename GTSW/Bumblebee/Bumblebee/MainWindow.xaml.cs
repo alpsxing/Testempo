@@ -5584,16 +5584,12 @@ namespace Bumblebee
                                                                 baData[133 * iblock + 10].ToString("X") + ":" +
                                                                 baData[133 * iblock + 11].ToString("X") + ":" +
                                                                 baData[133 * iblock + 12].ToString("X");
-                                                            numberblock2 = numberblock.PadRight(27);
+                                                            numberblock2 = numberblock2.PadRight(27);
                                                             ObservableCollection<Tuple<int, int>> records = new ObservableCollection<Tuple<int, int>>();
                                                             for (int iSec = 0; iSec < 60; iSec++)
                                                             {
                                                                 int speed = baData[133 * iblock + iSec * 2 + 13 + 0];
-                                                                if (speed == 0xFF)
-                                                                    speed = 0;
                                                                 int refSpeed = baData[133 * iblock + iSec * 2 + 13 + 1];
-                                                                if (refSpeed == 0xFF)
-                                                                    refSpeed = 0;
 
                                                                 records.Add(new Tuple<int, int>(speed, refSpeed));
                                                             }
@@ -6139,6 +6135,15 @@ namespace Bumblebee
                 return;
 
             InRun = true;
+            
+            _cmd15HRespOc.Clear();
+            _cmd14HRespOc.Clear();
+            _cmd13HRespOc.Clear();
+            _cmd12HRespOc.Clear();
+            _cmd11HRespOc.Clear();
+            _cmd10HRespOc.Clear();
+            _cmd09HRespOc.Clear();
+            _cmd08HRespOc.Clear();
 
             _cts = new CancellationTokenSource();
 
@@ -7895,16 +7900,12 @@ namespace Bumblebee
                                             baData[133 * iblock + 10].ToString("X") + ":" +
                                             baData[133 * iblock + 11].ToString("X") + ":" +
                                             baData[133 * iblock + 12].ToString("X");
-                                        numberblock2 = numberblock.PadRight(27);
+                                        numberblock2 = numberblock2.PadRight(27);
                                         ObservableCollection<Tuple<int, int>> records = new ObservableCollection<Tuple<int, int>>();
                                         for (int iSec = 0; iSec < 60; iSec++)
                                         {
                                             int speed = baData[133 * iblock + iSec * 2 + 13 + 0];
-                                            if (speed == 0xFF)
-                                                speed = 0;
                                             int refSpeed = baData[133 * iblock + iSec * 2 + 13 + 1];
-                                            if (refSpeed == 0xFF)
-                                                refSpeed = 0;
 
                                             records.Add(new Tuple<int, int>(speed, refSpeed));
                                         }
