@@ -4229,7 +4229,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -8509,7 +8509,7 @@ namespace Bumblebee
                     stateTable.LockedWidth = true;
 
                     stateTable.SpacingBefore = 30f;
-                    stateTable.SpacingAfter = 10f;
+                    //stateTable.SpacingAfter = 10f;
 
                     for (int i = 0; i < 8; i++)
                     {
@@ -8641,6 +8641,15 @@ namespace Bumblebee
                     stateTable.AddCell(cell);
                     for (int i = 0; i <= 60; i = i + 5)
                     {
+                        if (i < 60)
+                        {
+                            cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
+                            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                            cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                            cell.BorderColor = BaseColor.WHITE;
+                            stateTable.AddCell(cell);
+                        }
+
                         cell = new PdfPCell(new Phrase(i.ToString() + "秒", new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
                         cell.BackgroundColor = BaseColor.WHITE;
                         cell.BorderColor = BaseColor.WHITE;
@@ -8651,9 +8660,9 @@ namespace Bumblebee
                         if (i == 60)
                             cell.Colspan = 1;
                         else
-                            cell.Colspan = 5;
+                            cell.Colspan = 4;
                         stateTable.AddCell(cell);
-                    }  
+                    } 
 
                     _pdfDocument.Add(stateTable);
 
@@ -8964,7 +8973,7 @@ namespace Bumblebee
                     stateTable.LockedWidth = true;
 
                     stateTable.SpacingBefore = 30f;
-                    stateTable.SpacingAfter = 10f;
+                    //stateTable.SpacingAfter = 10f;
 
                     for (int i = 0; i < 8; i++)
                     {
@@ -9096,6 +9105,15 @@ namespace Bumblebee
                     stateTable.AddCell(cell);
                     for (int i = 0; i <= 100; i = i + 10)
                     {
+                        if (i < 100)
+                        {
+                            cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
+                            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                            cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                            cell.BorderColor = BaseColor.WHITE;
+                            stateTable.AddCell(cell);
+                        }
+            
                         cell = new PdfPCell(new Phrase(((int)(Math.Floor(i / 5.0))).ToString() + "秒", new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
                         cell.BackgroundColor = BaseColor.WHITE;
                         cell.BorderColor = BaseColor.WHITE;
@@ -9106,7 +9124,7 @@ namespace Bumblebee
                         if (i == 100)
                             cell.Colspan = 1;
                         else
-                            cell.Colspan = 10;
+                            cell.Colspan = 9;
                         stateTable.AddCell(cell);
                     }
 
@@ -9155,7 +9173,7 @@ namespace Bumblebee
                         }
 
                         PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
-                        speedPng.ScaleAbsolute(455, 130);
+                        speedPng.ScaleAbsolute(400, 110);
                         //speedPng.SpacingBefore = 5f;
                         //speedPng.SpacingAfter = 15f;
 
