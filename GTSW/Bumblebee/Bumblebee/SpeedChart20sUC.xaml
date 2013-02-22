@@ -8,24 +8,52 @@
              d:DesignHeight="150" d:DesignWidth="560">
     <DockPanel Background="LightGray">
         <StackPanel Background="White" DockPanel.Dock="Left" Width="60">
-            <Label Height="25" Name="lblSpeed5" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed4,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="25" Name="lblSpeed4" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="25" Name="lblSpeed3" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="25" Name="lblSpeed2" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="25" Name="lblSpeed1" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="25" Name="lblSpeed0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
+            <Label Height="2" Background="LightGray"/>
+            <Label Height="25" Name="lblSpeed5" Margin="0,-3, 0, 0"
+                   HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
+                   Content="{Binding Path=Speed4,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
+            <Label Height="2" Background="LightGray"/>
+            <Label Height="26" Name="lblSpeed4"  Margin="0,-3, 0, 0"
+                   HorizontalContentAlignment="Right" VerticalContentAlignment="Top"
+                   Content="{Binding Path=Speed3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
+            <Label Height="2" Background="LightGray"/>
+            <Label Height="26" Name="lblSpeed3"  Margin="0,-3, 0, 0"
+                   HorizontalContentAlignment="Right" VerticalContentAlignment="Top"
+                   Content="{Binding Path=Speed2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
+            <Label Height="2" Background="LightGray"/>
+            <Label Height="26" Name="lblSpeed2"  Margin="0,-3, 0, 0"
+                   HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
+                   Content="{Binding Path=Speed1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
+            <Label Height="2" Background="LightGray"/>
+            <Label Height="26" Name="lblSpeed1"  Margin="0,-3, 0, 0"
+                   HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
+                   Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
+            <Label Height="2" Background="LightGray"/>
+            <Label Height="26" Name="lblSpeed0"  Margin="0,-3, 0, 0"
+                   HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
+                   Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
         </StackPanel>
         <StackPanel Background="White" DockPanel.Dock="Bottom" Height="25" Orientation="Horizontal">
-            <Label Width="50" Content="0秒"></Label>
-            <Label Width="50" Content="2秒"></Label>
-            <Label Width="50" Content="4秒"></Label>
-            <Label Width="50" Content="6秒"></Label>
-            <Label Width="50" Content="8秒"></Label>
-            <Label Width="50" Content="10秒"></Label>
-            <Label Width="50" Content="12秒"></Label>
-            <Label Width="50" Content="14秒"></Label>
-            <Label Width="50" Content="16秒"></Label>
-            <Label Width="50" Content="18秒"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="50" Content="0秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="2秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="4秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="6秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="8秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="10秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="12秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="14秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="16秒" Margin="-3,0,0,0"></Label>
+            <Label Width="2" Background="LightGray"/>
+            <Label Width="51" Content="18秒" Margin="-3,0,0,0"></Label>
         </StackPanel>
         <Canvas Height="125" Width="500" Name="canvasTraces">
             <Path Stroke="White" StrokeThickness="1">

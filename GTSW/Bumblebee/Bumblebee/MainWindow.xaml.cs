@@ -4103,53 +4103,53 @@ namespace Bumblebee
                                                         number = number.PadRight(27);
                                                         Encoding gb = Encoding.GetEncoding("GB2312");
                                                         string d0 = gb.GetString(baData, 7, 10).Trim('\0');
-                                                        if ((baData[6] & 0x1) == 0x1)
-                                                            d0 = "(有操作) " + d0;
-                                                        else
-                                                            d0 = "(无操作) " + d0;
-                                                        d0 = d0.PadRight(27 - GetChineseNumber(d0) + 3);
+                                                        //if ((baData[6] & 0x1) == 0x1)
+                                                        //    d0 = "(有操作) " + d0;
+                                                        //else
+                                                        //    d0 = "(无操作) " + d0;
+                                                        d0 = d0.PadRight(27 - GetChineseNumber(d0));// + 3);
                                                         string d1 = gb.GetString(baData, 17, 10).Trim('\0');
-                                                        if ((baData[6] & 0x2) == 0x2)
-                                                            d1 = "(有操作) " + d1;
-                                                        else
-                                                            d1 = "(无操作) " + d1;
-                                                        d1 = d1.PadRight(27 - GetChineseNumber(d1) + 3);
+                                                        //if ((baData[6] & 0x2) == 0x2)
+                                                        //    d1 = "(有操作) " + d1;
+                                                        //else
+                                                        //    d1 = "(无操作) " + d1;
+                                                        d1 = d1.PadRight(27 - GetChineseNumber(d1));// + 3);
                                                         string d2 = gb.GetString(baData, 27, 10).Trim('\0');
-                                                        if ((baData[6] & 0x4) == 0x4)
-                                                            d2 = "(有操作) " + d2;
-                                                        else
-                                                            d2 = "(无操作) " + d2;
-                                                        d2 = d2.PadRight(27 - GetChineseNumber(d2) + 3);
+                                                        //if ((baData[6] & 0x4) == 0x4)
+                                                        //    d2 = "(有操作) " + d2;
+                                                        //else
+                                                        //    d2 = "(无操作) " + d2;
+                                                        d2 = d2.PadRight(27 - GetChineseNumber(d2));// + 3);
                                                         string d3 = gb.GetString(baData, 37, 10).Trim('\0');
-                                                        if ((baData[6] & 0x8) == 0x8)
-                                                            d3 = "(有操作) " + d3;
-                                                        else
-                                                            d3 = "(无操作) " + d3;
-                                                        d3 = d3.PadRight(27 - GetChineseNumber(d3) + 3);
+                                                        //if ((baData[6] & 0x8) == 0x8)
+                                                        //    d3 = "(有操作) " + d3;
+                                                        //else
+                                                        //    d3 = "(无操作) " + d3;
+                                                        d3 = d3.PadRight(27 - GetChineseNumber(d3));// + 3);
                                                         string d4 = gb.GetString(baData, 47, 10).Trim('\0');
-                                                        if ((baData[6] & 0x10) == 0x10)
-                                                            d4 = "(有操作) " + d4;
-                                                        else
-                                                            d4 = "(无操作) " + d4;
-                                                        d4 = d4.PadRight(27 - GetChineseNumber(d4) + 3);
+                                                        //if ((baData[6] & 0x10) == 0x10)
+                                                        //    d4 = "(有操作) " + d4;
+                                                        //else
+                                                        //    d4 = "(无操作) " + d4;
+                                                        d4 = d4.PadRight(27 - GetChineseNumber(d4));// + 3);
                                                         string d5 = gb.GetString(baData, 57, 10).Trim('\0');
-                                                        if ((baData[6] & 0x20) == 0x20)
-                                                            d5 = "(有操作) " + d5;
-                                                        else
-                                                            d5 = "(无操作) " + d5;
-                                                        d5 = d5.PadRight(27 - GetChineseNumber(d5) + 3);
+                                                        //if ((baData[6] & 0x20) == 0x20)
+                                                        //    d5 = "(有操作) " + d5;
+                                                        //else
+                                                        //    d5 = "(无操作) " + d5;
+                                                        d5 = d5.PadRight(27 - GetChineseNumber(d5));// + 3);
                                                         string d6 = gb.GetString(baData, 67, 10).Trim('\0');
-                                                        if ((baData[6] & 0x40) == 0x40)
-                                                            d6 = "(有操作) " + d6;
-                                                        else
-                                                            d6 = "(无操作) " + d6;
-                                                        d6 = d6.PadRight(27 - GetChineseNumber(d6) + 3);
+                                                        //if ((baData[6] & 0x40) == 0x40)
+                                                        //    d6 = "(有操作) " + d6;
+                                                        //else
+                                                        //    d6 = "(无操作) " + d6;
+                                                        d6 = d6.PadRight(27 - GetChineseNumber(d6));// + 3);
                                                         string d7 = gb.GetString(baData, 77, 10).Trim('\0');
-                                                        if ((baData[6] & 0x80) == 0x80)
-                                                            d7 = "(有操作) " + d7;
-                                                        else
-                                                            d7 = "(无操作) " + d7;
-                                                        d7 = d7.PadRight(27 - GetChineseNumber(d7) + 3);
+                                                        //if ((baData[6] & 0x80) == 0x80)
+                                                        //    d7 = "(有操作) " + d7;
+                                                        //else
+                                                        //    d7 = "(无操作) " + d7;
+                                                        d7 = d7.PadRight(27 - GetChineseNumber(d7));// + 3);
                                                         LogMessage("+-------------------+----------------------------+");
                                                         LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
@@ -6828,53 +6828,53 @@ namespace Bumblebee
                                     number = number.PadRight(27);
                                     //Encoding gb = Encoding.GetEncoding("GB2312");
                                     string d0 = gb.GetString(baData, 7, 10).Trim('\0');
-                                    if ((baData[6] & 0x1) == 0x1)
-                                        d0 = "(有操作) " + d0;
-                                    else
-                                        d0 = "(无操作) " + d0;
-                                    d0 = d0.PadRight(27 - GetChineseNumber(d0) + 3);
+                                    //if ((baData[6] & 0x1) == 0x1)
+                                    //    d0 = "(有操作) " + d0;
+                                    //else
+                                    //    d0 = "(无操作) " + d0;
+                                    d0 = d0.PadRight(27 - GetChineseNumber(d0));// + 3);
                                     string d1 = gb.GetString(baData, 17, 10).Trim('\0');
-                                    if ((baData[6] & 0x2) == 0x2)
-                                        d1 = "(有操作) " + d1;
-                                    else
-                                        d1 = "(无操作) " + d1;
-                                    d1 = d1.PadRight(27 - GetChineseNumber(d1) + 3);
+                                    //if ((baData[6] & 0x2) == 0x2)
+                                    //    d1 = "(有操作) " + d1;
+                                    //else
+                                    //    d1 = "(无操作) " + d1;
+                                    d1 = d1.PadRight(27 - GetChineseNumber(d1));// + 3);
                                     string d2 = gb.GetString(baData, 27, 10).Trim('\0');
-                                    if ((baData[6] & 0x4) == 0x4)
-                                        d2 = "(有操作) " + d2;
-                                    else
-                                        d2 = "(无操作) " + d2;
-                                    d2 = d2.PadRight(27 - GetChineseNumber(d2) + 3);
+                                    //if ((baData[6] & 0x4) == 0x4)
+                                    //    d2 = "(有操作) " + d2;
+                                    //else
+                                    //    d2 = "(无操作) " + d2;
+                                    d2 = d2.PadRight(27 - GetChineseNumber(d2));// + 3);
                                     string d3 = gb.GetString(baData, 37, 10).Trim('\0');
-                                    if ((baData[6] & 0x8) == 0x8)
-                                        d3 = "(有操作) " + d3;
-                                    else
-                                        d3 = "(无操作) " + d3;
-                                    d3 = d3.PadRight(27 - GetChineseNumber(d3) + 3);
+                                    //if ((baData[6] & 0x8) == 0x8)
+                                    //    d3 = "(有操作) " + d3;
+                                    //else
+                                    //    d3 = "(无操作) " + d3;
+                                    d3 = d3.PadRight(27 - GetChineseNumber(d3));// + 3);
                                     string d4 = gb.GetString(baData, 47, 10).Trim('\0');
-                                    if ((baData[6] & 0x10) == 0x10)
-                                        d4 = "(有操作) " + d4;
-                                    else
-                                        d4 = "(无操作) " + d4;
-                                    d4 = d4.PadRight(27 - GetChineseNumber(d4) + 3);
+                                    //if ((baData[6] & 0x10) == 0x10)
+                                    //    d4 = "(有操作) " + d4;
+                                    //else
+                                    //    d4 = "(无操作) " + d4;
+                                    d4 = d4.PadRight(27 - GetChineseNumber(d4));// + 3);
                                     string d5 = gb.GetString(baData, 57, 10).Trim('\0');
-                                    if ((baData[6] & 0x20) == 0x20)
-                                        d5 = "(有操作) " + d5;
-                                    else
-                                        d5 = "(无操作) " + d5;
-                                    d5 = d5.PadRight(27 - GetChineseNumber(d5) + 3);
+                                    //if ((baData[6] & 0x20) == 0x20)
+                                    //    d5 = "(有操作) " + d5;
+                                    //else
+                                    //    d5 = "(无操作) " + d5;
+                                    d5 = d5.PadRight(27 - GetChineseNumber(d5));// + 3);
                                     string d6 = gb.GetString(baData, 67, 10).Trim('\0');
-                                    if ((baData[6] & 0x40) == 0x40)
-                                        d6 = "(有操作) " + d6;
-                                    else
-                                        d6 = "(无操作) " + d6;
-                                    d6 = d6.PadRight(27 - GetChineseNumber(d6) + 3);
+                                    //if ((baData[6] & 0x40) == 0x40)
+                                    //    d6 = "(有操作) " + d6;
+                                    //else
+                                    //    d6 = "(无操作) " + d6;
+                                    d6 = d6.PadRight(27 - GetChineseNumber(d6));// + 3);
                                     string d7 = gb.GetString(baData, 77, 10).Trim('\0');
-                                    if ((baData[6] & 0x80) == 0x80)
-                                        d7 = "(有操作) " + d7;
-                                    else
-                                        d7 = "(无操作) " + d7;
-                                    d7 = d7.PadRight(27 - GetChineseNumber(d7) + 3);
+                                    //if ((baData[6] & 0x80) == 0x80)
+                                    //    d7 = "(有操作) " + d7;
+                                    //else
+                                    //    d7 = "(无操作) " + d7;
+                                    d7 = d7.PadRight(27 - GetChineseNumber(d7));// + 3);
                                     LogMessage("+-------------------+----------------------------+");
                                     LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                     LogMessage("+-------------------+----------------------------+");
@@ -8701,8 +8701,8 @@ namespace Bumblebee
 
                         PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
                         speedPng.ScaleAbsolute(455, 115);
-                        speedPng.SpacingBefore = 5f;
-                        speedPng.SpacingAfter = 5f;
+                        //speedPng.SpacingBefore = 5f;
+                        //speedPng.SpacingAfter = 15f;
 
                         _pdfDocument.Add(speedPng);
 
@@ -8713,6 +8713,8 @@ namespace Bumblebee
                     #endregion
 
                     PdfPTable table = new PdfPTable(11);
+
+                    table.SpacingBefore = 15f;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -8761,7 +8763,7 @@ namespace Bumblebee
                         }
                     }
 
-                    if (index == _cmd15HRespOc.Count)
+                    if (index + 1 == _cmd15HRespOc.Count)
                         table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
@@ -9154,8 +9156,8 @@ namespace Bumblebee
 
                         PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
                         speedPng.ScaleAbsolute(455, 130);
-                        speedPng.SpacingBefore = 5f;
-                        speedPng.SpacingAfter = 5f;
+                        //speedPng.SpacingBefore = 5f;
+                        //speedPng.SpacingAfter = 15f;
 
                         _pdfDocument.Add(speedPng);
 
@@ -9167,11 +9169,7 @@ namespace Bumblebee
          
                     PdfPTable table = new PdfPTable(11);
 
-                    if (index == 0)
-                        table.SpacingBefore = 25f;
-                    else
-                        table.SpacingBefore = 15f;
-                    index++;
+                    table.SpacingBefore = 15f;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -9234,6 +9232,8 @@ namespace Bumblebee
                         table.SpacingAfter = 60f;
 
                     _pdfDocument.Add(table);
+
+                    index++;
                 }
 
                 #endregion
