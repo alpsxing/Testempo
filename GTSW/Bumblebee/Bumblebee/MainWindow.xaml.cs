@@ -6023,7 +6023,7 @@ namespace Bumblebee
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
-                                                                    cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                                    cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                                     table.AddCell(cell);
@@ -6954,7 +6954,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
@@ -8340,7 +8340,7 @@ namespace Bumblebee
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+                                                cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
                                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                                 cell.VerticalAlignment = Element.ALIGN_CENTER;
                                                 table.AddCell(cell);
