@@ -126,8 +126,8 @@
                         <Image Source="/Bumblebee;component/Resources/about.ico" Height="20" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="帮助文档" 
-                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                <!--MenuItem Header="帮助文档" 
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/-->
             </MenuItem>
         </Menu>
         <ToolBar DockPanel.Dock="Top" Height="40" Background="{StaticResource StatusBarBG}">

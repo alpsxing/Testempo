@@ -8,27 +8,45 @@
              d:DesignHeight="150" d:DesignWidth="560">
     <DockPanel Background="LightGray">
         <StackPanel Background="White" DockPanel.Dock="Left" Width="60">
-            <Label Height="2" Background="LightGray"/>
+            <StackPanel Height="2" Orientation="Horizontal">
+                <Label Width="30"/>
+                <Label Width="30" Background="LightGray"/>
+            </StackPanel>
             <Label Height="25" Name="lblSpeed5" Margin="0,-3, 0, 0"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
                    Content="{Binding Path=Speed4,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="2" Background="LightGray"/>
+            <StackPanel Height="2" Orientation="Horizontal">
+                <Label Width="30"/>
+                <Label Width="30" Background="LightGray"/>
+            </StackPanel>
             <Label Height="26" Name="lblSpeed4"  Margin="0,-3, 0, 0"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top"
                    Content="{Binding Path=Speed3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="2" Background="LightGray"/>
+            <StackPanel Height="2" Orientation="Horizontal">
+                <Label Width="30"/>
+                <Label Width="30" Background="LightGray"/>
+            </StackPanel>
             <Label Height="26" Name="lblSpeed3"  Margin="0,-3, 0, 0"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top"
                    Content="{Binding Path=Speed2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="2" Background="LightGray"/>
+            <StackPanel Height="2" Orientation="Horizontal">
+                <Label Width="30"/>
+                <Label Width="30" Background="LightGray"/>
+            </StackPanel>
             <Label Height="26" Name="lblSpeed2"  Margin="0,-3, 0, 0"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
                    Content="{Binding Path=Speed1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="2" Background="LightGray"/>
+            <StackPanel Height="2" Orientation="Horizontal">
+                <Label Width="30"/>
+                <Label Width="30" Background="LightGray"/>
+            </StackPanel>
             <Label Height="26" Name="lblSpeed1"  Margin="0,-3, 0, 0"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
                    Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
-            <Label Height="2" Background="LightGray"/>
+            <StackPanel Height="2" Orientation="Horizontal">
+                <Label Width="30"/>
+                <Label Width="30" Background="LightGray"/>
+            </StackPanel>
             <Label Height="26" Name="lblSpeed0"  Margin="0,-3, 0, 0"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
                    Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
