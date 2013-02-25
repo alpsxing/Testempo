@@ -3722,7 +3722,7 @@ namespace Bumblebee
                                                             string.Format("{0:X2}",baData[1]) + "-" +
                                                             string.Format("{0:X2}", baData[2]) + " " +
                                                             string.Format("{0:X2}", baData[3]) + ":" +
-                                                            string.Format("{0:X4}", baData[4]) + ":" +
+                                                            string.Format("{0:X2}", baData[4]) + ":" +
                                                             string.Format("{0:X2}", baData[5]);
                                                         number = number.PadRight(27);
                                                         LogMessage("+-------------------+----------------------------+");
