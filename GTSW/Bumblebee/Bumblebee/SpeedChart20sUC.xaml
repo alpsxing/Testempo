@@ -5,111 +5,161 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Bumblebee"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="560">
+             d:DesignHeight="160" d:DesignWidth="660">
     <DockPanel Background="LightGray">
         <StackPanel Background="White" DockPanel.Dock="Left" Width="60">
             <StackPanel Height="2" Orientation="Horizontal">
-                <Label Width="30"/>
-                <Label Width="30" Background="LightGray"/>
+                <Label Width="50"/>
+                <Label Width="10" Background="LightGray"/>
             </StackPanel>
-            <Label Height="25" Name="lblSpeed5" Margin="0,-3, 0, 0"
+            <Label Height="25" Name="lblSpeed5" Margin="0,-7, 0, 4"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
-                   Content="{Binding Path=Speed4,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
+                   Content="{Binding Path=Speed4,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
             <StackPanel Height="2" Orientation="Horizontal">
-                <Label Width="30"/>
-                <Label Width="30" Background="LightGray"/>
+                <Label Width="50"/>
+                <Label Width="10" Background="LightGray"/>
             </StackPanel>
-            <Label Height="26" Name="lblSpeed4"  Margin="0,-3, 0, 0"
+            <Label Height="26" Name="lblSpeed4"  Margin="0,-7, 0, 4"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top"
                    Content="{Binding Path=Speed3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
             <StackPanel Height="2" Orientation="Horizontal">
-                <Label Width="30"/>
-                <Label Width="30" Background="LightGray"/>
+                <Label Width="50"/>
+                <Label Width="10" Background="LightGray"/>
             </StackPanel>
-            <Label Height="26" Name="lblSpeed3"  Margin="0,-3, 0, 0"
+            <Label Height="26" Name="lblSpeed3"  Margin="0,-7, 0, 4"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top"
                    Content="{Binding Path=Speed2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
             <StackPanel Height="2" Orientation="Horizontal">
-                <Label Width="30"/>
-                <Label Width="30" Background="LightGray"/>
+                <Label Width="50"/>
+                <Label Width="10" Background="LightGray"/>
             </StackPanel>
-            <Label Height="26" Name="lblSpeed2"  Margin="0,-3, 0, 0"
+            <Label Height="26" Name="lblSpeed2"  Margin="0,-7, 0, 4"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
                    Content="{Binding Path=Speed1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
             <StackPanel Height="2" Orientation="Horizontal">
-                <Label Width="30"/>
-                <Label Width="30" Background="LightGray"/>
+                <Label Width="50"/>
+                <Label Width="10" Background="LightGray"/>
             </StackPanel>
-            <Label Height="26" Name="lblSpeed1"  Margin="0,-3, 0, 0"
+            <Label Height="26" Name="lblSpeed1"  Margin="0,-7, 0, 4"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
                    Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
             <StackPanel Height="2" Orientation="Horizontal">
-                <Label Width="30"/>
-                <Label Width="30" Background="LightGray"/>
+                <Label Width="50"/>
+                <Label Width="10" Background="LightGray"/>
             </StackPanel>
-            <Label Height="26" Name="lblSpeed0"  Margin="0,-3, 0, 0"
+            <Label Height="26" Name="lblSpeed0"  Margin="0,-7, 0, 0"
                    HorizontalContentAlignment="Right" VerticalContentAlignment="Top" 
                    Content="{Binding Path=Speed0,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"></Label>
         </StackPanel>
-        <StackPanel Background="White" DockPanel.Dock="Bottom" Height="25" Orientation="Horizontal">
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="50" Content="0秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="2秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="4秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="6秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="8秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="10秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="12秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="14秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="16秒" Margin="-3,0,0,0"></Label>
-            <Label Width="2" Background="LightGray"/>
-            <Label Width="51" Content="18秒" Margin="-3,0,0,0"></Label>
+        <StackPanel Background="White" DockPanel.Dock="Bottom" Height="35" Orientation="Horizontal">
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="0秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="2秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="4秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="6秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="8秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="10秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="12秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="14秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="16秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
+            <StackPanel Width="60">
+                <StackPanel Height="10" Orientation="Horizontal">
+                    <Label Width="2" Background="LightGray"/>
+                    <Grid/>
+                </StackPanel>
+                <Label Width="60" Content="18秒" Margin="-3,-7,0,0"></Label>
+            </StackPanel>
         </StackPanel>
-        <Canvas Height="125" Width="500" Name="canvasTraces">
+        <Canvas Height="125" Width="600" Name="canvasTraces">
             <Path Stroke="White" StrokeThickness="1">
                 <Path.Data>
                     <PathGeometry>
                         <PathFigure IsClosed="False" StartPoint="0,0">
                             <LineSegment Point="0, 25"/>
-                            <LineSegment Point="500, 25"/>
-                            <LineSegment Point="500, 50"/>
+                            <LineSegment Point="600, 25"/>
+                            <LineSegment Point="600, 50"/>
                             <LineSegment Point="0, 50"/>
                             <LineSegment Point="0, 75"/>
-                            <LineSegment Point="500, 75"/>
-                            <LineSegment Point="500, 100"/>
+                            <LineSegment Point="600, 75"/>
+                            <LineSegment Point="600, 100"/>
                             <LineSegment Point="0, 100"/>
                             <LineSegment Point="0, 125"/>
-                            <LineSegment Point="500, 125"/>
-                            <LineSegment Point="450, 125"/>
-                            <LineSegment Point="450, 0"/>
-                            <LineSegment Point="400, 0"/>
-                            <LineSegment Point="400, 125"/>
-                            <LineSegment Point="350, 125"/>
-                            <LineSegment Point="350, 0"/>
-                            <LineSegment Point="300, 0"/>
+                            <LineSegment Point="600, 125"/>
+                            <LineSegment Point="540, 125"/>
+                            <LineSegment Point="540, 0"/>
+                            <LineSegment Point="480, 0"/>
+                            <LineSegment Point="480, 125"/>
+                            <LineSegment Point="420, 125"/>
+                            <LineSegment Point="420, 0"/>
+                            <LineSegment Point="360, 0"/>
+                            <LineSegment Point="360, 125"/>
                             <LineSegment Point="300, 125"/>
-                            <LineSegment Point="250, 125"/>
-                            <LineSegment Point="250, 0"/>
-                            <LineSegment Point="200, 0"/>
-                            <LineSegment Point="200, 125"/>
-                            <LineSegment Point="150, 125"/>
-                            <LineSegment Point="150, 0"/>
-                            <LineSegment Point="100, 0"/>
-                            <LineSegment Point="100, 125"/>
-                            <LineSegment Point="50, 125"/>
-                            <LineSegment Point="50, 0"/>
+                            <LineSegment Point="300, 0"/>
+                            <LineSegment Point="240, 0"/>
+                            <LineSegment Point="240, 125"/>
+                            <LineSegment Point="180, 125"/>
+                            <LineSegment Point="180, 0"/>
+                            <LineSegment Point="120, 0"/>
+                            <LineSegment Point="120, 125"/>
+                            <LineSegment Point="60, 125"/>
+                            <LineSegment Point="60, 0"/>
                             <LineSegment Point="0, 0"/>
                             <LineSegment Point="0, 125"/>
-                            <LineSegment Point="500, 125"/>
-                            <LineSegment Point="500, 0"/>
+                            <LineSegment Point="600, 125"/>
+                            <LineSegment Point="600, 0"/>
                             <LineSegment Point="0, 0"/>
                         </PathFigure>
                     </PathGeometry>

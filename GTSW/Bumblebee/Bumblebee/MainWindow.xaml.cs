@@ -8639,30 +8639,30 @@ namespace Bumblebee
                     cell.BorderColor = BaseColor.WHITE;
                     cell.Phrase.Font.Color = BaseColor.WHITE;
                     stateTable.AddCell(cell);
-                    for (int i = 0; i <= 60; i = i + 5)
-                    {
-                        if (i < 60)
-                        {
-                            cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
-                            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                            cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
-                            cell.BorderColor = BaseColor.WHITE;
-                            stateTable.AddCell(cell);
-                        }
+                    //for (int i = 0; i <= 60; i = i + 5)
+                    //{
+                    //    if (i < 60)
+                    //    {
+                    //        cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
+                    //        cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    //        cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                    //        cell.BorderColor = BaseColor.WHITE;
+                    //        stateTable.AddCell(cell);
+                    //    }
 
-                        cell = new PdfPCell(new Phrase(i.ToString() + "秒", new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
-                        cell.BackgroundColor = BaseColor.WHITE;
-                        cell.BorderColor = BaseColor.WHITE;
-                        cell.BorderColorLeft = BaseColor.RED;
-                        cell.BorderColorRight = BaseColor.RED;
-                        //cell.BorderColorTop = BaseColor.WHITE;
-                        //cell.BorderColorBottom = BaseColor.WHITE;
-                        if (i == 60)
-                            cell.Colspan = 1;
-                        else
-                            cell.Colspan = 4;
-                        stateTable.AddCell(cell);
-                    } 
+                    //    cell = new PdfPCell(new Phrase(i.ToString() + "秒", new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
+                    //    cell.BackgroundColor = BaseColor.WHITE;
+                    //    cell.BorderColor = BaseColor.WHITE;
+                    //    cell.BorderColorLeft = BaseColor.RED;
+                    //    cell.BorderColorRight = BaseColor.RED;
+                    //    //cell.BorderColorTop = BaseColor.WHITE;
+                    //    //cell.BorderColorBottom = BaseColor.WHITE;
+                    //    if (i == 60)
+                    //        cell.Colspan = 1;
+                    //    else
+                    //        cell.Colspan = 4;
+                    //    stateTable.AddCell(cell);
+                    //} 
 
                     _pdfDocument.Add(stateTable);
 
@@ -8695,10 +8695,10 @@ namespace Bumblebee
 
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
-                        RenderTargetBitmap rtb = new RenderTargetBitmap(660, 150, 96, 96, PixelFormats.Pbgra32);
+                        RenderTargetBitmap rtb = new RenderTargetBitmap(660, 160, 96, 96, PixelFormats.Pbgra32);
 
                         SpeedChartUC uc = new SpeedChartUC(minBottom, maxTop, records);
-                        uc.Arrange(new Rect(new Size(660, 150)));
+                        uc.Arrange(new Rect(new Size(660, 160)));
                         rtb.Render(uc);
 
                         PngBitmapEncoder png = new PngBitmapEncoder();
@@ -8709,7 +8709,7 @@ namespace Bumblebee
                         }
 
                         PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
-                        speedPng.ScaleAbsolute(455, 115);
+                        speedPng.ScaleAbsolute(455, 120);
                         //speedPng.SpacingBefore = 5f;
                         //speedPng.SpacingAfter = 15f;
 
@@ -8963,7 +8963,7 @@ namespace Bumblebee
                     for (int i = 0; i < 102; i++)
                     {
                         if (i == 0)
-                            stateWidths[i] = 60f;
+                            stateWidths[i] = 100f;
                         else if (i == 101)
                             stateWidths[i] = 100f;
                         else
@@ -9103,30 +9103,30 @@ namespace Bumblebee
                     cell.BorderColor = BaseColor.WHITE;
                     cell.Phrase.Font.Color = BaseColor.WHITE;
                     stateTable.AddCell(cell);
-                    for (int i = 0; i <= 100; i = i + 10)
-                    {
-                        if (i < 100)
-                        {
-                            cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
-                            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                            cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
-                            cell.BorderColor = BaseColor.WHITE;
-                            stateTable.AddCell(cell);
-                        }
+                    //for (int i = 0; i <= 100; i = i + 10)
+                    //{
+                    //    if (i < 100)
+                    //    {
+                    //        cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
+                    //        cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    //        cell.Phrase.Font.Color = BaseColor.LIGHT_GRAY;
+                    //        cell.BorderColor = BaseColor.WHITE;
+                    //        stateTable.AddCell(cell);
+                    //    }
             
-                        cell = new PdfPCell(new Phrase(((int)(Math.Floor(i / 5.0))).ToString() + "秒", new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
-                        cell.BackgroundColor = BaseColor.WHITE;
-                        cell.BorderColor = BaseColor.WHITE;
-                        cell.BorderColorLeft = BaseColor.RED;
-                        cell.BorderColorRight = BaseColor.RED;
-                        //cell.BorderColorTop = BaseColor.WHITE;
-                        //cell.BorderColorBottom = BaseColor.WHITE;
-                        if (i == 100)
-                            cell.Colspan = 1;
-                        else
-                            cell.Colspan = 9;
-                        stateTable.AddCell(cell);
-                    }
+                    //    cell = new PdfPCell(new Phrase(((int)(Math.Floor(i / 5.0))).ToString() + "秒", new Font(baseFont, 9, Font.BOLD, BaseColor.BLACK)));
+                    //    cell.BackgroundColor = BaseColor.WHITE;
+                    //    cell.BorderColor = BaseColor.WHITE;
+                    //    cell.BorderColorLeft = BaseColor.RED;
+                    //    cell.BorderColorRight = BaseColor.RED;
+                    //    //cell.BorderColorTop = BaseColor.WHITE;
+                    //    //cell.BorderColorBottom = BaseColor.WHITE;
+                    //    if (i == 100)
+                    //        cell.Colspan = 1;
+                    //    else
+                    //        cell.Colspan = 9;
+                    //    stateTable.AddCell(cell);
+                    //}
 
                     _pdfDocument.Add(stateTable);
 
@@ -9159,10 +9159,10 @@ namespace Bumblebee
 
                     Dispatcher.Invoke((ThreadStart)delegate
                     {
-                        RenderTargetBitmap rtb = new RenderTargetBitmap(560, 150, 96, 96, PixelFormats.Pbgra32);
+                        RenderTargetBitmap rtb = new RenderTargetBitmap(660, 160, 96, 96, PixelFormats.Pbgra32);
 
                         SpeedChart20sUC uc = new SpeedChart20sUC(minBottom, maxTop, records);
-                        uc.Arrange(new Rect(new Size(560, 150)));
+                        uc.Arrange(new Rect(new Size(660, 160)));
                         rtb.Render(uc);
 
                         PngBitmapEncoder png = new PngBitmapEncoder();
@@ -9173,7 +9173,7 @@ namespace Bumblebee
                         }
 
                         PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
-                        speedPng.ScaleAbsolute(400, 110);
+                        speedPng.ScaleAbsolute(480, 125);
                         //speedPng.SpacingBefore = 5f;
                         //speedPng.SpacingAfter = 15f;
 
