@@ -228,8 +228,11 @@ namespace Bumblebee
                 Point pt = new Point(x, y);
                 if (pf == null)
                 {
-                    pf = new PathFigure();
-                    pf.StartPoint = pt;
+                    if (_records[i].Item1 < 0xFF)
+                    {
+                        pf = new PathFigure();
+                        pf.StartPoint = pt;
+                    } 
                 }
                 else
                 {
