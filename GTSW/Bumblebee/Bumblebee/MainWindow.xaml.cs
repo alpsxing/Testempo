@@ -102,7 +102,7 @@ namespace Bumblebee
             E4H
         }
 
-        public const int MAX_DISPLAY_LINE_COUNT = 2000;
+        public const int MAX_DISPLAY_LINE_COUNT = 500;
         //public const int CHK_CMD_INTERVAL = 500;
 
         #region Variables
@@ -188,6 +188,10 @@ namespace Bumblebee
 
         private Task _parseVDRTask = null;
         private bool _inParseVDR = false;
+
+		private string _vehicleID = "";
+		private string _vehicleCategory = "";
+		private string _driverID = "";
 
         #region Traces
 
@@ -1789,7 +1793,7 @@ namespace Bumblebee
 
                             while (fldocLog.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
                             {
-                                fldocLog.Blocks.Remove(fldocLog.Blocks.FirstBlock);
+								fldocLog.Blocks.Clear(); //fldocLog.Blocks.Remove(fldocLog.Blocks.FirstBlock);
                             }
                             
                             Run rch = new Run(di.Item1);
@@ -2690,74 +2694,131 @@ namespace Bumblebee
             }
         }
 
-        private void Start_Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (_sPort == null || _sPort.IsOpen == false)
-            {
-                LogMessageError("串口" + Port + "未打开.");
-                LogMessageSeperator();
-                return;
-            }
+		private void Start_Button_Click(object sender, RoutedEventArgs e)
+		{
+			#region Check whether no operation
 
-            #region
+			bool noOper = true;
 
-            DateTime dt = DateTime.Now;
-            CurrentDirectory = System.Environment.CurrentDirectory;
-            if (NeedReport)
-            {
-                if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(CurrentDirectory + @"\Reports");
-                        CurrentDirectory = CurrentDirectory + @"\Reports";
-                    }
-                    catch (Exception)
-                    {
-                        CurrentDirectory = System.Environment.CurrentDirectory;
-                    }
-                }
-                _docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
-                CreateReport();
-            }
+			if (CheckModeChecked == true)
+				noOper = false;
 
-            #endregion
+			foreach (CmdDefinition cdi in _getCmdOc)
+			{
+				if (cdi.CmdSelected == true)
+				{
+					noOper = false;
+					break;
+				}
+			}
 
-            _cmd15HRespOc.Clear();
-            _cmd14HRespOc.Clear();
-            _cmd13HRespOc.Clear();
-            _cmd12HRespOc.Clear();
-            _cmd11HRespOc.Clear();
-            _cmd10HRespOc.Clear();
-            _cmd09HRespOc.Clear();
-            _cmd08HRespOc.Clear();
+			foreach (CmdDefinition cdi in _setCmdOc)
+			{
+				if (cdi.CmdSelected == true)
+				{
+					noOper = false;
+					break;
+				}
+			}
 
-            _started = true;
+			foreach (CmdDefinition cdi in _extGetCmdOc)
+			{
+				if (cdi.CmdSelected == true)
+				{
+					noOper = false;
+					break;
+				}
+			}
 
-            InRun = true;
+			foreach (CmdDefinition cdi in _extSetCmdOc)
+			{
+				if (cdi.CmdSelected == true)
+				{
+					noOper = false;
+					break;
+				}
+			}
 
-            //if (AutoClearLog == true)
-            //    fldocLog.Blocks.Clear();
-            //if (AutoClearRecv == true)
-            //    fldocRecv.Blocks.Clear();
-            //if (AutoClearSend == true)
-            //    fldocSend.Blocks.Clear();
+			if (noOper == true)
+			{
+				LogMessageInformation("没有需要执行的命令.");
+				LogMessageSeperator();
 
-            _cmdsList.Clear();
+				return;
+			}
 
-            _cts = new CancellationTokenSource();
+			#endregion
 
-            if (InChkCmd == true)
-            {
-                _displayedEnterChk = false;
+			if (_sPort == null || _sPort.IsOpen == false)
+			{
+				LogMessageError("串口" + Port + "未打开.");
+				LogMessageSeperator();
+				return;
+			}
 
-                _serialPortChkTask = Task.Factory.StartNew(new Action(SerialPortChkTaskHander), _cts.Token);
-            }
-            else
-            {
-                _serialPortTask = Task.Factory.StartNew(new Action(SerialPortTaskHander), _cts.Token);
-            }
-        }
+			#region
+
+			DateTime dt = DateTime.Now;
+			CurrentDirectory = System.Environment.CurrentDirectory;
+			if (NeedReport)
+			{
+				if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
+				{
+					try
+					{
+						Directory.CreateDirectory(CurrentDirectory + @"\Reports");
+						CurrentDirectory = CurrentDirectory + @"\Reports";
+					}
+					catch (Exception)
+					{
+						CurrentDirectory = System.Environment.CurrentDirectory;
+					}
+				}
+				_docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
+				CreateReport();
+			}
+
+			#endregion
+
+			_cmd15HRespOc.Clear();
+			_cmd14HRespOc.Clear();
+			_cmd13HRespOc.Clear();
+			_cmd12HRespOc.Clear();
+			_cmd11HRespOc.Clear();
+			_cmd10HRespOc.Clear();
+			_cmd09HRespOc.Clear();
+			_cmd08HRespOc.Clear();
+
+			_vehicleID = "";
+			_vehicleCategory = "";
+			_driverID = "";
+
+			_started = true;
+
+			InRun = true;
+
+			//if (AutoClearLog == true)
+			//    fldocLog.Blocks.Clear();
+			//if (AutoClearRecv == true)
+			//    fldocRecv.Blocks.Clear();
+			//if (AutoClearSend == true)
+			//    fldocSend.Blocks.Clear();
+
+			_cmdsList.Clear();
+
+			_cts = new CancellationTokenSource();
+
+			if (InChkCmd == true)
+			{
+				_displayedEnterChk = false;
+
+				_serialPortChkTask = Task.Factory.StartNew(new Action(SerialPortChkTaskHander), _cts.Token);
+			}
+			else
+			{
+				_serialPortTask = Task.Factory.StartNew(new Action(SerialPortTaskHander), _cts.Token);
+			}
+		}
 
         private void SerialPortChkTaskHander()
         {
@@ -2917,7 +2978,7 @@ namespace Bumblebee
 
                 while (fldocSend.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
                 {
-                    fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
+					fldocSend.Blocks.Clear(); //fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
                 }
 
                 Run rch = new Run(finalCmd);
@@ -2983,7 +3044,7 @@ namespace Bumblebee
 
                 while (fldocRecv.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
                 {
-                    fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+					fldocRecv.Blocks.Clear(); //fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
                 }
                 
                 Run rch = new Run(sRecv);
@@ -3596,7 +3657,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -3671,7 +3732,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -3744,7 +3805,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -3805,15 +3866,21 @@ namespace Bumblebee
                                                             string.Format("{0:X2}", baData[10]) + ":" +
                                                             string.Format("{0:X2}", baData[11]);
                                                         number2 = number2.PadRight(27);
-                                                        string distance1 = baData[12].ToString("X") + baData[13].ToString("X") + baData[14].ToString("X") + baData[15].ToString("X");
+                                                        string distance1 = string.Format("{0:X2}", baData[12]) +
+															string.Format("{0:X2}", baData[13]) +
+															string.Format("{0:X2}", baData[14]) +
+															string.Format("{0:X2}", baData[15]);
                                                         while (distance1.StartsWith("0"))
                                                             distance1 = distance1.Substring(1);
                                                         if (string.IsNullOrWhiteSpace(distance1))
                                                             distance1 = "0";
-                                                        else
-                                                            distance1 = distance1 + "0";
+                                                        //else
+                                                        //    distance1 = distance1 + "0";
                                                         distance1 = (distance1 + " (单位:0.1千米)").PadRight(27 - 4);
-                                                        string distance2 = baData[16].ToString("X") + baData[17].ToString("X") + baData[18].ToString("X") + baData[19].ToString("X");
+														string distance2 = string.Format("{0:X2}", baData[16]) +
+															string.Format("{0:X2}", baData[17]) +
+															string.Format("{0:X2}", baData[18]) +
+															string.Format("{0:X2}", baData[19]);
                                                         while (distance2.StartsWith("0"))
                                                             distance2 = distance2.Substring(1);
                                                         if (string.IsNullOrWhiteSpace(distance2))
@@ -3844,7 +3911,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -3947,7 +4014,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -4031,7 +4098,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -4185,7 +4252,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -4329,7 +4396,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -4946,7 +5013,7 @@ namespace Bumblebee
                                                                 string.Format("{0:X2}", baData[50 * iblock + 27]) + ":" +
                                                                 string.Format("{0:X2}", baData[50 * iblock + 28]) + ":" +
                                                                 string.Format("{0:X2}", baData[50 * iblock + 29]);
-                                                            numberblock = numberblock.PadRight(27);
+															numberblockStop = numberblockStop.PadRight(27);
                                                             byte[] baNumber = new byte[18];
                                                             for (int idxBa = 0; idxBa < 18; idxBa++)
                                                             {
@@ -5735,7 +5802,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -5976,7 +6043,7 @@ namespace Bumblebee
                                                                     string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                                                                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                                                                    PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                                                                    PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                                                                     par.Alignment = Element.ALIGN_CENTER;
                                                                     _pdfDocument.Add(par);
 
@@ -6174,6 +6241,10 @@ namespace Bumblebee
             _cmd09HRespOc.Clear();
             _cmd08HRespOc.Clear();
 
+			_vehicleID = "";
+			_vehicleCategory = "";
+			_driverID = "";
+
             _cts = new CancellationTokenSource();
 
             _inParseVDR = true;
@@ -6191,2235 +6262,2255 @@ namespace Bumblebee
             {
                 FileInfo fi = new FileInfo(fileName);
                 int len = (int)fi.Length;
-                if (len < 3)
-                {
-                    LogMessageError("VDR文件长度为0.");
-                    return;
-                }
-                BinaryReader br = new BinaryReader(File.OpenRead(fileName));
-                byte[] ba = null;
-                ba = br.ReadBytes(len);
-
-                int intXor = ba[0];
-                for (int i = 1; i < len - 1; i++)
-                    intXor = intXor ^ ba[i];
-                if (intXor != ba[len - 1])
-                {
-                    LogMessageError("VDR文件校验结果不正确.");
-                    return;
-                }
-                DateTime dt = DateTime.Now;
-                CurrentDirectory = System.Environment.CurrentDirectory;
-                if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(CurrentDirectory + @"\Reports");
-                        CurrentDirectory = CurrentDirectory + @"\Reports";
-                    }
-                    catch (Exception)
-                    {
-                        CurrentDirectory = System.Environment.CurrentDirectory;
-                    }
-                }
-                else
-                    CurrentDirectory = CurrentDirectory + @"\Reports";
-                _docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
-
-                if(NeedReport == true)
-                    CreateReport();
-
-                int position = 0;
-                byte[] baCount = new byte[2];
-                baCount[0] = ba[0];
-                baCount[1] = ba[1];
-                position = 2;
-                int iCount = baCount[0] * 256 + baCount[1];// System.BitConverter.ToInt16(baCount, 0);
-                for (int i = 0; i < iCount; i++)
-                {
-                    if (_cts.Token.IsCancellationRequested == true)
-                        break;
-
-                    byte bType = ba[position];
-                    byte[] baTitle = new byte[18];
-                    for (int j = 0; j < 18; j++)
-                    {
-                        baTitle[j] = ba[position + 1 + j];
-                    }
-                    byte[] baBlockLen = new byte[4];
-                    baBlockLen[0] = ba[position + 1 + 18 + 0];
-                    baBlockLen[1] = ba[position + 1 + 18 + 1];
-                    baBlockLen[2] = ba[position + 1 + 18 + 2];
-                    baBlockLen[3] = ba[position + 1 + 18 + 3];
-                    int dataLen = baBlockLen[0] * 256 * 256 * 256 +
-                        baBlockLen[1] * 256 * 256 +
-                        baBlockLen[2] * 256 +
-                        baBlockLen[3];
-                        //System.BitConverter.ToInt32(baBlockLen, 0);
-
-                    byte[] baData = new byte[dataLen];
-                    for (int j = 0; j < dataLen; j++)
-                    {
-                        baData[j] = ba[position + 1 + 18 + 4 + j];
-                    }
-                    string header = string.Format("{0:X2}", bType);
-                    Encoding gb = Encoding.GetEncoding("GB2312");
-                    string title = gb.GetString(baTitle);
-                    if (title == null)
-                        title = "";
-                    title = title.Trim().Trim(new char[] { '\0'});
-                    string cdiCmdContent = header + ":" + title;
-
-                    LogMessageTitle(cdiCmdContent);
-
-                    #region Display Result
-
-                    switch (header)
-                    {
-                        default:
-                            LogMessageError("命令类型(" + cdiCmdContent + ")未知.");
-                            break;
-                        case "00":
-                            #region
-                            {
-                                if (dataLen != 2)
-                                    LogMessageError("命令(" + header + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string year = baData[0].ToString("X").PadRight(27);
-                                    string number = baData[1].ToString().PadRight(27);
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|              年号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", year));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("年号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("修改单号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "01":
-                            #region
-                            {
-                                if (dataLen != 18)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string number = Encoding.UTF8.GetString(baData).PadRight(27);
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("驾证号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "02":
-                            #region
-                            {
-                                if (dataLen != 6)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
-                                        string.Format("{0:X2}", baData[1]) + "-" +
-                                        string.Format("{0:X2}", baData[2]) + " " +
-                                        string.Format("{0:X2}", baData[3]) + ":" +
-                                        string.Format("{0:X2}", baData[4]) + ":" +
-                                        string.Format("{0:X2}", baData[5]);
-                                    number = number.PadRight(27);
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "03":
-                            #region
-                            {
-                                if (dataLen != 20)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string number1 = "20" + string.Format("{0:X2}", baData[0]) + "-" +
-                                        string.Format("{0:X2}", baData[1]) + "-" + 
-                                        string.Format("{0:X2}", baData[2]) + " " +
-                                        string.Format("{0:X2}", baData[3]) + ":" +
-                                        string.Format("{0:X2}", baData[4]) + ":" +
-                                        string.Format("{0:X2}", baData[5]);
-                                    number1 = number1.PadRight(27);
-                                    string number2 = "20" + string.Format("{0:X2}", baData[6]) + "-" +
-                                        string.Format("{0:X2}", baData[7]) + "-" +
-                                        string.Format("{0:X2}", baData[8]) + " " +
-                                        string.Format("{0:X2}", baData[9]) + ":" +
-                                        string.Format("{0:X2}", baData[10]) + ":" +
-                                        string.Format("{0:X2}", baData[11]);
-                                    number2 = number2.PadRight(27);
-                                    string distance1 = baData[12].ToString("X") + baData[13].ToString("X") + baData[14].ToString("X") + baData[15].ToString("X");
-                                    while (distance1.StartsWith("0"))
-                                        distance1 = distance1.Substring(1);
-                                    if (string.IsNullOrWhiteSpace(distance1))
-                                        distance1 = "0";
-                                    else
-                                        distance1 = distance1 + "0";
-                                    distance1 = (distance1 + " (单位:0.1千米)").PadRight(27 - 4);
-                                    string distance2 = baData[16].ToString("X") + baData[17].ToString("X") + baData[18].ToString("X") + baData[19].ToString("X");
-                                    while (distance2.StartsWith("0"))
-                                        distance2 = distance2.Substring(1);
-                                    if (string.IsNullOrWhiteSpace(distance2))
-                                        distance2 = "0";
-                                    distance2 = (distance2 + " (单位:0.1千米)").PadRight(27 - 4); // Why not "0 (单位:0.1千米)"
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          安装时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          初始里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance1));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("安装时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("初始里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("累计里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "04":
-                            #region
-                            {
-                                if (dataLen != 8)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
-                                        string.Format("{0:X2}", baData[1]) + "-" +
-                                        string.Format("{0:X2}", baData[2]) + " " +
-                                        string.Format("{0:X2}", baData[3]) + ":" +
-                                        string.Format("{0:X2}", baData[4]) + ":" +
-                                        string.Format("{0:X2}", baData[5]);
-                                    number = number.PadRight(27);
-                                    int intHigh = (int)baData[6];
-                                    int intLow = (int)baData[7];
-                                    int intLen = intHigh * 256 + intLow;
-                                    string sValue = intLen.ToString().PadRight(27);
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("脉冲系数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "05":
-                            #region
-                            {
-                                if (dataLen != 41)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string id = Encoding.UTF8.GetString(baData, 0, 17).PadRight(27);
-                                    //Encoding gb = Encoding.GetEncoding("GB2312");
-                                    string number = gb.GetString(baData, 17, 12).Trim('\0');
-                                    number = number.PadRight(27 - GetChineseNumber(number) + 1);
-                                    string category = gb.GetString(baData, 29, 12).Trim('\0');
-                                    category = category.PadRight(27 - GetChineseNumber(category));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|        车辆识别码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", id));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          车辆号牌 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("车辆识别码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("车辆号牌", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("号牌分类", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "06":
-                            #region
-                            {
-                                if (dataLen != 87)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
-                                        string.Format("{0:X2}", baData[1]) + "-" +
-                                        string.Format("{0:X2}", baData[2]) + " " +
-                                        string.Format("{0:X2}", baData[3]) + ":" +
-                                        string.Format("{0:X2}", baData[4]) + ":" +
-                                        string.Format("{0:X2}", baData[5]);
-                                    number = number.PadRight(27);
-                                    //Encoding gb = Encoding.GetEncoding("GB2312");
-                                    string d0 = gb.GetString(baData, 7, 10).Trim('\0');
-                                    //if ((baData[6] & 0x1) == 0x1)
-                                    //    d0 = "(有操作) " + d0;
-                                    //else
-                                    //    d0 = "(无操作) " + d0;
-                                    d0 = d0.PadRight(27 - GetChineseNumber(d0));// + 3);
-                                    string d1 = gb.GetString(baData, 17, 10).Trim('\0');
-                                    //if ((baData[6] & 0x2) == 0x2)
-                                    //    d1 = "(有操作) " + d1;
-                                    //else
-                                    //    d1 = "(无操作) " + d1;
-                                    d1 = d1.PadRight(27 - GetChineseNumber(d1));// + 3);
-                                    string d2 = gb.GetString(baData, 27, 10).Trim('\0');
-                                    //if ((baData[6] & 0x4) == 0x4)
-                                    //    d2 = "(有操作) " + d2;
-                                    //else
-                                    //    d2 = "(无操作) " + d2;
-                                    d2 = d2.PadRight(27 - GetChineseNumber(d2));// + 3);
-                                    string d3 = gb.GetString(baData, 37, 10).Trim('\0');
-                                    //if ((baData[6] & 0x8) == 0x8)
-                                    //    d3 = "(有操作) " + d3;
-                                    //else
-                                    //    d3 = "(无操作) " + d3;
-                                    d3 = d3.PadRight(27 - GetChineseNumber(d3));// + 3);
-                                    string d4 = gb.GetString(baData, 47, 10).Trim('\0');
-                                    //if ((baData[6] & 0x10) == 0x10)
-                                    //    d4 = "(有操作) " + d4;
-                                    //else
-                                    //    d4 = "(无操作) " + d4;
-                                    d4 = d4.PadRight(27 - GetChineseNumber(d4));// + 3);
-                                    string d5 = gb.GetString(baData, 57, 10).Trim('\0');
-                                    //if ((baData[6] & 0x20) == 0x20)
-                                    //    d5 = "(有操作) " + d5;
-                                    //else
-                                    //    d5 = "(无操作) " + d5;
-                                    d5 = d5.PadRight(27 - GetChineseNumber(d5));// + 3);
-                                    string d6 = gb.GetString(baData, 67, 10).Trim('\0');
-                                    //if ((baData[6] & 0x40) == 0x40)
-                                    //    d6 = "(有操作) " + d6;
-                                    //else
-                                    //    d6 = "(无操作) " + d6;
-                                    d6 = d6.PadRight(27 - GetChineseNumber(d6));// + 3);
-                                    string d7 = gb.GetString(baData, 77, 10).Trim('\0');
-                                    //if ((baData[6] & 0x80) == 0x80)
-                                    //    d7 = "(有操作) " + d7;
-                                    //else
-                                    //    d7 = "(无操作) " + d7;
-                                    d7 = d7.PadRight(27 - GetChineseNumber(d7));// + 3);
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D7 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D6 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D5 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D4 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D3 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D2 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D1 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D2", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D1", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D0", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "07":
-                            #region
-                            {
-                                if (dataLen != 35)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
-                                    string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
-                                    string number = "20" + string.Format("{0:X2}", baData[23]) + "-" +
-                                        string.Format("{0:X2}", baData[24]) + "-" +
-                                        string.Format("{0:X2}", baData[25]);
-                                    number = number.PadRight(27);
-                                    long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
-                                    string productflow = flow.ToString().PadRight(27);
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("| 生产厂CCC认证代码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", ccc));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|      认证产品型号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", model));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|    记录仪生产时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("生产厂CCC认证代码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("认证产品型号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("记录仪生产时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("产品生产流水号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "08":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)126));
-                                int dataRemain = dataLen % 126;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        numberblock = "20" + string.Format("{0:X2}", baData[126 * iblock + 0]) + "-" +
-                                            string.Format("{0:X2}", baData[126 * iblock + 1]) + "-" +
-                                            string.Format("{0:X2}", baData[126 * iblock + 2]) + " " +
-                                            string.Format("{0:X2}", baData[126 * iblock + 3]) + ":" +
-                                            string.Format("{0:X2}", baData[126 * iblock + 4]) + ":" +
-                                            string.Format("{0:X2}", baData[126 * iblock + 5]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[126 * iblock + 0] / 16.0)) * 10 + baData[126 * iblock + 0] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[126 * iblock + 1] / 16.0)) * 10 + baData[126 * iblock + 1] % 16,
-                                            ((int)Math.Floor((double)baData[126 * iblock + 2] / 16.0)) * 10 + baData[126 * iblock + 2] % 16,
-                                            ((int)Math.Floor((double)baData[126 * iblock + 3] / 16.0)) * 10 + baData[126 * iblock + 3] % 16,
-                                            ((int)Math.Floor((double)baData[126 * iblock + 4] / 16.0)) * 10 + baData[126 * iblock + 4] % 16,
-                                            ((int)Math.Floor((double)baData[126 * iblock + 5] / 16.0)) * 10 + baData[126 * iblock + 5] % 16);
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
-                                        ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
-                                        for (int iSec = 0; iSec < 60; iSec++)
-                                        {
-                                            int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
-                                            byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
-
-                                            records.Add(new Tuple<int, byte>(speed, state));
-                                        }
-                                        _cmd08HRespOc.Add(new Cmd08HResponse()
-                                        {
-                                            Index = (_cmd08HRespOc.Count + 1).ToString(),
-                                            StartDateTime = numberblock,
-                                            Records = records
-                                        });
-                                    }
-
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create08HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "09":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)666));
-                                int dataRemain = dataLen % 666;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        numberblock = "20" + string.Format("{0:X2}", baData[666 * iblock + 0]) + "-" +
-                                            string.Format("{0:X2}", baData[666 * iblock + 1]) + "-" +
-                                            string.Format("{0:X2}", baData[666 * iblock + 2]) + " " +
-                                            string.Format("{0:X2}", baData[666 * iblock + 3]) + ":" +
-                                            string.Format("{0:X2}", baData[666 * iblock + 4]) + ":" +
-                                            string.Format("{0:X2}", baData[666 * iblock + 5]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[666 * iblock + 0] / 16.0)) * 10 + baData[666 * iblock + 0] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[666 * iblock + 1] / 16.0)) * 10 + baData[666 * iblock + 1] % 16,
-                                            ((int)Math.Floor((double)baData[666 * iblock + 2] / 16.0)) * 10 + baData[666 * iblock + 2] % 16,
-                                            ((int)Math.Floor((double)baData[666 * iblock + 3] / 16.0)) * 10 + baData[666 * iblock + 3] % 16,
-                                            ((int)Math.Floor((double)baData[666 * iblock + 4] / 16.0)) * 10 + baData[666 * iblock + 4] % 16,
-                                            ((int)Math.Floor((double)baData[666 * iblock + 5] / 16.0)) * 10 + baData[666 * iblock + 5] % 16);
-                                        int min = lastDateTime.Minute;
-                                        int sec = lastDateTime.Second;
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(1, -59 + min, -59 + sec));
-                                        ObservableCollection<Tuple<string, string, string, int>> records = new ObservableCollection<Tuple<string, string, string, int>>();
-                                        for (int iMin = 0; iMin < 60; iMin++)
-                                        {
-                                            #region
-
-                                            byte[] baJingDu = new byte[4];
-                                            baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 0];
-                                            baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 1];
-                                            baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 2];
-                                            baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 3];
-                                            string sJingDu = "";
-                                            if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
-                                                sJingDu = "无效";
-                                            else
-                                            {
-                                                int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
-                                                if (jingDu >= 0)
-                                                    sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
-                                                else
-                                                    sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
-                                            }
-                                            byte[] baWeiDu = new byte[4];
-                                            baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 4];
-                                            baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 5];
-                                            baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 6];
-                                            baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 7];
-                                            string sWeiDu = "";
-                                            if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
-                                                sWeiDu = "无效";
-                                            else
-                                            {
-                                                int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
-                                                if (weiDu >= 0)
-                                                    sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
-                                                else
-                                                    sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
-                                            }
-                                            byte[] baHeight = new byte[2];
-                                            baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 8];
-                                            baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 9];
-                                            string sHeight = "";
-                                            if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
-                                                sHeight = "无效";
-                                            else
-                                            {
-                                                int iHeight = System.BitConverter.ToInt16(baHeight, 0);
-                                                sHeight = iHeight.ToString();
-                                            }
-
-                                            #endregion
-
-                                            int speed = baData[666 * iblock + iMin * 11 + 6 + 10];
-
-                                            records.Add(new Tuple<string, string, string, int>(sJingDu, sWeiDu, sHeight, speed));
-                                        }
-                                        _cmd09HRespOc.Add(new Cmd09HResponse()
-                                        {
-                                            Index = (_cmd09HRespOc.Count + 1).ToString(),
-                                            StartDateTime = numberblock,
-                                            Records = records
-                                        });
-                                    }
-
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (dataRemain != 0)
-                                {
-                                    string sValue3 = dataRemain.ToString().PadRight(27);
-                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create09HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "10":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)234));
-                                int dataRemain = dataLen % 234;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        numberblock = "20" + string.Format("{0:X2}", baData[234 * iblock + 0]) + "-" +
-                                            string.Format("{0:X2}", baData[234 * iblock + 1]) + "-" +
-                                            string.Format("{0:X2}", baData[234 * iblock + 2]) + " " +
-                                            string.Format("{0:X2}", baData[234 * iblock + 3]) + ":" +
-                                            string.Format("{0:X2}", baData[234 * iblock + 4]) + ":" +
-                                            string.Format("{0:X2}", baData[234 * iblock + 5]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[234 * iblock + 0] / 16.0)) * 10 + baData[234 * iblock + 0] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[234 * iblock + 1] / 16.0)) * 10 + baData[234 * iblock + 1] % 16,
-                                            ((int)Math.Floor((double)baData[234 * iblock + 2] / 16.0)) * 10 + baData[234 * iblock + 2] % 16,
-                                            ((int)Math.Floor((double)baData[234 * iblock + 3] / 16.0)) * 10 + baData[234 * iblock + 3] % 16,
-                                            ((int)Math.Floor((double)baData[234 * iblock + 4] / 16.0)) * 10 + baData[234 * iblock + 4] % 16,
-                                            ((int)Math.Floor((double)baData[234 * iblock + 5] / 16.0)) * 10 + baData[234 * iblock + 5] % 16);
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 20));
-                                        byte[] baNumber = new byte[18];
-                                        for (int idxBa = 0; idxBa < 18; idxBa++)
-                                        {
-                                            baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
-                                        }
-                                        string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-                                        ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
-                                        for (int iRec = 0; iRec < 100; iRec++)
-                                        {
-                                            int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
-                                            byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
-                                            records.Add(new Tuple<int, byte>(speed, state));
-                                        }
-
-                                        #region
-
-                                        byte[] baJingDu = new byte[4];
-                                        baJingDu[3] = baData[234 * iblock + 224 + 0];
-                                        baJingDu[2] = baData[234 * iblock + 224 + 1];
-                                        baJingDu[1] = baData[234 * iblock + 224 + 2];
-                                        baJingDu[0] = baData[234 * iblock + 224 + 3];
-                                        string sJingDu = "";
-                                        if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
-                                            sJingDu = "无效";
-                                        else
-                                        {
-                                            int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
-                                            if (jingDu >= 0)
-                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
-                                            else
-                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
-                                        }
-                                        byte[] baWeiDu = new byte[4];
-                                        baWeiDu[3] = baData[234 * iblock + 224 + 4];
-                                        baWeiDu[2] = baData[234 * iblock + 224 + 5];
-                                        baWeiDu[1] = baData[234 * iblock + 224 + 6];
-                                        baWeiDu[0] = baData[234 * iblock + 224 + 7];
-                                        string sWeiDu = "";
-                                        if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
-                                            sWeiDu = "无效";
-                                        else
-                                        {
-                                            int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
-                                            if (weiDu >= 0)
-                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
-                                            else
-                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
-                                        }
-                                        byte[] baHeight = new byte[2];
-                                        baHeight[1] = baData[234 * iblock + 224 + 8];
-                                        baHeight[0] = baData[234 * iblock + 224 + 9];
-                                        string sHeight = "";
-                                        if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
-                                            sHeight = "无效";
-                                        else
-                                        {
-                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
-                                            sHeight = iHeight.ToString();
-                                        }
-
-                                        #endregion
-
-                                        _cmd10HRespOc.Add(new Cmd10HResponse()
-                                        {
-                                            Index = (_cmd10HRespOc.Count + 1).ToString(),
-                                            StopDateTime = numberblock,
-                                            Number = number,
-                                            Records = records,
-                                            Position = sJingDu + "/" + sWeiDu,
-                                            Height = sHeight
-                                        });
-                                    }
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (dataRemain != 0)
-                                {
-                                    string sValue3 = dataRemain.ToString().PadRight(27);
-                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create10HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "11":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)50));
-                                int dataRemain = dataLen % 50;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        numberblock = "20" + string.Format("{0:X2}", baData[50 * iblock + 18]) + "-" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 19]) + "-" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 20]) + " " +
-                                            string.Format("{0:X2}", baData[50 * iblock + 21]) + ":" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 22]) + ":" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 23]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[50 * iblock + 18] / 16.0)) * 10 + baData[50 * iblock + 18] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[50 * iblock + 19] / 16.0)) * 10 + baData[50 * iblock + 19] % 16,
-                                            ((int)Math.Floor((double)baData[50 * iblock + 20] / 16.0)) * 10 + baData[50 * iblock + 20] % 16,
-                                            ((int)Math.Floor((double)baData[50 * iblock + 21] / 16.0)) * 10 + baData[50 * iblock + 21] % 16,
-                                            ((int)Math.Floor((double)baData[50 * iblock + 22] / 16.0)) * 10 + baData[50 * iblock + 22] % 16,
-                                            ((int)Math.Floor((double)baData[50 * iblock + 23] / 16.0)) * 10 + baData[50 * iblock + 23] % 16);
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
-                                        string numberblockStop = "20" + string.Format("{0:X2}", baData[50 * iblock + 24]) + "-" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 25]) + "-" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 26]) + " " +
-                                            string.Format("{0:X2}", baData[50 * iblock + 27]) + ":" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 28]) + ":" +
-                                            string.Format("{0:X2}", baData[50 * iblock + 29]);
-                                        numberblock = numberblock.PadRight(27);
-                                        byte[] baNumber = new byte[18];
-                                        for (int idxBa = 0; idxBa < 18; idxBa++)
-                                        {
-                                            baNumber[idxBa] = baData[50 * iblock + idxBa];
-                                        }
-                                        string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-
-                                        #region
-
-                                        byte[] baJingDu = new byte[4];
-                                        baJingDu[3] = baData[50 * iblock + 30];
-                                        baJingDu[2] = baData[50 * iblock + 31];
-                                        baJingDu[1] = baData[50 * iblock + 32];
-                                        baJingDu[0] = baData[50 * iblock + 33];
-                                        string sJingDu = "";
-                                        if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
-                                            sJingDu = "无效";
-                                        else
-                                        {
-                                            int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
-                                            if (jingDu >= 0)
-                                                sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
-                                            else
-                                                sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
-                                        }
-                                        byte[] baWeiDu = new byte[4];
-                                        baWeiDu[3] = baData[50 * iblock + 34];
-                                        baWeiDu[2] = baData[50 * iblock + 35];
-                                        baWeiDu[1] = baData[50 * iblock + 36];
-                                        baWeiDu[0] = baData[50 * iblock + 37];
-                                        string sWeiDu = "";
-                                        if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
-                                            sWeiDu = "无效";
-                                        else
-                                        {
-                                            int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
-                                            if (weiDu >= 0)
-                                                sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
-                                            else
-                                                sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
-                                        }
-                                        byte[] baHeight = new byte[2];
-                                        baHeight[1] = baData[50 * iblock + 38];
-                                        baHeight[0] = baData[50 * iblock + 39];
-                                        string sHeight = "";
-                                        if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
-                                            sHeight = "无效";
-                                        else
-                                        {
-                                            int iHeight = System.BitConverter.ToInt16(baHeight, 0);
-                                            sHeight = iHeight.ToString();
-                                        }
-
-                                        #endregion
-
-                                        #region
-
-                                        byte[] baJingDu1 = new byte[4];
-                                        baJingDu1[3] = baData[50 * iblock + 40];
-                                        baJingDu1[2] = baData[50 * iblock + 41];
-                                        baJingDu1[1] = baData[50 * iblock + 42];
-                                        baJingDu1[0] = baData[50 * iblock + 43];
-                                        string sJingDu1 = "";
-                                        if (baJingDu1[0] == 0xFF || baJingDu1[1] == 0xFF || baJingDu1[2] == 0xFF || baJingDu1[3] == 0xFF)
-                                            sJingDu1 = "无效";
-                                        else
-                                        {
-                                            int jingDu1 = System.BitConverter.ToInt32(baJingDu1, 0);
-                                            if (jingDu1 >= 0)
-                                                sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
-                                            else
-                                                sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
-                                        }
-                                        byte[] baWeiDu1 = new byte[4];
-                                        baWeiDu1[3] = baData[50 * iblock + 44];
-                                        baWeiDu1[2] = baData[50 * iblock + 45];
-                                        baWeiDu1[1] = baData[50 * iblock + 46];
-                                        baWeiDu1[0] = baData[50 * iblock + 47];
-                                        string sWeiDu1 = "";
-                                        if (baWeiDu1[0] == 0xFF || baWeiDu1[1] == 0xFF || baWeiDu1[2] == 0xFF || baWeiDu1[3] == 0xFF)
-                                            sWeiDu1 = "无效";
-                                        else
-                                        {
-                                            int weiDu1 = System.BitConverter.ToInt32(baWeiDu1, 0);
-                                            if (weiDu1 >= 0)
-                                                sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
-                                            else
-                                                sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
-                                        }
-                                        byte[] baHeight1 = new byte[2];
-                                        baHeight1[1] = baData[50 * iblock + 48];
-                                        baHeight1[0] = baData[50 * iblock + 49];
-                                        string sHeight1 = "";
-                                        if (baHeight1[0] == 0xFF || baHeight1[1] == 0xFF)
-                                            sHeight1 = "无效";
-                                        else
-                                        {
-                                            int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
-                                            sHeight1 = iHeight1.ToString();
-                                        }
-
-                                        #endregion
-
-                                        _cmd11HRespOc.Add(new Cmd11HResponse()
-                                        {
-                                            Index = (_cmd11HRespOc.Count + 1).ToString(),
-                                            Number = number,
-                                            RecordStartDateTime = numberblock,
-                                            RecordStopDateTime = numberblockStop,
-                                            StartPosition = sJingDu + "/" + sWeiDu,
-                                            StopPosition = sJingDu1 + "/" + sWeiDu1,
-                                            StartHeight = sHeight,
-                                            StopHeight = sHeight1
-                                        });
-                                    }
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (dataRemain != 0)
-                                {
-                                    string sValue3 = dataRemain.ToString().PadRight(27);
-                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create11HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "12":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)25));
-                                int dataRemain = dataLen % 25;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        numberblock = "20" + string.Format("{0:X2}", baData[25 * iblock + 0]) + "-" +
-                                             string.Format("{0:X2}", baData[25 * iblock + 1]) + "-" +
-                                             string.Format("{0:X2}", baData[25 * iblock + 2]) + " " +
-                                             string.Format("{0:X2}", baData[25 * iblock + 3]) + ":" +
-                                             string.Format("{0:X2}", baData[25 * iblock + 4]) + ":" +
-                                             string.Format("{0:X2}", baData[25 * iblock + 5]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[25 * iblock + 0] / 16.0)) * 10 + baData[25 * iblock + 0] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[25 * iblock + 1] / 16.0)) * 10 + baData[25 * iblock + 1] % 16,
-                                            ((int)Math.Floor((double)baData[25 * iblock + 2] / 16.0)) * 10 + baData[25 * iblock + 2] % 16,
-                                            ((int)Math.Floor((double)baData[25 * iblock + 3] / 16.0)) * 10 + baData[25 * iblock + 3] % 16,
-                                            ((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
-                                            ((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
-                                        byte[] baNumber = new byte[18];
-                                        for (int idxBa = 0; idxBa < 18; idxBa++)
-                                        {
-                                            baNumber[idxBa] = baData[25 * iblock + 6 + idxBa];
-                                        }
-                                        string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-                                        string oper = "";
-                                        switch (baData[25 * iblock + 24].ToString("X").Trim().ToUpper())
-                                        {
-                                            default:
-                                                oper = "未知操作";
-                                                break;
-                                            case "1":
-                                            case "01":
-                                                oper = "登录";
-                                                break;
-                                            case "2":
-                                            case "02":
-                                                oper = "退出";
-                                                break;
-                                        }
-                                        _cmd12HRespOc.Add(new Cmd12HResponse()
-                                        {
-                                            Index = (_cmd12HRespOc.Count + 1).ToString(),
-                                            RecordDateTime = numberblock.Trim(),
-                                            Number = number,
-                                            Description = oper
-                                        });
-                                    }
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (dataRemain != 0)
-                                {
-                                    string sValue3 = dataRemain.ToString().PadRight(27);
-                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create12HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "13":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
-                                int dataRemain = dataLen % 7;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        numberblock = "20" + string.Format("{0:X2}", baData[7 * iblock + 0]) + "-" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 1]) + "-" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 2]) + " " +
-                                            string.Format("{0:X2}", baData[7 * iblock + 3]) + ":" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 4]) + ":" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 5]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
-                                        string oper = "";
-                                        switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
-                                        {
-                                            default:
-                                                oper = "未知状态";
-                                                break;
-                                            case "1":
-                                            case "01":
-                                                oper = "通电";
-                                                break;
-                                            case "2":
-                                            case "02":
-                                                oper = "断电";
-                                                break;
-                                        }
-                                        _cmd13HRespOc.Add(new Cmd13HResponse()
-                                        {
-                                            Index = (_cmd13HRespOc.Count + 1).ToString(),
-                                            RecordDateTime = numberblock.Trim(),
-                                            Description = oper
-                                        });
-                                    }
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (dataRemain != 0)
-                                {
-                                    string sValue3 = dataRemain.ToString().PadRight(27);
-                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create13HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "14":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
-                                int dataRemain = dataLen % 7;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        numberblock = "20" + string.Format("{0:X2}", baData[7 * iblock + 0]) + "-" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 1]) + "-" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 2]) + " " +
-                                            string.Format("{0:X2}", baData[7 * iblock + 3]) + ":" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 4]) + ":" +
-                                            string.Format("{0:X2}", baData[7 * iblock + 5]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
-                                            ((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
-                                        string oper = "";
-                                        switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
-                                        {
-                                            default:
-                                                oper = "未知操作";
-                                                break;
-                                            case "82":
-                                                oper = "修改车辆信息";
-                                                break;
-                                            case "83":
-                                                oper = "修改初次安装日期";
-                                                break;
-                                            case "84":
-                                                oper = "修改状态量配置信息";
-                                                break;
-                                            case "C2":
-                                                oper = "修改记录仪时间";
-                                                break;
-                                            case "C3":
-                                                oper = "修改脉冲系数";
-                                                break;
-                                            case "C4":
-                                                oper = "修改初始里程";
-                                                break;
-                                        }
-                                        _cmd14HRespOc.Add(new Cmd14HResponse()
-                                        {
-                                            Index = (_cmd14HRespOc.Count + 1).ToString(),
-                                            RecordDateTime = numberblock.Trim(),
-                                            Description = oper
-                                        });
-                                    }
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (dataRemain != 0)
-                                {
-                                    string sValue3 = dataRemain.ToString().PadRight(27);
-                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create14HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "15":
-                            #region
-                            {
-                                int blockCount = (int)(Math.Floor((double)dataLen / (double)133));
-                                int dataRemain = dataLen % 133;
-                                string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
-                                LogMessage("+-----------------------------------------------------------------------------+");
-                                LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
-                                LogMessage("+-------------------+----------------------------+----------------------------+");
-                                DateTime lastDateTime = DateTime.Now;
-                                if (blockCount > 0)
-                                {
-                                    string numberblock = "";
-                                    for (int iblock = 0; iblock < blockCount; iblock++)
-                                    {
-                                        byte state = baData[133 * iblock + 0];
-
-                                        numberblock = "20" + string.Format("{0:X2}", baData[133 * iblock + 1]) + "-" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 2]) + "-" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 3]) + " " +
-                                            string.Format("{0:X2}", baData[133 * iblock + 4]) + ":" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 5]) + ":" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 6]);
-                                        numberblock = numberblock.PadRight(27);
-                                        lastDateTime = new DateTime(
-                                            ((int)Math.Floor((double)baData[133 * iblock + 1] / 16.0)) * 10 + baData[133 * iblock + 1] % 16 + 2000,
-                                            ((int)Math.Floor((double)baData[133 * iblock + 2] / 16.0)) * 10 + baData[133 * iblock + 2] % 16,
-                                            ((int)Math.Floor((double)baData[133 * iblock + 3] / 16.0)) * 10 + baData[133 * iblock + 3] % 16,
-                                            ((int)Math.Floor((double)baData[133 * iblock + 4] / 16.0)) * 10 + baData[133 * iblock + 4] % 16,
-                                            ((int)Math.Floor((double)baData[133 * iblock + 5] / 16.0)) * 10 + baData[133 * iblock + 5] % 16,
-                                            ((int)Math.Floor((double)baData[133 * iblock + 6] / 16.0)) * 10 + baData[133 * iblock + 6] % 16);
-                                        lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
-                                        string numberblock2 = "20" + string.Format("{0:X2}", baData[133 * iblock + 7]) + "-" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 8]) + "-" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 9]) + " " +
-                                            string.Format("{0:X2}", baData[133 * iblock + 10]) + ":" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 11]) + ":" +
-                                            string.Format("{0:X2}", baData[133 * iblock + 12]);
-                                        numberblock2 = numberblock2.PadRight(27);
-                                        ObservableCollection<Tuple<int, int>> records = new ObservableCollection<Tuple<int, int>>();
-                                        for (int iSec = 0; iSec < 60; iSec++)
-                                        {
-                                            int speed = baData[133 * iblock + iSec * 2 + 13 + 0];
-                                            int refSpeed = baData[133 * iblock + iSec * 2 + 13 + 1];
-
-                                            records.Add(new Tuple<int, int>(speed, refSpeed));
-                                        }
-                                        _cmd15HRespOc.Add(new Cmd15HResponse()
-                                        {
-                                            Index = (_cmd15HRespOc.Count + 1).ToString(),
-                                            State = state,
-                                            StartDateTime = numberblock,
-                                            StopDateTime = numberblock2,
-                                            Records = records
-                                        });
-                                    }
-
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                else
-                                {
-                                    LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (dataRemain != 0)
-                                {
-                                    string sValue3 = dataRemain.ToString().PadRight(27);
-                                    LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
-                                    LogMessage("+-------------------+----------------------------+----------------------------+");
-                                }
-                                if (NeedReport == true)
-                                {
-                                    if (_pdfDocument == null)
-                                    {
-                                        LogMessageError("无法创建报表.");
-                                    }
-                                    else
-                                    {
-                                        _createPdfEvent.Reset();
-                                        Task.Factory.StartNew(() =>
-                                        {
-                                            Create15HReport();
-                                        });
-                                        _createPdfEvent.WaitOne();
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "82":
-                            LogMessageInformation("成功执行.");
-                            break;
-                        case "83":
-                            LogMessageInformation("成功执行.");
-                            break;
-                        case "84":
-                            LogMessageInformation("成功执行.");
-                            break;
-                        case "C2":
-                            LogMessageInformation("成功执行.");
-                            break;
-                        case "C3":
-                            LogMessageInformation("成功执行.");
-                            break;
-                        case "C4":
-                            LogMessageInformation("成功执行.");
-                            break;
-                        case "20":
-                            #region
-                            {
-                                if (dataLen != 1)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    string number = baData[0].ToString().PadRight(27);
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                cell = new PdfPCell(new Phrase("传感器单圈脉冲数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "21":
-                            #region
-                            {
-                                if (dataLen != 8 && dataLen != 14)
-                                    LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
-                                else
-                                {
-                                    int intPad = 0;
-                                    if (dataLen == 14)
-                                        intPad = 6;
-                                    string number = "";
-                                    if (dataLen == 14)
-                                    {
-                                        number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
-                                            string.Format("{0:X2}", baData[1]) + "-" +
-                                            string.Format("{0:X2}", baData[2]) + " " +
-                                            string.Format("{0:X2}", baData[3]) + ":" +
-                                            string.Format("{0:X2}", baData[4]) + ":" +
-                                            string.Format("{0:X2}", baData[5]);
-                                        number = number.PadRight(27);
-                                    }
-                                    string d2Disp = "D2(" + D2 + ")";
-                                    d2Disp.PadLeft(18 - D2.Length);
-                                    string d1Disp = "D2(" + D1 + ")";
-                                    d1Disp.PadLeft(18 - D1.Length);
-                                    string d0Disp = "D2(" + D0 + ")";
-                                    d0Disp.PadLeft(18 - D0.Length);
-                                    string d0 = "";
-                                    switch ((int)baData[0 + intPad])
-                                    {
-                                        default:
-                                            d0 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d0 = "低有效";
-                                            break;
-                                        case 1:
-                                            d0 = "高有效";
-                                            break;
-                                        case 3:
-                                            d0 = "未启用";
-                                            break;
-                                    }
-                                    d0 = d0.PadLeft(27 - d0.Length);
-                                    string d1 = "";
-                                    switch ((int)baData[1 + intPad])
-                                    {
-                                        default:
-                                            d1 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d1 = "低有效";
-                                            break;
-                                        case 1:
-                                            d1 = "高有效";
-                                            break;
-                                        case 3:
-                                            d1 = "未启用";
-                                            break;
-                                    }
-                                    d1 = d1.PadLeft(27 - d1.Length);
-                                    string d2 = "";
-                                    switch ((int)baData[2 + intPad])
-                                    {
-                                        default:
-                                            d2 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d2 = "低有效";
-                                            break;
-                                        case 1:
-                                            d2 = "高有效";
-                                            break;
-                                        case 3:
-                                            d2 = "未启用";
-                                            break;
-                                    }
-                                    d2 = d2.PadLeft(27 - d2.Length);
-                                    string d3 = "";
-                                    switch ((int)baData[3 + intPad])
-                                    {
-                                        default:
-                                            d3 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d3 = "低有效";
-                                            break;
-                                        case 1:
-                                            d3 = "高有效";
-                                            break;
-                                        case 3:
-                                            d3 = "未启用";
-                                            break;
-                                    }
-                                    d3 = d3.PadLeft(27 - d3.Length);
-                                    string d4 = "";
-                                    switch ((int)baData[4 + intPad])
-                                    {
-                                        default:
-                                            d4 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d4 = "低有效";
-                                            break;
-                                        case 1:
-                                            d4 = "高有效";
-                                            break;
-                                        case 3:
-                                            d4 = "未启用";
-                                            break;
-                                    }
-                                    d4 = d4.PadLeft(27 - d4.Length);
-                                    string d5 = "";
-                                    switch ((int)baData[5 + intPad])
-                                    {
-                                        default:
-                                            d5 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d5 = "低有效";
-                                            break;
-                                        case 1:
-                                            d5 = "高有效";
-                                            break;
-                                        case 3:
-                                            d5 = "未启用";
-                                            break;
-                                    }
-                                    d5 = d5.PadLeft(27 - d5.Length);
-                                    string d6 = "";
-                                    switch ((int)baData[6 + intPad])
-                                    {
-                                        default:
-                                            d6 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d6 = "低有效";
-                                            break;
-                                        case 1:
-                                            d6 = "高有效";
-                                            break;
-                                        case 3:
-                                            d6 = "未启用";
-                                            break;
-                                    }
-                                    d6 = d6.PadLeft(27 - d6.Length);
-                                    string d7 = "";
-                                    switch ((int)baData[7 + intPad])
-                                    {
-                                        default:
-                                            d7 = "未知状态";
-                                            break;
-                                        case 0:
-                                            d7 = "低有效";
-                                            break;
-                                        case 1:
-                                            d7 = "高有效";
-                                            break;
-                                        case 3:
-                                            d7 = "未启用";
-                                            break;
-                                    }
-                                    d7 = d7.PadLeft(27 - d7.Length);
-                                    if (dataLen == 14)
-                                    {
-                                        LogMessage("+-------------------+----------------------------+");
-                                        LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
-                                    }
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          D7(制动) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|        D6(左转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|        D5(右转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          D4(远光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|          D3(近光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d2Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d1Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
-                                    LogMessage("+-------------------+----------------------------+");
-                                    LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d0Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
-                                    LogMessage("+-------------------+----------------------------+");
-
-                                    if (NeedReport == true)
-                                    {
-                                        if (_pdfDocument == null)
-                                        {
-                                            LogMessageError("无法创建报表.");
-                                        }
-                                        else
-                                        {
-                                            #region
-
-                                            try
-                                            {
-                                                string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
-                                                BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
-                                                PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
-                                                par.Alignment = Element.ALIGN_CENTER;
-                                                _pdfDocument.Add(par);
-
-                                                par.SpacingBefore = 25f;
-
-                                                PdfPTable table = new PdfPTable(2);
-
-                                                table.SpacingBefore = 25f;
-
-                                                table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
-                                                float[] widths = { 50f, 150f };
-                                                table.SetWidths(widths);
-                                                table.LockedWidth = true;
-
-                                                PdfPCell cell;
-                                                if (dataLen == 14)
-                                                {
-                                                    cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                    table.AddCell(cell);
-                                                    cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                    cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                    table.AddCell(cell);
-                                                }
-                                                cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d2Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d1Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d0Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-                                                cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
-                                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                                                cell.VerticalAlignment = Element.ALIGN_CENTER;
-                                                table.AddCell(cell);
-
-                                                table.SpacingAfter = 60f;
-
-                                                _pdfDocument.Add(table);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                LogMessageError("创建报表出错:" + ex.Message);
-                                                _pdfDocument = null;
-                                            }
-
-                                            #endregion
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                            break;
-                        case "D0":
-                            LogMessageInformation("成功执行.");
-                            break;
-                        case "D1":
-                            LogMessageInformation("成功执行.");
-                            break;
-                    }
-
-                    #endregion
-
-                    position = position + dataLen + 23;
-
-                    if(i < iCount)
-                        LogMessage("");
-                }
-
-                if(NeedReport)
-                    CloseReport();
+				if (len < 3)
+				{
+					LogMessageError("VDR文件长度为0.");
+				}
+				else
+				{
+					#region Correct length
+
+					BinaryReader br = new BinaryReader(File.OpenRead(fileName));
+					byte[] ba = null;
+					ba = br.ReadBytes(len);
+
+					int intXor = ba[0];
+					for (int i = 1; i < len - 1; i++)
+						intXor = intXor ^ ba[i];
+					if (intXor != ba[len - 1])
+					{
+						LogMessageError("VDR文件校验结果不正确.");
+					}
+					else
+					{
+						DateTime dt = DateTime.Now;
+						CurrentDirectory = System.Environment.CurrentDirectory;
+						if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
+						{
+							try
+							{
+								Directory.CreateDirectory(CurrentDirectory + @"\Reports");
+								CurrentDirectory = CurrentDirectory + @"\Reports";
+							}
+							catch (Exception)
+							{
+								CurrentDirectory = System.Environment.CurrentDirectory;
+							}
+						}
+						else
+							CurrentDirectory = CurrentDirectory + @"\Reports";
+						_docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
+
+						if (NeedReport == true)
+							CreateReport();
+
+						int position = 0;
+						byte[] baCount = new byte[2];
+						baCount[0] = ba[0];
+						baCount[1] = ba[1];
+						position = 2;
+						int iCount = baCount[0] * 256 + baCount[1];// System.BitConverter.ToInt16(baCount, 0);
+						for (int i = 0; i < iCount; i++)
+						{
+							if (_cts.Token.IsCancellationRequested == true)
+								break;
+
+							#region Each entry
+
+							byte bType = ba[position];
+							byte[] baTitle = new byte[18];
+							for (int j = 0; j < 18; j++)
+							{
+								baTitle[j] = ba[position + 1 + j];
+							}
+							byte[] baBlockLen = new byte[4];
+							baBlockLen[0] = ba[position + 1 + 18 + 0];
+							baBlockLen[1] = ba[position + 1 + 18 + 1];
+							baBlockLen[2] = ba[position + 1 + 18 + 2];
+							baBlockLen[3] = ba[position + 1 + 18 + 3];
+							int dataLen = baBlockLen[0] * 256 * 256 * 256 +
+								baBlockLen[1] * 256 * 256 +
+								baBlockLen[2] * 256 +
+								baBlockLen[3];
+
+							byte[] baData = new byte[dataLen];
+							for (int j = 0; j < dataLen; j++)
+							{
+								baData[j] = ba[position + 1 + 18 + 4 + j];
+							}
+							string header = string.Format("{0:X2}", bType);
+							Encoding gb = Encoding.GetEncoding("GB2312");
+							string title = gb.GetString(baTitle);
+							if (title == null)
+								title = "";
+							title = title.Trim().Trim(new char[] { '\0' });
+							string cdiCmdContent = header + ":" + title;
+
+							LogMessageTitle(cdiCmdContent);
+
+							#region Display Result
+
+							switch (header)
+							{
+								default:
+									LogMessageError("命令类型(" + cdiCmdContent + ")未知.");
+									break;
+								case "00":
+									#region
+									{
+										if (dataLen != 2)
+											LogMessageError("命令(" + header + ")的响应的数据块长度错误.");
+										else
+										{
+											string year = baData[0].ToString("X").PadRight(27);
+											string number = baData[1].ToString().PadRight(27);
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|              年号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", year));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 记录仪执行版本标准号 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("年号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(year.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("修改单号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "01":
+									#region
+									{
+										if (dataLen != 18)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string number = Encoding.UTF8.GetString(baData).PadRight(27);
+											_driverID = number;
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 当前驾驶人信息 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("驾证号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "02":
+									#region
+									{
+										if (dataLen != 6)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+												string.Format("{0:X2}", baData[1]) + "-" +
+												string.Format("{0:X2}", baData[2]) + " " +
+												string.Format("{0:X2}", baData[3]) + ":" +
+												string.Format("{0:X2}", baData[4]) + ":" +
+												string.Format("{0:X2}", baData[5]);
+											number = number.PadRight(27);
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 记录仪实时时间 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "03":
+									#region
+									{
+										if (dataLen != 20)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string number1 = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+												string.Format("{0:X2}", baData[1]) + "-" +
+												string.Format("{0:X2}", baData[2]) + " " +
+												string.Format("{0:X2}", baData[3]) + ":" +
+												string.Format("{0:X2}", baData[4]) + ":" +
+												string.Format("{0:X2}", baData[5]);
+											number1 = number1.PadRight(27);
+											string number2 = "20" + string.Format("{0:X2}", baData[6]) + "-" +
+												string.Format("{0:X2}", baData[7]) + "-" +
+												string.Format("{0:X2}", baData[8]) + " " +
+												string.Format("{0:X2}", baData[9]) + ":" +
+												string.Format("{0:X2}", baData[10]) + ":" +
+												string.Format("{0:X2}", baData[11]);
+											number2 = number2.PadRight(27);
+											string distance1 = string.Format("{0:X2}", baData[12]) +
+												string.Format("{0:X2}", baData[13]) +
+												string.Format("{0:X2}", baData[14]) +
+												string.Format("{0:X2}", baData[15]);
+											while (distance1.StartsWith("0"))
+												distance1 = distance1.Substring(1);
+											if (string.IsNullOrWhiteSpace(distance1))
+												distance1 = "0";
+											//else
+											//	distance1 = distance1 + "0";
+											distance1 = (distance1 + " (单位:0.1千米)").PadRight(27 - 4);
+											string distance2 = string.Format("{0:X2}", baData[16]) +
+												string.Format("{0:X2}", baData[17]) +
+												string.Format("{0:X2}", baData[18]) +
+												string.Format("{0:X2}", baData[19]);
+											while (distance2.StartsWith("0"))
+												distance2 = distance2.Substring(1);
+											if (string.IsNullOrWhiteSpace(distance2))
+												distance2 = "0";
+											distance2 = (distance2 + " (单位:0.1千米)").PadRight(27 - 4); // Why not "0 (单位:0.1千米)"
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number1));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          安装时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number2));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          初始里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance1));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 累计行驶里程 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("安装时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("初始里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(distance1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("累计里程", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(distance2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "04":
+									#region
+									{
+										if (dataLen != 8)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+												string.Format("{0:X2}", baData[1]) + "-" +
+												string.Format("{0:X2}", baData[2]) + " " +
+												string.Format("{0:X2}", baData[3]) + ":" +
+												string.Format("{0:X2}", baData[4]) + ":" +
+												string.Format("{0:X2}", baData[5]);
+											number = number.PadRight(27);
+											int intHigh = (int)baData[6];
+											int intLow = (int)baData[7];
+											int intLen = intHigh * 256 + intLow;
+											string sValue = intLen.ToString().PadRight(27);
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 记录仪脉冲系数 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("脉冲系数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(sValue.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "05":
+									#region
+									{
+										if (dataLen != 41)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string id = Encoding.UTF8.GetString(baData, 0, 17).PadRight(27);
+											//Encoding gb = Encoding.GetEncoding("GB2312");
+											string number = gb.GetString(baData, 17, 12).Trim('\0');
+											number = number.PadRight(27 - GetChineseNumber(number) + 1);
+											string category = gb.GetString(baData, 29, 12).Trim('\0');
+											category = category.PadRight(27 - GetChineseNumber(category));
+											_vehicleID = number;
+											_vehicleCategory = category;
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|        车辆识别码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", id));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          车辆号牌 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 车辆信息 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("车辆识别码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(id.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("车辆号牌", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("号牌分类", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(category.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "06":
+									#region
+									{
+										if (dataLen != 87)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+												string.Format("{0:X2}", baData[1]) + "-" +
+												string.Format("{0:X2}", baData[2]) + " " +
+												string.Format("{0:X2}", baData[3]) + ":" +
+												string.Format("{0:X2}", baData[4]) + ":" +
+												string.Format("{0:X2}", baData[5]);
+											number = number.PadRight(27);
+											//Encoding gb = Encoding.GetEncoding("GB2312");
+											string d0 = gb.GetString(baData, 7, 10).Trim('\0');
+											//if ((baData[6] & 0x1) == 0x1)
+											//    d0 = "(有操作) " + d0;
+											//else
+											//    d0 = "(无操作) " + d0;
+											d0 = d0.PadRight(27 - GetChineseNumber(d0));// + 3);
+											string d1 = gb.GetString(baData, 17, 10).Trim('\0');
+											//if ((baData[6] & 0x2) == 0x2)
+											//    d1 = "(有操作) " + d1;
+											//else
+											//    d1 = "(无操作) " + d1;
+											d1 = d1.PadRight(27 - GetChineseNumber(d1));// + 3);
+											string d2 = gb.GetString(baData, 27, 10).Trim('\0');
+											//if ((baData[6] & 0x4) == 0x4)
+											//    d2 = "(有操作) " + d2;
+											//else
+											//    d2 = "(无操作) " + d2;
+											d2 = d2.PadRight(27 - GetChineseNumber(d2));// + 3);
+											string d3 = gb.GetString(baData, 37, 10).Trim('\0');
+											//if ((baData[6] & 0x8) == 0x8)
+											//    d3 = "(有操作) " + d3;
+											//else
+											//    d3 = "(无操作) " + d3;
+											d3 = d3.PadRight(27 - GetChineseNumber(d3));// + 3);
+											string d4 = gb.GetString(baData, 47, 10).Trim('\0');
+											//if ((baData[6] & 0x10) == 0x10)
+											//    d4 = "(有操作) " + d4;
+											//else
+											//    d4 = "(无操作) " + d4;
+											d4 = d4.PadRight(27 - GetChineseNumber(d4));// + 3);
+											string d5 = gb.GetString(baData, 57, 10).Trim('\0');
+											//if ((baData[6] & 0x20) == 0x20)
+											//    d5 = "(有操作) " + d5;
+											//else
+											//    d5 = "(无操作) " + d5;
+											d5 = d5.PadRight(27 - GetChineseNumber(d5));// + 3);
+											string d6 = gb.GetString(baData, 67, 10).Trim('\0');
+											//if ((baData[6] & 0x40) == 0x40)
+											//    d6 = "(有操作) " + d6;
+											//else
+											//    d6 = "(无操作) " + d6;
+											d6 = d6.PadRight(27 - GetChineseNumber(d6));// + 3);
+											string d7 = gb.GetString(baData, 77, 10).Trim('\0');
+											//if ((baData[6] & 0x80) == 0x80)
+											//    d7 = "(有操作) " + d7;
+											//else
+											//    d7 = "(无操作) " + d7;
+											d7 = d7.PadRight(27 - GetChineseNumber(d7));// + 3);
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D7 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D6 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D5 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D4 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D3 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D2 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D1 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 状态信号配置信息 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D2", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D1", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D0", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "07":
+									#region
+									{
+										if (dataLen != 35)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string ccc = Encoding.ASCII.GetString(baData, 0, 7).Trim('\0').PadRight(27);
+											string model = Encoding.ASCII.GetString(baData, 7, 16).Trim('\0').PadRight(27);
+											string number = "20" + string.Format("{0:X2}", baData[23]) + "-" +
+												string.Format("{0:X2}", baData[24]) + "-" +
+												string.Format("{0:X2}", baData[25]);
+											number = number.PadRight(27);
+											long flow = baData[26] * 256 * 256 * 256 + baData[27] * 256 * 256 + baData[28] * 256 + baData[29];
+											string productflow = flow.ToString().PadRight(27);
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("| 生产厂CCC认证代码 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", ccc));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|      认证产品型号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", model));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|    记录仪生产时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 记录仪唯一性编号 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("生产厂CCC认证代码", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(ccc.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("认证产品型号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(model.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("记录仪生产时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("产品生产流水号", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(productflow.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "08":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)126));
+										int dataRemain = dataLen % 126;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												numberblock = "20" + string.Format("{0:X2}", baData[126 * iblock + 0]) + "-" +
+													string.Format("{0:X2}", baData[126 * iblock + 1]) + "-" +
+													string.Format("{0:X2}", baData[126 * iblock + 2]) + " " +
+													string.Format("{0:X2}", baData[126 * iblock + 3]) + ":" +
+													string.Format("{0:X2}", baData[126 * iblock + 4]) + ":" +
+													string.Format("{0:X2}", baData[126 * iblock + 5]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[126 * iblock + 0] / 16.0)) * 10 + baData[126 * iblock + 0] % 16 + 2000,
+													((int)Math.Floor((double)baData[126 * iblock + 1] / 16.0)) * 10 + baData[126 * iblock + 1] % 16,
+													((int)Math.Floor((double)baData[126 * iblock + 2] / 16.0)) * 10 + baData[126 * iblock + 2] % 16,
+													((int)Math.Floor((double)baData[126 * iblock + 3] / 16.0)) * 10 + baData[126 * iblock + 3] % 16,
+													((int)Math.Floor((double)baData[126 * iblock + 4] / 16.0)) * 10 + baData[126 * iblock + 4] % 16,
+													((int)Math.Floor((double)baData[126 * iblock + 5] / 16.0)) * 10 + baData[126 * iblock + 5] % 16);
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+												ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+												for (int iSec = 0; iSec < 60; iSec++)
+												{
+													int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
+													byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
+
+													records.Add(new Tuple<int, byte>(speed, state));
+												}
+												_cmd08HRespOc.Add(new Cmd08HResponse()
+												{
+													Index = (_cmd08HRespOc.Count + 1).ToString(),
+													StartDateTime = numberblock,
+													Records = records
+												});
+											}
+
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create08HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "09":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)666));
+										int dataRemain = dataLen % 666;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												numberblock = "20" + string.Format("{0:X2}", baData[666 * iblock + 0]) + "-" +
+													string.Format("{0:X2}", baData[666 * iblock + 1]) + "-" +
+													string.Format("{0:X2}", baData[666 * iblock + 2]) + " " +
+													string.Format("{0:X2}", baData[666 * iblock + 3]) + ":" +
+													string.Format("{0:X2}", baData[666 * iblock + 4]) + ":" +
+													string.Format("{0:X2}", baData[666 * iblock + 5]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[666 * iblock + 0] / 16.0)) * 10 + baData[666 * iblock + 0] % 16 + 2000,
+													((int)Math.Floor((double)baData[666 * iblock + 1] / 16.0)) * 10 + baData[666 * iblock + 1] % 16,
+													((int)Math.Floor((double)baData[666 * iblock + 2] / 16.0)) * 10 + baData[666 * iblock + 2] % 16,
+													((int)Math.Floor((double)baData[666 * iblock + 3] / 16.0)) * 10 + baData[666 * iblock + 3] % 16,
+													((int)Math.Floor((double)baData[666 * iblock + 4] / 16.0)) * 10 + baData[666 * iblock + 4] % 16,
+													((int)Math.Floor((double)baData[666 * iblock + 5] / 16.0)) * 10 + baData[666 * iblock + 5] % 16);
+												int min = lastDateTime.Minute;
+												int sec = lastDateTime.Second;
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(1, -59 + min, -59 + sec));
+												ObservableCollection<Tuple<string, string, string, int>> records = new ObservableCollection<Tuple<string, string, string, int>>();
+												for (int iMin = 0; iMin < 60; iMin++)
+												{
+													#region
+
+													byte[] baJingDu = new byte[4];
+													baJingDu[3] = baData[666 * iblock + iMin * 11 + 6 + 0];
+													baJingDu[2] = baData[666 * iblock + iMin * 11 + 6 + 1];
+													baJingDu[1] = baData[666 * iblock + iMin * 11 + 6 + 2];
+													baJingDu[0] = baData[666 * iblock + iMin * 11 + 6 + 3];
+													string sJingDu = "";
+													if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
+														sJingDu = "无效";
+													else
+													{
+														int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
+														if (jingDu >= 0)
+															sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+														else
+															sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+													}
+													byte[] baWeiDu = new byte[4];
+													baWeiDu[3] = baData[666 * iblock + iMin * 11 + 6 + 4];
+													baWeiDu[2] = baData[666 * iblock + iMin * 11 + 6 + 5];
+													baWeiDu[1] = baData[666 * iblock + iMin * 11 + 6 + 6];
+													baWeiDu[0] = baData[666 * iblock + iMin * 11 + 6 + 7];
+													string sWeiDu = "";
+													if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
+														sWeiDu = "无效";
+													else
+													{
+														int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
+														if (weiDu >= 0)
+															sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+														else
+															sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+													}
+													byte[] baHeight = new byte[2];
+													baHeight[1] = baData[666 * iblock + iMin * 11 + 6 + 8];
+													baHeight[0] = baData[666 * iblock + iMin * 11 + 6 + 9];
+													string sHeight = "";
+													if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
+														sHeight = "无效";
+													else
+													{
+														int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+														sHeight = iHeight.ToString();
+													}
+
+													#endregion
+
+													int speed = baData[666 * iblock + iMin * 11 + 6 + 10];
+
+													records.Add(new Tuple<string, string, string, int>(sJingDu, sWeiDu, sHeight, speed));
+												}
+												_cmd09HRespOc.Add(new Cmd09HResponse()
+												{
+													Index = (_cmd09HRespOc.Count + 1).ToString(),
+													StartDateTime = numberblock,
+													Records = records
+												});
+											}
+
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (dataRemain != 0)
+										{
+											string sValue3 = dataRemain.ToString().PadRight(27);
+											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create09HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "10":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)234));
+										int dataRemain = dataLen % 234;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												numberblock = "20" + string.Format("{0:X2}", baData[234 * iblock + 0]) + "-" +
+													string.Format("{0:X2}", baData[234 * iblock + 1]) + "-" +
+													string.Format("{0:X2}", baData[234 * iblock + 2]) + " " +
+													string.Format("{0:X2}", baData[234 * iblock + 3]) + ":" +
+													string.Format("{0:X2}", baData[234 * iblock + 4]) + ":" +
+													string.Format("{0:X2}", baData[234 * iblock + 5]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[234 * iblock + 0] / 16.0)) * 10 + baData[234 * iblock + 0] % 16 + 2000,
+													((int)Math.Floor((double)baData[234 * iblock + 1] / 16.0)) * 10 + baData[234 * iblock + 1] % 16,
+													((int)Math.Floor((double)baData[234 * iblock + 2] / 16.0)) * 10 + baData[234 * iblock + 2] % 16,
+													((int)Math.Floor((double)baData[234 * iblock + 3] / 16.0)) * 10 + baData[234 * iblock + 3] % 16,
+													((int)Math.Floor((double)baData[234 * iblock + 4] / 16.0)) * 10 + baData[234 * iblock + 4] % 16,
+													((int)Math.Floor((double)baData[234 * iblock + 5] / 16.0)) * 10 + baData[234 * iblock + 5] % 16);
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 20));
+												byte[] baNumber = new byte[18];
+												for (int idxBa = 0; idxBa < 18; idxBa++)
+												{
+													baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
+												}
+												string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+												ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+												for (int iRec = 0; iRec < 100; iRec++)
+												{
+													int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
+													byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
+													records.Add(new Tuple<int, byte>(speed, state));
+												}
+
+												#region
+
+												byte[] baJingDu = new byte[4];
+												baJingDu[3] = baData[234 * iblock + 224 + 0];
+												baJingDu[2] = baData[234 * iblock + 224 + 1];
+												baJingDu[1] = baData[234 * iblock + 224 + 2];
+												baJingDu[0] = baData[234 * iblock + 224 + 3];
+												string sJingDu = "";
+												if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
+													sJingDu = "无效";
+												else
+												{
+													int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
+													if (jingDu >= 0)
+														sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+													else
+														sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+												}
+												byte[] baWeiDu = new byte[4];
+												baWeiDu[3] = baData[234 * iblock + 224 + 4];
+												baWeiDu[2] = baData[234 * iblock + 224 + 5];
+												baWeiDu[1] = baData[234 * iblock + 224 + 6];
+												baWeiDu[0] = baData[234 * iblock + 224 + 7];
+												string sWeiDu = "";
+												if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
+													sWeiDu = "无效";
+												else
+												{
+													int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
+													if (weiDu >= 0)
+														sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+													else
+														sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+												}
+												byte[] baHeight = new byte[2];
+												baHeight[1] = baData[234 * iblock + 224 + 8];
+												baHeight[0] = baData[234 * iblock + 224 + 9];
+												string sHeight = "";
+												if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
+													sHeight = "无效";
+												else
+												{
+													int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+													sHeight = iHeight.ToString();
+												}
+
+												#endregion
+
+												_cmd10HRespOc.Add(new Cmd10HResponse()
+												{
+													Index = (_cmd10HRespOc.Count + 1).ToString(),
+													StopDateTime = numberblock,
+													Number = number,
+													Records = records,
+													Position = sJingDu + "/" + sWeiDu,
+													Height = sHeight
+												});
+											}
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (dataRemain != 0)
+										{
+											string sValue3 = dataRemain.ToString().PadRight(27);
+											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create10HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "11":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)50));
+										int dataRemain = dataLen % 50;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												numberblock = "20" + string.Format("{0:X2}", baData[50 * iblock + 18]) + "-" +
+													string.Format("{0:X2}", baData[50 * iblock + 19]) + "-" +
+													string.Format("{0:X2}", baData[50 * iblock + 20]) + " " +
+													string.Format("{0:X2}", baData[50 * iblock + 21]) + ":" +
+													string.Format("{0:X2}", baData[50 * iblock + 22]) + ":" +
+													string.Format("{0:X2}", baData[50 * iblock + 23]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[50 * iblock + 18] / 16.0)) * 10 + baData[50 * iblock + 18] % 16 + 2000,
+													((int)Math.Floor((double)baData[50 * iblock + 19] / 16.0)) * 10 + baData[50 * iblock + 19] % 16,
+													((int)Math.Floor((double)baData[50 * iblock + 20] / 16.0)) * 10 + baData[50 * iblock + 20] % 16,
+													((int)Math.Floor((double)baData[50 * iblock + 21] / 16.0)) * 10 + baData[50 * iblock + 21] % 16,
+													((int)Math.Floor((double)baData[50 * iblock + 22] / 16.0)) * 10 + baData[50 * iblock + 22] % 16,
+													((int)Math.Floor((double)baData[50 * iblock + 23] / 16.0)) * 10 + baData[50 * iblock + 23] % 16);
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+												string numberblockStop = "20" + string.Format("{0:X2}", baData[50 * iblock + 24]) + "-" +
+													string.Format("{0:X2}", baData[50 * iblock + 25]) + "-" +
+													string.Format("{0:X2}", baData[50 * iblock + 26]) + " " +
+													string.Format("{0:X2}", baData[50 * iblock + 27]) + ":" +
+													string.Format("{0:X2}", baData[50 * iblock + 28]) + ":" +
+													string.Format("{0:X2}", baData[50 * iblock + 29]);
+												numberblockStop = numberblockStop.PadRight(27);
+												byte[] baNumber = new byte[18];
+												for (int idxBa = 0; idxBa < 18; idxBa++)
+												{
+													baNumber[idxBa] = baData[50 * iblock + idxBa];
+												}
+												string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+
+												#region
+
+												byte[] baJingDu = new byte[4];
+												baJingDu[3] = baData[50 * iblock + 30];
+												baJingDu[2] = baData[50 * iblock + 31];
+												baJingDu[1] = baData[50 * iblock + 32];
+												baJingDu[0] = baData[50 * iblock + 33];
+												string sJingDu = "";
+												if (baJingDu[0] == 0xFF || baJingDu[1] == 0xFF || baJingDu[2] == 0xFF || baJingDu[3] == 0xFF)
+													sJingDu = "无效";
+												else
+												{
+													int jingDu = System.BitConverter.ToInt32(baJingDu, 0);
+													if (jingDu >= 0)
+														sJingDu = "E" + ConvertJingWeiDuToString(jingDu);
+													else
+														sJingDu = "W" + ConvertJingWeiDuToString(jingDu);
+												}
+												byte[] baWeiDu = new byte[4];
+												baWeiDu[3] = baData[50 * iblock + 34];
+												baWeiDu[2] = baData[50 * iblock + 35];
+												baWeiDu[1] = baData[50 * iblock + 36];
+												baWeiDu[0] = baData[50 * iblock + 37];
+												string sWeiDu = "";
+												if (baWeiDu[0] == 0xFF || baWeiDu[1] == 0xFF || baWeiDu[2] == 0xFF || baWeiDu[3] == 0xFF)
+													sWeiDu = "无效";
+												else
+												{
+													int weiDu = System.BitConverter.ToInt32(baWeiDu, 0);
+													if (weiDu >= 0)
+														sWeiDu = "N" + ConvertJingWeiDuToString(weiDu);
+													else
+														sWeiDu = "S" + ConvertJingWeiDuToString(weiDu);
+												}
+												byte[] baHeight = new byte[2];
+												baHeight[1] = baData[50 * iblock + 38];
+												baHeight[0] = baData[50 * iblock + 39];
+												string sHeight = "";
+												if (baHeight[0] == 0xFF || baHeight[1] == 0xFF)
+													sHeight = "无效";
+												else
+												{
+													int iHeight = System.BitConverter.ToInt16(baHeight, 0);
+													sHeight = iHeight.ToString();
+												}
+
+												#endregion
+
+												#region
+
+												byte[] baJingDu1 = new byte[4];
+												baJingDu1[3] = baData[50 * iblock + 40];
+												baJingDu1[2] = baData[50 * iblock + 41];
+												baJingDu1[1] = baData[50 * iblock + 42];
+												baJingDu1[0] = baData[50 * iblock + 43];
+												string sJingDu1 = "";
+												if (baJingDu1[0] == 0xFF || baJingDu1[1] == 0xFF || baJingDu1[2] == 0xFF || baJingDu1[3] == 0xFF)
+													sJingDu1 = "无效";
+												else
+												{
+													int jingDu1 = System.BitConverter.ToInt32(baJingDu1, 0);
+													if (jingDu1 >= 0)
+														sJingDu1 = "E" + ConvertJingWeiDuToString(jingDu1);
+													else
+														sJingDu1 = "W" + ConvertJingWeiDuToString(jingDu1);
+												}
+												byte[] baWeiDu1 = new byte[4];
+												baWeiDu1[3] = baData[50 * iblock + 44];
+												baWeiDu1[2] = baData[50 * iblock + 45];
+												baWeiDu1[1] = baData[50 * iblock + 46];
+												baWeiDu1[0] = baData[50 * iblock + 47];
+												string sWeiDu1 = "";
+												if (baWeiDu1[0] == 0xFF || baWeiDu1[1] == 0xFF || baWeiDu1[2] == 0xFF || baWeiDu1[3] == 0xFF)
+													sWeiDu1 = "无效";
+												else
+												{
+													int weiDu1 = System.BitConverter.ToInt32(baWeiDu1, 0);
+													if (weiDu1 >= 0)
+														sWeiDu1 = "N" + ConvertJingWeiDuToString(weiDu1);
+													else
+														sWeiDu1 = "S" + ConvertJingWeiDuToString(weiDu1);
+												}
+												byte[] baHeight1 = new byte[2];
+												baHeight1[1] = baData[50 * iblock + 48];
+												baHeight1[0] = baData[50 * iblock + 49];
+												string sHeight1 = "";
+												if (baHeight1[0] == 0xFF || baHeight1[1] == 0xFF)
+													sHeight1 = "无效";
+												else
+												{
+													int iHeight1 = System.BitConverter.ToInt16(baHeight1, 0);
+													sHeight1 = iHeight1.ToString();
+												}
+
+												#endregion
+
+												_cmd11HRespOc.Add(new Cmd11HResponse()
+												{
+													Index = (_cmd11HRespOc.Count + 1).ToString(),
+													Number = number,
+													RecordStartDateTime = numberblock,
+													RecordStopDateTime = numberblockStop,
+													StartPosition = sJingDu + "/" + sWeiDu,
+													StopPosition = sJingDu1 + "/" + sWeiDu1,
+													StartHeight = sHeight,
+													StopHeight = sHeight1
+												});
+											}
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (dataRemain != 0)
+										{
+											string sValue3 = dataRemain.ToString().PadRight(27);
+											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create11HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "12":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)25));
+										int dataRemain = dataLen % 25;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												numberblock = "20" + string.Format("{0:X2}", baData[25 * iblock + 0]) + "-" +
+													 string.Format("{0:X2}", baData[25 * iblock + 1]) + "-" +
+													 string.Format("{0:X2}", baData[25 * iblock + 2]) + " " +
+													 string.Format("{0:X2}", baData[25 * iblock + 3]) + ":" +
+													 string.Format("{0:X2}", baData[25 * iblock + 4]) + ":" +
+													 string.Format("{0:X2}", baData[25 * iblock + 5]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[25 * iblock + 0] / 16.0)) * 10 + baData[25 * iblock + 0] % 16 + 2000,
+													((int)Math.Floor((double)baData[25 * iblock + 1] / 16.0)) * 10 + baData[25 * iblock + 1] % 16,
+													((int)Math.Floor((double)baData[25 * iblock + 2] / 16.0)) * 10 + baData[25 * iblock + 2] % 16,
+													((int)Math.Floor((double)baData[25 * iblock + 3] / 16.0)) * 10 + baData[25 * iblock + 3] % 16,
+													((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
+													((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+												byte[] baNumber = new byte[18];
+												for (int idxBa = 0; idxBa < 18; idxBa++)
+												{
+													baNumber[idxBa] = baData[25 * iblock + 6 + idxBa];
+												}
+												string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
+												string oper = "";
+												switch (baData[25 * iblock + 24].ToString("X").Trim().ToUpper())
+												{
+													default:
+														oper = "未知操作";
+														break;
+													case "1":
+													case "01":
+														oper = "登录";
+														break;
+													case "2":
+													case "02":
+														oper = "退出";
+														break;
+												}
+												_cmd12HRespOc.Add(new Cmd12HResponse()
+												{
+													Index = (_cmd12HRespOc.Count + 1).ToString(),
+													RecordDateTime = numberblock.Trim(),
+													Number = number,
+													Description = oper
+												});
+											}
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (dataRemain != 0)
+										{
+											string sValue3 = dataRemain.ToString().PadRight(27);
+											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create12HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "13":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
+										int dataRemain = dataLen % 7;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												numberblock = "20" + string.Format("{0:X2}", baData[7 * iblock + 0]) + "-" +
+													string.Format("{0:X2}", baData[7 * iblock + 1]) + "-" +
+													string.Format("{0:X2}", baData[7 * iblock + 2]) + " " +
+													string.Format("{0:X2}", baData[7 * iblock + 3]) + ":" +
+													string.Format("{0:X2}", baData[7 * iblock + 4]) + ":" +
+													string.Format("{0:X2}", baData[7 * iblock + 5]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
+													((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+												string oper = "";
+												switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
+												{
+													default:
+														oper = "未知状态";
+														break;
+													case "1":
+													case "01":
+														oper = "通电";
+														break;
+													case "2":
+													case "02":
+														oper = "断电";
+														break;
+												}
+												_cmd13HRespOc.Add(new Cmd13HResponse()
+												{
+													Index = (_cmd13HRespOc.Count + 1).ToString(),
+													RecordDateTime = numberblock.Trim(),
+													Description = oper
+												});
+											}
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (dataRemain != 0)
+										{
+											string sValue3 = dataRemain.ToString().PadRight(27);
+											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create13HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "14":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)7));
+										int dataRemain = dataLen % 7;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												numberblock = "20" + string.Format("{0:X2}", baData[7 * iblock + 0]) + "-" +
+													string.Format("{0:X2}", baData[7 * iblock + 1]) + "-" +
+													string.Format("{0:X2}", baData[7 * iblock + 2]) + " " +
+													string.Format("{0:X2}", baData[7 * iblock + 3]) + ":" +
+													string.Format("{0:X2}", baData[7 * iblock + 4]) + ":" +
+													string.Format("{0:X2}", baData[7 * iblock + 5]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[7 * iblock + 0] / 16.0)) * 10 + baData[7 * iblock + 0] % 16 + 2000,
+													((int)Math.Floor((double)baData[7 * iblock + 1] / 16.0)) * 10 + baData[7 * iblock + 1] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 2] / 16.0)) * 10 + baData[7 * iblock + 2] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 3] / 16.0)) * 10 + baData[7 * iblock + 3] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 4] / 16.0)) * 10 + baData[7 * iblock + 4] % 16,
+													((int)Math.Floor((double)baData[7 * iblock + 5] / 16.0)) * 10 + baData[7 * iblock + 5] % 16);
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+												string oper = "";
+												switch (baData[7 * iblock + 6].ToString("X").Trim().ToUpper())
+												{
+													default:
+														oper = "未知操作";
+														break;
+													case "82":
+														oper = "修改车辆信息";
+														break;
+													case "83":
+														oper = "修改初次安装日期";
+														break;
+													case "84":
+														oper = "修改状态量配置信息";
+														break;
+													case "C2":
+														oper = "修改记录仪时间";
+														break;
+													case "C3":
+														oper = "修改脉冲系数";
+														break;
+													case "C4":
+														oper = "修改初始里程";
+														break;
+												}
+												_cmd14HRespOc.Add(new Cmd14HResponse()
+												{
+													Index = (_cmd14HRespOc.Count + 1).ToString(),
+													RecordDateTime = numberblock.Trim(),
+													Description = oper
+												});
+											}
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (dataRemain != 0)
+										{
+											string sValue3 = dataRemain.ToString().PadRight(27);
+											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create14HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "15":
+									#region
+									{
+										int blockCount = (int)(Math.Floor((double)dataLen / (double)133));
+										int dataRemain = dataLen % 133;
+										string sValue = (dataLen.ToString() + "/" + blockCount.ToString()).PadRight(27);
+										LogMessage("+-----------------------------------------------------------------------------+");
+										LogMessage("| (此处只显示捕获的数据信息,详细内容请见报表.)                                |");
+										LogMessage("+-------------------+----------------------------+----------------------------+");
+										DateTime lastDateTime = DateTime.Now;
+										if (blockCount > 0)
+										{
+											string numberblock = "";
+											for (int iblock = 0; iblock < blockCount; iblock++)
+											{
+												byte state = baData[133 * iblock + 0];
+
+												numberblock = "20" + string.Format("{0:X2}", baData[133 * iblock + 1]) + "-" +
+													string.Format("{0:X2}", baData[133 * iblock + 2]) + "-" +
+													string.Format("{0:X2}", baData[133 * iblock + 3]) + " " +
+													string.Format("{0:X2}", baData[133 * iblock + 4]) + ":" +
+													string.Format("{0:X2}", baData[133 * iblock + 5]) + ":" +
+													string.Format("{0:X2}", baData[133 * iblock + 6]);
+												numberblock = numberblock.PadRight(27);
+												lastDateTime = new DateTime(
+													((int)Math.Floor((double)baData[133 * iblock + 1] / 16.0)) * 10 + baData[133 * iblock + 1] % 16 + 2000,
+													((int)Math.Floor((double)baData[133 * iblock + 2] / 16.0)) * 10 + baData[133 * iblock + 2] % 16,
+													((int)Math.Floor((double)baData[133 * iblock + 3] / 16.0)) * 10 + baData[133 * iblock + 3] % 16,
+													((int)Math.Floor((double)baData[133 * iblock + 4] / 16.0)) * 10 + baData[133 * iblock + 4] % 16,
+													((int)Math.Floor((double)baData[133 * iblock + 5] / 16.0)) * 10 + baData[133 * iblock + 5] % 16,
+													((int)Math.Floor((double)baData[133 * iblock + 6] / 16.0)) * 10 + baData[133 * iblock + 6] % 16);
+												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+												string numberblock2 = "20" + string.Format("{0:X2}", baData[133 * iblock + 7]) + "-" +
+													string.Format("{0:X2}", baData[133 * iblock + 8]) + "-" +
+													string.Format("{0:X2}", baData[133 * iblock + 9]) + " " +
+													string.Format("{0:X2}", baData[133 * iblock + 10]) + ":" +
+													string.Format("{0:X2}", baData[133 * iblock + 11]) + ":" +
+													string.Format("{0:X2}", baData[133 * iblock + 12]);
+												numberblock2 = numberblock2.PadRight(27);
+												ObservableCollection<Tuple<int, int>> records = new ObservableCollection<Tuple<int, int>>();
+												for (int iSec = 0; iSec < 60; iSec++)
+												{
+													int speed = baData[133 * iblock + iSec * 2 + 13 + 0];
+													int refSpeed = baData[133 * iblock + iSec * 2 + 13 + 1];
+
+													records.Add(new Tuple<int, int>(speed, refSpeed));
+												}
+												_cmd15HRespOc.Add(new Cmd15HResponse()
+												{
+													Index = (_cmd15HRespOc.Count + 1).ToString(),
+													State = state,
+													StartDateTime = numberblock,
+													StopDateTime = numberblock2,
+													Records = records
+												});
+											}
+
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										else
+										{
+											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (dataRemain != 0)
+										{
+											string sValue3 = dataRemain.ToString().PadRight(27);
+											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
+											LogMessage("+-------------------+----------------------------+----------------------------+");
+										}
+										if (NeedReport == true)
+										{
+											if (_pdfDocument == null)
+											{
+												LogMessageError("无法创建报表.");
+											}
+											else
+											{
+												_createPdfEvent.Reset();
+												Task.Factory.StartNew(() =>
+												{
+													Create15HReport();
+												});
+												_createPdfEvent.WaitOne();
+											}
+										}
+									}
+									#endregion
+									break;
+								case "82":
+									LogMessageInformation("成功执行.");
+									break;
+								case "83":
+									LogMessageInformation("成功执行.");
+									break;
+								case "84":
+									LogMessageInformation("成功执行.");
+									break;
+								case "C2":
+									LogMessageInformation("成功执行.");
+									break;
+								case "C3":
+									LogMessageInformation("成功执行.");
+									break;
+								case "C4":
+									LogMessageInformation("成功执行.");
+									break;
+								case "20":
+									#region
+									{
+										if (dataLen != 1)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											string number = baData[0].ToString().PadRight(27);
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 传感器单圈脉冲数 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														cell = new PdfPCell(new Phrase("传感器单圈脉冲数", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "21":
+									#region
+									{
+										if (dataLen != 8 && dataLen != 14)
+											LogMessageError("命令(" + cdiCmdContent + ")的响应的数据块长度错误.");
+										else
+										{
+											int intPad = 0;
+											if (dataLen == 14)
+												intPad = 6;
+											string number = "";
+											if (dataLen == 14)
+											{
+												number = "20" + string.Format("{0:X2}", baData[0]) + "-" +
+													string.Format("{0:X2}", baData[1]) + "-" +
+													string.Format("{0:X2}", baData[2]) + " " +
+													string.Format("{0:X2}", baData[3]) + ":" +
+													string.Format("{0:X2}", baData[4]) + ":" +
+													string.Format("{0:X2}", baData[5]);
+												number = number.PadRight(27);
+											}
+											string d2Disp = "D2(" + D2 + ")";
+											d2Disp.PadLeft(18 - D2.Length);
+											string d1Disp = "D2(" + D1 + ")";
+											d1Disp.PadLeft(18 - D1.Length);
+											string d0Disp = "D2(" + D0 + ")";
+											d0Disp.PadLeft(18 - D0.Length);
+											string d0 = "";
+											switch ((int)baData[0 + intPad])
+											{
+												default:
+													d0 = "未知状态";
+													break;
+												case 0:
+													d0 = "低有效";
+													break;
+												case 1:
+													d0 = "高有效";
+													break;
+												case 3:
+													d0 = "未启用";
+													break;
+											}
+											d0 = d0.PadLeft(27 - d0.Length);
+											string d1 = "";
+											switch ((int)baData[1 + intPad])
+											{
+												default:
+													d1 = "未知状态";
+													break;
+												case 0:
+													d1 = "低有效";
+													break;
+												case 1:
+													d1 = "高有效";
+													break;
+												case 3:
+													d1 = "未启用";
+													break;
+											}
+											d1 = d1.PadLeft(27 - d1.Length);
+											string d2 = "";
+											switch ((int)baData[2 + intPad])
+											{
+												default:
+													d2 = "未知状态";
+													break;
+												case 0:
+													d2 = "低有效";
+													break;
+												case 1:
+													d2 = "高有效";
+													break;
+												case 3:
+													d2 = "未启用";
+													break;
+											}
+											d2 = d2.PadLeft(27 - d2.Length);
+											string d3 = "";
+											switch ((int)baData[3 + intPad])
+											{
+												default:
+													d3 = "未知状态";
+													break;
+												case 0:
+													d3 = "低有效";
+													break;
+												case 1:
+													d3 = "高有效";
+													break;
+												case 3:
+													d3 = "未启用";
+													break;
+											}
+											d3 = d3.PadLeft(27 - d3.Length);
+											string d4 = "";
+											switch ((int)baData[4 + intPad])
+											{
+												default:
+													d4 = "未知状态";
+													break;
+												case 0:
+													d4 = "低有效";
+													break;
+												case 1:
+													d4 = "高有效";
+													break;
+												case 3:
+													d4 = "未启用";
+													break;
+											}
+											d4 = d4.PadLeft(27 - d4.Length);
+											string d5 = "";
+											switch ((int)baData[5 + intPad])
+											{
+												default:
+													d5 = "未知状态";
+													break;
+												case 0:
+													d5 = "低有效";
+													break;
+												case 1:
+													d5 = "高有效";
+													break;
+												case 3:
+													d5 = "未启用";
+													break;
+											}
+											d5 = d5.PadLeft(27 - d5.Length);
+											string d6 = "";
+											switch ((int)baData[6 + intPad])
+											{
+												default:
+													d6 = "未知状态";
+													break;
+												case 0:
+													d6 = "低有效";
+													break;
+												case 1:
+													d6 = "高有效";
+													break;
+												case 3:
+													d6 = "未启用";
+													break;
+											}
+											d6 = d6.PadLeft(27 - d6.Length);
+											string d7 = "";
+											switch ((int)baData[7 + intPad])
+											{
+												default:
+													d7 = "未知状态";
+													break;
+												case 0:
+													d7 = "低有效";
+													break;
+												case 1:
+													d7 = "高有效";
+													break;
+												case 3:
+													d7 = "未启用";
+													break;
+											}
+											d7 = d7.PadLeft(27 - d7.Length);
+											if (dataLen == 14)
+											{
+												LogMessage("+-------------------+----------------------------+");
+												LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
+											}
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          D7(制动) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d7));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|        D6(左转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d6));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|        D5(右转向) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d5));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          D4(远光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d4));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|          D3(近光) | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d3));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d2Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d2));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d1Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d1));
+											LogMessage("+-------------------+----------------------------+");
+											LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d0Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
+											LogMessage("+-------------------+----------------------------+");
+
+											if (NeedReport == true)
+											{
+												if (_pdfDocument == null)
+												{
+													LogMessageError("无法创建报表.");
+												}
+												else
+												{
+													#region
+
+													try
+													{
+														string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
+														BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+
+														PdfParagraph par = new PdfParagraph("--- 信号量状态配置 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
+														par.Alignment = Element.ALIGN_CENTER;
+														_pdfDocument.Add(par);
+
+														par.SpacingBefore = 25f;
+
+														PdfPTable table = new PdfPTable(2);
+
+														table.SpacingBefore = 25f;
+
+														table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+														float[] widths = { 50f, 150f };
+														table.SetWidths(widths);
+														table.LockedWidth = true;
+
+														PdfPCell cell;
+														if (dataLen == 14)
+														{
+															cell = new PdfPCell(new Phrase("采集时间", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+															cell.HorizontalAlignment = Element.ALIGN_CENTER;
+															cell.VerticalAlignment = Element.ALIGN_CENTER;
+															table.AddCell(cell);
+															cell = new PdfPCell(new Phrase(number.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+															cell.HorizontalAlignment = Element.ALIGN_CENTER;
+															cell.VerticalAlignment = Element.ALIGN_CENTER;
+															table.AddCell(cell);
+														}
+														cell = new PdfPCell(new Phrase("D7", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d7.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D6", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d6.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D5", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d5.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D4", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d4.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase("D3", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d3.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d2Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d2.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d1Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d1.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d0Disp.Trim(), new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+														cell = new PdfPCell(new Phrase(d0.Trim(), new Font(baseFont, 9, Font.NORMAL)));//, BaseColor.BLUE)));
+														cell.HorizontalAlignment = Element.ALIGN_CENTER;
+														cell.VerticalAlignment = Element.ALIGN_CENTER;
+														table.AddCell(cell);
+
+														table.SpacingAfter = 60f;
+
+														_pdfDocument.Add(table);
+													}
+													catch (Exception ex)
+													{
+														LogMessageError("创建报表出错:" + ex.Message);
+														_pdfDocument = null;
+													}
+
+													#endregion
+												}
+											}
+										}
+									}
+									#endregion
+									break;
+								case "D0":
+									LogMessageInformation("成功执行.");
+									break;
+								case "D1":
+									LogMessageInformation("成功执行.");
+									break;
+							}
+
+							#endregion
+
+							position = position + dataLen + 23;
+
+							if (i < iCount)
+								LogMessage("");
+
+							#endregion
+						}
+
+						if (NeedReport)
+							CloseReport();
+					}
+
+					#endregion
+				}
             }
             catch (Exception ex)
             {
@@ -8459,23 +8550,22 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
+				_pdfDocument.NewPage();
+
                 #region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 行驶速度记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 行驶速度记录 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
 
-                par.SpacingBefore = 25f;
+                //par.SpacingBefore = 25f;
 
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd08HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if (_cmd08HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -8491,9 +8581,47 @@ namespace Bumblebee
                     ObservableCollection<Tuple<int, byte>> records = cri.Records;
                     PdfPCell cell;
 
-                    #region State Table
+					if (index % 2 == 1)
+						_pdfDocument.NewPage();
 
-                    PdfPTable stateTable = new PdfPTable(62);
+					#region Header Table
+
+					PdfPTable tableHeader = new PdfPTable(2);
+
+					tableHeader.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+					float[] widthsHeader = { 50f, 50f };
+					tableHeader.SetWidths(widthsHeader);
+					tableHeader.LockedWidth = true;
+
+					cell = new PdfPCell(new Phrase("车牌号码:" + _vehicleID + "   ", new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
+					cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+					cell.VerticalAlignment = Element.ALIGN_RIGHT;
+					cell.Colspan = 1;
+					cell.BorderColor = BaseColor.WHITE;
+					tableHeader.AddCell(cell);
+					cell = new PdfPCell(new Phrase("   车牌分类:" + _vehicleCategory, new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
+					cell.HorizontalAlignment = Element.ALIGN_LEFT;
+					cell.VerticalAlignment = Element.ALIGN_LEFT;
+					cell.Colspan = 1;
+					cell.BorderColor = BaseColor.WHITE;
+					tableHeader.AddCell(cell);
+					cell = new PdfPCell(new Phrase("驾证:" + _driverID, new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
+					cell.HorizontalAlignment = Element.ALIGN_CENTER;
+					cell.VerticalAlignment = Element.ALIGN_CENTER;
+					cell.Colspan = 2;
+					cell.BorderColor = BaseColor.WHITE;
+					tableHeader.AddCell(cell);
+
+					if(index % 2 != 1)
+						tableHeader.SpacingBefore = 10f;
+
+					_pdfDocument.Add(tableHeader);
+
+					#endregion
+
+					#region State Table
+
+					PdfPTable stateTable = new PdfPTable(62);
                     stateTable.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] stateWidths = new float[62];
                     for (int i = 0; i < 62; i++)
@@ -8507,9 +8635,6 @@ namespace Bumblebee
                     }
                     stateTable.SetWidths(stateWidths);
                     stateTable.LockedWidth = true;
-
-                    stateTable.SpacingBefore = 30f;
-                    //stateTable.SpacingAfter = 10f;
 
                     for (int i = 0; i < 8; i++)
                     {
@@ -8710,8 +8835,6 @@ namespace Bumblebee
 
                         PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
                         speedPng.ScaleAbsolute(455, 120);
-                        //speedPng.SpacingBefore = 5f;
-                        //speedPng.SpacingAfter = 15f;
 
                         _pdfDocument.Add(speedPng);
 
@@ -8721,9 +8844,9 @@ namespace Bumblebee
 
                     #endregion
 
-                    PdfPTable table = new PdfPTable(11);
+					#region Speed Table
 
-                    table.SpacingBefore = 15f;
+					PdfPTable table = new PdfPTable(11);
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -8741,7 +8864,7 @@ namespace Bumblebee
                     cell.Colspan = 6;
                     table.AddCell(cell);
 
-                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+                    cell = new PdfPCell(new Phrase("第" + (index+1).ToString() + "条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -8772,12 +8895,11 @@ namespace Bumblebee
                         }
                     }
 
-                    if (index + 1 == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
-                
-                    index++;
+
+					#endregion
+
+					index++;
                 }
 
                 #endregion
@@ -8804,23 +8926,20 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                #region
+				_pdfDocument.NewPage();
+				
+				#region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 位置信息记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 位置信息记录 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
-
-                par.SpacingBefore = 25f;
                 
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd09HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if (_cmd09HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -8831,9 +8950,6 @@ namespace Bumblebee
                     if (_cts.Token.IsCancellationRequested == true)
                         break;
 
-                    //if (index > 10)
-                    //    break;
-
                     ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd09HRespOc.Count.ToString() + ")记录中...";
                     
                     PdfPTable table = new PdfPTable(11);
@@ -8842,7 +8958,6 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 15f;
-                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -8861,7 +8976,7 @@ namespace Bumblebee
                     cell.Colspan = 6;
                     table.AddCell(cell);
 
-                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+					cell = new PdfPCell(new Phrase("第" + (index + 1).ToString() + "条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -8893,11 +9008,10 @@ namespace Bumblebee
                         }
                     }
 
-                    if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
-                }
+				
+					index++;
+				}
 
                 #endregion
             }
@@ -8923,12 +9037,14 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                #region
+				_pdfDocument.NewPage();
+				
+				#region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 事故疑点记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 事故疑点记录 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
 
@@ -8937,9 +9053,6 @@ namespace Bumblebee
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd10HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if (_cmd10HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -8954,6 +9067,44 @@ namespace Bumblebee
 
                     ObservableCollection<Tuple<int, byte>> records = cri.Records;
                     PdfPCell cell;
+
+					if (index > 0)
+						_pdfDocument.NewPage();
+
+					#region Header Table
+
+					PdfPTable tableHeader = new PdfPTable(2);
+
+					tableHeader.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
+					float[] widthsHeader = { 50f, 50f };
+					tableHeader.SetWidths(widthsHeader);
+					tableHeader.LockedWidth = true;
+
+					cell = new PdfPCell(new Phrase("车牌号码:" + _vehicleID + "   ", new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
+					cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+					cell.VerticalAlignment = Element.ALIGN_RIGHT;
+					cell.Colspan = 1;
+					cell.BorderColor = BaseColor.WHITE;
+					tableHeader.AddCell(cell);
+					cell = new PdfPCell(new Phrase("   车牌分类:" + _vehicleCategory, new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
+					cell.HorizontalAlignment = Element.ALIGN_LEFT;
+					cell.VerticalAlignment = Element.ALIGN_LEFT;
+					cell.Colspan = 1;
+					cell.BorderColor = BaseColor.WHITE;
+					tableHeader.AddCell(cell);
+					cell = new PdfPCell(new Phrase("驾证:" + cri.Number, new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
+					cell.HorizontalAlignment = Element.ALIGN_CENTER;
+					cell.VerticalAlignment = Element.ALIGN_CENTER;
+					cell.Colspan = 2;
+					cell.BorderColor = BaseColor.WHITE;
+					tableHeader.AddCell(cell);
+
+					if (index % 2 != 1)
+						tableHeader.SpacingBefore = 10f;
+
+					_pdfDocument.Add(tableHeader);
+
+					#endregion
 
                     #region State Table
 
@@ -8971,9 +9122,6 @@ namespace Bumblebee
                     }
                     stateTable.SetWidths(stateWidths);
                     stateTable.LockedWidth = true;
-
-                    stateTable.SpacingBefore = 30f;
-                    //stateTable.SpacingAfter = 10f;
 
                     for (int i = 0; i < 8; i++)
                     {
@@ -9174,8 +9322,6 @@ namespace Bumblebee
 
                         PdfImage speedPng = PdfImage.GetInstance(CurrentDirectory + @"\embedded.png");
                         speedPng.ScaleAbsolute(480, 125);
-                        //speedPng.SpacingBefore = 5f;
-                        //speedPng.SpacingAfter = 15f;
 
                         _pdfDocument.Add(speedPng);
 
@@ -9184,10 +9330,10 @@ namespace Bumblebee
                     }, null);
 
                     #endregion
-         
-                    PdfPTable table = new PdfPTable(11);
 
-                    table.SpacingBefore = 15f;
+					#region Speed Table
+
+					PdfPTable table = new PdfPTable(11);
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -9215,7 +9361,7 @@ namespace Bumblebee
                     cell.Colspan = 6;
                     table.AddCell(cell);
 
-                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+					cell = new PdfPCell(new Phrase("第" + (index + 1).ToString() + "条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -9246,12 +9392,11 @@ namespace Bumblebee
                         }
                     }
 
-                    if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
 
-                    index++;
+					#endregion
+
+					index++;
                 }
 
                 #endregion
@@ -9278,23 +9423,20 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                #region
+				_pdfDocument.NewPage();
+				
+				#region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 超时驾驶记录 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
-
-                par.SpacingBefore = 25f;
                 
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd11HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if (_cmd11HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -9313,7 +9455,6 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 15f;
-                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 100f, 100f, 150f, 150f };
@@ -9363,16 +9504,15 @@ namespace Bumblebee
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
-                    cell = new PdfPCell(new Phrase(cri.StopPosition + "\n" + cri.StartHeight + "米", new Font(baseFont, 9)));
+                    cell = new PdfPCell(new Phrase(cri.StopPosition + "\n" + cri.StopHeight + "米", new Font(baseFont, 9)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
 
-                    if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
-                }
+
+					index++;
+				}
 
                 #endregion
             }
@@ -9397,24 +9537,21 @@ namespace Bumblebee
             }, null);
             ReadyString2 = "创建报表中...";
             try
-            {
+			{
+				_pdfDocument.NewPage();
+
                 #region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 驾驶人身份记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 驾驶人身份记录 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
-
-                par.SpacingBefore = 25f;
                 
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd12HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if (_cmd12HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -9467,8 +9604,6 @@ namespace Bumblebee
                         table.AddCell(cell);
                     }
 
-                    table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
                 }
 
@@ -9496,23 +9631,20 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                #region
+				_pdfDocument.NewPage();
+				
+				#region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 外部供电记录 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
-
-                par.SpacingBefore = 25f;
-                
+               
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd13HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if (_cmd13HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -9557,8 +9689,6 @@ namespace Bumblebee
                         table.AddCell(cell);
                     }
 
-                    table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
                 }
 
@@ -9585,24 +9715,21 @@ namespace Bumblebee
             }, null);
             ReadyString2 = "创建报表中...";
             try
-            {
+			{
+				_pdfDocument.NewPage();
+
                 #region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 参数修改记录 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
-
-                par.SpacingBefore = 25f;
-                
+               
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd14HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if (_cmd14HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -9610,7 +9737,7 @@ namespace Bumblebee
                 {
                     PdfPTable table = new PdfPTable(3);
 
-                    table.SpacingBefore = 25f;
+					table.SpacingBefore = 25f;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 75f, 150f, 150f };
@@ -9647,8 +9774,6 @@ namespace Bumblebee
                         table.AddCell(cell);
                     }
 
-                    table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
                 }
 
@@ -9676,23 +9801,20 @@ namespace Bumblebee
             ReadyString2 = "创建报表中...";
             try
             {
-                #region
+				_pdfDocument.NewPage();
+				
+				#region
 
                 string fontPath = Environment.GetEnvironmentVariable("WINDIR") + "\\FONTS\\STSONG.TTF";
                 BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
-                PdfParagraph par = new PdfParagraph("--- 速度状态日志 --- ", new Font(baseFont, 15, Font.BOLD, BaseColor.BLUE));
+                PdfParagraph par = new PdfParagraph("--- 速度状态日志 --- ", new Font(baseFont, 12, Font.BOLD, BaseColor.BLUE));
                 par.Alignment = Element.ALIGN_CENTER;
                 _pdfDocument.Add(par);
-
-                par.SpacingBefore = 25f;
 
                 PdfParagraph par1 = new PdfParagraph("(" + _cmd15HRespOc.Count.ToString() + "个结果)", new Font(baseFont, 10, Font.NORMAL, BaseColor.BLUE));
                 par1.Alignment = Element.ALIGN_CENTER;
                 par1.SpacingBefore = 5f;
-
-                if(_cmd15HRespOc.Count < 1)
-                    par1.SpacingAfter = 35f;
 
                 _pdfDocument.Add(par1);
 
@@ -9711,7 +9833,6 @@ namespace Bumblebee
                         table.SpacingBefore = 25f;
                     else
                         table.SpacingBefore = 15f;
-                    index++;
 
                     table.TotalWidth = _pdfDocument.Right - _pdfDocument.Left;
                     float[] widths = { 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f };
@@ -9753,7 +9874,7 @@ namespace Bumblebee
                     cell.Colspan = 6;
                     table.AddCell(cell);
 
-                    cell = new PdfPCell(new Phrase("第1条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
+					cell = new PdfPCell(new Phrase("第" + (index + 1).ToString() + "条", new Font(baseFont, 10, Font.BOLD)));//, BaseColor.BLUE)));
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.VerticalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -9785,11 +9906,10 @@ namespace Bumblebee
                         }
                     }
 
-                    if (index == _cmd15HRespOc.Count)
-                        table.SpacingAfter = 60f;
-
                     _pdfDocument.Add(table);
-                }
+
+					index++;
+				}
 
                 #endregion
             }
@@ -9872,7 +9992,7 @@ namespace Bumblebee
             }
             catch (Exception ex)
             {
-                LogMessageInformation("无法创建报表:" + ex.Message);
+				LogMessageError("无法创建报表:" + ex.Message);
                 _pdfDocument = null;
             }
         }
@@ -9918,22 +10038,29 @@ namespace Bumblebee
 
         private void OpenPdfReportFolder_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CurrentDirectory = System.Environment.CurrentDirectory;
-            if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
-            {
-                try
-                {
-                    Directory.CreateDirectory(CurrentDirectory + @"\Reports");
-                    CurrentDirectory = CurrentDirectory + @"\Reports";
-                }
-                catch (Exception)
-                {
-                    CurrentDirectory = System.Environment.CurrentDirectory;
-                }
-            }
-            else
-                CurrentDirectory = CurrentDirectory + @"\Reports";
-            System.Diagnostics.Process.Start(CurrentDirectory);
+			try
+			{
+				CurrentDirectory = System.Environment.CurrentDirectory;
+				if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
+				{
+					try
+					{
+						Directory.CreateDirectory(CurrentDirectory + @"\Reports");
+						CurrentDirectory = CurrentDirectory + @"\Reports";
+					}
+					catch (Exception)
+					{
+						CurrentDirectory = System.Environment.CurrentDirectory;
+					}
+				}
+				else
+					CurrentDirectory = CurrentDirectory + @"\Reports";
+				System.Diagnostics.Process.Start(CurrentDirectory);
+			}
+			catch (Exception ex)
+			{
+				LogMessageError("无法打开报表目录:" + ex.Message);
+			}
         }
 
         private void Version_MenuItem_Click(object sender, RoutedEventArgs e)

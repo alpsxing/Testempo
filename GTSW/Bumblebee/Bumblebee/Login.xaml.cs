@@ -93,7 +93,7 @@ namespace Bumblebee
             {
                 if (string.IsNullOrWhiteSpace(pwboxPassword.Password))
                 {
-                    MessageBox.Show("密码为空.", "登录失败", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("密码错误.", "登录失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else if (string.Compare(pwboxPassword.Password, "123456", false) == 0)
                 {

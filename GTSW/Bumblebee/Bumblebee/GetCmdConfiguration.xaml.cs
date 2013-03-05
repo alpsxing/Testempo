@@ -61,7 +61,9 @@ namespace Bumblebee
             set
             {
                 _startDateTime = value;
-                if (DateTime.Compare(StartDateTime, StopDateTime) >= 0)
+				if (DateTime.Compare(StartDateTime, StopDateTime) >= 0 ||
+					DateTime.Compare(StopDateTime, DateTime.Now) >= 0 ||
+					DateTime.Compare(StartDateTime, DateTime.Now) >= 0)
                     OKEnabled = false;
                 else
                     OKEnabled = true;
@@ -79,7 +81,9 @@ namespace Bumblebee
             set
             {
                 _stopDateTime = value;
-                if (DateTime.Compare(StartDateTime, StopDateTime) >= 0)
+				if (DateTime.Compare(StartDateTime, StopDateTime) >= 0 ||
+					DateTime.Compare(StartDateTime, DateTime.Now) >= 0 ||
+					DateTime.Compare(StopDateTime, DateTime.Now) >= 0)
                     OKEnabled = false;
                 else
                     OKEnabled = true;

@@ -3,7 +3,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="传感器单圈脉冲数" Height="120" Width="270"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" FontFamily="Microsoft YaHei" FontSize="14">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" FontFamily="Microsoft YaHei" FontSize="14" Icon="/Bumblebee;component/Resources/config.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5"/>

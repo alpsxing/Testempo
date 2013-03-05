@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="状态信号配置信息" Height="150" Width="640"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
-        Loaded="Window_Loaded" FontFamily="Microsoft YaHei" FontSize="14">
+        Loaded="Window_Loaded" FontFamily="Microsoft YaHei" FontSize="14" Icon="/Bumblebee;component/Resources/config.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5"/>
