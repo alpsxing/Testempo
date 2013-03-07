@@ -69,6 +69,13 @@
                         <Image Source="/Bumblebee;component/Resources/usbfile.png" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="上传U盘数据文件(VDR)" Click="UploadUSBVDR_MenuItem_Click"
+                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                          IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Icon>
+                        <Image Source="/Bumblebee;component/Resources/upload.ico" Height="20" Style="{StaticResource ImageEnableDisableStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <!--MenuItem Header="打开U盘数据报表(PDF)" 
                           HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
                           IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/-->
@@ -141,6 +148,12 @@
                     IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                 <Button.Content>
                     <Image Source="resources/usbfile.png" Style="{StaticResource ImageEnableDisableStyle}"/>
+                </Button.Content>
+            </Button>
+            <Button Margin="-1" Click="UploadUSBVDR_MenuItem_Click" ToolTip="上传U盘数据文件(VDR)"
+                    IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
+                <Button.Content>
+                    <Image Source="resources/upload.ico" Style="{StaticResource ImageEnableDisableStyle}"/>
                 </Button.Content>
             </Button>
             <Separator/>

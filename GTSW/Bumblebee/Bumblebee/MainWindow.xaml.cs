@@ -192,7 +192,7 @@ namespace Bumblebee
 		private string _vehicleID = "";
 		private string _vehicleCategory = "";
 		private string _driverID = "";
-
+       
         #region Traces
 
         //List<KeyValuePair<string, int>> _valueList0 = new List<KeyValuePair<string, int>>();
@@ -236,6 +236,20 @@ namespace Bumblebee
             {
                 _curDir = value;
                 NotifyPropertyChanged("CurrentDirectory");
+            }
+        }
+
+        private string _server = "";
+        public string Server
+        {
+            get
+            {
+                return _server;
+            }
+            set
+            {
+                _server = value;
+                NotifyPropertyChanged("Server");
             }
         }
 
@@ -1879,6 +1893,7 @@ namespace Bumblebee
                 sw.WriteLine("    <chkintvl>" + ChkInterval + "</chkintvl>");
                 sw.WriteLine("    <serverip>" + ServerIP + "</serverip>");
                 sw.WriteLine("    <serverport>" + ServerPort + "</serverport>");
+                sw.WriteLine("    <server>" + Server + "</server>");
                 sw.WriteLine("</bumblebee>");
                 sw.Flush();
                 sw.Close();
@@ -1903,6 +1918,7 @@ namespace Bumblebee
             LogMessageInformation("当前串口检定间隔时间:" + ChkInterval + "ms.");
             LogMessageInformation("当前服务器IP:" + ServerIP + ".");
             LogMessageInformation("当前服务器端口:" + ServerPort + ".");
+            LogMessageInformation("当前FTP服务器:" + Server + ".");
 
             LogMessageSeperator();
         }
@@ -1936,6 +1952,7 @@ namespace Bumblebee
                         TimeOut = "20000";
                         ServerIP = "127.0.0.1";
                         ServerPort = "8678";
+                        Server = "127.0.0.1";
                     }
                     else
                     {
@@ -2433,7 +2450,7 @@ namespace Bumblebee
                                             if (IPAddress.TryParse(ServerIP, out timeout) == false)
                                             {
                                                 LogMessageError("配置文件中服务器IP(" + ServerIP + ")不正确,使用默认服务器IP:127.0.0.1.");
-                                                TimeOut = "127.0.0.1";
+                                                ServerIP = "127.0.0.1";
                                             }
                                             else
                                             {
@@ -2468,7 +2485,7 @@ namespace Bumblebee
                                             if (int.TryParse(ServerPort, out timeout) == false)
                                             {
                                                 LogMessageError("配置文件中服务器端口(" + ServerPort + ")不正确,使用默认服务器端口:8678.");
-                                                TimeOut = "8678";
+                                                ServerPort = "8678";
                                             }
                                             else
                                             {
@@ -2492,6 +2509,41 @@ namespace Bumblebee
                                         ServerPort = "8678";
                                     }
                                     xni.InnerText = ServerPort;
+
+                                    #endregion
+                                    break;
+                                case "SERVER":
+                                    #region
+
+                                    if (xni.InnerText != null)
+                                    {
+                                        Server = xni.InnerText;
+                                        if (string.IsNullOrWhiteSpace(Server))
+                                        {
+                                            LogMessageError("配置文件中FTP服务器项为空.");
+                                        }
+                                        else
+                                        {
+                                            IPAddress timeout = null;
+                                            if (IPAddress.TryParse(Server, out timeout) == false)
+                                            {
+                                                LogMessageError("配置文件中FTP服务器(" + Server + ")不正确,使用默认FTP服务器:127.0.0.1.");
+                                                Server = "127.0.0.1";
+                                            }
+                                            else
+                                            {
+                                                LogMessageInformation("当前ftp服务器:" + Server + ".");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogMessageError("配置文件缺少FTP服务器项.");
+
+                                        LogMessageError("使用默认FTP服务器:127.0.0.1.");
+                                        Server = "127.0.0.1";
+                                    }
+                                    xni.InnerText = Server;
 
                                     #endregion
                                     break;
@@ -2526,6 +2578,7 @@ namespace Bumblebee
                     TimeOut = "1000";
                     ServerIP = "127.0.0.1";
                     ServerPort = "8678";
+                    Server = "127.0.0.1";
 
                     LogMessageInformation("当前串口端口号:" + Port + ".");
                     LogMessageInformation("当前串口波特率:" + Baud + ".");
@@ -2539,6 +2592,7 @@ namespace Bumblebee
                     LogMessageInformation("当前串口检定间隔时间:" + ChkInterval + "ms.");
                     LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                     LogMessageInformation("当前服务器端口:" + ServerPort + ".");
+                    LogMessageInformation("当前FTP服务器:" + Server + ".");
                 }
             }
             else
@@ -2565,6 +2619,7 @@ namespace Bumblebee
                 ChkInterval = "250";
                 ServerIP = "127.0.0.1";
                 ServerPort = "8678";
+                Server = "127.0.0.1";
 
                 LogMessageInformation("当前串口端口号:" + Port + ".");
                 LogMessageInformation("当前串口波特率:" + Baud + ".");
@@ -2578,6 +2633,7 @@ namespace Bumblebee
                 LogMessageInformation("当前串口检定间隔时间:" + ChkInterval + "ms.");
                 LogMessageInformation("当前服务器IP:" + ServerIP + ".");
                 LogMessageInformation("当前服务器端口:" + ServerPort + ".");
+                LogMessageInformation("当前FTP服务器:" + Server + ".");
             }
 
             LogMessageSeperator();
@@ -2609,6 +2665,7 @@ namespace Bumblebee
                 sw.WriteLine("    <chkintvl>2500</chkintvl>");
                 sw.WriteLine("    <serverip>127.0.0.1</serverip>");
                 sw.WriteLine("    <serverport>8678</serverport>");
+                sw.WriteLine("    <server>127.0.0.1</server>");
                 sw.WriteLine("</bumblebee>");
                 sw.Flush();
                 sw.Close();
@@ -10024,6 +10081,12 @@ namespace Bumblebee
                 s = s + " " + string.Format("{0:X2}", bi);
             }
             return s.Trim();
+        }
+
+        private void UploadUSBVDR_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            UploadVDR uvdr = new UploadVDR();
+            uvdr.ShowDialog();
         }
 
         private void ClearReceivingNumber_Button_Click(object sender, RoutedEventArgs e)

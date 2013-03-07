@@ -159,6 +159,9 @@
     <Compile Include="TimeoutConfiguration.xaml.cs">
       <DependentUpon>TimeoutConfiguration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UploadVDR.xaml.cs">
+      <DependentUpon>UploadVDR.xaml</DependentUpon>
+    </Compile>
     <Page Include="About.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -239,6 +242,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UploadVDR.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -268,6 +275,7 @@
     <Resource Include="Resources\trash.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\upload.ico" />
     <Resource Include="Resources\usbfile.png" />
     <Resource Include="Resources\disconnect.ico" />
     <Resource Include="Resources\exit.ico" />
