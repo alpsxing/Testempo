@@ -2443,7 +2443,10 @@ namespace Bumblebee
                                         if (string.IsNullOrWhiteSpace(ServerIP))
                                         {
                                             LogMessageError("配置文件中服务器IP项为空.");
-                                        }
+
+											LogMessageError("使用默认服务器IP:127.0.0.1.");
+											ServerIP = "127.0.0.1";
+										}
                                         else
                                         {
                                             IPAddress timeout = null;
@@ -2521,7 +2524,10 @@ namespace Bumblebee
                                         if (string.IsNullOrWhiteSpace(Server))
                                         {
                                             LogMessageError("配置文件中FTP服务器项为空.");
-                                        }
+
+											LogMessageError("使用默认FTP服务器:127.0.0.1.");
+											Server = "127.0.0.1";
+										}
                                         else
                                         {
                                             IPAddress timeout = null;
@@ -2532,7 +2538,7 @@ namespace Bumblebee
                                             }
                                             else
                                             {
-                                                LogMessageInformation("当前ftp服务器:" + Server + ".");
+                                                LogMessageInformation("当前FTP服务器:" + Server + ".");
                                             }
                                         }
                                     }
@@ -10085,8 +10091,9 @@ namespace Bumblebee
 
         private void UploadUSBVDR_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            UploadVDR uvdr = new UploadVDR();
+            UploadVDR uvdr = new UploadVDR(Server);
             uvdr.ShowDialog();
+			Server = uvdr.Server;
         }
 
         private void ClearReceivingNumber_Button_Click(object sender, RoutedEventArgs e)
