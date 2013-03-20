@@ -2814,6 +2814,11 @@ namespace Bumblebee
 				}
 			}
 
+            foreach (CmdDefinition cdi in _getCmdOc)
+            {
+                cdi.CmdState = "状态提示...";
+            }
+
 			foreach (CmdDefinition cdi in _setCmdOc)
 			{
 				if (cdi.CmdSelected == true)
@@ -2822,6 +2827,11 @@ namespace Bumblebee
 					break;
 				}
 			}
+
+            foreach (CmdDefinition cdi in _setCmdOc)
+            {
+                cdi.CmdState = "状态提示...";
+            }
 
 			foreach (CmdDefinition cdi in _extGetCmdOc)
 			{
@@ -2832,6 +2842,11 @@ namespace Bumblebee
 				}
 			}
 
+            foreach (CmdDefinition cdi in _extGetCmdOc)
+            {
+                cdi.CmdState = "状态提示...";
+            }
+
 			foreach (CmdDefinition cdi in _extSetCmdOc)
 			{
 				if (cdi.CmdSelected == true)
@@ -2840,6 +2855,13 @@ namespace Bumblebee
 					break;
 				}
 			}
+
+            foreach (CmdDefinition cdi in _extSetCmdOc)
+            {
+                cdi.CmdState = "状态提示...";
+            }
+
+            CheckCmdState = "状态提示...";
 
 			if (noOper == true)
 			{
@@ -6461,6 +6483,15 @@ namespace Bumblebee
         private void ParseVDRData(object objFileName)
         {
             string fileName = (string)objFileName;
+            int index = fileName.LastIndexOf(".");
+            int index1 = fileName.LastIndexOf("\\");
+            string onlyFN = "";
+            if (index < 0)
+                onlyFN = fileName;
+            else
+                onlyFN = fileName.Substring(0, index);
+            if (index1 > -1)
+                onlyFN = onlyFN.Substring(index1 + 1, onlyFN.Length - index1 - 1);
 
             try
             {
@@ -6503,7 +6534,7 @@ namespace Bumblebee
 						}
 						else
 							CurrentDirectory = CurrentDirectory + @"\Reports";
-						_docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
+                        _docTitleDateTime = onlyFN + "_" + string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
 
 						if (ReallyNeedReport == true)
 							CreateReport();
