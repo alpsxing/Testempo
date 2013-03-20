@@ -343,7 +343,7 @@ namespace Bumblebee
         private string user = null;
         private string pass = null;
         private FtpWebRequest ftpRequest = null;
-        private FtpWebResponse ftpResponse = null;
+        //private FtpWebResponse ftpResponse = null;
         private Stream ftpStream = null;
         private int bufferSize = 1024;
 

@@ -103,6 +103,7 @@ namespace Bumblebee
         }
 
         public const int MAX_DISPLAY_LINE_COUNT = 500;
+        //public const int DISPLAY_LINE_COUNT = 500;
         //public const int CHK_CMD_INTERVAL = 500;
 
         #region Variables
@@ -218,12 +219,38 @@ namespace Bumblebee
         {
             get
             {
-                return _needReport || _inParseVDR;
+                return _needReport;
             }
             set
             {
                 _needReport = value;
                 NotifyPropertyChanged("NeedReport");
+                NotifyPropertyChanged("ReallyNeedReport");
+            }
+        }
+
+        public bool ReallyNeedReport
+        {
+            get
+            {
+                bool hasGetCmd = false;
+                foreach (CmdDefinition cd in _getCmdOc)
+                {
+                    if (cd.CmdSelected == true)
+                    {
+                        hasGetCmd = true;
+                        break;
+                    }
+                }
+                foreach (CmdDefinition cd in _extGetCmdOc)
+                {
+                    if (cd.CmdSelected == true)
+                    {
+                        hasGetCmd = true;
+                        break;
+                    }
+                }
+                return (hasGetCmd && _needReport) || _inParseVDR;
             }
         }
 
@@ -1807,10 +1834,20 @@ namespace Bumblebee
                         {
                             #region
 
-                            while (fldocLog.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                            if (AutoClearLog == true)
                             {
-								fldocLog.Blocks.Clear(); //fldocLog.Blocks.Remove(fldocLog.Blocks.FirstBlock);
+                                if (fldocLog.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                                {
+                                    fldocLog.Blocks.Clear();//.Remove(fldocRecv.Blocks.FirstBlock);
+                                }
                             }
+                            else
+                            {
+                                while (fldocLog.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                                {
+                                    fldocLog.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+                                }
+                            } 
                             
                             Run rch = new Run(di.Item1);
                             WinParagraph pch = new WinParagraph(rch);
@@ -2825,7 +2862,7 @@ namespace Bumblebee
 
 			DateTime dt = DateTime.Now;
 			CurrentDirectory = System.Environment.CurrentDirectory;
-			if (NeedReport)
+			if (ReallyNeedReport)
 			{
 				if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
 				{
@@ -3043,9 +3080,19 @@ namespace Bumblebee
             {
                 #region
 
-                while (fldocSend.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                if (AutoClearSend == true)
                 {
-					fldocSend.Blocks.Clear(); //fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
+                    if (fldocSend.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                    {
+                        fldocSend.Blocks.Clear();//.Remove(fldocSend.Blocks.FirstBlock);
+                    }
+                }
+                else
+                {
+                    while (fldocSend.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                    {
+                        fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
+                    }
                 }
 
                 Run rch = new Run(finalCmd);
@@ -3109,9 +3156,19 @@ namespace Bumblebee
             {
                 #region
 
-                while (fldocRecv.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                if (AutoClearRecv == true)
                 {
-					fldocRecv.Blocks.Clear(); //fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+                    if (fldocRecv.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                    {
+                        fldocRecv.Blocks.Clear();//.Remove(fldocRecv.Blocks.FirstBlock);
+                    }
+                }
+                else
+                {
+                    while (fldocRecv.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                    {
+                        fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+                    }
                 }
                 
                 Run rch = new Run(sRecv);
@@ -3471,9 +3528,19 @@ namespace Bumblebee
                     {
                         #region
 
-                        while (fldocSend.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                        if (AutoClearSend == true)
                         {
-                            fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
+                            if (fldocSend.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                            {
+                                fldocSend.Blocks.Clear();//.Remove(fldocSend.Blocks.FirstBlock);
+                            }
+                        }
+                        else
+                        {
+                            while (fldocSend.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                            {
+                                fldocSend.Blocks.Remove(fldocSend.Blocks.FirstBlock);
+                            }
                         }
 
                         Run rch = new Run(cmd);
@@ -3599,9 +3666,19 @@ namespace Bumblebee
                     {
                         #region
 
-                        while (fldocRecv.Blocks.Count > MAX_DISPLAY_LINE_COUNT)
+                        if (AutoClearRecv == true)
                         {
-                            fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+                            if (fldocRecv.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                            {
+                                fldocRecv.Blocks.Clear();//.Remove(fldocRecv.Blocks.FirstBlock);
+                            }
+                        }
+                        else
+                        {
+                            while (fldocRecv.Blocks.Count >= MAX_DISPLAY_LINE_COUNT)
+                            {
+                                fldocRecv.Blocks.Remove(fldocRecv.Blocks.FirstBlock);
+                            }
                         }
 
                         Run rch = new Run(sRecv);
@@ -3709,7 +3786,7 @@ namespace Bumblebee
                                                         LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -3784,7 +3861,7 @@ namespace Bumblebee
                                                         LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -3857,7 +3934,7 @@ namespace Bumblebee
                                                         LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -3963,7 +4040,7 @@ namespace Bumblebee
                                                         LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -4066,7 +4143,7 @@ namespace Bumblebee
                                                         LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -4150,7 +4227,7 @@ namespace Bumblebee
                                                         LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -4304,7 +4381,7 @@ namespace Bumblebee
                                                         LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -4448,7 +4525,7 @@ namespace Bumblebee
                                                         LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -4643,7 +4720,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-													//if (isContinued == false && NeedReport == true && _pdfDocument != null)
+													//if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
 													//{
 													//    _createPdfEvent.Reset();
 													//    Task.Factory.StartNew(() =>
@@ -4825,15 +4902,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
-                                                    {
-                                                        _createPdfEvent.Reset();
-                                                        Task.Factory.StartNew(() =>
-                                                        {
-                                                            Create09HReport();
-                                                        });
-                                                        _createPdfEvent.WaitOne();
-                                                    }
+                                                    //if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
+                                                    //{
+                                                    //    _createPdfEvent.Reset();
+                                                    //    Task.Factory.StartNew(() =>
+                                                    //    {
+                                                    //        Create09HReport();
+                                                    //    });
+                                                    //    _createPdfEvent.WaitOne();
+                                                    //}
                                                 }
                                                 #endregion
                                                 break;
@@ -5011,7 +5088,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-													//if (isContinued == false && NeedReport == true && _pdfDocument != null)
+													//if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
 													//{
 													//    _createPdfEvent.Reset();
 													//    Task.Factory.StartNew(() =>
@@ -5247,15 +5324,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
-                                                    {
-                                                        _createPdfEvent.Reset();
-                                                        Task.Factory.StartNew(() =>
-                                                        {
-                                                            Create11HReport();
-                                                        });
-                                                        _createPdfEvent.WaitOne();
-                                                    }
+                                                    //if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
+                                                    //{
+                                                    //    _createPdfEvent.Reset();
+                                                    //    Task.Factory.StartNew(() =>
+                                                    //    {
+                                                    //        Create11HReport();
+                                                    //    });
+                                                    //    _createPdfEvent.WaitOne();
+                                                    //}
                                                 }
                                                 #endregion
                                                 break;
@@ -5391,7 +5468,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
+                                                    if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -5417,13 +5494,17 @@ namespace Bumblebee
 
 															#endregion
 
-															Create08HReport();
+                                                            Create08HReport();
+
+                                                            Create09HReport();
 
 															#region Update 10H Report
 
 															#endregion
 
 															Create10HReport();
+
+                                                            Create11HReport();
 
 															Create12HReport();
                                                         });
@@ -5556,7 +5637,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
+                                                    if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -5702,7 +5783,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
+                                                    if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -5843,7 +5924,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
+                                                    if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -5885,7 +5966,7 @@ namespace Bumblebee
                                                         LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -6126,7 +6207,7 @@ namespace Bumblebee
                                                         LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d0Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
                                                         LogMessage("+-------------------+----------------------------+");
 
-                                                        if (NeedReport == true)
+                                                        if (ReallyNeedReport == true)
                                                         {
                                                             if (_pdfDocument == null)
                                                             {
@@ -6313,7 +6394,7 @@ namespace Bumblebee
 
             PBarValue = 0;
 
-            if(NeedReport == true)
+            if(ReallyNeedReport == true)
                 CloseReport();
         }
 
@@ -6424,7 +6505,7 @@ namespace Bumblebee
 							CurrentDirectory = CurrentDirectory + @"\Reports";
 						_docTitleDateTime = string.Format("{0}_{1}_{2} {3}_{4}_{5}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
 
-						if (NeedReport == true)
+						if (ReallyNeedReport == true)
 							CreateReport();
 
 						int position = 0;
@@ -6493,7 +6574,7 @@ namespace Bumblebee
 											LogMessage("|          修改单号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -6571,7 +6652,7 @@ namespace Bumblebee
 											LogMessage("|            驾证号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -6646,7 +6727,7 @@ namespace Bumblebee
 											LogMessage("|          采集时间 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -6754,7 +6835,7 @@ namespace Bumblebee
 											LogMessage("|          累计里程 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", distance2));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -6859,7 +6940,7 @@ namespace Bumblebee
 											LogMessage("|          脉冲系数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -6947,7 +7028,7 @@ namespace Bumblebee
 											LogMessage("|          号牌分类 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", category));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -7103,7 +7184,7 @@ namespace Bumblebee
 											LogMessage("|                D0 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -7249,7 +7330,7 @@ namespace Bumblebee
 											LogMessage("|    产品生产流水号 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", productflow));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -7385,7 +7466,7 @@ namespace Bumblebee
 											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										//if (NeedReport == true)
+										//if (ReallyNeedReport == true)
 										//{
 										//    if (_pdfDocument == null)
 										//    {
@@ -7513,22 +7594,22 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
-										{
-											if (_pdfDocument == null)
-											{
-												LogMessageError("无法创建报表.");
-											}
-											else
-											{
-												_createPdfEvent.Reset();
-												Task.Factory.StartNew(() =>
-												{
-													Create09HReport();
-												});
-												_createPdfEvent.WaitOne();
-											}
-										}
+                                        //if (ReallyNeedReport == true)
+                                        //{
+                                        //    if (_pdfDocument == null)
+                                        //    {
+                                        //        LogMessageError("无法创建报表.");
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        _createPdfEvent.Reset();
+                                        //        Task.Factory.StartNew(() =>
+                                        //        {
+                                        //            Create09HReport();
+                                        //        });
+                                        //        _createPdfEvent.WaitOne();
+                                        //    }
+                                        //}
 									}
 									#endregion
 									break;
@@ -7649,7 +7730,7 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										//if (NeedReport == true)
+										//if (ReallyNeedReport == true)
 										//{
 										//    if (_pdfDocument == null)
 										//    {
@@ -7834,22 +7915,22 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
-										{
-											if (_pdfDocument == null)
-											{
-												LogMessageError("无法创建报表.");
-											}
-											else
-											{
-												_createPdfEvent.Reset();
-												Task.Factory.StartNew(() =>
-												{
-													Create11HReport();
-												});
-												_createPdfEvent.WaitOne();
-											}
-										}
+                                        //if (ReallyNeedReport == true)
+                                        //{
+                                        //    if (_pdfDocument == null)
+                                        //    {
+                                        //        LogMessageError("无法创建报表.");
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        _createPdfEvent.Reset();
+                                        //        Task.Factory.StartNew(() =>
+                                        //        {
+                                        //            Create11HReport();
+                                        //        });
+                                        //        _createPdfEvent.WaitOne();
+                                        //    }
+                                        //}
 									}
 									#endregion
 									break;
@@ -7927,7 +8008,7 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
+										if (ReallyNeedReport == true)
 										{
 											if (_pdfDocument == null)
 											{
@@ -7961,12 +8042,16 @@ namespace Bumblebee
 		
 													Create08HReport();
 
+                                                    Create09HReport();
+
 													#region Update 10H Report
 
 													#endregion
 													
-													Create10HReport(); 
-													
+													Create10HReport();
+
+                                                    Create11HReport();
+
 													Create12HReport();
 												});
 												_createPdfEvent.WaitOne();
@@ -8041,7 +8126,7 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
+										if (ReallyNeedReport == true)
 										{
 											if (_pdfDocument == null)
 											{
@@ -8136,7 +8221,7 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
+										if (ReallyNeedReport == true)
 										{
 											if (_pdfDocument == null)
 											{
@@ -8226,7 +8311,7 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
+										if (ReallyNeedReport == true)
 										{
 											if (_pdfDocument == null)
 											{
@@ -8275,7 +8360,7 @@ namespace Bumblebee
 											LogMessage("|  传感器单圈脉冲数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", number));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -8518,7 +8603,7 @@ namespace Bumblebee
 											LogMessage("|@@@@@@@@@@@@@@@@@@ | $$$$$$$$$$$$$$$$$$$$$$$$$$$|".Replace("@@@@@@@@@@@@@@@@@@", d0Disp).Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", d0));
 											LogMessage("+-------------------+----------------------------+");
 
-											if (NeedReport == true)
+											if (ReallyNeedReport == true)
 											{
 												if (_pdfDocument == null)
 												{
@@ -8660,7 +8745,7 @@ namespace Bumblebee
 							#endregion
 						}
 
-						if (NeedReport)
+						if (ReallyNeedReport)
 							CloseReport();
 					}
 
@@ -9214,7 +9299,7 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            _createPdfEvent.Set();
+            //_createPdfEvent.Set();
         }
 
         private void Create10HReport()
@@ -9718,7 +9803,7 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            _createPdfEvent.Set();
+            //_createPdfEvent.Set();
         }
 
         private void Create12HReport()
@@ -10125,7 +10210,7 @@ namespace Bumblebee
                 ReadyString2 = "打开新的报表文件...";
 
                 CurrentDirectory = System.Environment.CurrentDirectory;
-                if (NeedReport)
+                if (ReallyNeedReport)
                 {
                     if (Directory.Exists(CurrentDirectory + @"\Reports") == false)
                     {
@@ -10340,8 +10425,17 @@ namespace Bumblebee
                 _cmdSelected = value;
                 NotifyPropertyChanged("CmdSelected");
                 NotifyPropertyChanged("GetCmdSetParEnabled");
+
+                //if(CmdSelectedEventHandler != null)
+                //    CmdSelectedEventHandler(this, EventArgs.Empty);
             }
         }
+
+        #region
+
+        //public event EventHandler CmdSelectedEventHandler;
+
+        #endregion
 
         private Visibility _getCmdSetParVisibility = Visibility.Collapsed;
         public Visibility GetCmdSetParVisibility
