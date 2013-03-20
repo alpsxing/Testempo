@@ -165,8 +165,12 @@
                     </PathGeometry>
                 </Path.Data>
             </Path>
-            <Path Name="pathSpeed" Stroke="DarkRed" StrokeThickness="1">
-            </Path>
+            <Path Name="pathSpeed" Stroke="DarkRed" StrokeThickness="1"/>
+            <Path Name="pathSpeed1" Stroke="Blue" StrokeThickness="1"/>
+            <Path Name="pathSpeed2" Stroke="Green" StrokeThickness="1"/>
+            <Path Name="pathSpeed3" Stroke="Orange" StrokeThickness="1"/>
+            <Path Name="pathSpeed4" Stroke="Yellow" StrokeThickness="1"/>
+            <Path Name="pathSpeed5" Stroke="Black" StrokeThickness="1"/>
         </Canvas>
     </DockPanel>
 </UserControl>

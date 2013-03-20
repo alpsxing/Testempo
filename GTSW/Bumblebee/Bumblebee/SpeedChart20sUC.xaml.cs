@@ -30,7 +30,8 @@ namespace Bumblebee
 
         #region Variables
 
-        ObservableCollection<Tuple<int, byte>> _records = null;
+        ObservableCollection<Tuple<int, byte, string>> _records = null;
+		private List<Path> _listPath = new List<Path>();
 
         #endregion
 
@@ -164,13 +165,20 @@ namespace Bumblebee
 
         #endregion
 
-        public SpeedChart20sUC(int minSpeed, int maxSpeed, ObservableCollection<Tuple<int, byte>> records)
+        public SpeedChart20sUC(int minSpeed, int maxSpeed, ObservableCollection<Tuple<int, byte, string>> records)
         {
             InitializeComponent();
 
+			_listPath.Add(pathSpeed);
+			_listPath.Add(pathSpeed1);
+			_listPath.Add(pathSpeed2);
+			_listPath.Add(pathSpeed3);
+			_listPath.Add(pathSpeed4);
+			_listPath.Add(pathSpeed5);
+
             DataContext = this;
 
-            _records = new ObservableCollection<Tuple<int, byte>>();
+			_records = new ObservableCollection<Tuple<int, byte, string>>();
             for (int i = records.Count - 1; i >= 0; i--)
             {
                 _records.Add(records[i]);
@@ -215,10 +223,50 @@ namespace Bumblebee
 
         private void DrawLine()
         {
-            List<PathFigure> listPF = new List<PathFigure>();
-            PathFigure pf = null;
-            for (int i = 0; i < _records.Count; i++)
+			List<List<PathFigure>> listListPF = new List<List<PathFigure>>();
+			List<PathFigure> listPF = null;
+			PathFigure pf = null;
+			string prevNumber = null;
+			int indexPath = 0;
+			for (int i = 0; i < _records.Count; i++)
             {
+				if (prevNumber == null)
+					listPF = new List<PathFigure>();
+				else
+				{
+					if (string.Compare(prevNumber, _records[i].Item3, true) != 0)
+					{
+						if (pf != null)
+						{
+							int count = pf.Segments.Count;
+							double x0 = 0.0;
+							double y0 = 0.0;
+							if (count == 0)
+							{
+								x0 = pf.StartPoint.X + (canvasTraces.Width / 100.0);
+								y0 = pf.StartPoint.Y;
+							}
+							else
+							{
+								x0 = ((LineSegment)(pf.Segments[count - 1])).Point.X + (canvasTraces.Width / 100.0);
+								y0 = ((LineSegment)(pf.Segments[count - 1])).Point.Y;
+							}
+							pf.Segments.Add(new LineSegment(new Point(x0, y0), true));
+							pf.IsClosed = false;
+							listPF.Add(pf);
+						}
+						PathGeometry pg = new PathGeometry(listPF);
+						_listPath[indexPath].Data = pg;
+
+						indexPath++;
+
+						pf = null;
+						listPF = new List<PathFigure>();
+					}
+				}
+
+				prevNumber = _records[i].Item3;
+
                 double x = (canvasTraces.Width / 100.0) * i;
                 double y = 0.0;
                 if (MaxSpeed - MinSpeed == 0.0)
@@ -281,8 +329,8 @@ namespace Bumblebee
                 pf.IsClosed = false;
                 listPF.Add(pf);
             }
-            PathGeometry pg = new PathGeometry(listPF);
-            pathSpeed.Data = pg;
+            PathGeometry pgLast = new PathGeometry(listPF);
+			_listPath[indexPath].Data = pgLast;// pathSpeed.Data = pgLast;
         }
     }
 }

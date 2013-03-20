@@ -181,6 +181,8 @@ namespace Bumblebee
         private ObservableCollection<Cmd09HResponse> _cmd09HRespOc = new ObservableCollection<Cmd09HResponse>();
         private ObservableCollection<Cmd08HResponse> _cmd08HRespOc = new ObservableCollection<Cmd08HResponse>();
 
+		private ObservableCollection<Tuple<DateTime, string>> _driverOc = new ObservableCollection<Tuple<DateTime, string>>();
+
         private Document _pdfDocument = null;
         private PdfWriter _writer = null;
         private PdfContentByte _content = null;
@@ -2852,6 +2854,8 @@ namespace Bumblebee
 			_cmd09HRespOc.Clear();
 			_cmd08HRespOc.Clear();
 
+			_driverOc.Clear();
+
 			_vehicleID = "";
 			_vehicleCategory = "";
 			_driverID = "";
@@ -4567,26 +4571,27 @@ namespace Bumblebee
                                                                 string.Format("{0:X2}", baData[126 * iblock + 4]) + ":" +
                                                                 string.Format("{0:X2}", baData[126 * iblock + 5]);
                                                             numberblock = numberblock.PadRight(27);
-                                                            lastDateTime = new DateTime(
+                                                            DateTime eventDatetime = new DateTime(
                                                                 ((int)Math.Floor((double)baData[126 * iblock + 0] / 16.0)) * 10 + baData[126 * iblock + 0] % 16 + 2000,
                                                                 ((int)Math.Floor((double)baData[126 * iblock + 1] / 16.0)) * 10 + baData[126 * iblock + 1] % 16,
                                                                 ((int)Math.Floor((double)baData[126 * iblock + 2] / 16.0)) * 10 + baData[126 * iblock + 2] % 16,
                                                                 ((int)Math.Floor((double)baData[126 * iblock + 3] / 16.0)) * 10 + baData[126 * iblock + 3] % 16,
                                                                 ((int)Math.Floor((double)baData[126 * iblock + 4] / 16.0)) * 10 + baData[126 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[126 * iblock + 5] / 16.0)) * 10 + baData[126 * iblock + 5] % 16);
-                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
-                                                            ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+															lastDateTime = eventDatetime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+															ObservableCollection<Tuple<int, byte, string>> records = new ObservableCollection<Tuple<int, byte, string>>();
                                                             for (int iSec = 0; iSec < 60; iSec++)
                                                             {
                                                                 int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
                                                                 byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
 
-                                                                records.Add(new Tuple<int, byte>(speed, state));
+                                                                records.Add(new Tuple<int, byte, string>(speed, state, ""));
                                                             }
                                                             _cmd08HRespOc.Add(new Cmd08HResponse()
                                                             {
                                                                 Index = (_cmd08HRespOc.Count + 1).ToString(),
                                                                 StartDateTime = numberblock,
+																StartDateTimeDT = eventDatetime,
                                                                 Records = records
                                                             });
                                                         }
@@ -4638,15 +4643,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
-                                                    {
-                                                        _createPdfEvent.Reset();
-                                                        Task.Factory.StartNew(() =>
-                                                        {
-                                                            Create08HReport();
-                                                        });
-                                                        _createPdfEvent.WaitOne();
-                                                    }
+													//if (isContinued == false && NeedReport == true && _pdfDocument != null)
+													//{
+													//    _createPdfEvent.Reset();
+													//    Task.Factory.StartNew(() =>
+													//    {
+													//        Create08HReport();
+													//    });
+													//    _createPdfEvent.WaitOne();
+													//}
                                                 }
                                                 #endregion
                                                 break;
@@ -4890,12 +4895,12 @@ namespace Bumblebee
                                                                 baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
                                                             }
                                                             string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-                                                            ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+															ObservableCollection<Tuple<int, byte, string>> records = new ObservableCollection<Tuple<int, byte, string>>();
                                                             for (int iRec = 0; iRec < 100; iRec++)
                                                             {
                                                                 int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
                                                                 byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
-                                                                records.Add(new Tuple<int, byte>(speed, state));
+																records.Add(new Tuple<int, byte, string>(speed, state, ""));
                                                             }
 
                                                             #region
@@ -5006,15 +5011,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && NeedReport == true && _pdfDocument != null)
-                                                    {
-                                                        _createPdfEvent.Reset();
-                                                        Task.Factory.StartNew(() =>
-                                                        {
-                                                            Create10HReport();
-                                                        });
-                                                        _createPdfEvent.WaitOne();
-                                                    }
+													//if (isContinued == false && NeedReport == true && _pdfDocument != null)
+													//{
+													//    _createPdfEvent.Reset();
+													//    Task.Factory.StartNew(() =>
+													//    {
+													//        Create10HReport();
+													//    });
+													//    _createPdfEvent.WaitOne();
+													//}
                                                 }
                                                 #endregion
                                                 break;
@@ -5298,14 +5303,14 @@ namespace Bumblebee
                                                                  string.Format("{0:X2}", baData[25 * iblock + 4]) + ":" +
                                                                  string.Format("{0:X2}", baData[25 * iblock + 5]);
                                                             numberblock = numberblock.PadRight(27);
-                                                            lastDateTime = new DateTime(
+                                                            DateTime eventDateTime = new DateTime(
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 0] / 16.0)) * 10 + baData[25 * iblock + 0] % 16 + 2000,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 1] / 16.0)) * 10 + baData[25 * iblock + 1] % 16,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 2] / 16.0)) * 10 + baData[25 * iblock + 2] % 16,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 3] / 16.0)) * 10 + baData[25 * iblock + 3] % 16,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
-                                                            lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+															lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
                                                             byte[] baNumber = new byte[18];
                                                             for (int idxBa = 0; idxBa < 18; idxBa++)
                                                             {
@@ -5313,20 +5318,21 @@ namespace Bumblebee
                                                             }
                                                             string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
                                                             string oper = "";
-                                                            switch (baData[25 * iblock + 24].ToString("X").Trim().ToUpper())
-                                                            {
-                                                                default:
-                                                                    oper = "未知操作";
-                                                                    break;
-                                                                case "1":
-                                                                case "01":
-                                                                    oper = "登录";
-                                                                    break;
-                                                                case "2":
-                                                                case "02":
-                                                                    oper = "退出";
-                                                                    break;
-                                                            }
+															switch (baData[25 * iblock + 24].ToString("X").Trim().ToUpper())
+															{
+																default:
+																	oper = "未知操作";
+																	break;
+																case "1":
+																case "01":
+																	oper = "登录";
+																	_driverOc.Add(new Tuple<DateTime, string>(eventDateTime, number));
+																	break;
+																case "2":
+																case "02":
+																	oper = "退出";
+																	break;
+															}
                                                             _cmd12HRespOc.Add(new Cmd12HResponse()
                                                             {
                                                                 Index = (_cmd12HRespOc.Count + 1).ToString(),
@@ -5334,8 +5340,8 @@ namespace Bumblebee
                                                                 Number = number,
                                                                 Description = oper
                                                             });
-                                                        }
-                                                        LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
+														}
+														LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$| @@@@@@@@@@@@@@@@@@@@@@@@@@@|".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue).Replace("@@@@@@@@@@@@@@@@@@@@@@@@@@@", numberblock));
                                                         LogMessage("+-------------------+----------------------------+----------------------------+");
                                                     }
                                                     else
@@ -5389,8 +5395,37 @@ namespace Bumblebee
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
-                                                        {
-                                                            Create12HReport();
+														{
+															ObservableCollection<Tuple<DateTime, string>> driverReverseOc = new ObservableCollection<Tuple<DateTime, string>>();
+															foreach (Tuple<DateTime, string> ti in _driverOc)
+															{
+																driverReverseOc.Insert(0, ti);
+															}
+															_driverOc = driverReverseOc;
+
+															#region Update 08H Report
+
+															foreach (Cmd08HResponse h08ri in _cmd08HRespOc)
+															{
+																ObservableCollection<Tuple<int, byte, string>> records = new ObservableCollection<Tuple<int, byte, string>>();
+																for (int iMargin = 0; iMargin < h08ri.Records.Count; iMargin++)
+																{
+																	records.Add(new Tuple<int, byte, string>(h08ri.Records[iMargin].Item1, h08ri.Records[iMargin].Item2, GetDriverID(h08ri.StartDateTimeDT, iMargin)));
+																}
+																h08ri.Records = records;
+															}
+
+															#endregion
+
+															Create08HReport();
+
+															#region Update 10H Report
+
+															#endregion
+
+															Create10HReport();
+
+															Create12HReport();
                                                         });
                                                         _createPdfEvent.WaitOne();
                                                     }
@@ -6282,6 +6317,29 @@ namespace Bumblebee
                 CloseReport();
         }
 
+		private string GetDriverID(DateTime dt, int marginMs)
+		{
+			if (_driverID == null || _driverID.Count() < 1)
+				return "";
+
+			int index = 0;
+			foreach (Tuple<DateTime, string> ti in _driverOc)
+			{
+				DateTime actDateTime = dt.Add(new TimeSpan(0, 0, 0, 0, marginMs * 1000));
+				if (actDateTime.Subtract(ti.Item1).TotalSeconds < 0.0)
+				{
+					if (index > 0)
+						return _driverOc[index - 1].Item2;
+					else
+						return ti.Item2;
+				}
+
+				index++;
+			}
+
+			return _driverOc[_driverOc.Count - 1].Item2;
+		}
+
         private void OpenUSBVDR_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
@@ -6303,6 +6361,8 @@ namespace Bumblebee
             _cmd10HRespOc.Clear();
             _cmd09HRespOc.Clear();
             _cmd08HRespOc.Clear();
+
+			_driverOc.Clear();
 
 			_vehicleID = "";
 			_vehicleCategory = "";
@@ -7292,26 +7352,27 @@ namespace Bumblebee
 													string.Format("{0:X2}", baData[126 * iblock + 4]) + ":" +
 													string.Format("{0:X2}", baData[126 * iblock + 5]);
 												numberblock = numberblock.PadRight(27);
-												lastDateTime = new DateTime(
+												DateTime eventDateTime = new DateTime(
 													((int)Math.Floor((double)baData[126 * iblock + 0] / 16.0)) * 10 + baData[126 * iblock + 0] % 16 + 2000,
 													((int)Math.Floor((double)baData[126 * iblock + 1] / 16.0)) * 10 + baData[126 * iblock + 1] % 16,
 													((int)Math.Floor((double)baData[126 * iblock + 2] / 16.0)) * 10 + baData[126 * iblock + 2] % 16,
 													((int)Math.Floor((double)baData[126 * iblock + 3] / 16.0)) * 10 + baData[126 * iblock + 3] % 16,
 													((int)Math.Floor((double)baData[126 * iblock + 4] / 16.0)) * 10 + baData[126 * iblock + 4] % 16,
 													((int)Math.Floor((double)baData[126 * iblock + 5] / 16.0)) * 10 + baData[126 * iblock + 5] % 16);
-												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
-												ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+												lastDateTime = eventDateTime.Subtract(new TimeSpan(0, 0, 1));//blockCount, 0));
+												ObservableCollection<Tuple<int, byte, string>> records = new ObservableCollection<Tuple<int, byte, string>>();
 												for (int iSec = 0; iSec < 60; iSec++)
 												{
 													int speed = baData[126 * iblock + iSec * 2 + 6 + 0];
 													byte state = baData[126 * iblock + iSec * 2 + 6 + 1];
 
-													records.Add(new Tuple<int, byte>(speed, state));
+													records.Add(new Tuple<int, byte, string>(speed, state, ""));
 												}
 												_cmd08HRespOc.Add(new Cmd08HResponse()
 												{
 													Index = (_cmd08HRespOc.Count + 1).ToString(),
 													StartDateTime = numberblock,
+													StartDateTimeDT = eventDateTime,
 													Records = records
 												});
 											}
@@ -7324,22 +7385,22 @@ namespace Bumblebee
 											LogMessage("| 数据总数/数据块数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
-										{
-											if (_pdfDocument == null)
-											{
-												LogMessageError("无法创建报表.");
-											}
-											else
-											{
-												_createPdfEvent.Reset();
-												Task.Factory.StartNew(() =>
-												{
-													Create08HReport();
-												});
-												_createPdfEvent.WaitOne();
-											}
-										}
+										//if (NeedReport == true)
+										//{
+										//    if (_pdfDocument == null)
+										//    {
+										//        LogMessageError("无法创建报表.");
+										//    }
+										//    else
+										//    {
+										//        _createPdfEvent.Reset();
+										//        Task.Factory.StartNew(() =>
+										//        {
+										//            Create08HReport();
+										//        });
+										//        _createPdfEvent.WaitOne();
+										//    }
+										//}
 									}
 									#endregion
 									break;
@@ -7493,26 +7554,26 @@ namespace Bumblebee
 													string.Format("{0:X2}", baData[234 * iblock + 4]) + ":" +
 													string.Format("{0:X2}", baData[234 * iblock + 5]);
 												numberblock = numberblock.PadRight(27);
-												lastDateTime = new DateTime(
+												DateTime eventDateTime = new DateTime(
 													((int)Math.Floor((double)baData[234 * iblock + 0] / 16.0)) * 10 + baData[234 * iblock + 0] % 16 + 2000,
 													((int)Math.Floor((double)baData[234 * iblock + 1] / 16.0)) * 10 + baData[234 * iblock + 1] % 16,
 													((int)Math.Floor((double)baData[234 * iblock + 2] / 16.0)) * 10 + baData[234 * iblock + 2] % 16,
 													((int)Math.Floor((double)baData[234 * iblock + 3] / 16.0)) * 10 + baData[234 * iblock + 3] % 16,
 													((int)Math.Floor((double)baData[234 * iblock + 4] / 16.0)) * 10 + baData[234 * iblock + 4] % 16,
 													((int)Math.Floor((double)baData[234 * iblock + 5] / 16.0)) * 10 + baData[234 * iblock + 5] % 16);
-												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 20));
+												lastDateTime = eventDateTime.Subtract(new TimeSpan(0, 0, 20));
 												byte[] baNumber = new byte[18];
 												for (int idxBa = 0; idxBa < 18; idxBa++)
 												{
 													baNumber[idxBa] = baData[234 * iblock + 6 + idxBa];
 												}
 												string number = Encoding.UTF8.GetString(baNumber).PadRight(27);
-												ObservableCollection<Tuple<int, byte>> records = new ObservableCollection<Tuple<int, byte>>();
+												ObservableCollection<Tuple<int, byte, string>> records = new ObservableCollection<Tuple<int, byte, string>>();
 												for (int iRec = 0; iRec < 100; iRec++)
 												{
 													int speed = (int)baData[234 * iblock + 24 + iRec * 2 + 0];
 													byte state = baData[234 * iblock + 24 + iRec * 2 + 1];
-													records.Add(new Tuple<int, byte>(speed, state));
+													records.Add(new Tuple<int, byte, string>(speed, state, ""));
 												}
 
 												#region
@@ -7567,6 +7628,7 @@ namespace Bumblebee
 												{
 													Index = (_cmd10HRespOc.Count + 1).ToString(),
 													StopDateTime = numberblock,
+													StopDateTimeDT = eventDateTime,
 													Number = number,
 													Records = records,
 													Position = sJingDu + "/" + sWeiDu,
@@ -7587,22 +7649,22 @@ namespace Bumblebee
 											LogMessage("|        错误数据数 | $$$$$$$$$$$$$$$$$$$$$$$$$$$|                            |".Replace("$$$$$$$$$$$$$$$$$$$$$$$$$$$", sValue3));
 											LogMessage("+-------------------+----------------------------+----------------------------+");
 										}
-										if (NeedReport == true)
-										{
-											if (_pdfDocument == null)
-											{
-												LogMessageError("无法创建报表.");
-											}
-											else
-											{
-												_createPdfEvent.Reset();
-												Task.Factory.StartNew(() =>
-												{
-													Create10HReport();
-												});
-												_createPdfEvent.WaitOne();
-											}
-										}
+										//if (NeedReport == true)
+										//{
+										//    if (_pdfDocument == null)
+										//    {
+										//        LogMessageError("无法创建报表.");
+										//    }
+										//    else
+										//    {
+										//        _createPdfEvent.Reset();
+										//        Task.Factory.StartNew(() =>
+										//        {
+										//            Create10HReport();
+										//        });
+										//        _createPdfEvent.WaitOne();
+										//    }
+										//}
 									}
 									#endregion
 									break;
@@ -7813,14 +7875,14 @@ namespace Bumblebee
 													 string.Format("{0:X2}", baData[25 * iblock + 4]) + ":" +
 													 string.Format("{0:X2}", baData[25 * iblock + 5]);
 												numberblock = numberblock.PadRight(27);
-												lastDateTime = new DateTime(
+												DateTime eventDateTime = new DateTime(
 													((int)Math.Floor((double)baData[25 * iblock + 0] / 16.0)) * 10 + baData[25 * iblock + 0] % 16 + 2000,
 													((int)Math.Floor((double)baData[25 * iblock + 1] / 16.0)) * 10 + baData[25 * iblock + 1] % 16,
 													((int)Math.Floor((double)baData[25 * iblock + 2] / 16.0)) * 10 + baData[25 * iblock + 2] % 16,
 													((int)Math.Floor((double)baData[25 * iblock + 3] / 16.0)) * 10 + baData[25 * iblock + 3] % 16,
 													((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
 													((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
-												lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+												lastDateTime = eventDateTime.Subtract(new TimeSpan(0, 0, 1));
 												byte[] baNumber = new byte[18];
 												for (int idxBa = 0; idxBa < 18; idxBa++)
 												{
@@ -7836,6 +7898,7 @@ namespace Bumblebee
 													case "1":
 													case "01":
 														oper = "登录";
+														_driverOc.Add(new Tuple<DateTime, string>(eventDateTime, number));
 														break;
 													case "2":
 													case "02":
@@ -7875,6 +7938,35 @@ namespace Bumblebee
 												_createPdfEvent.Reset();
 												Task.Factory.StartNew(() =>
 												{
+													ObservableCollection<Tuple<DateTime, string>> driverReverseOc = new ObservableCollection<Tuple<DateTime, string>>();
+													foreach (Tuple<DateTime, string> ti in _driverOc)
+													{
+														driverReverseOc.Insert(0, ti);
+													}
+													_driverOc = driverReverseOc;
+
+													#region Update 08H Report
+
+													foreach (Cmd08HResponse h08ri in _cmd08HRespOc)
+													{
+														ObservableCollection<Tuple<int, byte, string>> records = new ObservableCollection<Tuple<int, byte, string>>();
+														for (int iMargin = 0; iMargin < h08ri.Records.Count; iMargin++)
+														{
+															records.Add(new Tuple<int, byte, string>(h08ri.Records[iMargin].Item1, h08ri.Records[iMargin].Item2, GetDriverID(h08ri.StartDateTimeDT, iMargin)));
+														}
+														h08ri.Records = records;
+													}
+
+													#endregion
+		
+													Create08HReport();
+
+													#region Update 10H Report
+
+													#endregion
+													
+													Create10HReport(); 
+													
 													Create12HReport();
 												});
 												_createPdfEvent.WaitOne();
@@ -8641,7 +8733,7 @@ namespace Bumblebee
 
                     ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd08HRespOc.Count.ToString() + ")记录中...";
 
-                    ObservableCollection<Tuple<int, byte>> records = cri.Records;
+                    ObservableCollection<Tuple<int, byte, string>> records = cri.Records;
                     PdfPCell cell;
 
 					if (index % 2 == 1)
@@ -8668,7 +8760,38 @@ namespace Bumblebee
 					cell.Colspan = 1;
 					cell.BorderColor = BaseColor.WHITE;
 					tableHeader.AddCell(cell);
-					cell = new PdfPCell(new Phrase("驾证:" + _driverID, new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
+					List<string> listDriverID = new List<string>();
+					List<string> listDriverColor = new List<string>() { "(红)", "(蓝)", "(绿)", "(橙)", "(黄)", "(黑)" };
+					for (int idxDriverID = 0; idxDriverID < cri.Records.Count; idxDriverID++)
+					{
+						if (listDriverID.Count < 1)
+						{
+							listDriverID.Add(cri.Records[idxDriverID].Item3.Trim());
+						}
+						else
+						{
+							if (string.Compare(listDriverID[listDriverID.Count - 1], cri.Records[idxDriverID].Item3.Trim(), true) != 0)
+							{
+								if (listDriverID.Count >= listDriverColor.Count)
+									break;
+
+								listDriverID.Add(cri.Records[idxDriverID].Item3.Trim());
+							}
+						}
+					}
+					for (int idxDriverID = 0; idxDriverID < listDriverID.Count; idxDriverID++)
+					{
+						listDriverID[idxDriverID] = listDriverID[idxDriverID] + listDriverColor[idxDriverID];
+					}
+					string driverIds = "";
+					foreach (string si in listDriverID)
+					{
+						if(driverIds == "")
+							driverIds = si;
+						else
+							driverIds = driverIds + "," + si;
+					}
+					cell = new PdfPCell(new Phrase("驾证:" + driverIds, new Font(baseFont, 9, Font.BOLD)));//, BaseColor.BLUE)));
 					cell.HorizontalAlignment = Element.ALIGN_CENTER;
 					cell.VerticalAlignment = Element.ALIGN_CENTER;
 					cell.Colspan = 2;
@@ -8758,7 +8881,7 @@ namespace Bumblebee
                             else
                             {
                                 cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
-                                Tuple<int, byte> rec = records[j - 1];
+								Tuple<int, byte, string> rec = records[j - 1];
                                 if (rec.Item2 == 0xFF)
                                 {
                                     cell.BackgroundColor = BaseColor.LIGHT_GRAY;
@@ -8858,23 +8981,26 @@ namespace Bumblebee
 
                     #region Speed Chart
 
-                    int min = -1;
-                    int max = -1;
+                    int min = 0;
+                    int max = 0;
                     int idxTi = 0;
-                    foreach (Tuple<int, byte> ti in records)
+					foreach (Tuple<int, byte, string> ti in records)
                     {
-                        if (idxTi++ == 0)
-                        {
-                            min = ti.Item1;
-                            max = ti.Item1;
-                        }
-                        else
-                        {
-                            if (ti.Item1 > max)
-                                max = ti.Item1;
-                            if (ti.Item1 < min)
-                                min = ti.Item1;
-                        }
+						if (ti.Item1 < 255)
+						{
+							if (idxTi++ == 0)
+							{
+								min = ti.Item1;
+								max = ti.Item1;
+							}
+							else
+							{
+								if (ti.Item1 > max)
+									max = ti.Item1;
+								if (ti.Item1 < min)
+									min = ti.Item1;
+							}
+						}
                     }
                     int minBottom = min - (min % 10);
                     int maxTop = max - (max % 10) + 10;
@@ -8977,7 +9103,7 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            _createPdfEvent.Set();
+            //_createPdfEvent.Set();
         }
 
         private void Create09HReport()
@@ -9128,7 +9254,7 @@ namespace Bumblebee
 
                     ReadyString2 = "创建(" + (index + 1).ToString() + "/" + _cmd10HRespOc.Count.ToString() + ")记录中...";
 
-                    ObservableCollection<Tuple<int, byte>> records = cri.Records;
+					ObservableCollection<Tuple<int, byte, string>> records = cri.Records;
                     PdfPCell cell;
 
 					if (index > 0)
@@ -9245,7 +9371,7 @@ namespace Bumblebee
                             else
                             {
                                 cell = new PdfPCell(new Phrase(" ", new Font(baseFont, 1, Font.NORMAL, BaseColor.LIGHT_GRAY)));
-                                Tuple<int, byte> rec = records[99 - (j - 1)];
+								Tuple<int, byte, string> rec = records[99 - (j - 1)];
                                 if (rec.Item2 == 0xFF)
                                 {
                                     cell.BackgroundColor = BaseColor.LIGHT_GRAY;
@@ -9345,23 +9471,26 @@ namespace Bumblebee
 
                     #region Speed Chart
 
-                    int min = -1;
-                    int max = -1;
+                    int min = 0;
+                    int max = 0;
                     int idxTi = 0;
-                    foreach (Tuple<int, byte> ti in records)
+					foreach (Tuple<int, byte, string> ti in records)
                     {
-                        if (idxTi++ == 0)
-                        {
-                            min = ti.Item1;
-                            max = ti.Item1;
-                        }
-                        else
-                        {
-                            if (ti.Item1 > max)
-                                max = ti.Item1;
-                            if (ti.Item1 < min)
-                                min = ti.Item1;
-                        }
+						if (ti.Item1 < 255)
+						{
+							if (idxTi++ == 0)
+							{
+								min = ti.Item1;
+								max = ti.Item1;
+							}
+							else
+							{
+								if (ti.Item1 > max)
+									max = ti.Item1;
+								if (ti.Item1 < min)
+									min = ti.Item1;
+							}
+						}
                     }
                     int minBottom = min - (min % 10);
                     int maxTop = max - (max % 10) + 10;
@@ -9474,7 +9603,7 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            _createPdfEvent.Set();
+            //_createPdfEvent.Set();
         }
 
         private void Create11HReport()
@@ -11206,7 +11335,8 @@ namespace Bumblebee
         public string Index { get; set; }
         public string Number { get; set; }
         public string StopDateTime {get;set;}
-        public ObservableCollection<Tuple<int, byte>> Records { get; set; }
+		public DateTime StopDateTimeDT { get; set; }
+		public ObservableCollection<Tuple<int, byte, string>> Records { get; set; }
         public string Position { get; set; }
         public string Height { get; set; }
     }
@@ -11221,8 +11351,9 @@ namespace Bumblebee
     public class Cmd08HResponse
     {
         public string Index { get; set; }
-        public string StartDateTime { get; set; }
-        public ObservableCollection<Tuple<int, byte>> Records { get; set; }
+		public string StartDateTime { get; set; }
+		public DateTime StartDateTimeDT { get; set; }
+		public ObservableCollection<Tuple<int, byte, string>> Records { get; set; }
     }
 
     public class Bools2BoolConverter : IMultiValueConverter
