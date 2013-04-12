@@ -258,8 +258,9 @@
                     <Grid/>
                 </DockPanel>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" 
-                                VerticalScrollBarVisibility="Auto">
-                    <StackPanel Grid.Column="0">
+                              VerticalScrollBarVisibility="Auto"
+                              CanContentScroll="False">
+                    <StackPanel Grid.Column="0" RequestBringIntoView="OnRequestBringIntoView">
                         <Expander Header="采集指令" Name="expGetCmd" IsExpanded="False" BorderThickness="1">
                             <Border BorderThickness="1" BorderBrush="#FF828790" Background="#FFC0C9D4"
                                     IsEnabled="{Binding Path=NotInRun,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">

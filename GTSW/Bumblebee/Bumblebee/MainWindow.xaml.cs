@@ -3058,8 +3058,17 @@ namespace Bumblebee
         private void SerialPortChkWriteReadHandler(CmdDefinition cd, 
             SerialPortChkWriteReadType wrt = SerialPortChkWriteReadType.E4H)
         {
-            _sPort.DiscardInBuffer();
-            _sPort.DiscardOutBuffer();
+            try
+            {
+                _sPort.DiscardInBuffer();
+                _sPort.DiscardOutBuffer();
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("（可忽略）串口清除错误.\n" + ex.Message);
+
+                LogMessage("");
+            }
             
             string finalCmd = "AA 75 " + wrt.ToString().Substring(0, 2).ToUpper() + " 00 00 00";
             finalCmd = finalCmd + " " + CmdDefinition.XORData(finalCmd);
@@ -3487,6 +3496,18 @@ namespace Bumblebee
             string newCmdContinue = "";
             CmdDefinition cdPrev = null;
 
+            try
+            {
+                _sPort.DiscardInBuffer();
+                _sPort.DiscardOutBuffer();
+            }
+            catch (Exception ex)
+            {
+                LogMessageError("（可忽略）串口清除错误.\n" + ex.Message);
+
+                LogMessage("");
+            }
+
             for (int iCmd = 0; iCmd < _cmdsList.Count; iCmd++)//CmdDefinition cdi in _cmdsList)
             {
                 CmdDefinition cdi = _cmdsList[iCmd];
@@ -3536,8 +3557,8 @@ namespace Bumblebee
                         cmd = newCmdContinue;
                     }
 
-                    _sPort.DiscardInBuffer();
-                    _sPort.DiscardOutBuffer();
+                    //_sPort.Close();
+                    //_sPort.Open();
 
                     #region Send
 
@@ -3580,6 +3601,9 @@ namespace Bumblebee
 
                     PBarValue = 0;
                     _timerPBar.Change(0, 100);
+
+                    //_sPort.DiscardInBuffer();
+                    //_sPort.DiscardOutBuffer();
 
                     byte[] ba = new byte[lenSend];
                     for (int i = 0; i < lenSend; i++)
@@ -5409,7 +5433,7 @@ namespace Bumblebee
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 3] / 16.0)) * 10 + baData[25 * iblock + 3] % 16,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 4] / 16.0)) * 10 + baData[25 * iblock + 4] % 16,
                                                                 ((int)Math.Floor((double)baData[25 * iblock + 5] / 16.0)) * 10 + baData[25 * iblock + 5] % 16);
-															lastDateTime = lastDateTime.Subtract(new TimeSpan(0, 0, 1));
+                                                            lastDateTime = eventDateTime.Subtract(new TimeSpan(0, 0, 1));
                                                             byte[] baNumber = new byte[18];
                                                             for (int idxBa = 0; idxBa < 18; idxBa++)
                                                             {
@@ -10384,10 +10408,10 @@ namespace Bumblebee
             ab.ShowDialog();
         }
 
-        //private void ExtGetCmd_Border_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        //{
-        //    bdExtGetCmd.Background = new SolidColorBrush(Color.FromArgb(255, 192, 201, 212));
-        //}
+        private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 
     public abstract class NotifiedClass : INotifyPropertyChanged
