@@ -3508,6 +3508,17 @@ namespace Bumblebee
                 LogMessage("");
             }
 
+            bool has12HCmd = false;
+            foreach (CmdDefinition cmdi in _cmdsList)
+            {
+                string header = cmdi.CmdContent.Substring(0, 3);
+                if (string.Compare("12H", header, true) == 0)
+                {
+                    has12HCmd = true;
+                    break;
+                }
+            }
+
             for (int iCmd = 0; iCmd < _cmdsList.Count; iCmd++)//CmdDefinition cdi in _cmdsList)
             {
                 CmdDefinition cdi = _cmdsList[iCmd];
@@ -4766,15 +4777,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-													//if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
-													//{
-													//    _createPdfEvent.Reset();
-													//    Task.Factory.StartNew(() =>
-													//    {
-													//        Create08HReport();
-													//    });
-													//    _createPdfEvent.WaitOne();
-													//}
+                                                    if (has12HCmd == false && isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create08HReport(false);
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -4948,15 +4959,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    //if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
-                                                    //{
-                                                    //    _createPdfEvent.Reset();
-                                                    //    Task.Factory.StartNew(() =>
-                                                    //    {
-                                                    //        Create09HReport();
-                                                    //    });
-                                                    //    _createPdfEvent.WaitOne();
-                                                    //}
+                                                    if (has12HCmd == false && isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create09HReport(false);
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -5134,15 +5145,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-													//if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
-													//{
-													//    _createPdfEvent.Reset();
-													//    Task.Factory.StartNew(() =>
-													//    {
-													//        Create10HReport();
-													//    });
-													//    _createPdfEvent.WaitOne();
-													//}
+                                                    if (has12HCmd == false && isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
+													{
+													    _createPdfEvent.Reset();
+													    Task.Factory.StartNew(() =>
+													    {
+                                                            Create10HReport(false);
+													    });
+													    _createPdfEvent.WaitOne();
+													}
                                                 }
                                                 #endregion
                                                 break;
@@ -5370,15 +5381,15 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    //if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
-                                                    //{
-                                                    //    _createPdfEvent.Reset();
-                                                    //    Task.Factory.StartNew(() =>
-                                                    //    {
-                                                    //        Create11HReport();
-                                                    //    });
-                                                    //    _createPdfEvent.WaitOne();
-                                                    //}
+                                                    if (has12HCmd == false && isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
+                                                    {
+                                                        _createPdfEvent.Reset();
+                                                        Task.Factory.StartNew(() =>
+                                                        {
+                                                            Create11HReport(false);
+                                                        });
+                                                        _createPdfEvent.WaitOne();
+                                                    }
                                                 }
                                                 #endregion
                                                 break;
@@ -5514,7 +5525,7 @@ namespace Bumblebee
                                                     }
                                                     else
                                                         isContinued = false;
-                                                    if (isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
+                                                    if (has12HCmd == true && isContinued == false && ReallyNeedReport == true && _pdfDocument != null)
                                                     {
                                                         _createPdfEvent.Reset();
                                                         Task.Factory.StartNew(() =>
@@ -8836,7 +8847,7 @@ namespace Bumblebee
             return string.Format("{0:D}", iValDu) + "°"+ string.Format("{0:D}", iValFen) + "′" + string.Format("{0:D}", iValMiao) + "″"; 
         }
 
-        private void Create08HReport()
+        private void Create08HReport(bool has12HCmd = true)
         {
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -9243,10 +9254,11 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            //_createPdfEvent.Set();
+            if(has12HCmd == false)
+                _createPdfEvent.Set();
         }
 
-        private void Create09HReport()
+        private void Create09HReport(bool has12HCmd = true)
         {
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -9354,10 +9366,11 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            //_createPdfEvent.Set();
+            if (has12HCmd == false)
+                _createPdfEvent.Set();
         }
 
-        private void Create10HReport()
+        private void Create10HReport(bool has12HCmd = true)
         {
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -9743,10 +9756,11 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            //_createPdfEvent.Set();
+            if (has12HCmd == false)
+                _createPdfEvent.Set();
         }
 
-        private void Create11HReport()
+        private void Create11HReport(bool has12HCmd = true)
         {
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -9858,7 +9872,8 @@ namespace Bumblebee
                 pbarMain.IsIndeterminate = false;
             }, null);
             ReadyString2 = "";
-            //_createPdfEvent.Set();
+            if (has12HCmd == false)
+                _createPdfEvent.Set();
         }
 
         private void Create12HReport()
