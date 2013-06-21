@@ -10419,7 +10419,7 @@ namespace Bumblebee
 
         private void Version_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            About ab = new About("GB/T 19056-2013数据分析软件", "版权 @ 讯业互联", "版本 2013 - 1.0");
+            About ab = new About("GB/T 19056-2013数据分析软件", "版权 @ 讯业互联", "版本 v1.0.0");
             ab.ShowDialog();
         }
 
